@@ -17,5 +17,5 @@ cd /path/to/dovetail-contrib/trigger
 zip -r json-smartcontract.zip json-smartcontract
 ```
 
-3.- Upload json-smartcontract.zip in Dovetail UI extensions tab
+3.- Upload json-smartcontract.zip in Dovetail UI <TODO: Add link to dovetail website here> extensions tab
 
