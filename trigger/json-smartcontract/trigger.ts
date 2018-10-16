@@ -67,26 +67,8 @@ export class JsonSmartContractTriggerService extends WiServiceHandlerContributio
                     }
                 }
             }
-            let flowModel = modelService.createFlow(context.getFlowName() , context.getFlowDescription());
-            if (context.getMode() === MODE.SERVERLESS_FLOW) {
-                result = result.addTriggerFlowMapping(lodash.cloneDeep(trigger), lodash.cloneDeep(flowModel));
-            } else {
-                let reply = modelService.createFlowElement("General/tibco-wi-reply");
-                if (reply && reply.inputs && reply.inputs.length > 0) {
-                    for (let j = 0; j < reply.inputs.length; j++) {
-                        if (reply.inputs[j].name === "data") {
-                            reply.inputs[j].value = {
-                                "value": output.value,
-                                "metadata": ""
-                            };
-                            break;
-                        }
-                    }
-                }
-                let flow = flowModel.addFlowElement(reply);
-                result = result.addTriggerFlowMapping(lodash.cloneDeep(trigger), lodash.cloneDeep(flow));
-            }
-                
+            let flowModel = modelService.createFlow(context.getFlowName(), context.getFlowDescription());
+            result = result.addTriggerFlowMapping(lodash.cloneDeep(trigger), lodash.cloneDeep(flowModel));
         }
         let actionResult = ActionResult.newActionResult().setSuccess(true).setResult(result);
         return actionResult;
