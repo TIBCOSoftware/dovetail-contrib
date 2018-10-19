@@ -1,3 +1,8 @@
+---
+title: Json Smart Contract
+weight: 4605
+---
+
 # json-smartcontract
 
 This trigger provides your dovetail™ smart contract with a starting point to define your input as a json schema.
