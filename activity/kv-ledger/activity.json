@@ -1,0 +1,65 @@
+{
+	"title": "KV Ledger",
+	"name": "tibco-kv-ledger",
+	"author": "TIBCO Software Inc.",
+	"type": "flogo:activity",
+	"version": "0.1.0",
+	"display": {
+		"visible": true,
+		"description": "Simple Key Value Ledger Activity",
+		"category": "SmartContract",
+		"smallIcon": "icons/ic-tibco-dt-ledger.svg",
+		"largeIcon": "icons/ic-tibco-dt-ledger@2x.png"
+	},
+	"ref": "github.com/TIBCOSoftware/dovetail-contrib/activity/kv-ledger",
+	"inputs": [
+		{
+			"name": "Ledger Operation",
+			"type": "string",
+			"required": true,
+			"value": "PUT",
+			"display": {
+				"description": "Set log level",
+				"name": "Log Level",
+				"type": "dropdown",
+				"selection": "single"
+			},
+			"allowed": [
+				"PUT",
+				"GET",
+				"DELETE"
+			]
+		},
+		{
+			"name": "key",
+			"type": "object",
+			"required": true,
+			"display": {
+				"description": "This is the key used for the given operation",
+				"name": "Key",
+				"mappable": true,
+				"settings": false
+			}
+		},
+		{
+			"name": "value",
+			"type": "object",
+			"display": {
+				"description": "This is the value used for the given operation",
+				"name": "Value",
+				"mappable": true,
+				"settings": false
+			}
+		}
+	],
+    "outputs": [
+        {
+            "name": "status",
+            "type": "integer"
+		},
+        {
+            "name": "output",
+            "type": "object"
+		}
+    ]
+}

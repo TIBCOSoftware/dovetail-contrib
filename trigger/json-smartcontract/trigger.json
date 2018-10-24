@@ -1,8 +1,7 @@
 {
     "title": "Json Based Smart Contract",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "type": "flogo:trigger",
-    "shim": "main",
     "name": "tibco-json-smartcontract",
     "author": "TIBCO Software Inc.",
     "display": {
@@ -13,7 +12,7 @@
         "largeIcon": "icons/ic-tibco-dt-smartcontract@2x.png",
         "wizard": ["Step 1"]
     },
-    "ref": "github.com/torresashjian/dovetail-contrib/trigger/json-smartcontract",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/trigger/json-smartcontract",
     "useReplyHandler": true,
     "settings": [],
     "handler": {
