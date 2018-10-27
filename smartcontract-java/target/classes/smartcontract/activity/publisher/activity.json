@@ -1,0 +1,58 @@
+{
+    "name": "publisher",
+    "title": "Publish Event",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "SmartContract",
+       "visible": true,
+       "smallIcon": "send.png",
+       "description": "Publish events"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/publisher",
+    "inputs": [
+            {
+                "name": "model",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Common Data Model",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+           {
+                "name": "event",
+                "type": "string",
+                "required": true,
+                "display":{
+                    "name": "Event to Publish",
+                    "type": "dropdown",
+                    "selection": "single"
+                },
+                "allowed": []
+           },
+           {
+            "name": "input",
+            "type": "complex_object",
+            "required": true
+           },
+           {
+                "name": "eventMetadata",
+                "type": "string",
+                "required":false
+           },
+           {
+               "name": "containerServiceStub",
+               "type": "any",
+               "required":true
+           }
+    ],
+  
+    "outputs": [
+        
+    ]
+}

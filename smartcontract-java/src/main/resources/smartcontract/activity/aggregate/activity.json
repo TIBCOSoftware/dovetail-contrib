@@ -1,0 +1,84 @@
+{
+    "name": "aggregate",
+    "title": "Aggregate",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "SmartContract",
+       "visible": true,
+       "smallIcon": "aggregate.png",
+       "description": "This activity performe actions on collections of data"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/aggregate",
+    "inputs": [
+            {
+                "name": "operation",
+                "type": "string",
+                "required": true,
+                "allowed": ["MIN", "MAX", "AVG", "SUM"],
+                "display":{
+                    "name": "Operation",
+                    "description": "operations to perform",
+                    "type": "dropdown",
+                    "selection": "single"
+                },
+                "value": "SUM"
+           },
+           {
+               "name": "dataType",
+               "type": "string",
+               "required":false,
+               "allowed": ["Integer", "Long", "Double"],
+               "display": {
+                    "name": "Data type",
+                    "type": "dropdown",
+                    "selection": "single"
+               },
+               "value": "Integer"
+           },
+           {
+            "name": "precision",
+            "type": "integer",
+            "required":false,
+            "display": {
+                "name": "Precision",
+                "visible": false
+            }
+            },
+           {
+                "name": "scale",
+                "type": "integer",
+                "required":false,
+                "display": {
+                    "name": "Scale",
+                    "visible": false
+                }
+            },
+            {
+                "name": "rounding",
+                "type": "string",
+                "required":false,
+                "allowed": ["UP", "DOWN", "CEILING", "FLOOR", "HALF_UP", "HALF_DOWN", "HALF_EVEN"],
+                "display": {
+                    "name": "Rounding rule",
+                    "visible": false,
+                    "type": "dropdown",
+                    "selection": "single"
+                },
+                "value": "HALF_EVEN"
+            },
+           {
+                "name": "input",
+                "type": "complex_object"
+           }
+    ],
+  
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object"
+           }
+    ]
+}
