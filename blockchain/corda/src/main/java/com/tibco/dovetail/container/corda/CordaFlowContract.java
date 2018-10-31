@@ -23,7 +23,6 @@ public abstract class CordaFlowContract {
 
     protected abstract String getResourceHash();
     protected abstract InputStream getTransactionJson();
-    protected abstract InputStream getSchemasJson();
 
     public void verifyTransaction(LedgerTransaction tx) throws IllegalArgumentException {
 
@@ -53,17 +52,7 @@ public abstract class CordaFlowContract {
             return null;
         });
 
-        try {
-	        //compile flow app and cache the trigger object
-	        if(contractTrigger == null) {
-	        	 	InputStream txJson = getTransactionJson();
-	        	 	FlowAppConfig app = FlowAppConfig.parseModel(txJson);
-	        	 	DovetailEngine engine = new DovetailEngine(app);
-	        	 	contractTrigger = engine.getTrigger();
-	        }
-        }catch(Exception e) {
-        		
-        }
+       compileAndCacheTrigger();
 
         tx.getCommands().stream().filter(c -> c.getValue() instanceof CordaCommandDataWithData)
                                  .forEach(c -> {
@@ -74,7 +63,7 @@ public abstract class CordaFlowContract {
                                          System.out.println("****** contract " + txName + " verification started ******");
                                          CordaContainer ctnr = new CordaContainer(tx.getInputStates(),  txName);
                                          CordaTransactionService txnSvc = new CordaTransactionService(tx, command);
-                                         
+                                        
                                          contractTrigger.invoke(ctnr, txnSvc);
 
                                          CordaDataService data = (CordaDataService) ctnr.getDataService();
@@ -91,5 +80,20 @@ public abstract class CordaFlowContract {
     private void validateOutputs(LedgerTransaction tx, List<DocumentContext> outputs) throws JsonParseException, JsonMappingException, IOException {
         List<DocumentContext> txOuts = tx.getOutputStates().stream().map(it -> CordaUtil.toJsonObject(it)).collect(Collectors.toList());
         CordaUtil.compare(txOuts, outputs);
+    }
+    
+    private synchronized void compileAndCacheTrigger() {
+    	 try {
+ 	        //compile flow app and cache the trigger object
+    		   InputStream txJson = getTransactionJson();
+ 	        if(contractTrigger == null) {
+ 	        	 	
+ 	        	 	FlowAppConfig app = FlowAppConfig.parseModel(txJson);
+ 	        	 	DovetailEngine engine = new DovetailEngine(app);
+ 	        	 	contractTrigger = engine.getTrigger();
+ 	        }
+         }catch(Exception e) {
+         		throw new IllegalArgumentException(e);
+         }
     }
 }

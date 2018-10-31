@@ -11,7 +11,7 @@
        "description": "Log message"
     },
  
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/go-model/SmartContract/activity/logger",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/logger",
     "inputs": [
             {
             "name": "logLevel",

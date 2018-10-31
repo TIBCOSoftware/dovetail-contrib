@@ -11,7 +11,7 @@
         "smallIcon": "composer.png",
         "largeIcon": "composer.png"
     },
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/model/SmartContract/connector/composer",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/connector/composer",
     "keyfield": "name",
     "settings": [{
             "name": "name",

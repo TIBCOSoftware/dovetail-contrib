@@ -11,7 +11,7 @@
        "description": "Publish events"
     },
  
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/go-model/SmartContract/activity/publisher",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/publisher",
     "inputs": [
             {
                 "name": "model",

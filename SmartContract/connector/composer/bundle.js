@@ -8436,7 +8436,7 @@ class JSONSchemaVisitor {
         parameters.modelManager = modelManager;
 
         // Visit all of the files in the model manager.
-        //honeycomb: filter out system model files
+        //dovetail: filter out system model files
         let jsonSchemas = new Map();
         modelManager.getModelFiles().filter((modelFile) => !modelFile.isSystemModelFile())
                                     .forEach((modelFile) => {

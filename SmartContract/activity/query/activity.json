@@ -1,5 +1,5 @@
 {
-    "name": "hlfquery",
+    "name": "query",
     "title": "Custom Query",
     "version": "1.0.0",
     "type": "flogo:activity",
@@ -11,7 +11,7 @@
        "description": "This activity executes custom query of a blockchain platform"
     },
  
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/go-model/SmartContract/activity/query",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/query",
     "inputs": [
             {
                 "name": "model",

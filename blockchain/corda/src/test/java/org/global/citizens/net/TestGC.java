@@ -34,7 +34,7 @@ import static net.corda.testing.TestConstants.getCHARLIE;
 
 public class TestGC {
 	TransactionFlows flows;
-	
+	/*
 //	@org.junit.Before
 	public void setupFlow() {
 	
@@ -217,4 +217,5 @@ public class TestGC {
 			e.printStackTrace();
 		}
 	}
+	*/
 }

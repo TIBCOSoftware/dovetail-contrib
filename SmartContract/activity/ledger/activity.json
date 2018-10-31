@@ -11,7 +11,7 @@
        "description": "This activity create, update or delete assets on the ledger"
     },
  
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/go-model/SmartContract/activity/ledger",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/ledger",
     "inputs": [
             {
                 "name": "model",

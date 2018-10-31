@@ -1,6 +1,6 @@
 {
     "name": "history",
-    "title": "An Asset's Historical Transaction Records",
+    "title": "Historical Transaction Records of an asset",
     "version": "1.0.0",
     "type": "flogo:activity",
     "author": "TIBCO Software Inc.",
@@ -11,7 +11,7 @@
        "description": "This activity returns all transactions for a particular asset"
     },
  
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/go-model/SmartContract/activity/history",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/history",
     "inputs": [
             {
                 "name": "model",

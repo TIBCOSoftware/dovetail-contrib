@@ -26,11 +26,6 @@ public class IOU3Contract extends CordaFlowContract implements Contract {
 
     }
 
-    @Override
-    protected InputStream getSchemasJson() {
-        return this.getClass().getResourceAsStream("schemas.json");
-    }
-
     public static class IssueIOU extends CordaCommandDataWithData {
         public IssueIOU(IOU3 iou){
             putData("iou", iou);

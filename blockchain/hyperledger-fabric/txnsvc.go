@@ -29,27 +29,26 @@ func (svc *HyperledgerFabricTransactionService) GetTransactionName() string {
 	return svc.name
 }
 
-func (svc *HyperledgerFabricTransactionService) TransactionSecurityEnabled() bool {
+func (svc *HyperledgerFabricTransactionService) TransactionSecuritySupported() bool {
 	return svc.securityEnabled
 }
 
-func (svc *HyperledgerFabricTransactionService) ResolveTransactionInput(txnInputsMetadata []txn.Attribute) (map[string]interface{}, error) {
+func (svc *HyperledgerFabricTransactionService) ResolveTransactionInput(txnInputsMetadata []txn.TxnInputAttribute) (map[string]interface{}, error) {
 	txnInput := make(map[string]interface{})
-
-	if len(txnInputsMetadata) != len(svc.args) {
-		return txnInput, fmt.Errorf("Expected %v arguments, only found %v from input", len(txnInputsMetadata), len(svc.args))
-	}
-
 	//add transactionId and timestamp,should be last 2 argments
-	args := append(svc.args, svc.stub.GetTxID())
+	svc.args = append(svc.args, svc.stub.GetTxID())
 	txntime, err := svc.stub.GetTxTimestamp()
 	if err != nil {
 		return txnInput, fmt.Errorf("Error retrieving transaction timestamp: %v", err)
 	}
 	txnstr := time.Unix(txntime.Seconds, int64(txntime.Nanos)).UTC().Format("2006-01-02T15:04:05.00000-0700")
-	args = append(args, txnstr)
+	svc.args = append(svc.args, txnstr)
 
-	for idx, arg := range args {
+	if len(txnInputsMetadata) != len(svc.args) {
+		return txnInput, fmt.Errorf("Expected %v arguments: %v, only found %v from input: %v", len(txnInputsMetadata), txnInputsMetadata, len(svc.args), svc.args)
+	}
+
+	for idx, arg := range svc.args {
 		attr := txnInputsMetadata[idx]
 		if attr.IsAssetRef {
 			//resolve asset reference
@@ -126,7 +125,7 @@ func resolveRecord(attrName, assetName, identifiers string, values map[string]in
 	return input, nil
 }
 
-func parsePrimitiveType(attr txn.Attribute, arg string) (interface{}, error) {
+func parsePrimitiveType(attr txn.TxnInputAttribute, arg string) (interface{}, error) {
 	switch attr.DataType {
 	case "Integer", "Long":
 		iv, err := strconv.Atoi(arg)

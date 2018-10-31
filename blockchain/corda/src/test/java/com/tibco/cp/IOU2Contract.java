@@ -41,11 +41,6 @@ public class IOU2Contract extends  CordaFlowContract implements Contract {
 
     }
 
-    @Override
-    protected InputStream getSchemasJson() {
-        return null;
-    }
-
 	@Override
 	public void verify(LedgerTransaction tx) throws IllegalArgumentException {
 		verifyTransaction(tx);

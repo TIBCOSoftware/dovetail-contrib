@@ -15,7 +15,7 @@
        "largeIcon": "trigger.png"
     },
     "useReplyHandler": true,
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/model/SmartContract/trigger/transaction",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/trigger/transaction",
          
     "settings": [
         {

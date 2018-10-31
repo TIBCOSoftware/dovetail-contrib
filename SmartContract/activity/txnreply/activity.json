@@ -10,8 +10,8 @@
        "smallIcon": "txnreply.png",
        "description": "Log message"
     },
- 
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/go-model/SmartContract/activity/txnreply",
+    "reply": true,
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/txnreply",
     "inputs": [
         {
             "name": "status",

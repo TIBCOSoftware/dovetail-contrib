@@ -11,7 +11,7 @@
        "description": "This activity performe actions on collections of data"
     },
  
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/go-model/SmartContract/activity/collection",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/collection",
     "inputs": [
             {
                 "name": "operation",
