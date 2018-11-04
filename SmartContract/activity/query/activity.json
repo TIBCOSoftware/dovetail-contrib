@@ -36,24 +36,35 @@
                 "allowed": []
            },
            {
-            "name": "params",
-            "type": "complex_object",
-            "required": false
-       },
-           {
-            "name": "queryString",
-            "type": "string",
-            "required": true
+                "name": "params",
+                "type": "complex_object",
+                "required": false,
+                "display":{
+                    "name": "Define parameters used in query string",
+                    "type": "params",
+                    "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"paramName\":{\"type\":\"string\"},\"type\":{\"type\":{\"enum\":[\"string\",\"number\",\"boolean\"]}}}}}"
+                }
            },
            {
-            "name": "input",
-            "type": "complex_object",
-            "required": false
+                "name": "queryString",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Define query string",
+                    "description": "use _$paramName in place of input parameters",
+                    "type": "texteditor",
+                    "mappable": false
+                }
            },
            {
-            "name": "containerServiceStub",
-            "type": "any",
-            "required":true
+                "name": "input",
+                "type": "complex_object",
+                "required": false
+           },
+           {
+                "name": "containerServiceStub",
+                "type": "any",
+                "required":true
            }
     ],
   

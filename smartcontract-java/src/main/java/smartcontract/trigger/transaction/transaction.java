@@ -50,14 +50,20 @@ public class transaction implements ITrigger{
 	            		txnAttr.setName(a.getName());
 	            		txnAttr.setType(a.getType());
 	            		txnAttr.setArray(a.isArray());
-	            		
-	            		ResourceType rtype = metadata.getType();
-	            		if(rtype == ResourceType.Asset) {
-	            			txnAttr.setAssetName(metadata.getName());
-	            			txnAttr.setAssetRef(a.isRef());
-	            		} 
-	            		
-	            		txnAttr.setParticipant(rtype == ResourceType.Participant);
+
+	            		HLCResource attrMetadata = metadatas.get(a.getType());
+	            		if(attrMetadata != null) {
+		            		ResourceType rtype = attrMetadata.getMetadata().getType();
+		            		if(rtype == ResourceType.Asset) {
+		            			txnAttr.setAssetName(a.getType());
+		            			txnAttr.setAssetRef(a.isRef());
+		            		} 
+		            		
+		            		txnAttr.setParticipant(rtype == ResourceType.Participant);
+	            		} else {
+	            			txnAttr.setAssetRef(false);
+	            			txnAttr.setParticipant(false);
+	            		}
 	            		
 	            		flow.addFlowInput(txnAttr);
 	            });

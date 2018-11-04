@@ -28,7 +28,7 @@ public class CordaTransactionService implements ITransactionService {
 	public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
         List<ContractState> inputStates = new ArrayList<ContractState>();
         Map<String, Object> flowInputs = new LinkedHashMap<String, Object>();
-        
+
         for(TxnInputAttribute k : txnInputs){
         		String attr = k.getName();
             Object value = cmd.getData(attr);

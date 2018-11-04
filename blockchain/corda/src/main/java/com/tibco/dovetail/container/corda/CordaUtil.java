@@ -60,7 +60,7 @@ public class CordaUtil {
     public static String toString(Object obj){
         String string = null;
         if(obj instanceof AnonymousParty) {
-        		return ((AnonymousParty) obj).getOwningKey().toString();
+        		return ((AnonymousParty) obj).toString();
         } else if(obj instanceof AbstractParty){
             AbstractParty party = (AbstractParty)obj;
             string = party.toString();
