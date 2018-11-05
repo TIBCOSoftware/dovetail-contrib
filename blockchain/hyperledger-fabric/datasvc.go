@@ -26,8 +26,8 @@ func (svc *HyperledgerFabricDataService) PutState(assetName string, assetKey str
 		return err
 	}
 
-	if secondaryCompKeys != nil && secondaryCompKeys.(string) != "" {
-		err = storeCompositeKeyRefs(assetName, key, keyref, secondaryCompKeys.(string), assetValue, svc.stub)
+	if keyStr, ok := secondaryCompKeys.(string); ok && len(keyStr) > 0 {
+		err = storeCompositeKeyRefs(assetName, key, keyref, keyStr, assetValue, svc.stub)
 
 		if err != nil {
 			return err
@@ -62,7 +62,7 @@ func (svc *HyperledgerFabricDataService) DeleteState(assetName string, assetKey 
 			return nil, err
 		}
 
-		if secondaryCompKeys != nil && secondaryCompKeys.(string) != "" {
+		if keyStr, ok := secondaryCompKeys.(string); ok && len(keyStr) > 0 {
 			refs, err := svc.stub.GetState(keyref)
 			if err != nil {
 				return nil, err
