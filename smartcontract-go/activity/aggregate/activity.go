@@ -7,7 +7,7 @@ import (
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/core/data"
 
-	hcmath "github.com/TIBCOSoftware/dovetail-go-lib/runtime/functions/math"
+	hcmath "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/functions/math"
 )
 
 // Constants

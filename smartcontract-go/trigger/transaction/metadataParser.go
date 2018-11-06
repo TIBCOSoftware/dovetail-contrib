@@ -3,8 +3,8 @@ package transaction
 import (
 	"strings"
 
+	rttxn "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/transaction"
 	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
-	rttxn "github.com/TIBCOSoftware/dovetail-go-lib/runtime/transaction"
 	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
 )
 

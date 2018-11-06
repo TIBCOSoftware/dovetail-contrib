@@ -7,8 +7,8 @@ import (
 	"time"
 
 	//"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
+	txn "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/transaction"
 	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
-	txn "github.com/TIBCOSoftware/dovetail-go-lib/runtime/transaction"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/hyperledger/fabric/core/chaincode/lib/cid"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
