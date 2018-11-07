@@ -28,17 +28,12 @@ Collection of Dovetail™ activities, triggers and models.
 
 ## Installation
 
-For step by step instructions on how to install a new activity and trigger please go to the [documentation page](https://tibcosoftware.github.io/dovetail/)
+For step by step instructions on how to install a new activity and trigger please go to the installation section on the [documentation page](https://tibcosoftware.github.io/dovetail/getting-started/getting-started-webui/)
 
 
 ### Contributing
 
-New activites, triggers and models are welcome. If you would like to submit one, contact us via email at tibcolabs@tibco.com .  Contributions should follow these guidelines:
-
-* Code must be [gofmt](https://golang.org/cmd/gofmt/) compliant.
-* Execute [golint](https://github.com/golang/lint) on your code.
-* Document all funcs, structs and types.
-* Ensure that 'go test' succeeds.
+New activites, triggers and models are welcome. If you would like to submit one, follow the instructions in the contributions section on the [documentation page](https://tibcosoftware.github.io/dovetail/contributing/contributing/)
 
 ## License
 dovetail-contrib is licensed under a BSD-type license. See [LICENSE](https://github.com/TIBCOSoftware/dovetail-contrib/blob/master/LICENSE) for license text.
