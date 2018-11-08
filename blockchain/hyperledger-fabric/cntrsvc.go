@@ -1,7 +1,7 @@
 package hyperledgerfabric
 
 import (
-	"github.com/TIBCOSoftware/dovetail-go-lib/runtime/services"
+	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/services"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 

@@ -8,7 +8,7 @@ import (
 	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
 	"github.com/TIBCOSoftware/flogo-lib/core/data"
 
-	dtsvc "github.com/TIBCOSoftware/dovetail-go-lib/runtime/services"
+	dtsvc "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/services"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	hcmath "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/functions/math"
 	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
-	hcmath "github.com/TIBCOSoftware/dovetail-go-lib/runtime/functions/math"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/core/data"
 	"github.com/shopspring/decimal"

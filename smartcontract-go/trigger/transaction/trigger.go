@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/TIBCOSoftware/dovetail-go-lib/runtime/services"
+	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/services"
 
 	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/txnreply"
+	rttxn "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/transaction"
 	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
-	rttxn "github.com/TIBCOSoftware/dovetail-go-lib/runtime/transaction"
 	fldata "github.com/TIBCOSoftware/flogo-lib/core/data"
 	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
@@ -94,7 +94,7 @@ func (t *TXNTrigger) Stop() error {
 	return nil
 }
 
-//Trigger must implement this function from dovetail-go-lib/runtime/trigger SmartContractTrigger interface
+//Trigger must implement this function from dovetail-contrib/smartcontract-go/runtime/trigger SmartContractTrigger interface
 func (t *TXNTrigger) Invoke(stub services.ContainerService, txn rttxn.TransactionService) (status bool, data interface{}, err error) {
 	logger.Debug("Enter trigger Invoke...")
 	defer logger.Debug("Exit trigger invoke")
