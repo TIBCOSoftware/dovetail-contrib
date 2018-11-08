@@ -1,51 +1,42 @@
 # dovetail-contrib
 
-[![Build Status](https://travis-ci.org/TIBCOSoftware/flogo-contrib.svg?branch=master)](https://travis-ci.org/TIBCOSoftware/flogo-contrib.svg?branch=master)
+[![Build Status](https://travis-ci.org/TIBCOSoftware/dovetail-contrib.svg?branch=master)](https://travis-ci.org/TIBCOSoftware/dovetail-contrib.svg?branch=master)
 
 Collection of Dovetail™ activities, triggers and models.
 
 ## Contributions
 
+### Connectors
+
+* [composer](SmartContract/composer)
+
 ### Activities
 
+* [aggregate](SmartContract/aggregate)
+* [collection](SmartContract/collection)
+* [history](SmartContract/history)
+* [ledger](SmartContract/ledger)
+* [logger](SmartContract/logger)
+* [mapper](SmartContract/mapper)
+* [publisher](SmartContract/publisher)
+* [query](SmartContract/query)
+* [txnreply](SmartContract/txnreply)
 
 ### Triggers
 
-* [json-smartcontract](trigger/json-smartcontract): Start flow via a Json Smart Contract
- 
-### Models
-
+* [transaction](SmartContract/transaction)
 
 ## Installation
 
-#### Install Activity
-Example: install **log** activity
+For step by step instructions on how to install a new activity and trigger please go to the installation section on the [documentation page](https://tibcosoftware.github.io/dovetail/getting-started/getting-started-webui/)
 
-```bash
-dovetail add activity github.com/TIBCOSoftware/dovetail-contrib/activity/log
-```
-#### Install Trigger
-Example: install **rest** trigger
-
-```bash
-dovetail add trigger github.com/TIBCOSoftware/dovetail-contrib/trigger/rest
-```
-
-
-## Contributing and support
 
 ### Contributing
 
-New activites, triggers and models are welcome. If you would like to submit one, contact us via [Slack](https://tibco-cloud.slack.com/messages/dovetail-general/).  Contributions should follow these guidelines:
-
-* Code must be [gofmt](https://golang.org/cmd/gofmt/) compliant.
-* Execute [golint](https://github.com/golang/lint) on your code.
-* Document all funcs, structs and types.
-* Ensure that 'go test' succeeds.
+New activites, triggers and models are welcome. If you would like to submit one, follow the instructions in the contributions section on the [documentation page](https://tibcosoftware.github.io/dovetail/contributing/contributing/)
 
 ## License
-dovetail-contrib is licensed under a BSD-type license. See TIBCO LICENSE.txt for license text.
+dovetail-contrib is licensed under a BSD-type license. See [LICENSE](https://github.com/TIBCOSoftware/dovetail-contrib/blob/master/LICENSE) for license text.
 
 ### Support
-For Q&A you can post your questions on [Slack](https://tibco-cloud.slack.com/messages/dovetail-general/)
-
+For Q&A you can contact us at tibcolabs@tibco.com.
