@@ -1,4 +1,4 @@
-# dovetail smart contract exntensions for flogo
+# Project Dovetail™ Smart Contract Action Model Component
 
 Collection of Smart Contract activities, triggers and connectors 
 
@@ -22,9 +22,10 @@ Collection of Smart Contract activities, triggers and connectors
 
 ## Installation
 
-Upload DovetailSmartContractExtension.zip file through Dovetail UI extension tab.
+* From SmartContract directory, run ```zip  -u -r contrib-smartcontract.zip SmartContract/*```
+* Upload DovetailSmartContractExtension.zip file through Project Dovetail™ Studio extension tab.
 
 ## License
-dovetail smart contract extension is licensed under a BSD-type license. See TIBCO LICENSE.txt for license text.
+Project Dovetail™ Smart Contract Action Model Component is licensed under a BSD-type license. See TIBCO LICENSE.txt for license text.
 
 
