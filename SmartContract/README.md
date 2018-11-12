@@ -1,3 +1,7 @@
+---
+title: Project Dovetail™ Smart Contract Action Model Component
+weight: 4603
+---
 # Project Dovetail™ Smart Contract Action Model Component
 
 Collection of Smart Contract activities, triggers and connectors 

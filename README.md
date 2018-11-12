@@ -1,5 +1,7 @@
-# dovetail-contrib
-
+---
+title: dovetail-contrib
+weight: 4603
+---
 [![Build Status](https://travis-ci.org/TIBCOSoftware/dovetail-contrib.svg?branch=master)](https://travis-ci.org/TIBCOSoftware/dovetail-contrib.svg?branch=master)
 
 This repository is composed of several modules of Project Dovetail™ that users can contribute to:
