@@ -2,38 +2,21 @@
 
 [![Build Status](https://travis-ci.org/TIBCOSoftware/dovetail-contrib.svg?branch=master)](https://travis-ci.org/TIBCOSoftware/dovetail-contrib.svg?branch=master)
 
-Collection of Dovetail™ activities, triggers and models.
+This repository is composed of several modules of Project Dovetail™ that users can contribute to:
 
-## Contributions
-
-### Connectors
-
-* [composer](SmartContract/composer)
-
-### Activities
-
-* [aggregate](SmartContract/aggregate)
-* [collection](SmartContract/collection)
-* [history](SmartContract/history)
-* [ledger](SmartContract/ledger)
-* [logger](SmartContract/logger)
-* [mapper](SmartContract/mapper)
-* [publisher](SmartContract/publisher)
-* [query](SmartContract/query)
-* [txnreply](SmartContract/txnreply)
-
-### Triggers
-
-* [transaction](SmartContract/transaction)
+- [**Smart Contract Action Model Component**](SmartContract/README)
+- [**Smart Contract Action Go Implementation**](smartcontract-go/README)
+- [**Smart Contract Action Java Implementation**](smartcontract-java/README)
+- [**Smart Contract Blockchain Container Implementation**](blockchain/README)
 
 ## Installation
 
-For step by step instructions on how to install a new activity and trigger please go to the installation section on the [documentation page](https://tibcosoftware.github.io/dovetail/getting-started/getting-started-webui/)
+For step by step instructions on how to setup Project Dovetail™ environment, please go to the installation section on the [documentation page](https://tibcosoftware.github.io/dovetail/getting-started/getting-started-webui/)
 
 
 ### Contributing
 
-New activites, triggers and models are welcome. If you would like to submit one, follow the instructions in the contributions section on the [documentation page](https://tibcosoftware.github.io/dovetail/contributing/contributing/)
+New activites, triggers, connectors and blockchain containers are welcome. If you would like to submit one, follow the instructions in the contributions section on the [documentation page](https://tibcosoftware.github.io/dovetail/contributing/contributing/)
 
 ## License
 dovetail-contrib is licensed under a BSD-type license. See [LICENSE](https://github.com/TIBCOSoftware/dovetail-contrib/blob/master/LICENSE) for license text.
