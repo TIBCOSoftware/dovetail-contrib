@@ -4,7 +4,7 @@ weight: 4603
 ---
 
 # Transaction
-This trigger allows user to select a predefined transaction in the selected common data model to implement, all schemas defined in the common data model will be imported into the application that utilizes this trigger.
+At design time, it works with Hyperledger Composer Connector to display predefined user types for modeling, at runtime, it receives smart contract transactions from distributed ledger platform, resolves transaction input, dispatches transactions to appropriate flow handler, and sends transaction reponses, if any, back to caller.
 
 ## Settings
 | Setting     | Required | Description |

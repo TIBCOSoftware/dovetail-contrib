@@ -15,9 +15,11 @@ Collection of Smart Contract activities, triggers and connectors
 * [txreply](activity/txreply): Send transaction reply
 
 ### Triggers
-* [transaction](trigger/transaction): Smart contract transaction trigger
- 
+* [transaction](trigger/transaction): Smart contract transaction trigger. 
+
 ### Connectors
+Connectors can be used to bring in business data types and structs defined in the tools of your choice and convert them into json schema used by Project Dovetail™ Studio. 
+
 * [composer](connector/composer): Hyperledger Composer connector
 
 ## Installation
