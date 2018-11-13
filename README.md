@@ -6,10 +6,10 @@ weight: 4603
 
 This repository is composed of several modules of Project Dovetail™ that users can contribute to:
 
-- [**Smart Contract Action Model Component**](SmartContract/README)
-- [**Smart Contract Action Go Implementation**](smartcontract-go/README)
-- [**Smart Contract Action Java Implementation**](smartcontract-java/README)
-- [**Smart Contract Blockchain Container Implementation**](blockchain/README)
+- [**Smart Contract Action Model Component**](SmartContract/README.md)
+- [**Smart Contract Action Go Implementation**](smartcontract-go/README.md)
+- [**Smart Contract Action Java Implementation**](smartcontract-java/README.md)
+- [**Smart Contract Blockchain Container Implementation**](blockchain/README.md)
 
 ## Installation
 
