@@ -31,7 +31,4 @@ Connectors can be used to bring in business data types and structs defined in th
 * From SmartContract directory, run ```zip  -u -r contrib-smartcontract.zip SmartContract/*```
 * Upload DovetailSmartContractExtension.zip file through Project Dovetail™ Studio extension tab.
 
-## License
-Project Dovetail™ Smart Contract Action Model Component is licensed under a BSD-type license. See TIBCO LICENSE.txt for license text.
-
 
