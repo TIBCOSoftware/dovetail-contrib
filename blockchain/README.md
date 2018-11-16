@@ -8,7 +8,4 @@ It provides the concrete implemenation of interfaces required to access underlyi
 
 Project Dovetail™ supports Hyperledger Fabric and R3 Corda out of box, more platforms will added in the future.
 
-## License
-Project Dovetail™ Blockchain Container Implementation is licensed under a BSD-type license. See TIBCO LICENSE.txt for license text.
-
 
