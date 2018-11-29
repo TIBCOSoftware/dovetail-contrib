@@ -86,3 +86,8 @@ tags
 .build-cache
 submodules/flogo-cicd/.build-cache
 ./Dockerfile
+.DS_Store
+**/.DS_Store
+.gitignore
+blockchain/corda/target/
+smartcontract-java/target
