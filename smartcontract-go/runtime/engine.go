@@ -102,6 +102,7 @@ func (e *DovetailEngine) Init() error {
 	return nil
 }
 
+//return the smart contract trigger
 func (e *DovetailEngine) GetTrigger() trigger.Trigger {
 	return e.trigger
 }
