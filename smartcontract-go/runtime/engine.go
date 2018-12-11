@@ -41,9 +41,6 @@ func NewEngine(appCfg *app.Config) (*DovetailEngine, error) {
 		return nil, errors.New("no App version provided")
 	}
 
-	//fix up app configuration if it is older
-	app.FixUpApp(appCfg)
-
 	//add ExplicitReply due to limitation of UI export
 	for _, resource := range appCfg.Resources {
 		var defRep *definition.DefinitionRep
@@ -93,7 +90,7 @@ func (e *DovetailEngine) Init() error {
 		return fmt.Errorf("Each application can have only one type of trigger")
 	}
 
-	triggers, err := app.CreateTriggers(e.app.Triggers, e.actionRunner)
+	triggers, err := app.CreateTriggers(e.app.Triggers, make(map[string]action.Action), e.actionRunner)
 	if err != nil {
 		return fmt.Errorf("Error Creating trigger instances - %s", err.Error())
 	}
@@ -105,6 +102,7 @@ func (e *DovetailEngine) Init() error {
 	return nil
 }
 
+//return trigger
 func (e *DovetailEngine) GetTrigger() trigger.Trigger {
 	return e.trigger
 }
