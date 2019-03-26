@@ -3,6 +3,6 @@
 ###################################################################################
 FROM scratch
 
-VOLUME [ /var/lib/dovetail/dovetail-contrib ]
+VOLUME [ /var/lib/wi/wi-contrib.git ]
 
-COPY . /var/lib/dovetail/dovetail-contrib/
+COPY . /var/lib/wi/wi-contrib.git/
