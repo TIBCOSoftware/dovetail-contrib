@@ -7,9 +7,9 @@ echo "IMAGE_NAME ${IMAGE_NAME}..."
 echo "creating temp directory ..."
 temp_dir=$(mktemp -d)
 echo "created temp directory $temp_dir"
-echo "Removing /var/lib/dovetail/dovetail-contrib..."
-rm -rf /var/lib/dovetail/dovetail-contrib
-mkdir -p /var/lib/dovetail/dovetail-contrib
+echo "Removing /var/lib/wi/wi-contrib.git..."
+rm -rf /var/lib/wi/wi-contrib.git
+mkdir -p /var/lib/wi/wi-contrib.git
 echo "Copying function content to tempdir ..."
 cp -r "function" $temp_dir
 cp Dockerfile $temp_dir
