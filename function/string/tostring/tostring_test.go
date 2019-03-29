@@ -22,11 +22,11 @@ func TestFloat(t *testing.T) {
 
 
 func TestExpression(t *testing.T) {
-	fun, err := expression.NewFunctionExpression(`string.tostring(123)`).GetFunction()
+	fun, err := expression.ParseExpression(`string.tostring(123)`)
 	assert.Nil(t, err)
 	assert.NotNil(t, fun)
 	v, err := fun.Eval()
 	assert.Nil(t, err)
-	assert.Equal(t, "123", v[0])
+	assert.Equal(t, "123", v)
 	fmt.Println(v)
 }

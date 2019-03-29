@@ -1,0 +1,22 @@
+{
+	"name": "create",
+	"args": [
+		{
+			"name": "item",
+			"type": "any",
+			"variable": true
+		}
+	],
+	"help": {
+		"description": "Create an array of *primitive types* from the given items. All items must be same primitive types e.g. string, integer etc and must match with the field type where this function is used.",
+		"example": "array.create(\"A\",\"B\",\"C\")\nReturns\n[\"A\",\"B\",\"C\"]",
+		"usage": "array.create(<< item1 >>, << item2 >>, << item3 >>, ...)\nReturn Type\n [\"<<item1>>\",\"<<item2>>\",\"<<item3>>\"]"
+	},
+	"return": {
+		"type":"any",
+		"array": true
+	},
+	"wi": {
+		"visible": true
+	}
+}

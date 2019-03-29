@@ -1,0 +1,21 @@
+{
+    "name": "forEach",
+    "args": [{
+        "name": "input",
+        "type": "any",
+        "array": true,
+        "required": false
+    }],
+    "return": {
+        "type": "any",
+        "array": true
+    },
+    "help": {
+        "description": "Specify a source array argument to iterate through the array, or provide no argument to create a single-item array.",
+        "usage": "array.forEach(<< source array >>) or array.forEach()\nReturn Type\nvoid",
+        "example": "array.forEach($TriggerData.parameters.headers)\nReturns\nvoid\narray.forEach()\nReturns\nvoid"
+    },
+    "wi": {
+        "visible": true
+    }
+}
