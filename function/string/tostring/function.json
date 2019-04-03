@@ -1,0 +1,16 @@
+{
+    "name": "tostring",
+    "args": [{
+        "name": "input",
+        "type": "any"
+    }],
+    "return": {"type": "string"},
+    "help": {
+        "description": "Converts an object to a string.",
+        "example": "string.tostring(123)\nReturns \"123\"",
+        "usage": "string.tostring(<< object >>)\nReturn Type\nstring"
+    },
+    "wi": {
+        "visible": true
+    }
+}
