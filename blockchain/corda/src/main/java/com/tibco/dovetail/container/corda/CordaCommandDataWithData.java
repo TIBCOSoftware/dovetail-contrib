@@ -8,7 +8,6 @@ package com.tibco.dovetail.container.corda;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.serialization.CordaSerializable;
 
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 @CordaSerializable
 public class CordaCommandDataWithData implements CommandData {
 	
-    Map<String, Object> data = new LinkedHashMap<String, Object>();
+    transient Map<String, Object> data = new LinkedHashMap<String, Object>();
     
     //to work around R3 issue
     String serializedData;

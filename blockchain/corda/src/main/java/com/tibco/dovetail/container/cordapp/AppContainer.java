@@ -9,7 +9,7 @@ import net.corda.core.crypto.Base58;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.node.ServiceHub;
 
-public class AppContainer implements IContainerService{
+public class AppContainer implements IContainerService {
 	private static ServiceHub serviceHub = null;
 	AppDataService dataService;
     AppEventService eventService = new AppEventService();

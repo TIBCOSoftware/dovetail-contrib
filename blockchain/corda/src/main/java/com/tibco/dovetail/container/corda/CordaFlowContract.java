@@ -15,6 +15,7 @@ import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 import kotlin.Pair;
 import net.corda.core.contracts.*;
 import net.corda.core.identity.AnonymousParty;
+import net.corda.core.serialization.CordaSerializable;
 import net.corda.core.transactions.LedgerTransaction;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ import java.security.PublicKey;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+@CordaSerializable
 public abstract class CordaFlowContract {
     private static LinkedHashMap<String, ITrigger> contractTriggers = null;
 
@@ -34,9 +35,10 @@ public abstract class CordaFlowContract {
 
         Set<PublicKey> allCmdKeys = new HashSet<PublicKey>();
         Set<PublicKey> allStateKeys = new HashSet<PublicKey>();
-
+System.out.println("Received cmds: " + tx.getCommands().size());
         tx.getCommands().forEach((CommandWithParties<CommandData> it) -> {
             allCmdKeys.addAll(it.getSigners());
+            System.out.println("received cmd="+ it.getValue().toString());
         });
 
         tx.getInputStates().forEach(it -> {

@@ -17,6 +17,7 @@ import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 import co.paralleluniverse.fibers.Suspendable;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.CollectSignaturesFlow;
 import net.corda.core.flows.FinalityFlow;
 import net.corda.core.flows.FlowException;
@@ -94,7 +95,9 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 		});
 		
 		commands.forEach(cmd -> builder.addCommand(cmd, new ArrayList<PublicKey>(signers)));
+		commands.forEach(c -> System.out.println("added command:" + c.getSerializedData()));
 		
+	//	builder.addAttachment(SecureHash.parse("23B76DBDDF264E022FE39A8DC6C087361BCE3BEB6DEB0C9570282F68D91EC75A"));
 		return this.getServiceHub().signInitialTransaction(builder);
 	}
 	
