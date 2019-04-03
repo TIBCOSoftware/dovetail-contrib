@@ -1,0 +1,23 @@
+{
+  "name": "concat",
+  "args": [
+    {
+      "name": "str1",
+      "type": "string"
+    },
+    {
+      "name": "str2",
+      "type": "string",
+      "variable": true
+    }
+  ],
+  "help": {
+    "description": "Returns the concatenation of the arguments. You can concatenate two or more strings.",
+    "example": "string.concat(\"Hello\",' ', \"World\")\nReturns\nHello World",
+    "usage": "string.concat(<< string1 >>, << string2,... >>)\nReturn Type\nstring"
+  },
+  "return": {"type": "string"},
+  "wi": {
+    "visible": true
+  }
+}
