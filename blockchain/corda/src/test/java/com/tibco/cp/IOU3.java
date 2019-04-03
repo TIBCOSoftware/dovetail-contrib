@@ -12,6 +12,8 @@ import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import org.jetbrains.annotations.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
@@ -60,6 +62,7 @@ public class IOU3 implements LinearState{
 
     @NotNull
     @Override
+    @JsonIgnore
     public List<AbstractParty> getParticipants() {
         return Arrays.asList(borrower, lender);
     }

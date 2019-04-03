@@ -6,7 +6,7 @@
 package smartcontract.trigger.transaction;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ import smartcontract.trigger.transaction.model.composer.HLCResource;
 
 public class MetadataParser {
 	public static Map<String, HLCResource> parse(String schema) throws JsonParseException, JsonMappingException, IOException {
-		Map<String, HLCResource> hlcResources = new HashMap<String, HLCResource>();
+		Map<String, HLCResource> hlcResources = new LinkedHashMap<String, HLCResource>();
 		ObjectMapper mapper = new ObjectMapper();
 		
 		//String[0] = resource name
@@ -52,5 +52,12 @@ public class MetadataParser {
 		}
 	 }
 	 
+	 public static HLCResource parseSingleSchema(String schema) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		Schema metaSchema = mapper.readValue(schema, Schema.class);
+		HLCResource hlcResource = mapper.readValue(metaSchema.getDescription(), HLCResource.class );
+			
+		return hlcResource;
+	}
 	 
 }

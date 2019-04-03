@@ -6,7 +6,6 @@
 package smartcontract.trigger.transaction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
 import com.tibco.dovetail.core.runtime.transaction.TxnACL;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
+import co.paralleluniverse.fibers.Suspendable;
 import smartcontract.trigger.transaction.model.composer.HLCDecorator;
 import smartcontract.trigger.transaction.model.composer.HLCMetadata;
 import smartcontract.trigger.transaction.model.composer.HLCMetadata.ResourceType;
@@ -31,8 +31,9 @@ import smartcontract.trigger.transaction.model.composer.HLCResource;
 
 public class transaction implements ITrigger{
 	private Map<String, TransactionFlow> handlers = new LinkedHashMap<String, TransactionFlow>();
+	
 	@Override
-	public void Initialize(TriggerConfig triggerConfig)  {
+	public Map<String, ITrigger> Initialize(TriggerConfig triggerConfig)  {
 		try {
 			 String schema = triggerConfig.getSetting("schemas");
 	         Map<String, HLCResource> metadatas = MetadataParser.parse(schema);
@@ -41,8 +42,10 @@ public class transaction implements ITrigger{
 			if(handlerConfigs == null || handlerConfigs.length == 0)
 				throw new RuntimeException("No handlers defined for trigger " + triggerConfig.getName());
 			
+			Map<String, ITrigger> lookup = new LinkedHashMap<String, ITrigger>();
+			
 			for(int j=0; j<handlerConfigs.length; j++) {
-				String txnName = handlerConfigs[j].getSetting("transaction");
+				String txnName = handlerConfigs[j].getSetting("transaction").toString();
 				Resources r = handlerConfigs[j].getFlow();
 	
 	             TransactionFlow flow = FlowCompiler.compile(r);
@@ -94,7 +97,7 @@ public class transaction implements ITrigger{
 		
 			        		if (args.length > 1) {
 			        			//attributes
-			        			Map<String, String>conditions = new HashMap<String, String>();
+			        			Map<String, String>conditions = new LinkedHashMap<String, String>();
 			        			for(String c : args[1].split(",")) {
 			        				String[] values = c.split("=");
 			        				if(values.length != 1)
@@ -111,8 +114,13 @@ public class transaction implements ITrigger{
 	            String txnNoNS = txnName.substring(txnName.lastIndexOf('.'));
 	            handlers.put(txnName, flow);
 	            handlers.put(txnNoNS, flow);
-	            handlers.put(handlerConfigs[j].getFlowId(), flow);
+	            handlers.put(handlerConfigs[j].getFlowName(), flow);
+	            
+	            lookup.put(txnName, this);
+	            lookup.put(handlerConfigs[j].getFlowName(), this);
 			}
+			
+			 return lookup;
 		}catch(Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -188,6 +196,11 @@ public class transaction implements ITrigger{
 	    } else {
 	    		return (String)v;
 	    }
+	}
+	
+	@Override
+	public TransactionFlow getHandler(String name) {
+		return handlers.get(name);
 	}
 }
 

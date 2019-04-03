@@ -12,6 +12,7 @@ import com.tibco.dovetail.core.model.flow.FlowAppConfig;
 import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
+import kotlin.Pair;
 import net.corda.core.contracts.*;
 import net.corda.core.identity.AnonymousParty;
 import net.corda.core.transactions.LedgerTransaction;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 
 public abstract class CordaFlowContract {
-    private static ITrigger contractTrigger = null;
+    private static LinkedHashMap<String, ITrigger> contractTriggers = null;
 
     protected abstract String getResourceHash();
     protected abstract InputStream getTransactionJson();
@@ -63,13 +64,14 @@ public abstract class CordaFlowContract {
                                  .forEach(c -> {
                                      try {
                                          CordaCommandDataWithData command = (CordaCommandDataWithData)c.getValue();
+                                         command.deserialize();
                                          String txName = (String)command.getData("command");
                                          
                                          System.out.println("****** contract " + txName + " verification started ******");
                                          CordaContainer ctnr = new CordaContainer(tx.getInputStates(),  txName);
                                          CordaTransactionService txnSvc = new CordaTransactionService(tx, command);
                                         
-                                         contractTrigger.invoke(ctnr, txnSvc);
+                                         contractTriggers.get(txName).invoke(ctnr, txnSvc);
 
                                          CordaDataService data = (CordaDataService) ctnr.getDataService();
                                          validateOutputs(tx, data.getModifiedStates());
@@ -91,14 +93,38 @@ public abstract class CordaFlowContract {
     	 try {
  	        //compile flow app and cache the trigger object
     		   InputStream txJson = getTransactionJson();
- 	        if(contractTrigger == null) {
+ 	        if(contractTriggers == null) {
  	        	 	
  	        	 	FlowAppConfig app = FlowAppConfig.parseModel(txJson);
  	        	 	DovetailEngine engine = new DovetailEngine(app);
- 	        	 	contractTrigger = engine.getTrigger();
+ 	        	 	contractTriggers = engine.getTriggers();
  	        }
          }catch(Exception e) {
          		throw new IllegalArgumentException(e);
          }
+    }
+    
+    public List<Pair<String, DocumentContext>> runCommand(CordaCommandDataWithData command, List<ContractState> inputStates) {
+    		try {
+    			 compileAndCacheTrigger();
+    	
+             String txName = (String)command.getData("command");
+             
+             System.out.println("****** run " + txName + " ... ******");
+             CordaContainer ctnr = new CordaContainer(inputStates,  txName);
+             CordaTransactionService txnSvc = new CordaTransactionService(null, command);
+            
+             contractTriggers.get(txName).invoke(ctnr, txnSvc);
+
+             CordaDataService data = (CordaDataService) ctnr.getDataService();
+             List<Pair<String,DocumentContext>> outputs = data.getModifiedStatesAndNames();
+             
+         
+             System.out.println("****** finish " + txName + ". ********");
+             return outputs;
+     		
+    		}catch(Exception e) {
+         	throw new IllegalArgumentException(e);
+        }
     }
 }

@@ -16,9 +16,11 @@ public class txnreply implements IActivity {
     		String message = null;
     		String payload = null;
     		
-    		if(context.getInput("message") != null) {
+    		if(status.equalsIgnoreCase("Error with Message")){
     			message = context.getInput("message").toString();
+    			throw new IllegalArgumentException(message);
     		}
+    	
     		
     		if(status.equalsIgnoreCase("Success With Data")) {
 	    		DocumentContext doc = null;

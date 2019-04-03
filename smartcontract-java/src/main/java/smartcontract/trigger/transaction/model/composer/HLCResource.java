@@ -7,14 +7,14 @@ package smartcontract.trigger.transaction.model.composer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HLCResource {
     private HLCMetadata metadata;
-    private Map<String, HLCAttribute> attributes = new HashMap<String, HLCAttribute>();
+    private Map<String, HLCAttribute> attributes = new LinkedHashMap<String, HLCAttribute>();
     private List<HLCAttribute> attributeList;
 
     public HLCMetadata getMetadata() {

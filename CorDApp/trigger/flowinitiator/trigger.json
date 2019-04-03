@@ -1,0 +1,94 @@
+{
+    "name": "R3FlowInitiator",
+    "author": "TIBCO Software Inc.",
+    "type": "flogo:trigger",
+    "version": "1.0.0",
+    "title": "CorDApp Flow Initiator",
+
+    "display": {
+       "description": "Create a flow",
+       "uid": "r3-flow-initiator",
+       "category": "CorDApp",
+       "visible": true, 
+       "wizard": ["Flow Settings", "Flow Inputs"],
+       "smallIcon": "trigger.png",
+       "largeIcon": "trigger.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowinitiator",
+         
+    "settings": [
+        {
+            "name": "flowType",
+            "type": "string",
+            "required": true,
+            "display": {
+                "visible": false
+            },
+            "value": "initiator"
+        }
+    ],
+ 
+    "handler": {
+      "settings": [
+        {
+            "name": "allowRPCClient",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Can the flow be started by RPC client?",
+                "visible": true
+            },
+            "wizard": {
+                "type": "boolean",
+                "step": "Flow Settings"
+            },
+            "value": true
+        },
+        {
+            "name": "useAnonymousIdentity",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Use Anonymous identity to sign this transaction",
+                "visible": true
+            },
+            "wizard": {
+                "type": "boolean",
+                "step": "Flow Settings"
+            },
+            "value": false
+        },
+        {
+            "name": "inputParams",
+            "type": "complex_object",
+            "display": {
+                "type": "params",
+                "name": "Flow input parameters",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"Date\", \"Time\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}"
+            },
+            "wizard": {
+                "type": "params",
+                "name": "Flow input parameters",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"Date\", \"Time\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}",
+                "step": "Flow Inputs"
+            }
+        }
+
+     ]
+    },
+    "outputs": [
+        {
+            "name": "transactionInput",
+            "type": "complex_object"
+        },
+        {
+            "name": "ourIdentity",
+            "type": "string"
+        }
+    ],
+    "actions": [
+          {
+            "name": "Finish"
+          }
+    ]
+}

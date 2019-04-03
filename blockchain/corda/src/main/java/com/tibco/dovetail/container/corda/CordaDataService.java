@@ -8,6 +8,7 @@ package com.tibco.dovetail.container.corda;
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 
+import kotlin.Pair;
 import net.corda.core.contracts.ContractState;
 import net.corda.finance.contracts.asset.Cash;
 
@@ -15,10 +16,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder.In;
 
 public class CordaDataService implements IDataService {
-	 private List<DocumentContext> outputStates = new ArrayList<DocumentContext>();
+	 private List<DocumentContext> outputStates = new ArrayList< DocumentContext>();
+	 private List<Pair<String, DocumentContext>> outputStatesAndNames = new ArrayList<Pair<String, DocumentContext>>();
 	 private List<DocumentContext> inputStates = new ArrayList<DocumentContext>();
 	 private List<String> inputStatesClassName = new ArrayList<String>();
 	 
@@ -40,16 +41,22 @@ public class CordaDataService implements IDataService {
     public List<DocumentContext> getModifiedStates() {
         return outputStates;
     }
+    
+    public List<Pair<String, DocumentContext>> getModifiedStatesAndNames() {
+        return outputStatesAndNames;
+    }
 
 	@Override
 	public DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
 		String key = assetValue.read("$." + assetKey).toString();
 		if(assetName.equals("com.tibco.dovetail.system.Cash")) {
+			assetName = "net.corda.finance.contracts.asset.Cash.State";
 			LinkedHashMap<String, Object> mapV = assetValue.json();
 			mapV.remove(assetKey);
 		}
 		
 		outputStates.add(assetValue);
+		outputStatesAndNames.add(new Pair<String, DocumentContext>(assetName, assetValue));
 		return assetValue;
 	}
 

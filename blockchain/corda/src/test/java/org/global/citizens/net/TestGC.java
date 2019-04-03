@@ -30,17 +30,38 @@ import com.tibco.dovetail.core.runtime.flow.TransactionFlows;
 
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.identity.CordaX500Name;
+import net.corda.core.identity.Party;
+import net.corda.testing.core.TestIdentity;
 import smartcontract.trigger.transaction.ModelSchemaCompiler;
 import smartcontract.trigger.transaction.model.composer.HLCResource;
 
-import static net.corda.testing.TestConstants.getALICE;
-import static net.corda.testing.TestConstants.getBOB;
-import static net.corda.testing.TestConstants.getCHARLIE;
 
 public class TestGC {
 	TransactionFlows flows;
+	
+	static Party getMEGA_CORP() {
+		TestIdentity mega = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
+		return mega.getParty();
+	}
+	
+	static Party getBOB() {
+		TestIdentity mega = new TestIdentity(new CordaX500Name("bob", "New York", "GB"));
+		return mega.getParty();
+	}
+	
+	static Party getCHARLIE() {
+		TestIdentity mega = new TestIdentity(new CordaX500Name("charlie", "New York", "GB"));
+		return mega.getParty();
+	}
+	
+	static Party getALICE() {
+		TestIdentity mega = new TestIdentity(new CordaX500Name("alice", "New York", "GB"));
+		return mega.getParty();
+	}
+	
 	/*
-//	@org.junit.Before
+	@org.junit.Before
 	public void setupFlow() {
 	
 		ProjectPledgeContract contract = new ProjectPledgeContract();
@@ -62,7 +83,7 @@ public class TestGC {
 		}
 		
 	}
-//	@Test
+	@Test
 	public void testCreatePledge() {
 
         try {
@@ -101,7 +122,7 @@ public class TestGC {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void testRequestFunding() {
 
         try {
@@ -139,7 +160,7 @@ public class TestGC {
 		}
 	}
 	
-//	@Test
+	@Test
 	public void testApproveFunding() {
 
         try {
@@ -181,7 +202,7 @@ public class TestGC {
 		}
 	}
 	
-//	@Test
+	@Test
 	public void testTransferFunding() {
 
         try {

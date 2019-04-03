@@ -8,17 +8,41 @@ package com.tibco.dovetail.container.corda;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.serialization.CordaSerializable;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 @CordaSerializable
 public class CordaCommandDataWithData implements CommandData {
+	
     Map<String, Object> data = new LinkedHashMap<String, Object>();
-    public void putData(String param, Object value){
-        data.put(param, value);
+    
+    //to work around R3 issue
+    String serializedData;
+    
+    public String getSerializedData() {
+		return serializedData;
+	}
+
+	public void setSerializedData(String serializedData) {
+		this.serializedData = serializedData;
+	}
+
+	public void putData(String param, Object value){
+    		data.put(param, value);
     }
 
     public Object getData(String param){
-        return data.get(param);
+    		return data.get(param);
+    }
+    
+    public void serialize() {
+    		this.serializedData = CordaUtil.serialize(data);
+    }
+    
+    public void deserialize() {
+    		data = (Map<String, Object>) CordaUtil.deserialize(serializedData, new TypeReference<Map<String, Object>>(){});
     }
 }

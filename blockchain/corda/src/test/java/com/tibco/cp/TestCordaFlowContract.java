@@ -22,15 +22,19 @@ import com.tibco.dovetail.core.runtime.flow.TransactionFlows;
 import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
 import com.tibco.dovetail.core.runtime.transaction.TxnInputAttribute;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
+import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
 import junit.framework.Assert;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.identity.CordaX500Name;
+import net.corda.core.identity.Party;
 import net.corda.core.transactions.LedgerTransaction;
 import net.corda.core.utilities.OpaqueBytes;
 import net.corda.core.contracts.PartyAndReference;
 import net.corda.finance.contracts.asset.Cash;
 import net.corda.finance.contracts.asset.Cash.State;
+import net.corda.testing.core.TestIdentity;
 import smartcontract.trigger.transaction.ModelSchemaCompiler;
 import smartcontract.trigger.transaction.model.composer.HLCResource;
 
@@ -38,7 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,28 +51,47 @@ import javax.print.Doc;
 import static net.corda.finance.Currencies.DOLLARS;
 import static net.corda.finance.Currencies.POUNDS;
 import static net.corda.finance.Currencies.issuedBy;
-import static net.corda.testing.CoreTestUtils.getMEGA_CORP;
-import static net.corda.testing.NodeTestUtils.ledger;
-import static net.corda.testing.TestConstants.getALICE;
-import static net.corda.testing.TestConstants.getBOB;
-import static net.corda.testing.TestConstants.getCHARLIE;
+//import static net.corda.testing.NodeTestUtils.ledger;
+
 
 public class TestCordaFlowContract {
-	
-	IOU3 iou;
-	IOU3Contract contract;
+	com.tibco.cp.IOU3 iou;
+	com.tibco.cp.IOU3Contract contract;
+
 	CordaContainer ctnr;
 	ContextImpl context;
 	ITrigger trigger;
+	
+	static Party getMEGA_CORP() {
+		TestIdentity mega = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
+		return mega.getParty();
+	}
+	
+	static Party getBOB() {
+		TestIdentity mega = new TestIdentity(new CordaX500Name("bob", "New York", "GB"));
+		return mega.getParty();
+	}
+	
+	static Party getCHARLIE() {
+		TestIdentity mega = new TestIdentity(new CordaX500Name("charlie", "New York", "GB"));
+		return mega.getParty();
+	}
+	
+	static Party getALICE() {
+		TestIdentity mega = new TestIdentity(new CordaX500Name("alice", "New York", "GB"));
+		return mega.getParty();
+	}
 	
 	class MockIssueTxn implements ITransactionService {
 
 		@Override
 		public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
-			Map<String, Object> context = new HashMap<String, Object>();
-		    context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
-		    context.put("transactionId", "issue");
-		    context.put("timestamp", "abc");
+			Map<String, Object> context = new LinkedHashMap<String, Object>();
+			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
+			doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
+		    doc.put("$", "transactionId", "issue");
+		    doc.put("$", "timestamp", "abc");
+		    context.put("transactionInput", doc);
 		    return context;
 		}
 
@@ -102,9 +125,9 @@ public class TestCordaFlowContract {
 
 		@Override
 		public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
-			Map<String, Object> context = new HashMap<String, Object>();
+			Map<String, Object> context = new LinkedHashMap<String, Object>();
 		    context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
-			context.put("newLender",CordaUtil.toString(getCHARLIE()));
+			context.put("newLender",CordaUtil.serialize(getCHARLIE()));
 		    context.put("transactionId", "transfer");
 		    context.put("timestamp", "abc");
 		    return context;
@@ -143,7 +166,7 @@ public class TestCordaFlowContract {
 		}
 		@Override
 		public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
-			Map<String, Object> context = new HashMap<String, Object>();
+			Map<String, Object> context = new LinkedHashMap<String, Object>();
 		    context.put("transactionId", this.settleType);
 		    context.put("timestamp", "abc");
 		    
@@ -162,7 +185,7 @@ public class TestCordaFlowContract {
 	        		iou.setPaid(DOLLARS(10));
 	        		context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
 	    			context.put("payments", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)));
-	    			System.out.println("expected Cash=" + CordaUtil.toJsonString(payment1));
+	    			System.out.println("expected Cash=" + CordaUtil.serialize(payment1));
 		    } else if(settleType.equals("change")) {
 			    	PartyAndReference issuer = new PartyAndReference(getMEGA_CORP(), OpaqueBytes.of("123".getBytes()));
 	        		Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), getBOB());
@@ -179,12 +202,12 @@ public class TestCordaFlowContract {
 	        		iou.setPaid(DOLLARS(45));
 	        		context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
 	    			context.put("payments", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)));
-	    			System.out.println("expected Cash=" + CordaUtil.toJsonString(payment1));
+	    			System.out.println("expected Cash=" + CordaUtil.serialize(payment1));
 		    }
 		    
 		    return context;
 		}
-
+		
 		@Override
 		public boolean isTransactionSecuritySupported() {
 			// TODO Auto-generated method stub
@@ -213,8 +236,9 @@ public class TestCordaFlowContract {
 	@org.junit.Before
 	public void createIOU() {
 		
+		
 		iou = new IOU3(getALICE(), getBOB(), DOLLARS(100), DOLLARS(0), new UniqueIdentifier());
-		contract = new com.tibco.cp.IOU3Contract();
+		contract = new IOU3Contract();
 		
 		List<ContractState> inputs = new ArrayList<ContractState>();
 		inputs.add(iou);
@@ -226,7 +250,7 @@ public class TestCordaFlowContract {
 		try {
 			FlowAppConfig app = FlowAppConfig.parseModel(txJson);
     	 		DovetailEngine engine = new DovetailEngine(app);
-    	 		trigger = engine.getTrigger();
+    	 		trigger = engine.getTrigger("IssueIOU");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

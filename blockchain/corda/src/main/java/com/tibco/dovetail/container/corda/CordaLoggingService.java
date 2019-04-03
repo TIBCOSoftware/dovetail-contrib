@@ -11,9 +11,13 @@ import org.slf4j.LoggerFactory;
 import com.tibco.dovetail.core.runtime.services.ILogService;
 
 public class CordaLoggingService implements ILogService{
-	Logger logger;
+	protected Logger logger;
 	public CordaLoggingService(String name) {
 		logger = LoggerFactory.getLogger(name);
+	}
+	
+	public CordaLoggingService(Logger logger) {
+		this.logger = logger;
 	}
 	
 	@Override

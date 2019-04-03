@@ -5,18 +5,32 @@
  */
 package com.tibco.dovetail.container.corda;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import com.jayway.jsonpath.DocumentContext;
+import com.tibco.dovetail.corda.json.CashSerializer;
+import com.tibco.dovetail.corda.json.LinearIdDeserializer;
+import com.tibco.dovetail.corda.json.LinearIdSerializer;
+import com.tibco.dovetail.corda.json.MoneyAmtDeserializer;
+import com.tibco.dovetail.corda.json.MoneyAmtSerializer;
+import com.tibco.dovetail.corda.json.PartyDeserializer;
+import com.tibco.dovetail.corda.json.PartySerializer;
+import com.tibco.dovetail.corda.json.StateAndRefSerializer;
+import com.tibco.dovetail.corda.json.AbstractPartyDeserializer;
+import com.tibco.dovetail.corda.json.AbstractPartySerializer;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;
-import net.corda.core.contracts.ContractState;
+
+import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.ContractsDSL;
+import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.finance.contracts.asset.Cash;
 
 import org.bouncycastle.util.encoders.Hex;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -24,59 +38,71 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import net.corda.core.identity.AbstractParty;
-import net.corda.core.identity.AnonymousParty;
-import java.util.Currency;
+import net.corda.core.identity.Party;
 
 public class CordaUtil {
+	static ObjectMapper mapper;
+	static {
+		mapper = new ObjectMapper();
+		mapper.registerModule(new KotlinModule());
+		
+		SimpleModule module = new SimpleModule();
+	
+		module.addDeserializer(AbstractParty.class, new AbstractPartyDeserializer());
+		module.addSerializer(AbstractParty.class, new AbstractPartySerializer());
+		
+		module.addDeserializer(Party.class, new PartyDeserializer());
+		module.addSerializer(Party.class, new PartySerializer());
 
+		module.addSerializer(Amount.class, new MoneyAmtSerializer("java.util.Currency"));
+		module.addDeserializer(Amount.class, new MoneyAmtDeserializer());
+
+		module.addSerializer(UniqueIdentifier.class, new LinearIdSerializer());
+		module.addDeserializer(UniqueIdentifier.class, new LinearIdDeserializer());
+		
+		module.addSerializer(Cash.State.class, new CashSerializer());
+		module.addSerializer(StateAndRef.class, new StateAndRefSerializer());
+		mapper.registerModule(module);
+	}
+	
     public static DocumentContext toJsonObject(Object state){
-        String json = toJsonString(state);
+    		if(state instanceof DocumentContext)
+    			return (DocumentContext) state;
+    		else {
+    			String json = serialize (state);
 
-        return JsonUtil.getJsonParser().parse(json);
+    			return JsonUtil.getJsonParser().parse(json);
+    		}
     }
 
-    public static DocumentContext toJsonObject(List<Object> states){
-        String json = "[" + states.stream().map(s -> toJsonString(s)).collect(Collectors.joining(",")) + "]";
-
-        return JsonUtil.getJsonParser().parse(json);
+    public static String serialize(Object o )  {
+    		try {
+				return mapper.writeValueAsString(o);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
     }
-
-    public static String toJsonString(Object state){
-        String json = null;
-        if(state instanceof Cash.State){
-            Cash.State cash = (Cash.State)state;
-            String party = cash.getOwner().toString();
-           // String party = Base58.encode(cash.getOwner().getOwningKey().getEncoded());
-            json = "{\"owner\":\"" + party +
-                    "\", \"amt\":{\"quantity\":" + cash.getAmount().getQuantity() +
-                    ",\"currency\":\"" + cash.getAmount().getToken().getProduct().getCurrencyCode() +"\"}}";
-
-        } else if (state instanceof net.corda.core.contracts.Amount<?>) {
-        		net.corda.core.contracts.Amount<Currency> amt = (net.corda.core.contracts.Amount<Currency>)state;
-        		json = "{\"quantity\":" + amt.getQuantity() +
-                        ",\"currency\":\"" + amt.getToken().getCurrencyCode() +"\"}";
-        } else {
-            json = state.toString();
-        }
-
-        return json;
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Object deserialize(String json, Class clazz)  {
+    		try {	
+				return mapper.readValue(json, clazz);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
     }
-
-    public static String toString(Object obj){
-        String string = null;
-        if(obj instanceof AnonymousParty) {
-        		return ((AnonymousParty) obj).toString();
-        } else if(obj instanceof AbstractParty){
-            AbstractParty party = (AbstractParty)obj;
-            string = party.toString();
-        } else {
-            string = obj.toString();
-        }
-
-        return string;
-    }
-    @SuppressWarnings("unchecked")
-	public static void compare(List<DocumentContext> actual, List<DocumentContext> results) throws JsonParseException, JsonMappingException, IOException{
+    
+    @SuppressWarnings({ "rawtypes" })
+   	public static Object deserialize(String json, TypeReference clazz)  {
+       		try {	
+   				return mapper.readValue(json, clazz);
+   			} catch (Exception e) {
+   				throw new RuntimeException(e);
+   			}
+       }
+    
+    
+	public static void compare(List<DocumentContext> actual, List<DocumentContext> results) {
         ContractsDSL.requireThat(check -> {
         		String astring="";
         		String rstring ="";
@@ -84,7 +110,7 @@ public class CordaUtil {
         			astring = actual.stream().map(v -> v.jsonString()).collect(Collectors.joining(","));
         			rstring = results.stream().map(v -> v.jsonString()).collect(Collectors.joining(","));
         		}
-            check.using("expected outputs have same number as what is in LedgerTransaction:  txIn=" + astring + ", flowOutput=" + rstring, actual.size() == results.size());
+            check.using("expected inputs/outputs have same number as what is in LedgerTransaction:  txIn=" + astring + ", flow=" + rstring, actual.size() == results.size());
 
             return null;
         });
@@ -92,14 +118,16 @@ public class CordaUtil {
         List<Map<String, Object>> av = new ArrayList<>();
         List<Map<String, Object>> rv = new ArrayList<>();
 
-        ObjectMapper mapper = new ObjectMapper();
+      //  ObjectMapper mapper = new ObjectMapper();
         for(int i=0; i < actual.size(); i++){
-        		av.add(mapper.readValue(actual.get(i).jsonString(), Map.class));
-        		rv.add(mapper.readValue(results.get(i).jsonString(), Map.class));
+        		//av.add(mapper.readValue(actual.get(i).jsonString(), Map.class));
+        		//rv.add(mapper.readValue(results.get(i).jsonString(), Map.class));
+        		av.add(actual.get(i).json());
+        		rv.add(results.get(i).json());
         }
         
         ContractsDSL.requireThat(check -> {
-            check.using("expected outputs have same values as what is in LedgerTransaction: txIn=" + av.toString() + ", flowOutput=" + rv.toString(),av.containsAll(rv));
+            check.using("expected inputs/outputs have same values as what is in LedgerTransaction: txIn=" + av.toString() + ", flow=" + rv.toString(),av.containsAll(rv));
 
             return null;
         });
@@ -114,4 +142,5 @@ public class CordaUtil {
             throw new IllegalArgumentException(e);
         }
     }
+    
 }

@@ -1,0 +1,20 @@
+{
+    "name": "signandcommit",
+    "title": "Initiator Sign and Finalize a Transaction",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "CorDApp",
+       "visible": true,
+       "smallIcon": "finalized.png",
+       "description": "transaction is signed by all parties, notorized and committed to ledger"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/signandcommit",
+    "inputs": [
+    ],
+  
+    "outputs": [
+    ]
+}

@@ -1,0 +1,74 @@
+{
+    "name": "txnbuilder",
+    "title": "Build Transaction Proposal",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "CorDApp",
+       "visible": true,
+       "smallIcon": "builder.png",
+       "description": "build transaction to sign"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/txnbuilder",
+    "inputs": [
+            {
+                "name": "notary",
+                "type": "string",
+                "required": false,
+                "display": {
+                    "name": "Notary's well known name, if not specified, default will be used",
+                    "type": "string"
+                },
+                "value":"C=FR,L=Paris,O=Notary"
+            },
+            {
+                "name": "contract",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Specify the contract model file",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+            {
+                "name": "contractClass",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Specify the contract java class name",
+                    "type": "string"
+                }
+            },
+            {
+                "name": "command",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Specify the contract transaction",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true
+           },
+           {
+               "name": "inputSchema",
+               "type": "string",
+                "required": true,
+                "display": {
+                    "visible":false
+                }
+           }
+    ],
+  
+    "outputs": [
+    ]
+}
