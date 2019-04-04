@@ -1,0 +1,34 @@
+{
+    "name": "analytics",
+    "title": "Analytics",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "SmartContract",
+       "visible": true,
+       "smallIcon": "logger.png",
+       "description": "Off-chain analytics"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/analytics",
+    "inputs": [
+           {
+            "name": "input",
+            "type": "complex_object",
+            "required": true
+           },
+           {
+            "name": "containerServiceStub",
+            "type": "any",
+            "required":true
+           }
+    ],
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object",
+            "required": false
+        }
+    ]
+}
