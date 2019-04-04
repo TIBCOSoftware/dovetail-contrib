@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.tibco.dovetail.core.runtime.engine.Context;
-import com.tibco.dovetail.core.runtime.function.array;
+import com.tibco.dovetail.function.array;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.util.CompareUtil;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;

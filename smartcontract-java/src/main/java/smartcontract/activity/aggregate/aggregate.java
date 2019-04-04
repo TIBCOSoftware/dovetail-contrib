@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.core.runtime.engine.Context;
-import com.tibco.dovetail.core.runtime.function.mathlib;
+import com.tibco.dovetail.function.mathlib;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
