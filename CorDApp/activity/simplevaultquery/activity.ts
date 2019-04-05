@@ -87,7 +87,7 @@ export class VaultQueryActivityContributionHandler extends WiServiceHandlerContr
                         properties["data"] = {type: "object", properties: {}};
                         properties["data"].properties = schema.properties;
                         //properties["ref"] = {type: "object", properties: {txnHash:{type: "string"}, index: {type: "integer"}}}
-                        properties["ref"] = {type: "StateRef"}
+                        properties["ref"] = {type: "string"}
                         newSchema["items"].properties = properties;
                         newSchema["description"] = schema.description;
                         observer.next(JSON.stringify(newSchema));

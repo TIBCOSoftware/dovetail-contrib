@@ -14,42 +14,22 @@
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/wallet",
     "inputs": [
             {
-                "name": "currency",
+                "name": "operation",
                 "type": "string",
                 "required": true,
                 "display": {
-                    "name": "Payment Currency",
+                    "name": "Operation",
                     "type": "dropdown",
-                    "selection":"single"
+                    "selection": "single"
                 },
-                "allowed":["USD", "EUR"]
+                "allowed": ["Account Balance", "Make a Payment"],
+                "value": "Account Balance"
+
             },
-           {
-                "name": "value",
-                "type": "integer",
-                "required": true,
-                "display":{
-                    "name": "Payment Amount",
-                    "type": "integer"
-                },
-                "value": 1
-           },
-           {
-            "name": "abortNotEnoughFunds",
-            "type": "boolean",
-            "required": true,
-            "display":{
-                "name": "Error if not enough funds?",
-                "description": "If true, the activity will abort if not enough founds found in wallet",
-                "type": "boolean"
-            },
-            "value": true
-           },
            {
                 "name": "input",
                 "type": "complex_object",
-                "required": false,
-                "mappable":true
+                "required": true
            }
     ],
   
@@ -57,11 +37,7 @@
         {
             "name": "output",
             "type": "complex_object",
-            "required": true,
-            "value": {
-                "metadata": "",
-                "value": "{\"hasEnoughFund\":true, \"fundsToUse\":[{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"owner\":\"\"}], \"paidTo\":[{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"owner\":\"\"}] \"change\":{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"owner\":\"\"}}"
-            }
+            "required": true
         }
     ]
 }

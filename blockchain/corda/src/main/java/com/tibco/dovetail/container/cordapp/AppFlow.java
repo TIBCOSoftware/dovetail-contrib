@@ -17,7 +17,6 @@ import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 import co.paralleluniverse.fibers.Suspendable;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
-import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.CollectSignaturesFlow;
 import net.corda.core.flows.FinalityFlow;
 import net.corda.core.flows.FlowException;
@@ -130,7 +129,6 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	
 	@Suspendable
 	public SignedTransaction receiverSignAndCommit(SignTransactionFlow signTransactionFlow, FlowSession otherParty) throws FlowException {
-		
 		SignedTransaction txn = subFlow(signTransactionFlow);
 		return subFlow(new ReceiveFinalityFlow(otherParty, txn.getId()));
 	}

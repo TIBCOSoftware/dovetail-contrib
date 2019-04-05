@@ -67,6 +67,7 @@ System.out.println("Received cmds: " + tx.getCommands().size());
                                      try {
                                          CordaCommandDataWithData command = (CordaCommandDataWithData)c.getValue();
                                          command.deserialize();
+                      
                                          String txName = (String)command.getData("command");
                                          
                                          System.out.println("****** contract " + txName + " verification started ******");
@@ -111,7 +112,7 @@ System.out.println("Received cmds: " + tx.getCommands().size());
     			 compileAndCacheTrigger();
     	
              String txName = (String)command.getData("command");
-             
+            
              System.out.println("****** run " + txName + " ... ******");
              CordaContainer ctnr = new CordaContainer(inputStates,  txName);
              CordaTransactionService txnSvc = new CordaTransactionService(null, command);
@@ -120,8 +121,7 @@ System.out.println("Received cmds: " + tx.getCommands().size());
 
              CordaDataService data = (CordaDataService) ctnr.getDataService();
              List<Pair<String,DocumentContext>> outputs = data.getModifiedStatesAndNames();
-             
-         
+            
              System.out.println("****** finish " + txName + ". ********");
              return outputs;
      		

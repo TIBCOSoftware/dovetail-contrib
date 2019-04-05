@@ -94,12 +94,17 @@ export class TxnBuilderActivityContributionHandler extends WiServiceHandlerContr
                         
                         let schema = JSON.parse(schemas[cmd])
                         let metadata = JSON.parse(schema.description);
+
                         for (let attr of metadata.attributes) {
                             if(attr.isRef) {
                                 let typeschema = JSON.parse(schemas[attr.type])
                                 let typemetadata = JSON.parse(typeschema.description)
                                 if(typemetadata.metadata.type == "Asset"){
-                                    schema.properties[attr.name] = {type: "StateRef"}
+                                    if(attr.isArray){
+                                        schema.properties[attr.name] = {type: "array", items: {type: "string"}}
+                                    } else {
+                                        schema.properties[attr.name] = {type: "string"}
+                                    }
                                 }
                             }
                         }

@@ -32,7 +32,7 @@ public class TestSerializer {
 		bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
 		mock = new MockServices(bob);
 		//CordaUtil.initWithCordaRuntime(mock);
-		ctnr = new AppContainer(mock);
+		ctnr = new AppContainer(mock, null);
 		
 }
 	@Test

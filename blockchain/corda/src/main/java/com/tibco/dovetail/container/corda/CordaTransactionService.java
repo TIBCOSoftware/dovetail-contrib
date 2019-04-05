@@ -41,9 +41,10 @@ public class CordaTransactionService implements ITransactionService {
 	            Object value = cmd.getData(attr);
 	            if(value == null && (attr.equalsIgnoreCase("transactionId") || attr.equalsIgnoreCase("timestamp")))
 	                throw new IllegalArgumentException("flow input " + attr + " is not found in command " + cmd.getClass().getName());
-	           
+
 	            DocumentContext valdoc = CordaUtil.toJsonObject(value);
 	            doc.put("$", attr, valdoc.json());
+
 	            if(k.isAssetRef()) {
 	            		if (value instanceof List) {
 	            			List<?> objs = (List<?>)value;

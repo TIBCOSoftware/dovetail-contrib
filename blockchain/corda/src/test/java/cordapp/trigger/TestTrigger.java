@@ -44,7 +44,7 @@ public class TestTrigger {
 	}
 	@Test
 	public void testInitiator () throws Exception {
-		AppContainer ctnr = new AppContainer(mock);;
+		AppContainer ctnr = new AppContainer(mock, null);;
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream in = this.getClass().getResourceAsStream("iouapp.json");
 		

@@ -29,8 +29,10 @@ public class AppContainer implements IContainerService {
 		dataService = new AppDataService(this.flowService.getServiceHub());
 	}
 	
-	public AppContainer(ServiceHub hub) {
+	@Deprecated
+	public AppContainer(ServiceHub hub, AppFlow flow) {
 		serviceHub = hub;
+		this.flowService = flow;
 	}
 
 	@Override

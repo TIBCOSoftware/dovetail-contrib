@@ -28,4 +28,7 @@ public class LinearIdSerializer extends StdSerializer<UniqueIdentifier> {
 		
 	}
 
+	public static String toString(UniqueIdentifier arg0) {
+		return arg0.getExternalId() + "#" + arg0.getId().toString();
+	}
 }

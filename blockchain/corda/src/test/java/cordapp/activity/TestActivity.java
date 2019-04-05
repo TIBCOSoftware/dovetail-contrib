@@ -4,6 +4,7 @@ import static net.corda.finance.Currencies.DOLLARS;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ public class TestActivity {
 	
 	
 	
-	//@Test
+	@Test
 	public void testTxbuilder() throws JsonProcessingException {
 		MockServices mock;
 		 TestIdentity bob;
@@ -48,13 +49,18 @@ public class TestActivity {
 		
 		context.addInput("command", "com.example.iou.IssueIOU");
 		context.addInput("contractClass", "com.example.iou.IOUContract");
+		context.addInput("inputSchema", "[{\"name\":\"iou\",\"type\":\"com.example.iou.IOU\",\"isRef\":false,\"isAsset\":true},{\"name\":\"transactionId\",\"isOptional\":false,\"type\":\"String\"},{\"name\":\"timestamp\",\"isOptional\":false,\"type\":\"DateTime\"}]");
 		
-		AppContainer ctnr = new AppContainer(mock);
+		//AppContainer ctnr = new AppContainer(mock);
+		AppContainer ctnr = new AppContainer(mock, new MockFlow(true));
 		context.setContainerService(ctnr);
 		
 		DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
 		IOU iou = new IOU(bob.getParty(), bob.getParty(), DOLLARS(100), new UniqueIdentifier());
-		doc.put("$", "iou", CordaUtil.toJsonObject(iou).json());
+		Map iouvalue = CordaUtil.toJsonObject(iou).json();
+		//set linear id to extid only
+		iouvalue.put("linearId", "myextid");
+		doc.put("$", "iou", iouvalue);
 		doc.put("$", "transactionId", "testing");
 		doc.put("$", "timestamp", "2019-03-18T12:00:00");
 		context.addInput("input", doc);
@@ -63,7 +69,7 @@ public class TestActivity {
 		assertEquals(1, ctnr.getFlowService().getOutputStates().size());
 		System.out.println("input=" + iou);
 		System.out.println("output=" + ctnr.getFlowService().getOutputStates());
-		assertEquals(iou, ctnr.getFlowService().getOutputStates().get(0));
+		assertEquals(iou.getParticipants(), ctnr.getFlowService().getOutputStates().get(0).getParticipants());
 	}
 	
 	class MockFlow extends AppFlow {

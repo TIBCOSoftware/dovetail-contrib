@@ -34,7 +34,6 @@ public class LinearIdDeserializer extends StdDeserializer<UniqueIdentifier> {
 	}
 	
 	public static UniqueIdentifier fromString(String id) {
-		
 		String[] ids = id.split("#");
 		if(ids.length < 2)
 			return new UniqueIdentifier(id, UUID.randomUUID());
