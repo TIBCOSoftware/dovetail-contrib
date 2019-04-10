@@ -420,4 +420,56 @@ public class TestCordaFlowContract {
 			assertTrue(e.getMessage().equals("payments must have the same currecy as IOU"));
 		}
 	}
+	
+	@Test
+	public void testCompare() {
+		String a1 = "{\"owner\":\"GfHq2tTVk9z4eXgyFWjSLXiJwa9rNL8x2kfTqQJ38NfFx7DLD4hDyeRZbesJ\"," + 
+				"  \"issuer\":\"GfHq2tTVk9z4eXgyFiQ7BQSoTC2EBtogVoZF72CgJxZ8BdzS3xpiGR8TRwtb\"," + 
+				"  \"issuerRef\":\"AA==\", \"amt\":{\"quantity\":100, \"currency\":\"USD\"}}";
+		
+		String a2 = "{\"owner\":\"GfHq2tTVk9z4eXgyN5E5a5nEFC22yWtMykX9FoA1ph672xUjeJkK8HThbAoH\", " + 
+				"  \"issuer\":\"GfHq2tTVk9z4eXgyFiQ7BQSoTC2EBtogVoZF72CgJxZ8BdzS3xpiGR8TRwtb\"," + 
+				"  \"issuerRef\":\"AA==\", \"amt\":{\"quantity\":9900, \"currency\":\"USD\"}}";
+		
+		String a3 = "{\"issuer\":\"GfHq2tTVk9z4eXgyN5E5a5nEFC22yWtMykX9FoA1ph672xUjeJkK8HThbAoH\"," + 
+				"  \"owner\":\"GfHq2tTVk9z4eXgyFWjSLXiJwa9rNL8x2kfTqQJ38NfFx7DLD4hDyeRZbesJ\"," + 
+				"  \"amt\":{\"currency\":\"USD\", \"quantity\":100}, \"paid\":{\"currency\":\"USD\", \"quantity\":100}," + 
+				"  \"linearId\":\"test#d2b1b064-c6a7-447d-94ec-23c8a9902580\"}";
+		
+		String f1 = "{\"owner\":\"GfHq2tTVk9z4eXgyFWjSLXiJwa9rNL8x2kfTqQJ38NfFx7DLD4hDyeRZbesJ\"," + 
+				"  \"issuer\":\"GfHq2tTVk9z4eXgyFiQ7BQSoTC2EBtogVoZF72CgJxZ8BdzS3xpiGR8TRwtb\"," + 
+				"  \"issuerRef\":\"AA==\", \"amt\":{\"quantity\":100, \"currency\":\"USD\"}}";
+		
+		String f2 = "{\"owner\":\"GfHq2tTVk9z4eXgyN5E5a5nEFC22yWtMykX9FoA1ph672xUjeJkK8HThbAoH\"," + 
+				"  \"issuer\":\"GfHq2tTVk9z4eXgyFiQ7BQSoTC2EBtogVoZF72CgJxZ8BdzS3xpiGR8TRwtb\"," + 
+				"  \"issuerRef\":\"AA==\", \"amt\":{\"quantity\":9900, \"currency\":\"USD\"}}";
+		
+		String f3 = "{\"issuer\":\"GfHq2tTVk9z4eXgyN5E5a5nEFC22yWtMykX9FoA1ph672xUjeJkK8HThbAoH\"," + 
+				"  \"owner\":\"GfHq2tTVk9z4eXgyFWjSLXiJwa9rNL8x2kfTqQJ38NfFx7DLD4hDyeRZbesJ\"," + 
+				"  \"amt\":{\"currency\":\"USD\", \"quantity\":100}, \"paid\":{\"currency\":\"USD\", \"quantity\":100}," + 
+				"  \"linearId\":\"test#d2b1b064-c6a7-447d-94ec-23c8a9902580\"}";
+		
+		DocumentContext da1 = JsonUtil.getJsonParser().parse(a1);
+		DocumentContext da2 = JsonUtil.getJsonParser().parse(a2);
+		DocumentContext da3 = JsonUtil.getJsonParser().parse(a3);
+		DocumentContext df1 = JsonUtil.getJsonParser().parse(f1);
+		DocumentContext df2 = JsonUtil.getJsonParser().parse(f2);
+		DocumentContext df3 = JsonUtil.getJsonParser().parse(f3);
+		
+		List<Map<String, Object>> av = new ArrayList<>();
+        List<Map<String, Object>> rv = new ArrayList<>();
+
+      //  ObjectMapper mapper = new ObjectMapper();
+     
+        		//av.add(mapper.readValue(actual.get(i).jsonString(), Map.class));
+        		//rv.add(mapper.readValue(results.get(i).jsonString(), Map.class));
+        		av.add(da1.json());
+        		av.add(da2.json());
+        		av.add(da3.json());
+        		rv.add(df3.json());
+        		rv.add(df2.json());
+        		rv.add(df1.json());
+        
+        		System.out.println("a=f?" + av.containsAll(rv));
+	}
 }

@@ -32,6 +32,10 @@ public class MoneyAmtDeserializer extends StdDeserializer<Amount<?>>{
 			throws IOException, JsonProcessingException {
 		
 		JsonNode node = p.getCodec().readTree(p);
+		return parseAmount(node);
+	}
+
+	public static Amount<Currency> parseAmount(JsonNode node) {
 		JsonNode qnode = node.get("quantity"); 
 		long value = 0;
 		if (qnode instanceof LongNode)
@@ -43,5 +47,4 @@ public class MoneyAmtDeserializer extends StdDeserializer<Amount<?>>{
        
 		return new Amount<Currency>(value, Currency.getInstance(currency));
 	}
-
 }

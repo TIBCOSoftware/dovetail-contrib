@@ -1,6 +1,7 @@
 package cordapp.activity.txnbuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -19,7 +20,8 @@ import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.engine.Context;
 
 import kotlin.Pair;
-
+import kotlin.Triple;
+import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
 
@@ -47,16 +49,13 @@ public class txnbuilder implements IActivity{
 				Object value = inputs.get(attr.getName());
 				if(value != null) {
 					if(attr.isAsset()) {
-						if (attr.isRef()) {
-							StateAndRef state  = dataservice.getStateRef(value.toString());
-							txservice.addInputState(state);
-							value = state.getState().getData();
+						if(attr.isArray()) {
+							List<Object> results = new ArrayList<Object>();
+							((List)value).forEach(v -> results.add(processAsset(dataservice, txservice, attr.isRef(), v)));
+							value = results;
+							
 						} else {
-							//fix linear id as workaround until functions are available
-							LinkedHashMap assetvalue = (LinkedHashMap)value;
-							if(assetvalue.get("linearId") != null){
-								assetvalue.put("linearId", LinearIdSerializer.toString(LinearIdDeserializer.fromString(assetvalue.get("linearId").toString())));
-							}	
+							value = processAsset(dataservice, txservice, attr.isRef(), value);
 						}
 					}
 				} 
@@ -70,11 +69,18 @@ public class txnbuilder implements IActivity{
 			txservice.addCommand(cordacmd);
 			
 			CordaFlowContract contract = (CordaFlowContract)Class.forName(contractClass).newInstance();
-			List<Pair<String, DocumentContext>> outputs = contract.runCommand(cordacmd, Lists.newArrayList());
+			List<Triple<String, DocumentContext, CommandData>> outputs = contract.runCommand(cordacmd, Lists.newArrayList());
 			outputs.forEach(o -> {
          	 	try {
 						ContractState s = (ContractState) CordaUtil.deserialize(o.getSecond().jsonString(), Class.forName(o.getFirst()));
 						txservice.addOutputState(s);
+						
+						if(o.getThird() != null) {
+							if(o.getThird() instanceof CordaCommandDataWithData)
+								((CordaCommandDataWithData)o.getThird()).serialize();
+							
+							txservice.addCommand(o.getThird());
+						}
          	 		} catch (ClassNotFoundException e) {
 						throw new RuntimeException(e);
 					}
@@ -84,6 +90,21 @@ public class txnbuilder implements IActivity{
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);
 		} 
+	}
+	
+	private Object processAsset(AppDataService dataservice, AppFlow txservice, boolean isref, Object value) {
+		if (isref) {
+			StateAndRef state  = dataservice.getStateRef(value.toString());
+			txservice.addInputState(state);
+			return state.getState().getData();
+		} else {
+			//fix linear id as workaround until functions are available
+			LinkedHashMap assetvalue = (LinkedHashMap)value;
+			if(assetvalue.get("linearId") != null){
+				assetvalue.put("linearId", LinearIdSerializer.toString(LinearIdDeserializer.fromString(assetvalue.get("linearId").toString())));
+			}	
+			return assetvalue;
+		}
 	}
 
 }

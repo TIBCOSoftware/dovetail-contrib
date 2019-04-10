@@ -5,13 +5,13 @@
     "type": "flogo:activity",
     "author": "TIBCO Software Inc.",
     "display": {
-       "category": "CorDApp",
+       "category": "SmartContract",
        "visible": true,
        "smallIcon": "payment.png",
        "description": "process payment"
     },
  
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/payment",
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/payment",
     "inputs": [
            {
                 "name": "input",
@@ -19,20 +19,16 @@
                 "required": true,
                 "value": {
                     "metadata": "",
-                    "value": "{\"cash\":[{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"owner\":\"\"}], \"payTo\":\"\", \"payAmt\":0}"
+                    "value": "{\"funds\":[{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"issuerRef\":\"\", \"owner\":\"\", \"assetId\":\"\"}], \"paymentAmt\":{\"currency\":\"\", \"quantity\":0}, \"sendPaymentTo\":\"\", \"sendChangeTo\":\"\"}"
                 }
-           }
+            }
     ],
   
     "outputs": [
         {
             "name": "output",
             "type": "complex_object",
-            "required": true,
-            "value": {
-                "metadata": "",
-                "value": "\"paidTo\":[{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"owner\":\"\"}] \"change\":{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"owner\":\"\"}}"
-            }
+            "required": true
         }
     ]
 }

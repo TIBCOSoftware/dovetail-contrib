@@ -91,3 +91,6 @@ submodules/flogo-cicd/.build-cache
 .gitignore
 blockchain/corda/target/
 smartcontract-java/target
+blockchain/corda/logs
+*.zip
+

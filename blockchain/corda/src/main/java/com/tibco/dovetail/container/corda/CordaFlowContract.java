@@ -13,6 +13,7 @@ import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
 import kotlin.Pair;
+import kotlin.Triple;
 import net.corda.core.contracts.*;
 import net.corda.core.identity.AnonymousParty;
 import net.corda.core.serialization.CordaSerializable;
@@ -35,10 +36,9 @@ public abstract class CordaFlowContract {
 
         Set<PublicKey> allCmdKeys = new HashSet<PublicKey>();
         Set<PublicKey> allStateKeys = new HashSet<PublicKey>();
-System.out.println("Received cmds: " + tx.getCommands().size());
+
         tx.getCommands().forEach((CommandWithParties<CommandData> it) -> {
             allCmdKeys.addAll(it.getSigners());
-            System.out.println("received cmd="+ it.getValue().toString());
         });
 
         tx.getInputStates().forEach(it -> {
@@ -107,7 +107,7 @@ System.out.println("Received cmds: " + tx.getCommands().size());
          }
     }
     
-    public List<Pair<String, DocumentContext>> runCommand(CordaCommandDataWithData command, List<ContractState> inputStates) {
+    public List<Triple<String, DocumentContext, CommandData>> runCommand(CordaCommandDataWithData command, List<ContractState> inputStates) {
     		try {
     			 compileAndCacheTrigger();
     	
@@ -120,7 +120,7 @@ System.out.println("Received cmds: " + tx.getCommands().size());
              contractTriggers.get(txName).invoke(ctnr, txnSvc);
 
              CordaDataService data = (CordaDataService) ctnr.getDataService();
-             List<Pair<String,DocumentContext>> outputs = data.getModifiedStatesAndNames();
+             List<Triple<String,DocumentContext, CommandData>> outputs = data.getModifiedStatesAndNames();
             
              System.out.println("****** finish " + txName + ". ********");
              return outputs;

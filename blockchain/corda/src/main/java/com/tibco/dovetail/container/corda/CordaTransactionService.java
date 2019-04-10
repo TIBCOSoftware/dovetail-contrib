@@ -39,9 +39,12 @@ public class CordaTransactionService implements ITransactionService {
 	        for(TxnInputAttribute k : txnInputs){
 	        		String attr = k.getName();
 	            Object value = cmd.getData(attr);
-	            if(value == null && (attr.equalsIgnoreCase("transactionId") || attr.equalsIgnoreCase("timestamp")))
+	            if(value == null && !attr.equalsIgnoreCase("transactionId") && !attr.equalsIgnoreCase("timestamp"))
 	                throw new IllegalArgumentException("flow input " + attr + " is not found in command " + cmd.getClass().getName());
 
+	            if(value == null)
+	            		continue;
+	            
 	            DocumentContext valdoc = CordaUtil.toJsonObject(value);
 	            doc.put("$", attr, valdoc.json());
 

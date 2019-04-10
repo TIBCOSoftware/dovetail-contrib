@@ -23,7 +23,6 @@
   		<groupId>net.corda</groupId>
   		<artifactId>corda-finance-contracts</artifactId>
   		<version>4.0</version>
-  		<scope>provided</scope>
   	</dependency>
   	<dependency>
   		<groupId>junit</groupId>
@@ -48,26 +47,14 @@
         <scope>test</scope>
     </dependency>
   	<dependency>
-  		<groupId>com.example.iou</groupId>
-  		<artifactId>kotlin-IOU</artifactId>
-  		<version>4.0.0</version>
-  		<scope>test</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.global.citizens.net</groupId>
-  		<artifactId>kotlin-ProjectPledge</artifactId>
-  		<version>1.0.0</version> 
-  		<scope>test</scope>
-  	</dependency>
-  	<dependency>
   		<groupId>com.tibco.dovetail</groupId>
   		<artifactId>dovetail-runtime</artifactId>
-  		<version>0.1.3</version>
+  		<version>0.1.4</version>
   	</dependency>
   	<dependency>
   		<groupId>com.tibco.dovetail</groupId>
   		<artifactId>dovetail-activity</artifactId>
-  		<version>0.1.3</version>
+  		<version>0.1.4</version>
   	</dependency>
   	<dependency>
   		<groupId>com.palominolabs.metrics</groupId>
@@ -79,6 +66,11 @@
   		<groupId>com.fasterxml.jackson.module</groupId>
   		<artifactId>jackson-module-kotlin</artifactId>
   		<version>2.8.11.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.corda</groupId>
+  		<artifactId>corda-finance-workflows</artifactId>
+  		<version>4.0</version>
   	</dependency>
    </dependencies>
   <build>
@@ -229,5 +221,5 @@
       <url>https://jitpack.io</url>
     </repository>
   </repositories>
-   <version>0.1.3</version>
+   <version>0.1.4</version>
 </project>

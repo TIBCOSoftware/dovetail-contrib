@@ -15,6 +15,7 @@ import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
 import co.paralleluniverse.fibers.Suspendable;
+import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.flows.CollectSignaturesFlow;
@@ -34,7 +35,7 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	private TransactionBuilder builder = new TransactionBuilder();
 	private ArrayList<StateAndRef<?>> inputStates = new ArrayList<StateAndRef<?>>();
 	private ArrayList<ContractState> outputStates = new ArrayList<ContractState>();
-	private ArrayList<CordaCommandDataWithData> commands = new ArrayList<CordaCommandDataWithData>();
+	private Set<CommandData> commands = new HashSet<CommandData>();
 	private Set<PublicKey> signers = new HashSet<PublicKey>();
 	private Party notary;
 	private boolean isInitiator;
@@ -94,9 +95,7 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 		});
 		
 		commands.forEach(cmd -> builder.addCommand(cmd, new ArrayList<PublicKey>(signers)));
-		commands.forEach(c -> System.out.println("added command:" + c.getSerializedData()));
-		
-	//	builder.addAttachment(SecureHash.parse("23B76DBDDF264E022FE39A8DC6C087361BCE3BEB6DEB0C9570282F68D91EC75A"));
+
 		return this.getServiceHub().signInitialTransaction(builder);
 	}
 	
@@ -158,7 +157,7 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 		outputStates.add(output);
 	}
 
-	public void addCommand(CordaCommandDataWithData cmd) {
+	public void addCommand(CommandData cmd) {
 		commands.add(cmd);
 	}
 	

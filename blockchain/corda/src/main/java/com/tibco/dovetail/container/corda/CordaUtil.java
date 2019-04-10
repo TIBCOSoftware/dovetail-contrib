@@ -21,6 +21,7 @@ import com.tibco.dovetail.corda.json.PartySerializer;
 import com.tibco.dovetail.corda.json.StateAndRefSerializer;
 import com.tibco.dovetail.corda.json.AbstractPartyDeserializer;
 import com.tibco.dovetail.corda.json.AbstractPartySerializer;
+import com.tibco.dovetail.corda.json.CashDeserializer;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
 import net.corda.core.contracts.Amount;
@@ -61,6 +62,7 @@ public class CordaUtil {
 		module.addDeserializer(UniqueIdentifier.class, new LinearIdDeserializer());
 		
 		module.addSerializer(Cash.State.class, new CashSerializer());
+		module.addDeserializer(Cash.State.class, new CashDeserializer());
 		module.addSerializer(StateAndRef.class, new StateAndRefSerializer());
 		mapper.registerModule(module);
 	}
@@ -117,17 +119,20 @@ public class CordaUtil {
 
         List<Map<String, Object>> av = new ArrayList<>();
         List<Map<String, Object>> rv = new ArrayList<>();
-
-      //  ObjectMapper mapper = new ObjectMapper();
-        for(int i=0; i < actual.size(); i++){
-        		//av.add(mapper.readValue(actual.get(i).jsonString(), Map.class));
-        		//rv.add(mapper.readValue(results.get(i).jsonString(), Map.class));
-        		av.add(actual.get(i).json());
-        		rv.add(results.get(i).json());
+        try {
+	        ObjectMapper mapper = new ObjectMapper();
+	        for(int i=0; i < actual.size(); i++){
+	        		av.add(mapper.readValue(actual.get(i).jsonString(), Map.class));
+	        		rv.add(mapper.readValue(results.get(i).jsonString(), Map.class));
+	        		//av.add(actual.get(i).json());
+	        		//rv.add(results.get(i).json());
+	        }
+        }catch(Exception e) {
+        		throw new IllegalArgumentException(e);
         }
         
         ContractsDSL.requireThat(check -> {
-            check.using("expected inputs/outputs have same values as what is in LedgerTransaction: txIn=" + av.toString() + ", flow=" + rv.toString(),av.containsAll(rv));
+            check.using("expected inputs/outputs have same values as what is in LedgerTransaction: txIn=" + CordaUtil.serialize(av) + ", flow=" + CordaUtil.serialize(rv),av.containsAll(rv));
 
             return null;
         });

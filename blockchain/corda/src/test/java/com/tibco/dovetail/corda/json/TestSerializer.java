@@ -11,13 +11,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
+import com.tibco.dovetail.container.cordapp.AppFlow;
 
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.flows.FlowException;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
+import net.corda.core.transactions.SignedTransaction;
 import net.corda.finance.contracts.asset.Cash;
+import net.corda.finance.contracts.asset.Cash.State;
 import net.corda.testing.core.TestIdentity;
 import net.corda.testing.node.MockServices;
 
@@ -32,7 +36,7 @@ public class TestSerializer {
 		bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
 		mock = new MockServices(bob);
 		//CordaUtil.initWithCordaRuntime(mock);
-		ctnr = new AppContainer(mock, null);
+		ctnr = new AppContainer(mock, new MockFlow(false));
 		
 }
 	@Test
@@ -67,6 +71,10 @@ public class TestSerializer {
 		try {
 			
 			String json = CordaUtil.serialize(cash);
+			System.out.println(json); 
+			
+			Cash.State cash2 = (State) CordaUtil.deserialize(json, Cash.State.class);
+			String json2 = CordaUtil.serialize(cash);
 			System.out.println(json); 
 			
 		} catch (Exception e) {
@@ -160,6 +168,21 @@ public class TestSerializer {
 		}
 		Amount<Currency> amt = new Amount<Currency>(100L, Currency.getInstance("USD"));
 		String name = "test";
+	}
+	
+	static class MockFlow extends AppFlow {
+
+		public MockFlow(boolean initiating) {
+			super(initiating);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public SignedTransaction call() throws FlowException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
 	}
 
 }

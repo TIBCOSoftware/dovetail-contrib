@@ -17,7 +17,11 @@ public class txnreply implements IActivity {
     		String payload = null;
     		
     		if(status.equalsIgnoreCase("Error with Message")){
-    			message = context.getInput("message").toString();
+				Object omessage = context.getInput("message");
+				if(omessage instanceof DocumentContext)
+					message = ((DocumentContext)omessage).jsonString();
+				else
+					message = omessage.toString();
     			throw new IllegalArgumentException(message);
     		}
     	

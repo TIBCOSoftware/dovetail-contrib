@@ -148,6 +148,12 @@ public class TestRuntime {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public boolean processPayment(DocumentContext assetValue) {
+			// TODO Auto-generated method stub
+			return true;
+		}
 	}
 	
 	public class MockEventService implements IEventService {

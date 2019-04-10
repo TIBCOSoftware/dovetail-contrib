@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.core.runtime.engine.Context;
-import com.tibco.dovetail.function.mathlib;
+import com.tibco.dovetail.function.math;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
@@ -53,16 +53,16 @@ public class aggregate implements IActivity {
 		
 		switch(op) {
 		case "MIN":
-			result = mathlib.min(rounding, precision, scale, data.toArray());
+			result = math.min(rounding, precision, scale, data.toArray());
 			break;
 		case "MAX":
-			result = mathlib.max(rounding, precision, scale, data.toArray());
+			result = math.max(rounding, precision, scale, data.toArray());
 			break;
 		case "AVG":
-			result = mathlib.avg(rounding, precision, scale, data.toArray());
+			result = math.avg(rounding, precision, scale, data.toArray());
 			break;
 		case "SUM":
-			result = mathlib.sum(rounding, precision, scale, data.toArray());
+			result = math.sum(rounding, precision, scale, data.toArray());
 			break;
 		}
 		

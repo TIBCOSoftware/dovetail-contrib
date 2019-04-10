@@ -15,8 +15,13 @@ import * as lodash from "lodash";
 
 let balschema = "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"object\", \"required\": [\"currency\"],\"properties\": {\"currency\": {\"type\": \"string\"},\"issuer\": {\"type\": \"array\",\"items\": {\"type\": \"string\"}}}}";
 let payschema = "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"object\", \"required\": [\"payTo\", \"amt\"],\"properties\": {\"payTo\":{\"type\":\"string\"}, \"amt\":{\"type\": \"object\", \"properties\":{\"currency\": {\"type\": \"string\"},\"quantity\":{\"type\":\"number\"}}},\"issuer\": {\"type\": \"array\",\"items\": {\"type\": \"string\"}}}}";                  
-let baloutschema = "{\"quantity\":0}";
-let payoutschema = "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\"},\"data\":{\"type\":\"object\", \"properties\": {\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\"}}},\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}";
+let fundschema = "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"object\", \"required\": [\"amt\"],\"properties\": {\"amt\":{\"type\": \"object\", \"properties\":{\"currency\": {\"type\": \"string\"},\"quantity\":{\"type\":\"number\"}}},\"issuer\": {\"type\": \"array\",\"items\": {\"type\": \"string\"}}}}";                  
+
+let baloutschema = "{\"currency\":\"\", \"quantity\":0}";
+let payoutschema = "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\"},\"data\":{\"type\":\"object\", \"properties\": {\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\"}}},\"issuer\":{\"type\":\"string\"},\"issuerRef\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}, \"assetId\":{\"type\":\"string\"}}}}}}";
+let fundoutschema = "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\"},\"data\":{\"type\":\"object\", \"properties\": {\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\"}}},\"issuer\":{\"type\":\"string\"},\"issuerRef\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}, \"assetId\":{\"type\":\"string\"}}}}}}";
+
+
 @WiContrib({})
 @Injectable()
 export class WalletActivityContributionHandler extends WiServiceHandlerContribution {
@@ -33,6 +38,8 @@ export class WalletActivityContributionHandler extends WiServiceHandlerContribut
                         return balschema;
                     case "Make a Payment":
                         return payschema;
+                    case "Retrieve Funds":
+                        return fundschema;
                 }
                 break;
             case "output":
@@ -41,6 +48,8 @@ export class WalletActivityContributionHandler extends WiServiceHandlerContribut
                         return baloutschema;
                     case "Make a Payment":
                         return payoutschema;
+                    case "Retrieve Funds":
+                        return fundoutschema;
                 }
             break;
         }

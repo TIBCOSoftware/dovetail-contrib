@@ -2,6 +2,8 @@ package com.tibco.dovetail.corda.json;
 
 import java.io.IOException;
 
+import javax.xml.bind.DatatypeConverter;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -29,6 +31,7 @@ public class CashSerializer extends StdSerializer<State> {
 		gen.writeStartObject();
 		gen.writeStringField("owner",AppContainer.partyToString(value.getOwner()));
 		gen.writeStringField("issuer", AppContainer.partyToString(value.getAmount().getToken().getIssuer().getParty()));
+		gen.writeStringField("issuerRef", DatatypeConverter.printBase64Binary(value.getAmount().getToken().getIssuer().getReference().getBytes()));
 		gen.writeObjectFieldStart("amt");
 		gen.writeNumberField("quantity", value.getAmount().getQuantity());
 		gen.writeStringField("currency", value.getAmount().getToken().getProduct().getCurrencyCode());

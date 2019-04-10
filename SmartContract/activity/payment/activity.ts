@@ -24,10 +24,6 @@ export class PaymentActivityContributionHandler extends WiServiceHandlerContribu
     }
    
     value = (fieldName: string, context: IActivityContribution): any | Observable<any> => {
-        switch(fieldName) {
-            case "input":
-                return input2schema;
-        }
         return null;
     }
  

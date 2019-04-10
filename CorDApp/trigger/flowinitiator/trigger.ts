@@ -27,6 +27,7 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
     
     value = (fieldName: string, context: ITriggerContribution): Observable<any> | any => {
         switch(fieldName) {
+    
             case "transactionInput":
                let params = context.getField("inputParams").value;
                return this.createFlowInputSchema(params.value);

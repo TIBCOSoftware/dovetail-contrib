@@ -26,13 +26,14 @@ public class AppContainer implements IContainerService {
 			logService = new AppLoggingService(flow.getClass().getTypeName());
 	
 	
-		dataService = new AppDataService(this.flowService.getServiceHub());
+		dataService = new AppDataService(this.flowService.getServiceHub(), this.flowService.getTransactionBuilder());
 	}
 	
 	@Deprecated
 	public AppContainer(ServiceHub hub, AppFlow flow) {
 		serviceHub = hub;
 		this.flowService = flow;
+		dataService = new AppDataService(hub, this.flowService.getTransactionBuilder());
 	}
 
 	@Override

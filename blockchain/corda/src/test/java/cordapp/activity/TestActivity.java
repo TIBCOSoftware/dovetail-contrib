@@ -4,16 +4,18 @@ import static net.corda.finance.Currencies.DOLLARS;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
-import com.example.iou.IOU;
+//import com.example.iou.IOU;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.google.common.collect.Lists;
 import com.jayway.jsonpath.DocumentContext;
-
+import com.tibco.dovetail.container.corda.CordaContainer;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.container.cordapp.AppFlow;
@@ -21,6 +23,7 @@ import com.tibco.dovetail.core.runtime.engine.ContextImpl;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
 import cordapp.activity.txnbuilder.txnbuilder;
+import cordapp.activity.wallet.wallet;
 import junit.framework.Assert;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.FlowException;
@@ -29,6 +32,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.testing.core.TestIdentity;
 import net.corda.testing.node.MockServices;
+import smartcontract.activity.payment.payment;
 
 public class TestActivity {
 	
@@ -36,6 +40,7 @@ public class TestActivity {
 	
 	@Test
 	public void testTxbuilder() throws JsonProcessingException {
+		/*
 		MockServices mock;
 		 TestIdentity bob;
 		
@@ -55,7 +60,9 @@ public class TestActivity {
 		AppContainer ctnr = new AppContainer(mock, new MockFlow(true));
 		context.setContainerService(ctnr);
 		
+		String issuer = ctnr.partyToString(bob.getParty());
 		DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
+	//	DocumentContext iou = JsonUtil.getJsonParser().parse("{\"issuer\":\"" + issuer + "\", \"owner\":\"" + issuer + "\", \"amt\":{\"currency\":\"USD\", \"quantity\":100}, \"linearId\":\"myextid\"}");
 		IOU iou = new IOU(bob.getParty(), bob.getParty(), DOLLARS(100), new UniqueIdentifier());
 		Map iouvalue = CordaUtil.toJsonObject(iou).json();
 		//set linear id to extid only
@@ -70,8 +77,58 @@ public class TestActivity {
 		System.out.println("input=" + iou);
 		System.out.println("output=" + ctnr.getFlowService().getOutputStates());
 		assertEquals(iou.getParticipants(), ctnr.getFlowService().getOutputStates().get(0).getParticipants());
+	*/
 	}
 	
+	//@Test
+	public void testwallet() {
+		MockServices mock;
+		TestIdentity bob;
+		ContextImpl context = new ContextImpl();
+		
+		bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
+		mock = new MockServices(bob);
+		
+		AppContainer ctnr = new AppContainer(mock, new MockFlow(true));
+		context.setContainerService(ctnr);
+		
+		DocumentContext doc = JsonUtil.getJsonParser().parse("{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuers\":[\"" + ctnr.partyToString(bob.getParty()) + "\"]}");
+		
+		
+		
+		context.addInput("operation", "Retrieve Funds");
+		context.addInput("input", doc);
+		
+		wallet wal = new wallet();
+		wal.eval(context);
+		
+		
+	}
+	
+		@Test
+		public void testpayment() {
+			MockServices mock;
+			TestIdentity bob;
+			ContextImpl context = new ContextImpl();
+			
+			bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
+			TestIdentity charlie = new TestIdentity(new CordaX500Name("Charlie", "New York", "GB"));
+			mock = new MockServices(bob);
+			
+			String json = "{\"funds\":[{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"bob\",\"issuerRef\":\"100\",\"owner\":\"charlie\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"bob\",\"issuerRef\":\"100\",\"owner\":\"charlie\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"alice\",\"issuerRef\":\"100\",\"owner\":\"charlie\"}], \"sendPaymentTo\":\"john\", \"sendChangeTo\":\"charlie\", \"paymentAmt\":{\"currency\":\"USD\", \"quantity\":250}}";
+			DocumentContext doc = JsonUtil.getJsonParser().parse(json);
+			
+			
+			context.addInput("input", doc);
+			
+			context.setContainerService(new CordaContainer(new ArrayList(), "test"));
+			
+			payment pay = new payment();
+			pay.eval(context);
+			
+			
+		}
+		
 	class MockFlow extends AppFlow {
 
 		public MockFlow(boolean initiating) {
