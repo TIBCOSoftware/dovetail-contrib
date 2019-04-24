@@ -7,7 +7,7 @@ This is a Flogo version of the [Hyperledger Fabric](https://www.hyperledger.org/
 - Clone [Hyperledger Fabric](https://github.com/hyperledger/fabric)
 - Clone [Hyperledger Fabric Samples](https://github.com/hyperledger/fabric-samples)
 - Download and install [flogo-cli](https://github.com/TIBCOSoftware/flogo-cli)
-- Clone [dovetail-contrib with this Flogo extension](../..)
+- Clone dovetail-contrib with this Flogo extension
 
 There are different ways to clone these packages.  I put them under $GOPATH after installing Go, i.e.,
 ```
