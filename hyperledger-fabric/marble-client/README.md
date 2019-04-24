@@ -1,8 +1,8 @@
 # marble-client
-This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0), this app interacts with the Hyperledger Fabric chaincode [`marble-app`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/tree/master/marble-app) and exposes a set of REST APIs for managing the data on the marble blockchain network.
+This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0), this app interacts with the Hyperledger Fabric chaincode [`marble-app`](../marble-app) and exposes a set of REST APIs for managing the data on the marble blockchain network.
 
 ## Build and start the marble-app fabric network
-First, complete the prerequisites as described in [`marble-app`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/tree/master/marble-app).
+First, complete the prerequisites as described in [`marble-app`](../marble-app).
 
 Then, build and deploy the marble-app chaincode (assuming that the `fabric-samples` are installed under your `$GOPATH`):
 ```
@@ -30,7 +30,7 @@ exit
 ```
 
 ## Build and start the marble-client app
-Create, build and start the marble-client app from the model file [`marble_client_app.json`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/blob/master/marble-client/marble_client_app.json):
+Create, build and start the marble-client app from the model file [`marble_client_app.json`](marble_client_app.json):
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/marble-client
 make create

@@ -1,8 +1,8 @@
 # marble-private-client
-This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0), this app interacts with the Hyperledger Fabric chaincode [`marble-private`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/tree/master/marble-private) and exposes a set of REST APIs for managing private data collections on the marble blockchain network.
+This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0), this app interacts with the Hyperledger Fabric chaincode [`marble-private`](../marble-private) and exposes a set of REST APIs for managing private data collections on the marble blockchain network.
 
 ## Build and start the marble-private fabric network
-First, complete the prerequisites as described in [`marble-private`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/tree/master/marble-private).
+First, complete the prerequisites as described in [`marble-private`](../marble-private).
 
 Then, build and deploy the marble-private chaincode (assuming that the `fabric-samples` are installed under your `$GOPATH`):
 ```
@@ -34,7 +34,7 @@ peer chaincode instantiate $ORDERER_ARGS -C mychannel -n marble_private_cc -v 1.
 ```
 
 ## Build and start the marble-private-client app
-Create, build and start the marble-private-client app from the model file [`marble_private_lient.json`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/blob/master/marble-client/marble_private_client.json):
+Create, build and start the marble-private-client app from the model file [`marble_private_lient.json`](marble_private_client.json):
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/marble-private-client
 make create

@@ -17,7 +17,7 @@ It supports the following activities for storing and querying data on the distri
 - [Delete](activity/delete): Delete the state of a specified key from the distributed ledger or a private collection, as well as its composite keys.  Optionally, it can delete only the state, or only a composite key.
 - [Set Event](activity/setevent): Set a specified event and payload for a blockchain transaction.
 - [Set Endorsement Policy](activity/endorsement): Set state-based endorsement policy by adding or deleting an endorsement organization, or by specifying a new endorsement policy.
-- [Invoke Chaincode](activity/endorsement): Invoke a local chaincode, and returns response data from the called transaction.
+- [Invoke Chaincode](activity/invokechaincode): Invoke a local chaincode, and returns response data from the called transaction.
 
 With these extensions, Hyperledger Fabric chaincode can be designed and implemented with zero code. Refer to samples [`marble-app`](../marble-app) and [`marble-private`](../marble-private) for more details of the chaincode models implemented by using the `TIBCO Flogo® Enterprise`.
 

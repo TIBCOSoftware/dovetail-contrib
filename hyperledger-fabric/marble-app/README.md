@@ -7,7 +7,7 @@ This is a Flogo version of the [Hyperledger Fabric](https://www.hyperledger.org/
 - Clone [Hyperledger Fabric](https://github.com/hyperledger/fabric)
 - Clone [Hyperledger Fabric Samples](https://github.com/hyperledger/fabric-samples)
 - Download and install [flogo-cli](https://github.com/TIBCOSoftware/flogo-cli)
-- Clone [This Flogo extension](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric)
+- Clone [dovetail-contrib with tThis Flogo extension](../..)
 
 There are different ways to clone these packages.  I put them under $GOPATH after installing Go, i.e.,
 ```
@@ -24,14 +24,14 @@ cd $GOPATH/src/github.com/hyperledger/fabric-samples
 
 ## Edit smart contract
 - Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.4.0/doc/pdf/TIB_flogo_2.4_users_guide.pdf?id=1)
-- Upload [`fabricExtension.zip`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/blob/master/fabricExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can recreate this `zip` by using the script [`zip-fabric.sh`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/blob/master/zip-fabric.sh)
-- Create new Flogo App of name `marble_app` and choose `Import app` to import the model [`marble_app.json`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/blob/master/marble-app/marble_app.json)
+- Upload [`fabricExtension.zip`](../fabricExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can recreate this `zip` by using the script [`zip-fabric.sh`](../zip-fabric.sh)
+- Create new Flogo App of name `marble_app` and choose `Import app` to import the model [`marble_app.json`](marble_app.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
 
 ## Build and deploy chaincode to Hyperledger Fabric
-- Export the Flogo App, and copy the downloaded model file, i.e., [`marble_app.json`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/blob/master/marble-app/marble_app.json) to the folder `marble-app`.  You can skip this step if you did not modify the app in Flogo® Enterprise.
+- Export the Flogo App, and copy the downloaded model file, i.e., [`marble_app.json`](marble_app.json) to the folder `marble-app`.  You can skip this step if you did not modify the app in Flogo® Enterprise.
 - In the `marble-app` folder, execute `make create` to generate source code for the chaincode.  This step downloads all dependent packages, and thus may take a while depending on the network speed.
-- Execute `make build` and `make deploy` to deploy the chaincode to the `fabric-samples` chaincode folder.  Note: you may need to edit the [`Makefile`](https://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/blob/master/marble-app/Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
+- Execute `make build` and `make deploy` to deploy the chaincode to the `fabric-samples` chaincode folder.  Note: you may need to edit the [`Makefile`](Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
 
 The detailed commands of the above steps are as follows:
 ```
