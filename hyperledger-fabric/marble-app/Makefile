@@ -15,7 +15,7 @@ clean:
 
 .PHONY: create
 create: $(APP_FILE) clean
-	flogo create -f $(APP_FILE) $(APP_NAME) && \
+	flogo create -f $(APP_FILE) $(APP_NAME) || echo "continue on error"
 	cp $(SHIM_PATH)/chaincode_shim.go $(APP_NAME)/src/$(APP_NAME) && \
 	cp Gopkg.toml $(APP_NAME)/src/$(APP_NAME) && \
 	rm $(APP_NAME)/src/$(APP_NAME)/main.go && \
