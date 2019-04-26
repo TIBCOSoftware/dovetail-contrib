@@ -12,137 +12,6 @@
     "description": "Illustrate all Fabric activities available in release 1.4",
     "tasks": [
      {
-      "id": "SetEvent",
-      "name": "SetEvent",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/setevent",
-       "settings": {},
-       "input": {
-        "payload": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"alert\":{\"type\":\"string\"}}}",
-         "value": ""
-        }
-       },
-       "output": {
-        "result": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"alert\":{\"type\":\"string\"}}}",
-         "value": ""
-        }
-       },
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['payload']['alert']",
-          "type": "literal",
-          "value": "HIGH VALUE"
-         },
-         {
-          "mapTo": "$INPUT['name']",
-          "type": "literal",
-          "value": "MarbleAlert"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "InvokeChaincode",
-      "name": "InvokeChaincode",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/invokechaincode",
-       "settings": {},
-       "input": {
-        "parameters": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
-         "value": ""
-        }
-       },
-       "output": {
-        "result": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
-         "value": ""
-        }
-       },
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['transactionName']",
-          "type": "literal",
-          "value": "getHistoryForMarble"
-         },
-         {
-          "mapTo": "$INPUT['chaincodeName']",
-          "type": "literal",
-          "value": "marble_cc"
-         },
-         {
-          "mapTo": "$INPUT['parameters']['name']",
-          "type": "literal",
-          "value": "marble1"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "Put",
-      "name": "Put",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
-       "settings": {},
-       "input": {
-        "valueType": "object",
-        "data": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
-         "value": ""
-        },
-        "compositeKeys": "{\n    \"color~name\": [\"color\", \"name\"]\n}"
-       },
-       "output": {
-        "result": {
-         "metadata": "",
-         "value": ""
-        }
-       }
-      }
-     },
-     {
-      "id": "PutAll",
-      "name": "PutAll",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
-       "settings": {},
-       "input": {
-        "data": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
-         "value": ""
-        },
-        "compositeKeys": "{\n    \"color~name\": [\"color\", \"name\"]\n}"
-       },
-       "output": {
-        "result": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
-         "value": ""
-        }
-       }
-      }
-     },
-     {
-      "id": "Get",
-      "name": "Get",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
-       "settings": {},
-       "input": {},
-       "output": {
-        "result": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
-         "value": ""
-        }
-       }
-      }
-     },
-     {
       "id": "Delete",
       "name": "Delete",
       "activity": {
@@ -169,6 +38,66 @@
       }
      },
      {
+      "id": "Get",
+      "name": "Get",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+       "settings": {},
+       "input": {},
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "literal",
+          "value": "marble1"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "GetByCompositeKey",
+      "name": "GetByCompositeKey",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
+       "settings": {},
+       "input": {
+        "keyName": "color~name",
+        "attributes": {
+         "metadata": "{\"type\":\"object\",\"properties\":{\"color\":{\"type\":\"string\"}},\"required\":[]}",
+         "value": ""
+        },
+        "usePagination": true
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['attributes']['color']",
+          "type": "literal",
+          "value": "blue"
+         },
+         {
+          "mapTo": "$INPUT['pageSize']",
+          "type": "literal",
+          "value": 10
+         }
+        ]
+       }
+      }
+     },
+     {
       "id": "GetHistory",
       "name": "GetHistory",
       "activity": {
@@ -189,43 +118,6 @@
           "value": "marble1"
          }
         ]
-       }
-      }
-     },
-     {
-      "id": "EndorsementPolicy",
-      "name": "EndorsementPolicy",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/endorsement",
-       "settings": {},
-       "input": {
-        "operation": "SET",
-        "role": "MEMBER",
-        "organizations": "Org1,Org2",
-        "policy": "OutOf(1, 'Org1.member', 'Org2.member', 'Org3.member')"
-       },
-       "output": {}
-      }
-     },
-     {
-      "id": "Query",
-      "name": "Query",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query",
-       "settings": {},
-       "input": {
-        "query": "{\n    \"selector\": {\n        \"docType\": \"marble\",\n        \"owner\": \"$owner\",\n        \"size\": {\n            \"$gt\": \"$min_size\"\n        }\n    }\n}",
-        "queryParams": {
-         "metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"min_size\":{\"type\":\"number\"}},\"required\":[]}",
-         "value": ""
-        },
-        "usePagination": true
-       },
-       "output": {
-        "result": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
-         "value": ""
-        }
        }
       }
      },
@@ -266,15 +158,67 @@
       }
      },
      {
-      "id": "GetByCompositeKey",
-      "name": "GetByCompositeKey",
+      "id": "Put",
+      "name": "Put",
       "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
        "settings": {},
        "input": {
-        "keyName": "color~name",
-        "attributes": {
-         "metadata": "{\"type\":\"object\",\"properties\":{\"color\":{\"type\":\"string\"}},\"required\":[]}",
+        "valueType": "object",
+        "data": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        },
+        "compositeKeys": "{\n    \"color~name\": [\"color\", \"name\"]\n}"
+       },
+       "output": {
+        "result": {
+         "metadata": "",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "literal",
+          "value": "marble1"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "PutAll",
+      "name": "PutAll",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
+       "settings": {},
+       "input": {
+        "data": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        },
+        "compositeKeys": "{\n    \"color~name\": [\"color\", \"name\"]\n}"
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       }
+      }
+     },
+     {
+      "id": "Query",
+      "name": "Query",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query",
+       "settings": {},
+       "input": {
+        "query": "{\n    \"selector\": {\n        \"docType\": \"marble\",\n        \"owner\": \"$owner\",\n        \"size\": {\n            \"$gt\": \"$min_size\"\n        }\n    }\n}",
+        "queryParams": {
+         "metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"min_size\":{\"type\":\"number\"}},\"required\":[]}",
          "value": ""
         },
         "usePagination": true
@@ -284,13 +228,100 @@
          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
          "value": ""
         }
+       }
+      }
+     },
+     {
+      "id": "EndorsementPolicy",
+      "name": "EndorsementPolicy",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/endorsement",
+       "settings": {},
+       "input": {
+        "operation": "SET",
+        "role": "MEMBER",
+        "policy": "OutOf(1, 'Org1.member', 'Org2.member', 'Org3.member')"
+       },
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "literal",
+          "value": "marble1"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "InvokeChaincode",
+      "name": "InvokeChaincode",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/invokechaincode",
+       "settings": {},
+       "input": {
+        "parameters": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
        },
        "mappings": {
         "input": [
          {
-          "mapTo": "$INPUT['pageSize']",
+          "mapTo": "$INPUT['chaincodeName']",
           "type": "literal",
-          "value": 10
+          "value": "marble_cc"
+         },
+         {
+          "mapTo": "$INPUT['transactionName']",
+          "type": "literal",
+          "value": "getHistoryForMarble"
+         },
+         {
+          "mapTo": "$INPUT['parameters']['name']",
+          "type": "literal",
+          "value": "marble1"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "SetEvent",
+      "name": "SetEvent",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/setevent",
+       "settings": {},
+       "input": {
+        "payload": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"alert\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"alert\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['name']",
+          "type": "literal",
+          "value": "MarbleAlert"
+         },
+         {
+          "mapTo": "$INPUT['payload']['alert']",
+          "type": "literal",
+          "value": "HIGH VALUE"
          }
         ]
        }
@@ -318,86 +349,71 @@
     "links": [
      {
       "id": 1,
-      "from": "SetEvent",
-      "to": "InvokeChaincode",
+      "from": "Delete",
+      "to": "Get",
       "type": "default"
      },
      {
       "id": 2,
-      "from": "InvokeChaincode",
-      "to": "Put",
+      "from": "Get",
+      "to": "GetByCompositeKey",
       "type": "default"
      },
      {
       "id": 3,
+      "from": "GetByCompositeKey",
+      "to": "GetHistory",
+      "type": "default"
+     },
+     {
+      "id": 4,
+      "from": "GetHistory",
+      "to": "GetRange",
+      "type": "default"
+     },
+     {
+      "id": 5,
+      "from": "GetRange",
+      "to": "Put",
+      "type": "default"
+     },
+     {
+      "id": 6,
       "from": "Put",
       "to": "PutAll",
       "type": "default"
      },
      {
-      "id": 4,
-      "from": "PutAll",
-      "to": "Get",
-      "type": "default"
-     },
-     {
-      "id": 5,
-      "from": "Get",
-      "to": "Delete",
-      "type": "default"
-     },
-     {
-      "id": 6,
-      "from": "Delete",
-      "to": "GetHistory",
-      "type": "default"
-     },
-     {
       "id": 7,
-      "from": "GetHistory",
-      "to": "EndorsementPolicy",
-      "type": "default"
-     },
-     {
-      "id": 8,
-      "from": "EndorsementPolicy",
+      "from": "PutAll",
       "to": "Query",
       "type": "default"
      },
      {
-      "id": 9,
+      "id": 8,
       "from": "Query",
-      "to": "GetRange",
+      "to": "EndorsementPolicy",
+      "type": "default"
+     },
+     {
+      "id": 9,
+      "from": "EndorsementPolicy",
+      "to": "InvokeChaincode",
       "type": "default"
      },
      {
       "id": 10,
-      "from": "GetRange",
-      "to": "GetByCompositeKey",
+      "from": "InvokeChaincode",
+      "to": "SetEvent",
       "type": "default"
      },
      {
       "id": 11,
-      "from": "GetByCompositeKey",
+      "from": "SetEvent",
       "to": "Return",
       "type": "default"
      }
     ],
-    "errorHandler": {
-     "tasks": [
-      {
-       "id": "Return1",
-       "name": "Return1",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
-        "settings": {},
-        "input": {},
-        "output": {}
-       }
-      }
-     ],
-     "links": []
-    },
     "metadata": {
      "input": [
       {
@@ -468,54 +484,16 @@
        "flowURI": "res://flow:all_activities"
       },
       "mappings": {
-       "input": [
-        {
-         "mapTo": "$INPUT['parameters']['owner']",
-         "type": "assign",
-         "value": "$.parameters.owner"
-        },
-        {
-         "mapTo": "$INPUT['parameters']['marbles']",
-         "type": "array",
-         "value": "{\"to\":\"$INPUT['parameters']['marbles']\",\"from\":\"$.parameters.marbles\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['name']\",\"from\":\"$.name\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['color']\",\"from\":\"$.color\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['size']\",\"from\":\"$.size\",\"type\":\"assign\"}]}"
-        },
-        {
-         "mapTo": "$INPUT['transient']['cost']",
-         "type": "array",
-         "value": "{\"to\":\"$INPUT['transient']['cost']\",\"from\":\"$.transient.cost\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['name']\",\"from\":\"$.name\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['price']\",\"from\":\"$.price\",\"type\":\"assign\"}]}"
-        },
-        {
-         "mapTo": "$INPUT['txID']",
-         "type": "assign",
-         "value": "$.txID"
-        },
-        {
-         "mapTo": "$INPUT['txTime']",
-         "type": "assign",
-         "value": "$.txTime"
-        }
-       ],
-       "output": [
-        {
-         "mapTo": "$INPUT['returns']",
-         "type": "array",
-         "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
-        }
-       ]
+       "input": [],
+       "output": []
       }
      }
     }
    ]
   }
  ],
- "properties": [
-  {
-   "name": "Endorsement.ONE_OF_MEMBERS",
-   "type": "string",
-   "value": "OutOf(1, 'Org1.member', 'Org2.member', 'Org3.member')"
-  }
- ],
- "ui": "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",
- "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS95eHVjby9mbG9nby1lbnRlcnByaXNlLWFwcC9mYWJyaWMiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vZmFicmljIn0seyJyZWYiOiJnaXQudGliY28uY29tL2dpdC9wcm9kdWN0L2lwYWFzL3dpLWNvbnRyaWIuZ2l0L2NvbnRyaWJ1dGlvbnMvR2VuZXJhbCIsInMzbG9jYXRpb24iOiJUaWJjby9HZW5lcmFsIn1d",
- "connection": "UEsDBAoAAAAIANIoek4pu0wNBAAAAAIAAAAJAAAAY29ubi5qc29ui44FAFBLAQIUAAoAAAAIANIoek4pu0wNBAAAAAIAAAAJAAAAAAAAAAAAAAAAAAAAAABjb25uLmpzb25QSwUGAAAAAAEAAQA3AAAAKwAAAAAA"
+ "properties": [],
+ "ui": "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",
+ "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifV0=",
+ "connection": "UEsDBAoAAAAIAAIumk4pu0wNBAAAAAIAAAAJAAAAY29ubi5qc29ui44FAFBLAQIUAAoAAAAIAAIumk4pu0wNBAAAAAIAAAAJAAAAAAAAAAAAAAAAAAAAAABjb25uLmpzb25QSwUGAAAAAAEAAQA3AAAAKwAAAAAA"
 }
