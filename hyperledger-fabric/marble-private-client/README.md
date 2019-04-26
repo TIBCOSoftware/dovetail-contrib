@@ -84,6 +84,8 @@ curl -X DELETE http://localhost:8989/marbleprivate/delete/marble2
 curl -X GET http://localhost:8989/marbleprivate/owner/jerry
 ```
 
+Note that the operations for `delete` and `price` is allowed by only one of the 2 blockchain member orgs (i.e., org1 only), thus these 2 operations should use a special client configuration such that the client communicates with org1 peers only.  This sample, however, is configured to pick any peer randomly for each request, and so it will fail when a peer node of org2 is used.  You may retry the same request a few times to see the effect of security control for these 2 operations.
+
 ## Cleanup the marble-private fabric network
 Stop and cleanup the Fabric `first-network`.
 ```
