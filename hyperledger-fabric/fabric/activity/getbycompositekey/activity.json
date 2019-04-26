@@ -1,0 +1,105 @@
+
+{
+    "name": "fabric-getbycompositekey",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Get By Composite Key",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "visible": true,
+        "smallIcon": "ic-composite.png",
+        "description": "This activity fetches data by composite-key from fabric ledger"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
+    "inputs": [
+        {
+            "name": "keyName",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Key name",
+                "description": "Name of composite key used for partial key query",
+                "appPropertySupport": true
+            }
+        },
+        {
+            "name": "attributes",
+            "type": "complex_object",
+            "display": {
+                "name": "Attribnute names",
+                "description": "Name of composite attributes used by the query",
+                "type": "params",
+                "mappable": true,
+                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"parameterName\":{\"type\":\"string\"},\"type\":{\"type\":{\"enum\":[\"string\",\"number\",\"boolean\"]}}}}}"
+            }
+        },
+        {
+            "name": "usePagination",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Use pagination",
+                "description": "Specify result page size and starting bookmark"
+            },
+            "value": false
+        },
+        {
+            "name": "pageSize",
+            "type": "number"
+        },
+        {
+            "name": "start",
+            "type": "string"
+        },
+        {
+            "name": "isPrivate",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Data is private",
+                "description": "Get data from private collection"
+            },
+            "value": false
+        },
+        {
+            "name": "collection",
+            "type": "string",
+            "display": {
+                "name": "Private collection name",
+                "description": "Name of the private collection",
+                "appPropertySupport": true,
+                "visible": false
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "bookmark",
+            "type": "string"
+        },
+        {
+            "name": "count",
+            "type": "integer"
+        },
+        {
+            "name": "result",
+            "type": "complex_object",
+            "display": {
+                "name": "Result array definition",
+                "description": "Schema definition of the resulting array of key and value, e.g.,\r\n[{\r\n  \"key\": \"string\",\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",
+                "type": "texteditor",
+                "syntax": "json"
+            }
+        }
+    ]
+}

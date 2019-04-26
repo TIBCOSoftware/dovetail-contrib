@@ -1,0 +1,67 @@
+
+{
+    "name": "fabric-get",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Get",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "visible": true,
+        "smallIcon": "ic-get.png",
+        "description": "This activity fetches data by key from fabric ledger"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+    "inputs": [
+        {
+            "name": "key",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "isPrivate",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Data is private",
+                "description": "Get data from private collection"
+            },
+            "value": false
+        },
+        {
+            "name": "collection",
+            "type": "string",
+            "display": {
+                "name": "Private collection name",
+                "description": "Name of the private collection",
+                "appPropertySupport": true,
+                "visible": false
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "key",
+            "type": "string"
+        },
+        {
+            "name": "result",
+            "type": "complex_object",
+            "display": {
+                "name": "Result object definition",
+                "description": "Schema definition of the result, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json"
+            }
+        }
+    ]
+}

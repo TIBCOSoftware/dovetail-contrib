@@ -1,0 +1,2690 @@
+{
+ "name": "marble_app",
+ "description": " ",
+ "version": "1.0.0",
+ "type": "flogo:app",
+ "appModel": "1.0.0",
+ "resources": [
+  {
+   "id": "flow:initMarble",
+   "data": {
+    "name": "initMarble",
+    "description": "create a new marble, store into chaincode state",
+    "tasks": [
+     {
+      "id": "LogMessage",
+      "name": "LogMessage",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[initMarble] Get marble: \", $flow.parameters.name)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Get",
+      "name": "Get",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+       "settings": {},
+       "input": {},
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "assign",
+          "value": "$flow.parameters.name"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage1",
+      "name": "LogMessage1",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"GET: \", $activity[Get].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "ThrowError",
+      "name": "ThrowError",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"Marble already exists: \", $activity[Get].key)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Put",
+      "name": "Put",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+       "settings": {},
+       "input": {
+        "valueType": "object",
+        "data": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"docType\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        },
+        "compositeKeys": "{\n    \"color~name\": [\"color\", \"name\"]\n}"
+       },
+       "output": {
+        "result": {
+         "metadata": "",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "assign",
+          "value": "$flow.parameters.name"
+         },
+         {
+          "mapTo": "$INPUT['data']['docType']",
+          "type": "literal",
+          "value": "marble"
+         },
+         {
+          "mapTo": "$INPUT['data']['name']",
+          "type": "assign",
+          "value": "$flow.parameters.name"
+         },
+         {
+          "mapTo": "$INPUT['data']['color']",
+          "type": "assign",
+          "value": "$flow.parameters.color"
+         },
+         {
+          "mapTo": "$INPUT['data']['size']",
+          "type": "assign",
+          "value": "$flow.parameters.size"
+         },
+         {
+          "mapTo": "$INPUT['data']['owner']",
+          "type": "assign",
+          "value": "$flow.parameters.owner"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage2",
+      "name": "LogMessage2",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"PUT: \", $activity[Put].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return",
+      "name": "Return",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']['name']",
+          "type": "assign",
+          "value": "$activity[Put].result.name"
+         },
+         {
+          "mapTo": "$INPUT['returns']['color']",
+          "type": "assign",
+          "value": "$activity[Put].result.color"
+         },
+         {
+          "mapTo": "$INPUT['returns']['size']",
+          "type": "assign",
+          "value": "$activity[Put].result.size"
+         },
+         {
+          "mapTo": "$INPUT['returns']['owner']",
+          "type": "assign",
+          "value": "$activity[Put].result.owner"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage",
+      "to": "Get",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "Get",
+      "to": "LogMessage1",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage1",
+      "to": "ThrowError",
+      "type": "expression",
+      "value": "$activity[Get].code == 200"
+     },
+     {
+      "id": 4,
+      "from": "LogMessage1",
+      "to": "Put",
+      "type": "expression",
+      "value": "$activity[Get].code == 300"
+     },
+     {
+      "id": 5,
+      "from": "Put",
+      "to": "LogMessage2",
+      "type": "default"
+     },
+     {
+      "id": 6,
+      "from": "LogMessage2",
+      "to": "Return",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:readMarble",
+   "data": {
+    "name": "readMarble",
+    "description": "read a marble from chaincode state",
+    "tasks": [
+     {
+      "id": "LogMessage3",
+      "name": "LogMessage3",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[readMarble] \", $flow.parameters.name)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Get1",
+      "name": "Get1",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+       "settings": {},
+       "input": {},
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "assign",
+          "value": "$flow.parameters.name"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage4",
+      "name": "LogMessage4",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"GET: \", $activity[Get1].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return1",
+      "name": "Return1",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']",
+          "type": "assign",
+          "value": "$activity[Get1].result"
+         }
+        ]
+       },
+       "output": {}
+      }
+     },
+     {
+      "id": "ThrowError1",
+      "name": "ThrowError1",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"Marble does not exist: \", $flow.parameters.name)"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage3",
+      "to": "Get1",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "Get1",
+      "to": "LogMessage4",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage4",
+      "to": "Return1",
+      "type": "expression",
+      "value": "$activity[Get1].code == 200"
+     },
+     {
+      "id": 4,
+      "from": "LogMessage4",
+      "to": "ThrowError1",
+      "type": "expression",
+      "value": "$activity[Get1].code == 300"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:delete",
+   "data": {
+    "name": "delete",
+    "description": "remove a marble key/value pair from state",
+    "tasks": [
+     {
+      "id": "LogMessage5",
+      "name": "LogMessage5",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[delete] \", $flow.parameters.name)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Get2",
+      "name": "Get2",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+       "settings": {},
+       "input": {},
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "assign",
+          "value": "$flow.parameters.name"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage6",
+      "name": "LogMessage6",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"GET: \", $activity[Get2].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "ThrowError2",
+      "name": "ThrowError2",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"Marble does not exist: \", $flow.parameters.name)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Delete",
+      "name": "Delete",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/delete",
+       "settings": {},
+       "input": {
+        "compositeKeys": "{\n    \"color~name\": [\"color\", \"name\"]\n}"
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "assign",
+          "value": "$activity[Get2].key"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage7",
+      "name": "LogMessage7",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"DELETE: \", $activity[Delete].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return2",
+      "name": "Return2",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']",
+          "type": "assign",
+          "value": "$activity[Delete].result"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage5",
+      "to": "Get2",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "Get2",
+      "to": "LogMessage6",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage6",
+      "to": "ThrowError2",
+      "type": "expression",
+      "value": "$activity[Get2].code == 300"
+     },
+     {
+      "id": 4,
+      "from": "LogMessage6",
+      "to": "Delete",
+      "type": "expression",
+      "value": "$activity[Get2].code == 200"
+     },
+     {
+      "id": 5,
+      "from": "Delete",
+      "to": "LogMessage7",
+      "type": "default"
+     },
+     {
+      "id": 6,
+      "from": "LogMessage7",
+      "to": "Return2",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:transferMarble",
+   "data": {
+    "name": "transferMarble",
+    "description": "transfer a marble by setting a new owner name on the marble",
+    "tasks": [
+     {
+      "id": "LogMessage8",
+      "name": "LogMessage8",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[transferMarble] \", $flow.parameters.name, \" new owner: \", $flow.parameters.newOwner)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Get3",
+      "name": "Get3",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+       "settings": {},
+       "input": {},
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"docType\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "assign",
+          "value": "$flow.parameters.name"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage9",
+      "name": "LogMessage9",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"GET: \", $activity[Get3].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "ThrowError3",
+      "name": "ThrowError3",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"Marble does not exist: \", $flow.parameters.name)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Put1",
+      "name": "Put1",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+       "settings": {},
+       "input": {
+        "valueType": "object",
+        "data": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"docType\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+         "value": ""
+        }
+       },
+       "output": {
+        "result": {
+         "metadata": "",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "assign",
+          "value": "$activity[Get3].key"
+         },
+         {
+          "mapTo": "$INPUT['data']['docType']",
+          "type": "assign",
+          "value": "$activity[Get3].result.docType"
+         },
+         {
+          "mapTo": "$INPUT['data']['name']",
+          "type": "assign",
+          "value": "$activity[Get3].result.name"
+         },
+         {
+          "mapTo": "$INPUT['data']['color']",
+          "type": "assign",
+          "value": "$activity[Get3].result.color"
+         },
+         {
+          "mapTo": "$INPUT['data']['size']",
+          "type": "assign",
+          "value": "$activity[Get3].result.size"
+         },
+         {
+          "mapTo": "$INPUT['data']['owner']",
+          "type": "assign",
+          "value": "$flow.parameters.newOwner"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage10",
+      "name": "LogMessage10",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"PUT: \", $activity[Put1].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return3",
+      "name": "Return3",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']['name']",
+          "type": "assign",
+          "value": "$activity[Put1].result.name"
+         },
+         {
+          "mapTo": "$INPUT['returns']['color']",
+          "type": "assign",
+          "value": "$activity[Put1].result.color"
+         },
+         {
+          "mapTo": "$INPUT['returns']['size']",
+          "type": "assign",
+          "value": "$activity[Put1].result.size"
+         },
+         {
+          "mapTo": "$INPUT['returns']['owner']",
+          "type": "assign",
+          "value": "$activity[Put1].result.owner"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage8",
+      "to": "Get3",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "Get3",
+      "to": "LogMessage9",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage9",
+      "to": "ThrowError3",
+      "type": "expression",
+      "value": "$activity[Get3].code == 300"
+     },
+     {
+      "id": 4,
+      "from": "LogMessage9",
+      "to": "Put1",
+      "type": "expression",
+      "value": "$activity[Get3].code == 200"
+     },
+     {
+      "id": 5,
+      "from": "Put1",
+      "to": "LogMessage10",
+      "type": "default"
+     },
+     {
+      "id": 6,
+      "from": "LogMessage10",
+      "to": "Return3",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:getMarblesByRange",
+   "data": {
+    "name": "getMarblesByRange",
+    "description": "performs a range query based on the start and end keys provided",
+    "tasks": [
+     {
+      "id": "LogMessage11",
+      "name": "LogMessage11",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[getMarblesRange] in [\", $flow.parameters.startKey, \", \", $flow.parameters.endKey, \")\")"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "GetRange",
+      "name": "GetRange",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getrange",
+       "settings": {},
+       "input": {},
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['startKey']",
+          "type": "assign",
+          "value": "$flow.parameters.startKey"
+         },
+         {
+          "mapTo": "$INPUT['endKey']",
+          "type": "assign",
+          "value": "$flow.parameters.endKey"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage12",
+      "name": "LogMessage12",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"GET_RANGE: \", $activity[GetRange].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return4",
+      "name": "Return4",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']",
+          "type": "array",
+          "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[GetRange].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage11",
+      "to": "GetRange",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "GetRange",
+      "to": "LogMessage12",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage12",
+      "to": "Return4",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "array"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:transferMarblesBasedOnColor",
+   "data": {
+    "name": "transferMarblesBasedOnColor",
+    "description": "transfer marbles of a given color to a new owner",
+    "tasks": [
+     {
+      "id": "LogMessage13",
+      "name": "LogMessage13",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[transferMarblesBasedOnColor] \", $flow.parameters.color, \" new owner: \", $flow.parameters.newOwner)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "GetByCompositeKey",
+      "name": "GetByCompositeKey",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
+       "settings": {},
+       "input": {
+        "keyName": "color~name",
+        "attributes": {
+         "metadata": "{\"type\":\"object\",\"properties\":{\"color\":{\"type\":\"string\"}},\"required\":[]}",
+         "value": ""
+        }
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"docType\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['attributes']['color']",
+          "type": "assign",
+          "value": "$flow.parameters.color"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage14",
+      "name": "LogMessage14",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"GET_BY_COMPOSITE_KEY: \", $activity[GetByCompositeKey].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "PutAll",
+      "name": "PutAll",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
+       "settings": {},
+       "input": {
+        "data": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"docType\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"docType\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['data']",
+          "type": "array",
+          "value": "{\"to\":\"$INPUT['data']\",\"from\":\"$activity[GetByCompositeKey].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['docType']\",\"from\":\"$.value.docType\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['name']\",\"from\":\"$.value.name\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['color']\",\"from\":\"$.value.color\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['size']\",\"from\":\"$.value.size\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['owner']\",\"from\":\"$flow.parameters.newOwner\",\"type\":\"assign\"}]}"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage15",
+      "name": "LogMessage15",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"PUT_ALL: count: \", $activity[PutAll].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return5",
+      "name": "Return5",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']",
+          "type": "array",
+          "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[PutAll].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['name']\",\"from\":\"$.value.name\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['color']\",\"from\":\"$.value.color\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['size']\",\"from\":\"$.value.size\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['owner']\",\"from\":\"$.value.owner\",\"type\":\"assign\"}]}"
+         }
+        ]
+       },
+       "output": {}
+      }
+     },
+     {
+      "id": "ThrowError5",
+      "name": "ThrowError5",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"No marble transferred: \", $activity[PutAll].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "ThrowError4",
+      "name": "ThrowError4",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"Marble does not exists for color: \", $flow.parameters.color)"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage13",
+      "to": "GetByCompositeKey",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "GetByCompositeKey",
+      "to": "LogMessage14",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage14",
+      "to": "PutAll",
+      "type": "expression",
+      "value": "$activity[GetByCompositeKey].code == 200 && $activity[GetByCompositeKey].count > 0"
+     },
+     {
+      "id": 4,
+      "from": "PutAll",
+      "to": "LogMessage15",
+      "type": "default"
+     },
+     {
+      "id": 5,
+      "from": "LogMessage15",
+      "to": "Return5",
+      "type": "expression",
+      "value": "$activity[PutAll].count > 0"
+     },
+     {
+      "id": 6,
+      "from": "LogMessage15",
+      "to": "ThrowError5",
+      "type": "expression",
+      "value": "$activity[PutAll].count == 0"
+     },
+     {
+      "id": 7,
+      "from": "LogMessage14",
+      "to": "ThrowError4",
+      "type": "expression",
+      "value": "$activity[GetByCompositeKey].code != 200 || $activity[GetByCompositeKey].count == 0"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"color\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "array"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:queryMarblesByOwner",
+   "data": {
+    "name": "queryMarblesByOwner",
+    "description": "queries for marbles based on a passed-in owner",
+    "tasks": [
+     {
+      "id": "LogMessage16",
+      "name": "LogMessage16",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[queryMarblesByOwner] \", $flow.parameters.owner)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Query",
+      "name": "Query",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query",
+       "settings": {},
+       "input": {
+        "query": "{\n    \"selector\": {\n        \"docType\": \"marble\",\n        \"owner\": \"$owner\"\n    }\n}",
+        "queryParams": {
+         "metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}},\"required\":[]}",
+         "value": ""
+        }
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"docType\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['queryParams']['owner']",
+          "type": "assign",
+          "value": "$flow.parameters.owner"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage17",
+      "name": "LogMessage17",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"QUERY: \", $activity[Query].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return6",
+      "name": "Return6",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']",
+          "type": "array",
+          "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[Query].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['name']\",\"from\":\"$.value.name\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['color']\",\"from\":\"$.value.color\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['size']\",\"from\":\"$.value.size\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['owner']\",\"from\":\"$.value.owner\",\"type\":\"assign\"}]}"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage16",
+      "to": "Query",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "Query",
+      "to": "LogMessage17",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage17",
+      "to": "Return6",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"owner\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "array"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:queryMarbles",
+   "data": {
+    "name": "queryMarbles",
+    "description": "uses a query string to perform a query for marbles",
+    "tasks": [
+     {
+      "id": "LogMessage18",
+      "name": "LogMessage18",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[queryMarbles] \", $flow.parameters.query)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Query1",
+      "name": "Query1",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query",
+       "settings": {},
+       "input": {
+        "query": "\"$query\"",
+        "queryParams": {
+         "metadata": "{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"}},\"required\":[]}",
+         "value": ""
+        }
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"docType\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['queryParams']['query']",
+          "type": "assign",
+          "value": "$flow.parameters.query"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage19",
+      "name": "LogMessage19",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"QUERY: \", $activity[Query1].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return7",
+      "name": "Return7",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']",
+          "type": "array",
+          "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[Query1].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['name']\",\"from\":\"$.value.name\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['color']\",\"from\":\"$.value.color\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['size']\",\"from\":\"$.value.size\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['owner']\",\"from\":\"$.value.owner\",\"type\":\"assign\"}]}"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage18",
+      "to": "Query1",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "Query1",
+      "to": "LogMessage19",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage19",
+      "to": "Return7",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"query\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "array"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:getMarblesByRangeWithPagination",
+   "data": {
+    "name": "getMarblesByRangeWithPagination",
+    "description": "performs a range query based on the start &amp; end key, page size and a bookmark.",
+    "tasks": [
+     {
+      "id": "LogMessage20",
+      "name": "LogMessage20",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[getMarblesByRangeWithPagination] in [\", $flow.parameters.startKey, \", \", $flow.parameters.endKey, \")\")"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "GetRange1",
+      "name": "GetRange1",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getrange",
+       "settings": {},
+       "input": {
+        "usePagination": true
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['startKey']",
+          "type": "assign",
+          "value": "$flow.parameters.startKey"
+         },
+         {
+          "mapTo": "$INPUT['endKey']",
+          "type": "assign",
+          "value": "$flow.parameters.endKey"
+         },
+         {
+          "mapTo": "$INPUT['pageSize']",
+          "type": "assign",
+          "value": "$flow.parameters.pageSize"
+         },
+         {
+          "mapTo": "$INPUT['start']",
+          "type": "assign",
+          "value": "$flow.parameters.bookmark"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage21",
+      "name": "LogMessage21",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"GET_RANGE: \", $activity[GetRange1].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return8",
+      "name": "Return8",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']['count']",
+          "type": "assign",
+          "value": "$activity[GetRange1].count"
+         },
+         {
+          "mapTo": "$INPUT['returns']['bookmark']",
+          "type": "assign",
+          "value": "$activity[GetRange1].bookmark"
+         },
+         {
+          "mapTo": "$INPUT['returns']['marbles']",
+          "type": "array",
+          "value": "{\"to\":\"$INPUT['returns']['marbles']\",\"from\":\"$activity[GetRange1].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage20",
+      "to": "GetRange1",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "GetRange1",
+      "to": "LogMessage21",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage21",
+      "to": "Return8",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:queryMarblesWithPagination",
+   "data": {
+    "name": "queryMarblesWithPagination",
+    "description": "uses a query string, page size and a bookmark to perform a query for marbles",
+    "tasks": [
+     {
+      "id": "LogMessage22",
+      "name": "LogMessage22",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[queryMarblesWithPagination] \", $flow.parameters.query)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Query2",
+      "name": "Query2",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query",
+       "settings": {},
+       "input": {
+        "query": "\"$query\"",
+        "queryParams": {
+         "metadata": "{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"}},\"required\":[]}",
+         "value": ""
+        },
+        "usePagination": true
+       },
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['queryParams']['query']",
+          "type": "assign",
+          "value": "$flow.parameters.query"
+         },
+         {
+          "mapTo": "$INPUT['pageSize']",
+          "type": "assign",
+          "value": "$flow.parameters.pageSize"
+         },
+         {
+          "mapTo": "$INPUT['start']",
+          "type": "assign",
+          "value": "$flow.parameters.bookmark"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage23",
+      "name": "LogMessage23",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"QUERY: \", $activity[Query2].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return9",
+      "name": "Return9",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']['count']",
+          "type": "assign",
+          "value": "$activity[Query2].count"
+         },
+         {
+          "mapTo": "$INPUT['returns']['bookmark']",
+          "type": "assign",
+          "value": "$activity[Query2].bookmark"
+         },
+         {
+          "mapTo": "$INPUT['returns']['marbles']",
+          "type": "array",
+          "value": "{\"to\":\"$INPUT['returns']['marbles']\",\"from\":\"$activity[Query2].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage22",
+      "to": "Query2",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "Query2",
+      "to": "LogMessage23",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage23",
+      "to": "Return9",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"query\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flow:getHistoryForMarble",
+   "data": {
+    "name": "getHistoryForMarble",
+    "description": "retrieve history of a specified marble",
+    "tasks": [
+     {
+      "id": "LogMessage24",
+      "name": "LogMessage24",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"[getHistoryForMarble] \", $flow.parameters.name)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "GetHistory",
+      "name": "GetHistory",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/gethistory",
+       "settings": {},
+       "input": {},
+       "output": {
+        "result": {
+         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+         "value": ""
+        }
+       },
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['key']",
+          "type": "assign",
+          "value": "$flow.parameters.name"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "LogMessage25",
+      "name": "LogMessage25",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+       "settings": {},
+       "input": {},
+       "output": {},
+       "mappings": {
+        "input": [
+         {
+          "mapTo": "$INPUT['message']",
+          "type": "expression",
+          "value": "string.concat(\"GET_HISTORY: \", $activity[GetHistory].message)"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "id": "Return10",
+      "name": "Return10",
+      "activity": {
+       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+       "settings": {},
+       "input": {
+        "mappings": [
+         {
+          "mapTo": "$INPUT['returns']",
+          "type": "array",
+          "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[GetHistory].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['txID']\",\"from\":\"$.txID\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['txTime']\",\"from\":\"$.txTime\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['isDeleted']\",\"from\":\"$.isDeleted\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+         }
+        ]
+       },
+       "output": {}
+      }
+     }
+    ],
+    "links": [
+     {
+      "id": 1,
+      "from": "LogMessage24",
+      "to": "GetHistory",
+      "type": "default"
+     },
+     {
+      "id": 2,
+      "from": "GetHistory",
+      "to": "LogMessage25",
+      "type": "default"
+     },
+     {
+      "id": 3,
+      "from": "LogMessage25",
+      "to": "Return10",
+      "type": "default"
+     }
+    ],
+    "metadata": {
+     "input": [
+      {
+       "name": "parameters",
+       "type": "complex_object",
+       "value": {
+        "value": "",
+        "metadata": "{\"name\":{\"type\":\"string\"}}"
+       }
+      },
+      {
+       "name": "txID",
+       "type": "string"
+      },
+      {
+       "name": "txTime",
+       "type": "string"
+      }
+     ],
+     "output": [
+      {
+       "name": "returns",
+       "type": "array"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "triggers": [
+  {
+   "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction",
+   "name": "Transaction",
+   "description": "create a new marble, store into chaincode state",
+   "settings": {},
+   "id": "Transaction",
+   "handlers": [
+    {
+     "description": "create a new marble, store into chaincode state",
+     "settings": {
+      "name": "initMarble",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:initMarble"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['name']",
+         "type": "assign",
+         "value": "$.parameters.name"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['color']",
+         "type": "assign",
+         "value": "$.parameters.color"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['size']",
+         "type": "assign",
+         "value": "$.parameters.size"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['owner']",
+         "type": "assign",
+         "value": "$.parameters.owner"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "assign",
+         "value": "$.returns"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "read a marble from chaincode state",
+     "settings": {
+      "name": "readMarble",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:readMarble"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['name']",
+         "type": "assign",
+         "value": "$.parameters.name"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "assign",
+         "value": "$.returns"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "remove a marble key/value pair from state",
+     "settings": {
+      "name": "delete",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:delete"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['name']",
+         "type": "assign",
+         "value": "$.parameters.name"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "assign",
+         "value": "$.returns"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "transfer a marble by setting a new owner name on the marble",
+     "settings": {
+      "name": "transferMarble",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:transferMarble"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['name']",
+         "type": "assign",
+         "value": "$.parameters.name"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['newOwner']",
+         "type": "assign",
+         "value": "$.parameters.newOwner"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "assign",
+         "value": "$.returns"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "performs a range query based on the start and end keys provided",
+     "settings": {
+      "name": "getMarblesByRange",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:getMarblesByRange"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['startKey']",
+         "type": "assign",
+         "value": "$.parameters.startKey"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['endKey']",
+         "type": "assign",
+         "value": "$.parameters.endKey"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "array",
+         "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "transfer marbles of a given color to a new owner",
+     "settings": {
+      "name": "transferMarblesBasedOnColor",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"color\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:transferMarblesBasedOnColor"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['color']",
+         "type": "assign",
+         "value": "$.parameters.color"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['newOwner']",
+         "type": "assign",
+         "value": "$.parameters.newOwner"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "array",
+         "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "queries for marbles based on a passed-in owner",
+     "settings": {
+      "name": "queryMarblesByOwner",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:queryMarblesByOwner"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['owner']",
+         "type": "assign",
+         "value": "$.parameters.owner"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "array",
+         "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "uses a query string to perform a query for marbles",
+     "settings": {
+      "name": "queryMarbles",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:queryMarbles"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['query']",
+         "type": "assign",
+         "value": "$.parameters.query"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "array",
+         "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "performs a range query based on the start &amp; end key, page size and a bookmark.",
+     "settings": {
+      "name": "getMarblesByRangeWithPagination",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:getMarblesByRangeWithPagination"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['startKey']",
+         "type": "assign",
+         "value": "$.parameters.startKey"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['pageSize']",
+         "type": "assign",
+         "value": "$.parameters.pageSize"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['bookmark']",
+         "type": "assign",
+         "value": "$.parameters.bookmark"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['endKey']",
+         "type": "assign",
+         "value": "$.parameters.endKey"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']['count']",
+         "type": "assign",
+         "value": "$.returns.count"
+        },
+        {
+         "mapTo": "$INPUT['returns']['bookmark']",
+         "type": "assign",
+         "value": "$.returns.bookmark"
+        },
+        {
+         "mapTo": "$INPUT['returns']['marbles']",
+         "type": "array",
+         "value": "{\"to\":\"$INPUT['returns']['marbles']\",\"from\":\"$.returns.marbles\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "uses a query string, page size and a bookmark to perform a query for marbles",
+     "settings": {
+      "name": "queryMarblesWithPagination",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:queryMarblesWithPagination"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['query']",
+         "type": "assign",
+         "value": "$.parameters.query"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['pageSize']",
+         "type": "assign",
+         "value": "$.parameters.pageSize"
+        },
+        {
+         "mapTo": "$INPUT['parameters']['bookmark']",
+         "type": "assign",
+         "value": "$.parameters.bookmark"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']['count']",
+         "type": "assign",
+         "value": "$.returns.count"
+        },
+        {
+         "mapTo": "$INPUT['returns']['bookmark']",
+         "type": "assign",
+         "value": "$.returns.bookmark"
+        },
+        {
+         "mapTo": "$INPUT['returns']['marbles']",
+         "type": "array",
+         "value": "{\"to\":\"$INPUT['returns']['marbles']\",\"from\":\"$.returns.marbles\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "description": "retrieve history of a specified marble",
+     "settings": {
+      "name": "getHistoryForMarble",
+      "validation": false
+     },
+     "outputs": {
+      "parameters": {
+       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
+       "value": ""
+      },
+      "txID": "",
+      "txTime": "",
+      "_chaincode_stub": ""
+     },
+     "action": {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+      "data": {
+       "flowURI": "res://flow:getHistoryForMarble"
+      },
+      "mappings": {
+       "input": [
+        {
+         "mapTo": "$INPUT['parameters']['name']",
+         "type": "assign",
+         "value": "$.parameters.name"
+        },
+        {
+         "mapTo": "$INPUT['txID']",
+         "type": "assign",
+         "value": "$.txID"
+        },
+        {
+         "mapTo": "$INPUT['txTime']",
+         "type": "assign",
+         "value": "$.txTime"
+        }
+       ],
+       "output": [
+        {
+         "mapTo": "$INPUT['returns']",
+         "type": "array",
+         "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['txID']\",\"from\":\"$.txID\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['txTime']\",\"from\":\"$.txTime\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['isDeleted']\",\"from\":\"$.isDeleted\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "properties": [],
+ "ui": "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",
+ "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9mbG9nby1jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9LHsicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2Zsb2dvLWNvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
+ "connection": "UEsDBAoAAAAIAOKVmU4pu0wNBAAAAAIAAAAJAAAAY29ubi5qc29ui44FAFBLAQIUAAoAAAAIAOKVmU4pu0wNBAAAAAIAAAAJAAAAAAAAAAAAAAAAAAAAAABjb25uLmpzb25QSwUGAAAAAAEAAQA3AAAAKwAAAAAA"
+}

@@ -1,0 +1,77 @@
+
+{
+    "name": "fabclient-connector",
+    "version": "1.0.0",
+    "type": "flogo:connector",
+    "title": "Fabric Connector",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabclient",
+        "description": "Fabric Connection",
+        "visible": true,
+        "smallIcon": "ic-fabconnector@2x.png",
+        "largeIcon": "ic-fabconnector@3x.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
+    "keyfield": "name",
+    "settings": [
+        {
+            "name": "name",
+            "description": "Unique name of the Fabric network connection",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Name",
+                "visible": true
+            }
+        },
+        {
+            "name": "description",
+            "description": "Describe the Fabric network connection",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Description",
+                "visible": true
+            }
+        },
+        {
+            "name": "config",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Network configure file",
+                "description": "Select the configuration file for the client and Fabric network",
+                "type": "fileselector",
+                "fileExtensions": [".yaml"],
+                "visible": true
+            }
+        },
+        {
+            "name": "entityMatcher",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Connection entity matcher file",
+                "description": "Select the entity matcher file for overriding Fabric node URLs using pattern matching",
+                "type": "fileselector",
+                "fileExtensions": [".yaml"],
+                "visible": true
+            }
+        },
+        {
+            "name": "channelID",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Channel ID",
+                "description": "Channel ID",
+                "visible": true
+            }
+        }
+    ],
+    "actions": [{
+        "name": "Save Connector"
+    }]
+}

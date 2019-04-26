@@ -1,0 +1,82 @@
+
+{
+    "name": "fabric-putall",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Put All",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "visible": true,
+        "smallIcon": "ic-putall.png",
+        "description": "This activity stores multiple records in fabric ledger"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
+    "inputs": [
+        {
+            "name": "data",
+            "type": "complex_object",
+            "display": {
+                "name": "Key-value pairs",
+                "description": "Schema definition of array of key-value pairs, e.g.,\r\n[{\r\n  \"key\": \"string\",\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",
+                "type": "texteditor",
+                "syntax": "json",
+                "mappable": true
+            }
+        },
+        {
+            "name": "isPrivate",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Data is private",
+                "description": "Put data in private collection"
+            },
+            "value": false
+        },
+        {
+            "name": "collection",
+            "type": "string",
+            "display": {
+                "name": "Private collection name",
+                "description": "Name of the private collection",
+                "appPropertySupport": true,
+                "visible": false
+            }
+        },
+        {
+            "name": "compositeKeys",
+            "type": "string",
+            "display": {
+                "name": "Composite keys",
+                "description": "Define search index using composite key name and attributes (Note: the key value will be appended to composite-key if the value of the last specified attribute does not match the key), e.g. {\r\n    \"color~name\": [\"color\", \"name\"],\r\n    \"owner~name\": [\"owner\", \"name\"]\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "appPropertySupport": true
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "count",
+            "type": "integer"
+        },
+        {
+            "name": "errors",
+            "type": "integer"
+        },
+        {
+            "name": "result",
+            "type": "complex_object"
+        }
+    ]
+}

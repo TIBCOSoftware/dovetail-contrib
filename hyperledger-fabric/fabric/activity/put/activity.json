@@ -1,0 +1,105 @@
+{
+    "name": "fabric-put",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Put",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "visible": true,
+        "smallIcon": "ic-put.png",
+        "description": "This activity stores data to fabric ledger"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+    "inputs": [
+        {
+            "name": "key",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "valueType",
+            "type": "string",
+            "required": true,
+            "allowed": [
+                "string",
+                "number",
+                "integer",
+                "boolean",
+                "object"
+            ],
+            "value": "string",
+            "display": {
+                "name": "Data type",
+                "description": "Type of state data for the key",
+                "type": "dropdown",
+                "selection": "single"
+            }
+        },
+        {
+            "name": "value",
+            "type": "any"
+        },
+        {
+            "name": "data",
+            "type": "complex_object",
+            "display": {
+                "name": "Value object definition",
+                "description": "Schema definition of complex state data, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "mappable": true
+            }
+        },
+        {
+            "name": "isPrivate",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Data is private",
+                "description": "Put data in private collection"
+            },
+            "value": false
+        },
+        {
+            "name": "collection",
+            "type": "string",
+            "display": {
+                "name": "Private collection name",
+                "description": "Name of the private collection",
+                "appPropertySupport": true,
+                "visible": false
+            }
+        },
+        {
+            "name": "compositeKeys",
+            "type": "string",
+            "display": {
+                "name": "Composite keys",
+                "description": "Define search index using composite key name and attributes (Note: the key value will be appended to composite-key if the value of the last specified attribute does not match the key), e.g. {\r\n    \"index-color\": [\"color\", \"name\"],\r\n    \"index-owner\": [\"owner\", \"name\"]\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "appPropertySupport": true
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "key",
+            "type": "string"
+        },
+        {
+            "name": "result",
+            "type": "complex_object"
+        }
+    ]
+}
