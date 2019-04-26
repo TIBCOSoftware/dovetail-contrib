@@ -1,8 +1,10 @@
 import (
-    //_ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/append"
+    _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/append"
     _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/contains"
-    //_ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/count"
+    _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/count"
     _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/create"
+    _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/delete"
+    _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/get"
     _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/array/foreach"
     _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/boolean/false"
     _ "git.tibco.com/git/product/ipaas/wi-contrib.git/function/boolean/not"

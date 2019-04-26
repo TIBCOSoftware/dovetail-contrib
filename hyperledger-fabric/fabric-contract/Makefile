@@ -15,12 +15,13 @@ clean:
 
 .PHONY: create
 create: $(APP_FILE) clean
-	flogo create -f $(APP_FILE) $(APP_NAME) && \
+	-flogo create -f $(APP_FILE) $(APP_NAME)
 	cp $(SHIM_PATH)/chaincode_shim.go $(APP_NAME)/src/$(APP_NAME) && \
+	cp $(SHIM_PATH)/fe_functions.go $(APP_NAME)/src/$(APP_NAME) && \
+	cp Gopkg.toml $(APP_NAME)/src/$(APP_NAME) && \
 	rm $(APP_NAME)/src/$(APP_NAME)/main.go && \
 	cd $(APP_NAME)/src/$(APP_NAME) && \
-	rm -Rf Gopkg.* vendor && \
-	dep init
+	dep ensure -v update
 
 .PHONY: build
 build: $(APP_NAME)
@@ -30,6 +31,11 @@ build: $(APP_NAME)
 
 .PHONY: deploy
 deploy: build
-	cp $(APP_NAME)/bin/linux_amd64/$(APP_NAME) $(APP_NAME)/src/$(APP_NAME) && \
+ifneq (,$(wildcard ./$(APP_NAME)/bin/linux_amd64/$(APP_NAME)))
+	cp $(APP_NAME)/bin/linux_amd64/$(APP_NAME) $(APP_NAME)/src/$(APP_NAME)
+endif
+ifneq (,$(wildcard ./$(APP_NAME)/bin/$(APP_NAME)))
+	cp $(APP_NAME)/bin/$(APP_NAME) $(APP_NAME)/src/$(APP_NAME)
+endif
 	rm -Rf $(CC_DEPLOY)/$(APP_NAME) && \
 	cp -Rf $(APP_NAME)/src/$(APP_NAME) $(CC_DEPLOY)
