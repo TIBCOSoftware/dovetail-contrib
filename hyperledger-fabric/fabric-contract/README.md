@@ -42,3 +42,5 @@ export PIN=$(echo -n "1054" | base64)
 peer chaincode invoke -n flogo_cc -c '{"Args":["put_record","user_txn_1","hello_1","SHA256","hash_1"]}' -C myc --transient "{\"secret\": \"$SECRET\", \"pin\": \"$PIN\"}"
 peer chaincode invoke -n flogo_cc -c '{"Args":["put_records","[{\"user_txn_id\":\"trans_1\",\"data\":\"hello_1\"}]"]}' -C myc --transient "{\"secret\": \"$SECRET\"}"
 ```
+
+Note that the above tests did not invoke transactions that use Flogo Enterprise functions, because we did not include those functions in the chaincode build.  To use the Flogo Enterprise functions at runtime, we must make the source code of `$FLOGO_ROOT/2.4/lib/core/src/git.tibco.com` available in github, and then build the chaincode with imports of the funciton packages, e.g., [fe_functions.go](../shim/fe_functions.go).
