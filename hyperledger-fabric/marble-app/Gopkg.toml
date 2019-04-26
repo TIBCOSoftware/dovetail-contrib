@@ -29,4 +29,4 @@
 [[override]]
   name = "github.com/TIBCOSoftware/dovetail-contrib"
   branch = "issue-36/fabric-extension"
-  source = "github.com/yxuco/dovetail-contrib"
+#  source = "github.com/yxuco/dovetail-contrib"
