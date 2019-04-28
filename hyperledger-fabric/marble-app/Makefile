@@ -36,6 +36,12 @@ endif
 ifneq (,$(wildcard ./$(APP_NAME)/bin/$(APP_NAME)))
 	cp $(APP_NAME)/bin/$(APP_NAME) $(APP_NAME)/src/$(APP_NAME)
 endif
+	cp -Rf META-INF $(APP_NAME)/src/$(APP_NAME)
 	rm -Rf $(CC_DEPLOY)/$(APP_NAME) && \
-	cp -Rf $(APP_NAME)/src/$(APP_NAME) $(CC_DEPLOY) && \
-	cp -Rf META-INF $(CC_DEPLOY)/$(APP_NAME)
+	cp -Rf $(APP_NAME)/src/$(APP_NAME) $(CC_DEPLOY)
+
+.PHONY: package
+package: deploy
+	docker exec cli peer chaincode package -n $(APP_NAME) -v 1.0 \
+	-p github.com/chaincode/$(APP_NAME) ../../../chaincode/$(APP_NAME).cds
+	mv $(CC_DEPLOY)/$(APP_NAME).cds $(SRC_PATH)

@@ -16,11 +16,11 @@
 
 [[override]]
   name = "github.com/hyperledger/fabric"
-  version = "v1.4.0"
+  version = "v1.4.1"
 
 [[override]]
   name = "github.com/fsouza/go-dockerclient"
-  version = "v1.3.0"
+  version = "v1.4.0"
 
 [[override]]
   name = "github.com/docker/docker"
@@ -29,4 +29,4 @@
 [[override]]
   name = "github.com/TIBCOSoftware/dovetail-contrib"
   branch = "issue-36/fabric-extension"
-#  source = "github.com/yxuco/dovetail-contrib"
+  source = "github.com/yxuco/dovetail-contrib"
