@@ -91,3 +91,5 @@ submodules/flogo-cicd/.build-cache
 .gitignore
 blockchain/corda/target/
 smartcontract-java/target
+blockchain/corda/dependency-reduced-pom.xml
+blockchain/corda/logs/
