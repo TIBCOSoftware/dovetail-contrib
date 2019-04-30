@@ -58,10 +58,8 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
         let initrigger = modelService.createTriggerElement("CorDApp/R3FlowInitiator");
         if (initrigger) {
             for (let s = 0; s < initrigger.handler.settings.length; s++) {
-                if (initrigger.handler.settings[s].name === "allowRPCClient") {
-                    initrigger.handler.settings[s].value = context.getField("allowRPCClient").value;
-                } else if (initrigger.handler.settings[s].name === "useAnonymousIdentity") {
-                    initrigger.handler.settings[s].value = context.getField("useAnonymousIdentity").value;
+                if (initrigger.handler.settings[s].name === "useConfidentialIdentity") {
+                    initrigger.handler.settings[s].value = context.getField("useConfidentialIdentity").value;
                 } else {
                     let inputp = context.getField("inputParams");
                     initrigger.handler.settings[s].value = {
@@ -123,6 +121,7 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
                 let javatype = tp;
                 let isRef = false;
                 let isArray = false;
+                let useConfidentialIdentity = inputs[i].anonymous;
                 let attr = {};
 
                 switch (tp) {
@@ -158,6 +157,7 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
                 attr["type"] = javatype;
                 attr["isRef"] = isRef
                 attr["isArray"] = isArray;
+                attr["isAnonymous"] = useConfidentialIdentity;
                 metadata.attributes.push(attr);
            }
            schema["description"] = JSON.stringify(metadata);

@@ -30,6 +30,16 @@
     "handler": {
       "settings": [
         {
+            "name": "useConfidentialIdentity",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Use confidential identitiies for this transaction?",
+                "visible": true
+            },
+            "value": true
+        },
+        {
             "name": "initiatorFlow",
             "type":"string",
             "required":true,
