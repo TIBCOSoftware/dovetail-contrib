@@ -1,0 +1,20 @@
+{
+    "name": "toLinearId",
+    "args": [{
+        "name": "extId",
+        "type": "string"
+        },
+        {
+        "name": "uuid",
+        "type": "string"
+    }],
+    "return": {"type": "string"},
+    "help": {
+        "description":"Returns the Corda UniqueIdentifier.",
+        "usage":"string.toLinearId(<< extid >>, <<uuid>>)\nReturn Type\nstring",
+        "example":"string.toLinearId(\"myid\", \"d395b7ac-56eb-11e9-8647-d663bd873d93\")\nReturns\ntibco web integrator"
+    },
+    "wi": {
+        "visible": true
+    }
+}

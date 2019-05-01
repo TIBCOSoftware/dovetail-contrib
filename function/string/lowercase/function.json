@@ -1,0 +1,16 @@
+{
+    "name": "lowerCase",
+    "args": [{
+        "name": "str",
+        "type": "string"
+    }],
+    "return": {"type": "string"},
+    "help": {
+        "description":"Returns the string in lowercase.",
+        "usage":"string.lowerCase(<< str >>)\nReturn Type\nstring",
+        "example":"string.LowerCase(\"TIBCO Web Integrator\")\nReturns\ntibco web integrator"
+    },
+    "wi": {
+        "visible": true
+    }
+}

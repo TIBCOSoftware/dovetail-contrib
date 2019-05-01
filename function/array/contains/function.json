@@ -1,0 +1,21 @@
+{
+    "name": "contains",
+    "args": [{
+              "name": "array",
+              "type": "any",
+              "array": true
+            },
+            {
+              "name": "item",
+              "type": "any"
+            }],
+    "return": {"type": "boolean"},
+    "help": {
+      "description":"Returns true if the item is found in the given array else returns false. The item type must match with the array type.",
+      "usage":"array.contains(<< array >>, << item >>)\nReturn Type\nbool",
+      "example":"array.contains(array.create(\"A\",\"B\",\"C\"), \"B\")\nReturns\ntrue"
+    },
+    "wi": {
+        "visible": true
+    }
+}
