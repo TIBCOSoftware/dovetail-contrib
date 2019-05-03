@@ -44,7 +44,7 @@ public class TestTrigger {
 	}
 	@Test
 	public void testInitiator () throws Exception {
-		AppContainer ctnr = new AppContainer(mock, new MockFlow(false));
+		CordaUtil.setServiceHub(mock);
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream in = this.getClass().getResourceAsStream("iouapp.json");
 		
@@ -77,7 +77,7 @@ public class TestTrigger {
 	class MockFlow extends AppFlow {
 
 		public MockFlow(boolean initiating) {
-			super(initiating);
+			super(initiating, false);
 			// TODO Auto-generated constructor stub
 		}
 

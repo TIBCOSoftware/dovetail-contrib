@@ -7,7 +7,7 @@ import javax.xml.bind.DatatypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.tibco.dovetail.container.cordapp.AppContainer;
+import com.tibco.dovetail.container.corda.CordaUtil;
 
 import net.corda.finance.contracts.asset.Cash.State;
 
@@ -29,8 +29,8 @@ public class CashSerializer extends StdSerializer<State> {
 	public void serialize(State value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 		
 		gen.writeStartObject();
-		gen.writeStringField("owner",AppContainer.partyToString(value.getOwner()));
-		gen.writeStringField("issuer", AppContainer.partyToString(value.getAmount().getToken().getIssuer().getParty()));
+		gen.writeStringField("owner",CordaUtil.partyToString(value.getOwner()));
+		gen.writeStringField("issuer", CordaUtil.partyToString(value.getAmount().getToken().getIssuer().getParty()));
 		gen.writeStringField("issuerRef", DatatypeConverter.printBase64Binary(value.getAmount().getToken().getIssuer().getReference().getBytes()));
 		gen.writeObjectFieldStart("amt");
 		gen.writeNumberField("quantity", value.getAmount().getQuantity());

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.tibco.dovetail.container.cordapp.AppContainer;
+import com.tibco.dovetail.container.corda.CordaUtil;
 
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.PartyAndReference;
@@ -48,7 +48,7 @@ public class CashDeserializer extends StdDeserializer<State>{
 		
 		Amount<Currency> amt = MoneyAmtDeserializer.parseAmount(node.get("amt"));
 		
-		return new Cash.State(new PartyAndReference(AppContainer.partyFromString(issuer), OpaqueBytes.of(DatatypeConverter.parseBase64Binary(issuerRef))), amt, AppContainer.partyFromString(owner));
+		return new Cash.State(new PartyAndReference(CordaUtil.partyFromString(issuer), OpaqueBytes.of(DatatypeConverter.parseBase64Binary(issuerRef))), amt, CordaUtil.partyFromString(owner));
 	}
 
 }

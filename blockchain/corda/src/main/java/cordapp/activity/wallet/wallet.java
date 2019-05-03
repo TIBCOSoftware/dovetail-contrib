@@ -4,7 +4,6 @@ import java.util.Currency;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.jayway.jsonpath.DocumentContext;
@@ -13,7 +12,6 @@ import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.container.cordapp.AppDataService;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.engine.Context;
-import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.StateAndRef;
@@ -47,7 +45,7 @@ public class wallet implements IActivity{
 			case "Retrieve Funds":
 				Set<AbstractParty> pIssuers = new HashSet<AbstractParty>();
 				if(issuers != null) {
-					((List)issuers).forEach(i -> pIssuers.add(container.partyFromString(i.toString())));
+					((List)issuers).forEach(i -> pIssuers.add(CordaUtil.partyFromString(i.toString())));
 				}
 				
 				Object amt = val.get("amt");

@@ -28,21 +28,27 @@ import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.ContractsDSL;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.crypto.Base58;
 import net.corda.finance.contracts.asset.Cash;
 
 import org.bouncycastle.util.encoders.Hex;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import net.corda.core.identity.AbstractParty;
+import net.corda.core.identity.AnonymousParty;
 import net.corda.core.identity.Party;
+import net.corda.core.node.ServiceHub;
 
 public class CordaUtil {
 	static ObjectMapper mapper;
+	static ServiceHub serviceHub;
+	
 	static {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new KotlinModule());
@@ -147,5 +153,26 @@ public class CordaUtil {
             throw new IllegalArgumentException(e);
         }
     }
+    
+    public static String partyToString(AbstractParty p) {
+ 		return Base58.encode(p.getOwningKey().getEncoded());
+ }
+ 
+	 public static AbstractParty partyFromString(String s) {
+		 if(serviceHub == null)
+			 throw new RuntimeException("serviceHub is not initalized");
+		 
+		PublicKey key = net.corda.core.crypto.Crypto.decodePublicKey(Base58.decode(s));
+
+ 		if(serviceHub.getNetworkMapCache().getNodesByLegalIdentityKey(key).isEmpty())
+ 			return new AnonymousParty(key);
+ 		else
+ 			return serviceHub.getIdentityService().partyFromKey(key);
+
+	 }
+	 
+	 public static void setServiceHub(ServiceHub hub) {
+		 serviceHub = hub;
+	 }
     
 }

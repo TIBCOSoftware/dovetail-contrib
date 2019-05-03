@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.tibco.dovetail.container.cordapp.AppContainer;
+import com.tibco.dovetail.container.corda.CordaUtil;
 
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -31,7 +31,7 @@ public class PartyDeserializer extends StdDeserializer<Party>{
 	public Party deserialize(JsonParser p, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
 		
-			return (Party) AppContainer.partyFromString(p.getText());
+			return (Party) CordaUtil.partyFromString(p.getText());
 	}
 
 }

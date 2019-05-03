@@ -1,5 +1,8 @@
 package com.tibco.dovetail.container.cordapp;
 
+import java.security.PublicKey;
+
+import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.core.runtime.services.IContainerService;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 import com.tibco.dovetail.core.runtime.services.IEventService;
@@ -7,6 +10,7 @@ import com.tibco.dovetail.core.runtime.services.ILogService;
 
 import net.corda.core.crypto.Base58;
 import net.corda.core.identity.AbstractParty;
+import net.corda.core.identity.AnonymousParty;
 import net.corda.core.node.ServiceHub;
 
 public class AppContainer implements IContainerService {
@@ -18,6 +22,7 @@ public class AppContainer implements IContainerService {
     
 	public AppContainer(AppFlow flow) {
 		serviceHub = flow.getServiceHub();
+		CordaUtil.setServiceHub(serviceHub);
 		this.flowService = flow;
 
 		if(flow.getLogger() != null)
@@ -59,12 +64,4 @@ public class AppContainer implements IContainerService {
 	public AppFlow getFlowService() {
 		return this.flowService;
 	}
-	
-	 public static String partyToString(AbstractParty p) {
- 		return Base58.encode(p.getOwningKey().getEncoded());
- }
- 
-	 public static AbstractParty partyFromString(String s) {
-	 		return serviceHub.getIdentityService().partyFromKey(net.corda.core.crypto.Crypto.decodePublicKey(Base58.decode(s)));
-	 }
 }

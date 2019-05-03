@@ -1,13 +1,11 @@
 package com.tibco.dovetail.corda.json;
 
-import java.io.IOException;
 import java.util.Currency;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
@@ -36,7 +34,8 @@ public class TestSerializer {
 		bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
 		mock = new MockServices(bob);
 		//CordaUtil.initWithCordaRuntime(mock);
-		ctnr = new AppContainer(mock, new MockFlow(false));
+		CordaUtil.setServiceHub(mock);
+		
 		
 }
 	@Test
@@ -173,7 +172,7 @@ public class TestSerializer {
 	static class MockFlow extends AppFlow {
 
 		public MockFlow(boolean initiating) {
-			super(initiating);
+			super(initiating, false);
 			// TODO Auto-generated constructor stub
 		}
 
@@ -182,6 +181,7 @@ public class TestSerializer {
 			// TODO Auto-generated method stub
 			return null;
 		}
+		
 		
 	}
 

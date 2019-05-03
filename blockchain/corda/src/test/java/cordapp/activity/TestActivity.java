@@ -88,11 +88,11 @@ public class TestActivity {
 		
 		bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
 		mock = new MockServices(bob);
-		
+		CordaUtil.setServiceHub(mock);
 		AppContainer ctnr = new AppContainer(mock, new MockFlow(true));
 		context.setContainerService(ctnr);
 		
-		DocumentContext doc = JsonUtil.getJsonParser().parse("{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuers\":[\"" + ctnr.partyToString(bob.getParty()) + "\"]}");
+		DocumentContext doc = JsonUtil.getJsonParser().parse("{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuers\":[\"" + CordaUtil.partyToString(bob.getParty()) + "\"]}");
 		
 		
 		
@@ -132,7 +132,7 @@ public class TestActivity {
 	class MockFlow extends AppFlow {
 
 		public MockFlow(boolean initiating) {
-			super(initiating);
+			super(initiating, false);
 			// TODO Auto-generated constructor stub
 		}
 

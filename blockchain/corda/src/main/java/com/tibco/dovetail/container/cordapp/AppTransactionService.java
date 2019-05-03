@@ -10,7 +10,7 @@ import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
 import com.tibco.dovetail.core.runtime.transaction.TxnInputAttribute;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
-import net.corda.core.identity.Party;
+import net.corda.core.identity.AbstractParty;
 
 public class AppTransactionService implements ITransactionService {
 
@@ -18,9 +18,9 @@ public class AppTransactionService implements ITransactionService {
 	private String ourIdentity;
 	private String transactionName;
 	
-	public AppTransactionService( LinkedHashMap<String, Object> flowInputs,  String flowName, Party ourIdentity) {
+	public AppTransactionService( LinkedHashMap<String, Object> flowInputs,  String flowName, AbstractParty selfIdentity) {
 		this.flowInputs = flowInputs;
-		this.ourIdentity = AppContainer.partyToString(ourIdentity);
+		this.ourIdentity = CordaUtil.partyToString(selfIdentity);
 		this.transactionName = flowName;
 	}
 	
