@@ -32,3 +32,4 @@ build: $(APP_NAME)
 .PHONY: run
 run:
 	FLOGO_LOG_LEVEL=DEBUG $(APP_NAME)/bin/$(APP_NAME)
+
