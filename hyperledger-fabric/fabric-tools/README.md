@@ -58,7 +58,7 @@ cd $FLOGO_HOME/2.4/bin
 * Open `Extensions` tab, and upload `fabclient` extension, [fabclientExtension.zip](../fabclientExtension.zip);
 * Open `Apps` tab, create app named `marble_client_app` and import app with the file [`marble_client_app.json`](../marble-client/marble_client_app.json);
 * Open the `marble_client_app` and click the `App Properties` link, update the value of `CLIENT_USER` to match the name of the user created in the previous step;
-* Open `Connections` tab, edit and save the connector `local-first-network` to use configuration files `./scripts/config-ibp.yaml]`, which is generated in the previous step, and [empty_entity_matchers.yaml](../testdata/empty_entity_matchers.yaml);
+* Open `Connections` tab, edit and save the connector `local-first-network` to use configuration files `./scripts/config-ibp.yaml`, which is generated in the previous step, and [empty_entity_matchers.yaml](../testdata/empty_entity_matchers.yaml);
 * Open `Apps` tab, export the `marble_client_app` and download the updated app to [`marble-client/marble_client_app.json`](../marble-client/marble_client_app.json).
 
 Build and start the marble-client-app:
