@@ -93,3 +93,6 @@ cd $GOPATH//src/github.com/hyperledger/fabric-samples/first-network
 docker rm $(docker ps -a | grep dev-peer | awk '{print $1}')
 docker rmi $(docker images | grep dev-peer | awk '{print $3}')
 ```
+
+## Deploy to IBM Cloud
+This client app can access the same marble-app chaincode deployed in [IBM Cloud](https://cloud.ibm.com) using the [IBM Blockchain Platform](https://cloud.ibm.com/catalog/services/blockchain-platform-20).  Refer to [fabric-tools](../fabric-tools) for details on the configuration.
