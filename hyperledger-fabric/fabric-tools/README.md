@@ -1,16 +1,16 @@
 # fabric-tools
-This package is designed to support configuration and deplooyment of dovetail application in cloud services, including AWS, Azure, and IBM Cloud.  Since [IBM Blockchain Platform (IBP)](https://cloud.ibm.com/catalog/services/blockchain-platform-20) is currently the only public cloud environment that supports Hyperledger Fabric v1.4, we describe the deployment process for [marble-app](../marble-app) and [marble-client](../marble-client) for IBP only.
+This package is designed to support configuration and deplooyment of dovetail applications in public cloud services, including AWS, Azure, and IBM Cloud.  Since [IBM Blockchain Platform (IBP)](https://cloud.ibm.com/catalog/services/blockchain-platform-20) is currently the only public cloud environment that supports Hyperledger Fabric v1.4, we describe the deployment process for [marble-app](../marble-app) and [marble-client](../marble-client) for IBP only.
 
 ## Create Hyperledger Fabric network in IBM Cloud
-The [IBP tutorial](https://github.com/IBM/blockchainbean2) describes how to create a Hyperledger Fabric network in IBM Cloud, which involves the following steps:
-1. Create IBM Cloud Kubernetes cluster [IBP Tutorial (Step 4)](https://github.com/IBM/blockchainbean2#step-4-create-ibm-cloud-services)
-2. Build Fabric network using IBM Blockchain Platform console [IBP Tutorial (Step 5)](https://github.com/IBM/blockchainbean2#step-5-build-a-network), which includes:
+The [IBP Tutorial](https://github.com/IBM/blockchainbean2) describes how to create a Hyperledger Fabric network in IBM Cloud, which involves the following steps:
+1. Create IBM Cloud Kubernetes cluster, [IBP Tutorial (Step 4)](https://github.com/IBM/blockchainbean2#step-4-create-ibm-cloud-services);
+2. Build Fabric network using IBM Blockchain Platform console, [IBP Tutorial (Step 5)](https://github.com/IBM/blockchainbean2#step-5-build-a-network), which includes:
 * Create and start Certificate Authority (CA) servers for orderer and peer organizations;
-* Create Identities for organization administrators and peer/orderer nodes;
+* Create identities for organization administrators and peer/orderer nodes;
 * Create MSP definitions for orderer and peer organizations;
 * Create and start orderer and peer nodes;
 * Define network consortium by adding organizations in an orderer;
-* Create a channel, and join peers to the channel;
+* Create a channel, and join peers to the channel.
 
 ## Package and install/instantiate chaincode
 Chaincode must be packaged as `cds` file to be installed in IBP.  We can package the [marble-app](../marble-app) chaincode using a local `cli` docker container, i.e.,
@@ -18,9 +18,12 @@ Chaincode must be packaged as `cds` file to be installed in IBP.  We can package
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/marble-app
 make package
 ```
-Note that this command requires that you start the local `cli` docker container, or simply start all containers of the `first-network` sample network.
-
-You can then install and instantiate the resulting package `marble-app.cds` using the `IBP console` as shown in the [IBP Tutorial (Step 6)](https://github.com/IBM/blockchainbean2#step-6-deploy-blockchainbean2-smart-contract-on-the-network).
+Note that this command requires that you start the local `cli` docker container, or simply start all containers of the `first-network` sample network:
+```
+cd $GOPATH/src/github.com/hyperledger/fabric-samples/first-network
+./byfn.sh up -s couchdb
+```
+You can then install and instantiate the resulting package, `marble-app.cds` using the `IBP console` as shown in the [IBP Tutorial (Step 6)](https://github.com/IBM/blockchainbean2#step-6-deploy-blockchainbean2-smart-contract-on-the-network).
 
 ## Prepare IBP network for client app
 Download the connection profile of the instantiated `marble-app.cds` as shown in the [IBP Tutorial (Step 7)](https://github.com/IBM/blockchainbean2#step-7-connect-application-to-the-network).  Save the profile in the `scripts` folder, e.g., [scripts/ibpConnection.json](./scripts/ibpConnection.json).
@@ -36,7 +39,7 @@ cd scripts
 ```
 This script uses the connection profile and user and password specified in the above steps, so change them to match the names in your configuration.
 
-Verify that a network-config-file `config-ibp.yaml` is created, which will be used by the client app to connect to the IBP network.  A folder `crypto-ibp` should be created and it contains required crypto data, especially the private key and signing certificate of the client user, `user1`, which is in the folder, e.g., `crypto-ibp/organizations/org1msp/users/user1/msp`, and the `signing certificate` should be named as, e.g., `signcerts/user1@org1msp-cert.pem`.
+Verify that a network-config-file, `config-ibp.yaml` is created, which will be used by the client app to connect to the IBP network.  A folder `crypto-ibp` should be created and it contains required crypto data, especially the private key and signing certificate of the client user, `user1`, which is in the folder, e.g., `crypto-ibp/organizations/org1msp/users/user1/msp`, and the `signing certificate` should be named as, e.g., `signcerts/user1@org1msp-cert.pem`.
 
 Note that the setup script depends on the [fabric-ca-client](https://github.com/hyperledger/fabric-ca), which must be installed in advance, i.e.,
 ```
@@ -52,11 +55,11 @@ cd $FLOGO_HOME/2.4/bin
 ./run-studio.sh
 ```
 * Launch Flogo Console in Chrome at `http://localhost:8090`
-* Open `Extensions` tab, and upload `fabclient` extension, [fabclientExtensiono.zip](../fabclientExtension.zip);
+* Open `Extensions` tab, and upload `fabclient` extension, [fabclientExtension.zip](../fabclientExtension.zip);
 * Open `Apps` tab, create app named `marble_client_app` and import app with the file [`marble_client_app.json`](../marble-client/marble_client_app.json);
 * Open the `marble_client_app` and click the `App Properties` link, update the value of `CLIENT_USER` to match the name of the user created in the previous step;
-* Open `Connections` tab, edit and save the connector `local-first-network` to use configuration files of [config-ibp.yaml](./scripts/config-ibp.yaml), which is generated in the previous step, and [empty_entity_matchers.yaml](../testdata/empty_entity_matchers.yaml);
-* Open `Apps` tab, export the `marble_client_app` and download the updated app to [`marble-client/marble_client_app.json`]((../marble-client/marble_client_app.json)).
+* Open `Connections` tab, edit and save the connector `local-first-network` to use configuration files `./scripts/config-ibp.yaml]`, which is generated in the previous step, and [empty_entity_matchers.yaml](../testdata/empty_entity_matchers.yaml);
+* Open `Apps` tab, export the `marble_client_app` and download the updated app to [`marble-client/marble_client_app.json`](../marble-client/marble_client_app.json).
 
 Build and start the marble-client-app:
 ```
@@ -69,4 +72,4 @@ make run
 Note that the `CRYPTO_PATH` must be set to the crypto folder generated by the previous step.  To run the client app in a docker container, you can copy or mount this crypto folder in the docker container, and configure `CRYPTO_PATH` accordingly.
 
 ## Test marble-client app
-You can use REST API calls to test the `marble-client` with the chaincode `marble-app` instantiated in IBM Cloud as described in [`marble-client`](../marble-client#test-marble-client-app)
+The REST APIs, described in [`marble-client`](../marble-client#test-marble-client-app), can be used to test the `marble-client` with the chaincode `marble-app` instantiated in IBM Cloud.

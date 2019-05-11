@@ -79,7 +79,7 @@ docker rm $(docker ps -a | grep hyperledger | awk '{print $1}')
 ## Test chaincode with multi-org fabric network
 Start Hyperledger Fabric first-network with CouchDB:
 ```
-cd $GOPATH//src/github.com/hyperledger/fabric-samples/first-network
+cd $GOPATH/src/github.com/hyperledger/fabric-samples/first-network
 ./byfn.sh up -s couchdb
 ```
 Use the `cli` container to install the `marble_cc` chaincode on both `org1` and `org2`, and then instantiate it.
