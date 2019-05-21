@@ -5,6 +5,5 @@ iou-app/iou_cc/
 testdata/crypto-config/
 marble-client/marble_client/
 marble-private-client/marbleprivate_client
-*.cds
 fabric-tools/scripts/*.yaml
 fabric-tools/scripts/crypto*
