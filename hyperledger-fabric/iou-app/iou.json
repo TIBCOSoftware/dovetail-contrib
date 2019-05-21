@@ -1,0 +1,1442 @@
+{
+    "name": "iou",
+    "description": " ",
+    "version": "1.0.0",
+    "type": "flogo:app",
+    "appModel": "1.0.0",
+    "feVersion": "2.5.0",
+    "resources": [
+        {
+            "id": "flow:issueIOU",
+            "data": {
+                "name": "issueIOU",
+                "description": "issue a new IOU",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"Issue new IOU \", $flow.parameters.id)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Get",
+                        "name": "Get",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+                            "settings": {},
+                            "input": {
+                                "key": "",
+                                "isPrivate": false,
+                                "collection": ""
+                            },
+                            "output": {
+                                "message": "",
+                                "key": "",
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 100,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}\n"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['key']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.id"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage1",
+                        "name": "LogMessage1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"GET: \", $activity[Get].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "data": ""
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"IOU already exists: \", $activity[Get].key)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Put",
+                        "name": "Put",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+                            "settings": {},
+                            "input": {
+                                "key": "",
+                                "valueType": "object",
+                                "value": "",
+                                "data": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 100,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}\n"
+                                },
+                                "isPrivate": false,
+                                "collection": "",
+                                "compositeKeys": "{\r \"issuer~id\": [\"issuer\", \"id\"],\r \"owner~id\": [\"owner\", \"id\"]\r}"
+                            },
+                            "output": {
+                                "message": "",
+                                "key": "",
+                                "result": {
+                                    "metadata": "",
+                                    "value": "",
+                                    "fe_metadata": "{\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 100,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}\n"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['key']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.id"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage2",
+                        "name": "LogMessage2",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"PUT: \", $activity[Put].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "assign",
+                                        "value": "$activity[Put].result"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    },
+                    {
+                        "id": "ThrowError1",
+                        "name": "ThrowError1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "data": ""
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"failed to store IOU \", $flow.parameters.id, \": \", $activity[Put].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "Get",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Get",
+                        "to": "LogMessage1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogMessage1",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "value": "$activity[Get].code == 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "LogMessage1",
+                        "to": "Put",
+                        "type": "expression",
+                        "value": "$activity[Get].code == 300"
+                    },
+                    {
+                        "id": 5,
+                        "from": "Put",
+                        "to": "LogMessage2",
+                        "type": "default"
+                    },
+                    {
+                        "id": 6,
+                        "from": "LogMessage2",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[Put].code == 200"
+                    },
+                    {
+                        "id": 7,
+                        "from": "LogMessage2",
+                        "to": "ThrowError1",
+                        "type": "expression",
+                        "value": "$activity[Put].code != 200"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"Transaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:transferIOU",
+            "data": {
+                "name": "transferIOU",
+                "description": "transfer IOU by id to a new owner",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"transfer IOU \", $flow.parameters.id, \" to owner \", $flow.parameters.newOwner)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Get",
+                        "name": "Get",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+                            "settings": {},
+                            "input": {
+                                "key": "",
+                                "isPrivate": false,
+                                "collection": ""
+                            },
+                            "output": {
+                                "message": "",
+                                "key": "",
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['key']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.id"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage1",
+                        "name": "LogMessage1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"GET: \", $activity[Get].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Put",
+                        "name": "Put",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+                            "settings": {},
+                            "input": {
+                                "key": "",
+                                "valueType": "object",
+                                "value": "",
+                                "data": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}"
+                                },
+                                "isPrivate": false,
+                                "collection": "",
+                                "compositeKeys": "{\n    \"issuer~id\": [\"issuer\", \"id\"],\n    \"owner~id\": [\"owner\", \"id\"]\n}"
+                            },
+                            "output": {
+                                "result": {
+                                    "metadata": "",
+                                    "value": "",
+                                    "fe_metadata": "{\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['key']",
+                                        "type": "assign",
+                                        "value": "$activity[Get].key"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['id']",
+                                        "type": "assign",
+                                        "value": "$activity[Get].result.id"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['issuer']",
+                                        "type": "assign",
+                                        "value": "$activity[Get].result.issuer"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['amount']",
+                                        "type": "assign",
+                                        "value": "$activity[Get].result.amount"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['currency']",
+                                        "type": "assign",
+                                        "value": "$activity[Get].result.currency"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['owner']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.newOwner"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage2",
+                        "name": "LogMessage2",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"PUT: \", $activity[Put].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "assign",
+                                        "value": "$activity[Put].result"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "data": ""
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"failed to find IOU \", $flow.parameters.id, \": \", $activity[Get].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "Get",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Get",
+                        "to": "LogMessage1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogMessage1",
+                        "to": "Put",
+                        "type": "expression",
+                        "value": "$activity[Get].code == 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "Put",
+                        "to": "LogMessage2",
+                        "type": "default"
+                    },
+                    {
+                        "id": 5,
+                        "from": "LogMessage2",
+                        "to": "Return",
+                        "type": "default"
+                    },
+                    {
+                        "id": 6,
+                        "from": "LogMessage1",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "value": "$activity[Get].code != 200"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"Transaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:transferIOUByOwner",
+            "data": {
+                "name": "transferIOUByOwner",
+                "description": "transfer all IOU's of an owner",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"transfer IOU from \", $flow.parameters.owner, \" to \", $flow.parameters.newOwner)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "GetByCompositeKey",
+                        "name": "GetByCompositeKey",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
+                            "settings": {},
+                            "input": {
+                                "keyName": "owner~id",
+                                "attributes": {
+                                    "metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}},\"required\":[]}",
+                                    "value": "",
+                                    "fe_metadata": "[{\"parameterName\":\"owner\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                },
+                                "usePagination": false,
+                                "start": "",
+                                "isPrivate": false,
+                                "collection": ""
+                            },
+                            "output": {
+                                "message": "",
+                                "bookmark": "",
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                    "value": "",
+                                    "fe_metadata": "[{\n    \"key\": \"\",\n    \"value\": {\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}\n}]"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['attributes']['owner']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.owner"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage1",
+                        "name": "LogMessage1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"GET by owner \", $flow.parameters.owner, \": \", $activity[GetByCompositeKey].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "PutAll",
+                        "name": "PutAll",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
+                            "settings": {},
+                            "input": {
+                                "data": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                    "value": "",
+                                    "fe_metadata": "[{\n    \"key\": \"\",\n    \"value\": {\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}\n}]"
+                                },
+                                "isPrivate": false,
+                                "collection": "",
+                                "compositeKeys": "{\n    \"issuer~id\": [\"issuer\", \"id\"],\n    \"owner~id\": [\"owner\", \"id\"]\n}"
+                            },
+                            "output": {
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                    "value": "",
+                                    "fe_metadata": "[{\n    \"key\": \"\",\n    \"value\": {\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}\n}]"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['data']",
+                                        "type": "array",
+                                        "value": "{\"to\":\"$INPUT['data']\",\"from\":\"$activity[GetByCompositeKey].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['id']\",\"from\":\"$.value.id\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['issuer']\",\"from\":\"$.value.issuer\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['amount']\",\"from\":\"$.value.amount\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['currency']\",\"from\":\"$.value.currency\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['owner']\",\"from\":\"$flow.parameters.newOwner\",\"type\":\"assign\"}]}"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage2",
+                        "name": "LogMessage2",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"PUT all: \", $activity[PutAll].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "array",
+                                        "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[PutAll].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "data": ""
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"failed to get IOU by owner \", $flow.parameters.owner, \": \", $activity[GetByCompositeKey].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "GetByCompositeKey",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "GetByCompositeKey",
+                        "to": "LogMessage1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogMessage1",
+                        "to": "PutAll",
+                        "type": "expression",
+                        "value": "$activity[GetByCompositeKey].code == 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "PutAll",
+                        "to": "LogMessage2",
+                        "type": "default"
+                    },
+                    {
+                        "id": 5,
+                        "from": "LogMessage2",
+                        "to": "Return",
+                        "type": "default"
+                    },
+                    {
+                        "id": 6,
+                        "from": "LogMessage1",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "value": "$activity[GetByCompositeKey].code != 200"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"owner\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}"
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"Transaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:getIOUByIssuer",
+            "data": {
+                "name": "getIOUByIssuer",
+                "description": "return all IOUs by an issuer",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"Get IOUs by issuer \", $flow.parameters.issuer)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "GetByCompositeKey",
+                        "name": "GetByCompositeKey",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
+                            "settings": {},
+                            "input": {
+                                "keyName": "issuer~id",
+                                "attributes": {
+                                    "metadata": "{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"}},\"required\":[]}",
+                                    "value": "",
+                                    "fe_metadata": "[{\"parameterName\":\"issuer\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                },
+                                "usePagination": false,
+                                "start": "",
+                                "isPrivate": false,
+                                "collection": ""
+                            },
+                            "output": {
+                                "message": "",
+                                "bookmark": "",
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                    "value": "",
+                                    "fe_metadata": "[{\n    \"key\": \"\",\n    \"value\": {\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}\n}]"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['attributes']['issuer']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.issuer"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage1",
+                        "name": "LogMessage1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"GET by issuer \", $flow.parameters.issuer)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "array",
+                                        "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[GetByCompositeKey].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "data": ""
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"failed to get IOU by issuer \", $flow.parameters.issuer, \": \", $activity[GetByCompositeKey].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "GetByCompositeKey",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "GetByCompositeKey",
+                        "to": "LogMessage1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogMessage1",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[GetByCompositeKey].code == 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "LogMessage1",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "value": "$activity[GetByCompositeKey].code != 200"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"issuer\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}"
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"Transaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:readIOU",
+            "data": {
+                "name": "readIOU",
+                "description": "read details of an IOU by its id",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"read IOU \", $flow.parameters.id)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Get",
+                        "name": "Get",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+                            "settings": {},
+                            "input": {
+                                "key": "",
+                                "isPrivate": false,
+                                "collection": ""
+                            },
+                            "output": {
+                                "message": "",
+                                "key": "",
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['key']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.id"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage1",
+                        "name": "LogMessage1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"GET: \", $activity[Get].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "assign",
+                                        "value": "$activity[Get].result"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/error",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "data": ""
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"failed to find IOU \", $flow.parameters.id, \": \", $activity[Get].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "Get",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Get",
+                        "to": "LogMessage1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogMessage1",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[Get].code == 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "LogMessage1",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "value": "$activity[Get].code != 200"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"id\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"Transaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
+        }
+    ],
+    "triggers": [
+        {
+            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction",
+            "name": "Transaction",
+            "description": "issue a new IOU",
+            "settings": {},
+            "id": "Transaction",
+            "handlers": [
+                {
+                    "description": "issue a new IOU",
+                    "settings": {
+                        "name": "issueIOU",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                            "value": "",
+                            "fe_metadata": "{\n    \"id\": \"string\",\n    \"issuer\": \"string\",\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"owner\": \"string\"\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:issueIOU"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['parameters']",
+                                    "type": "assign",
+                                    "value": "$.parameters"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "assign",
+                                    "value": "$.returns"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "transfer IOU by id to a new owner",
+                    "settings": {
+                        "name": "transferIOU",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}}",
+                            "value": "",
+                            "fe_metadata": "{\n    \"id\": \"string\",\n    \"newOwner\": \"string\"\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:transferIOU"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['parameters']",
+                                    "type": "assign",
+                                    "value": "$.parameters"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "assign",
+                                    "value": "$.returns"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "transfer all IOU's of an owner",
+                    "settings": {
+                        "name": "transferIOUByOwner",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}}",
+                            "value": "",
+                            "fe_metadata": "{\n    \"owner\": \"\",\n    \"newOwner\": \"\"\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:transferIOUByOwner"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['parameters']",
+                                    "type": "assign",
+                                    "value": "$.parameters"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "array",
+                                    "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "return all IOUs by an issuer",
+                    "settings": {
+                        "name": "getIOUByIssuer",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"}}}",
+                            "value": "",
+                            "fe_metadata": "{\n    \"issuer\": \"\"\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:getIOUByIssuer"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['parameters']['issuer']",
+                                    "type": "assign",
+                                    "value": "$.parameters.issuer"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "array",
+                                    "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "read details of an IOU by its id",
+                    "settings": {
+                        "name": "readIOU",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"}}}",
+                            "value": "",
+                            "fe_metadata": "{\n    \"id\": \"\"\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:readIOU"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['parameters']['id']",
+                                    "type": "assign",
+                                    "value": "$.parameters.id"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "assign",
+                                    "value": "$.returns"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "properties": [],
+    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2Zsb2dvLWNvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9oeXBlcmxlZGdlci1mYWJyaWMvZmFicmljIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L2ZhYnJpYyJ9LHsicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2Zsb2dvLWNvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
+    "fe_metadata": "UEsDBAoAAAAIAFu8tE6rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABbvLROq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+}
