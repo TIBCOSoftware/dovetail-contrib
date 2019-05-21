@@ -1,6 +1,8 @@
 # iou-app
 This is a sample chaincode, implemented by using a [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-5-0) model.  The model does not require any code, it contains only a JSON model file exported from the TIBCO Flogo® Enterprise.  You can download the prerequisites and then build and deploy the model to a Hyperledger Fabric network as described below.
 
+This sample uses only basic functionalities of chaincodes, refer to [marble-app](../marble-app) and [marble-private](../marble-private) for more features of Hyperledber Fabric, including history, range query, rich query, pagination, and private collections.
+
 ## Prerequisite
 - Download [TIBCO Flogo® Enterprise 2.5](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html)
 - [Install Go](https://golang.org/doc/install)
