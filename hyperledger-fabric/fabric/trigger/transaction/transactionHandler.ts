@@ -32,11 +32,11 @@ export class transactionHandler extends WiServiceHandlerContribution {
         if (fieldName === "parameters") {
             if (context.getMode() === MODE.WIZARD || context.getMode() === MODE.SERVERLESS_FLOW) {
                 let parametersField: IFieldDefinition = context.getField("parameters");
-                if (parametersField.value) {
+                if (parametersField.value && parametersField.value.value) {
                     try {
                         // verify well-formed JSON schema
                         let valRes;
-                        valRes = JSON.parse(parametersField.value);
+                        valRes = JSON.parse(parametersField.value.value);
                         valRes = JSON.stringify(valRes);
                     } catch (e) {
                         return ValidationResult.newValidationResult().setError("FABTIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
@@ -46,11 +46,11 @@ export class transactionHandler extends WiServiceHandlerContribution {
         } else if (fieldName === "transient") {
             if (context.getMode() === MODE.WIZARD || context.getMode() === MODE.SERVERLESS_FLOW) {
                 let transientField: IFieldDefinition = context.getField("transient");
-                if (transientField.value) {
+                if (transientField.value && transientField.value.value) {
                     try {
                         // verify well-formed JSON schema
                         let valRes;
-                        valRes = JSON.parse(transientField.value);
+                        valRes = JSON.parse(transientField.value.value);
                         valRes = JSON.stringify(valRes);
                     } catch (e) {
                         return ValidationResult.newValidationResult().setError("FABTIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
@@ -60,10 +60,10 @@ export class transactionHandler extends WiServiceHandlerContribution {
         } else if (fieldName === "returns") {
             if (context.getMode() === MODE.WIZARD || context.getMode() === MODE.SERVERLESS_FLOW) {
                 let returnsField: IFieldDefinition = context.getField("returns");
-                if (returnsField.value) {
+                if (returnsField.value && returnsField.value.value) {
                     try {
                         let valRes;
-                        valRes = JSON.parse(returnsField.value);
+                        valRes = JSON.parse(returnsField.value.value);
                         valRes = JSON.stringify(valRes);
                     } catch (e) {
                         return ValidationResult.newValidationResult().setError("FABTIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
