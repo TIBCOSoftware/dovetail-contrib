@@ -20,7 +20,6 @@ import * as lodash from "lodash";
 @WiContrib({})
 @Injectable()
 export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution {
-    
     constructor(private injector: Injector, private http: Http, private contribModelService: WiContribModelService) {
         super(injector, http, contribModelService);
     }
@@ -39,6 +38,15 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
     }
 
     validate = (fieldName: string, context: ITriggerContribution): Observable<IValidationResult> | IValidationResult => {
+        let input = context.getField("hasObservers").value;
+        switch (fieldName) {
+            case "observerManual":
+                return Observable.create(observer => {
+                    let vresult: IValidationResult = ValidationResult.newValidationResult();
+                    vresult.setVisible(input);
+                    observer.next(vresult);
+                });
+        }
         return null;
     }
 
@@ -58,8 +66,16 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
         let initrigger = modelService.createTriggerElement("CorDApp/R3FlowInitiator");
         if (initrigger) {
             for (let s = 0; s < initrigger.handler.settings.length; s++) {
-                if (initrigger.handler.settings[s].name === "useConfidentialIdentity") {
-                    initrigger.handler.settings[s].value = context.getField("useConfidentialIdentity").value;
+                if (initrigger.handler.settings[s].name === "useAnonymousIdentity") {
+                    initrigger.handler.settings[s].value = context.getField("useAnonymousIdentity").value;
+                } else if (initrigger.handler.settings[s].name === "hasObservers") {
+                    initrigger.handler.settings[s].value = context.getField("hasObservers").value;
+                } else if (initrigger.handler.settings[s].name === "observerManual") {
+                    initrigger.handler.settings[s].value = context.getField("observerManual").value;
+                } else if (initrigger.handler.settings[s].name === "observerFlowName") {
+                    initrigger.handler.settings[s].value = context.getField("observerFlowName").value;
+                } else if (initrigger.handler.settings[s].name === "useExisting") {
+                    initrigger.handler.settings[s].value = context.getField("useExisting").value;
                 } else {
                     let inputp = context.getField("inputParams");
                     initrigger.handler.settings[s].value = {
@@ -80,19 +96,20 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
         }
 
         let flowName = context.getFlowName();
-        let iniflowModel = modelService.createFlow(flowName+"Initiator", context.getFlowDescription());
+        let iniflowModel = modelService.createFlow(flowName, context.getFlowDescription());
         let builder = modelService.createFlowElement("CorDApp/txnbuilder");
         iniflowModel.addFlowElement(builder);
-        let sign = modelService.createFlowElement("CorDApp/signandcommit");
-        iniflowModel.addFlowElement(sign);
+      //  let sign = modelService.createFlowElement("CorDApp/signandcommit");
+      //  iniflowModel.addFlowElement(sign);
         result = result.addTriggerFlowMapping(lodash.cloneDeep(initrigger), lodash.cloneDeep(iniflowModel));
 
-        let rectrigger = modelService.createTriggerElement("CorDApp/R3FlowReceiver");
+    /*    let rectrigger = modelService.createTriggerElement("CorDApp/R3FlowReceiver");
         if (rectrigger) {
             for (let j = 0; j < rectrigger.settings.length; j++) {
                 if (rectrigger.handler.settings[j].name === "initiatorFlow") {
                     rectrigger.handler.settings[j].value = flowName + "Initiator"; 
-                    break;
+                } else if(rectrigger.handler.settings[j].name === "useAnonymousIdentity"){
+                    rectrigger.handler.settings[j].value = context.getField("useAnonymousIdentity").value;
                 }
             }
         }
@@ -101,6 +118,7 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
         let recsign = modelService.createFlowElement("CorDApp/receiversign");
         recflowModel.addFlowElement(recsign);
         result = result.addTriggerFlowMapping(lodash.cloneDeep(rectrigger), lodash.cloneDeep(recflowModel));
+        */
         return flowName;
     }
 
@@ -117,11 +135,13 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
                 let name = inputs[i].parameterName;
                 let tp = inputs[i].type;
                 let repeating = inputs[i].repeating;
+                let partyType = inputs[i].partyType;
+
                 let datatype = {type: tp.toLowerCase()};
                 let javatype = tp;
                 let isRef = false;
                 let isArray = false;
-                let useConfidentialIdentity = inputs[i].anonymous;
+             //   let useConfidentialIdentity = inputs[i].anonymous;
                 let attr = {};
 
                 switch (tp) {
@@ -157,7 +177,8 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
                 attr["type"] = javatype;
                 attr["isRef"] = isRef
                 attr["isArray"] = isArray;
-                attr["isAnonymous"] = useConfidentialIdentity;
+                attr["partyType"] = partyType;
+               // attr["isAnonymous"] = useConfidentialIdentity;
                 metadata.attributes.push(attr);
            }
            schema["description"] = JSON.stringify(metadata);

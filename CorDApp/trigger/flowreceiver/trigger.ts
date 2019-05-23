@@ -31,6 +31,18 @@ export class R3FlowReceiverTriggerHandler extends WiServiceHandlerContribution {
     }
 
     validate = (fieldName: string, context: ITriggerContribution): Observable<IValidationResult> | IValidationResult => {
+        let input = context.getField("flowType").value;
+        switch (fieldName) {
+            case "useAnonymousIdentity":
+                return Observable.create(observer => {
+                    let vresult: IValidationResult = ValidationResult.newValidationResult();
+                    if(input==="receiver")
+                        vresult.setVisible(true);
+                    else
+                    vresult.setVisible(false);
+                    observer.next(vresult);
+                });
+        }
         return null;
     }
 
@@ -49,7 +61,17 @@ export class R3FlowReceiverTriggerHandler extends WiServiceHandlerContribution {
     createFlow(context, flowName, result) : string{
         let modelService = this.getModelService();
         let trigger = modelService.createTriggerElement("CorDApp/R3FlowReceiver");
-
+        if (trigger) {
+            for (let s = 0; s < trigger.handler.settings.length; s++) {
+                if (trigger.handler.settings[s].name === "flowType") {
+                    trigger.handler.settings[s].value = context.getField("flowType").value;
+                } else if (trigger.handler.settings[s].name === "initiatorFlow") {
+                    trigger.handler.settings[s].value = context.getField("initiatorFlow").value;
+                } else if(trigger.handler.settings[s].name === "useAnonymousIdentity"){
+                    trigger.handler.settings[s].value = context.getField("useAnonymousIdentity").value;
+                }
+            }
+        }
         let flowModel = modelService.createFlow(flowName, context.getFlowDescription());
         result = result.addTriggerFlowMapping(lodash.cloneDeep(trigger), lodash.cloneDeep(flowModel));
         return flowName;

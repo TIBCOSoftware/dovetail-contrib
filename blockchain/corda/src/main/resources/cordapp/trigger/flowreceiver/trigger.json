@@ -17,19 +17,31 @@
          
     "settings": [
         {
-            "name": "isReceiver",
-            "type":"boolean",
+            "name": "flowType",
+            "type":"string",
             "required":true,
             "display":{
-                "name": "isReciever",
-                "visible":false
+                "type":"dropdown",
+                "selection":"single",
+                "visible":true
             },
-            "value":true
+            "allowed":["receiver", "observer"],
+            "value":"receiver"
         }
     ],
  
     "handler": {
       "settings": [
+        {
+            "name": "useAnonymousIdentity",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Use confidential identities for this transaction?",
+                "visible": true
+            },
+            "value": true
+        },
         {
             "name": "initiatorFlow",
             "type":"string",

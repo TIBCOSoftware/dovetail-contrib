@@ -266,7 +266,7 @@ export class SmartContractTriggerHandler extends WiServiceHandlerContribution {
             flowName = flowName + "_" + txn;
 
         let flowModel = modelService.createFlow(flowName, context.getFlowDescription());
-        let reply = modelService.createFlowElement("SmartContract/txnreply");
+        let reply = modelService.createFlowElement("General/txnreply");
         let flow = flowModel.addFlowElement(reply);
         result = result.addTriggerFlowMapping(lodash.cloneDeep(trigger), lodash.cloneDeep(flowModel));
         return flowName;

@@ -14,16 +14,6 @@
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/txnbuilder",
     "inputs": [
             {
-                "name": "notary",
-                "type": "string",
-                "required": false,
-                "display": {
-                    "name": "Notary's well known name, if not specified, default will be used",
-                    "type": "string"
-                },
-                "value":"C=FR,L=Paris,O=Notary"
-            },
-            {
                 "name": "contract",
                 "type": "string",
                 "required": true,

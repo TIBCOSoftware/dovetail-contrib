@@ -1,7 +1,7 @@
 package cordapp.activity.receiversign;
 
 import com.tibco.dovetail.container.cordapp.AppContainer;
-import com.tibco.dovetail.container.cordapp.DefaultSignTransactionFlow;
+import com.tibco.dovetail.container.cordapp.flows.DefaultSignTransactionFlow;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.engine.Context;
 

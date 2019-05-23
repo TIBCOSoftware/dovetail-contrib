@@ -36,11 +36,6 @@ public class flowinitiator implements ITrigger{
 	            //flow properties
 				Map<String, Object> properties = handlerConfigs[j].getSettings();
 			    flow.setProperties(properties);
-            		
-            		/*TxnInputAttribute identityAttr = new TxnInputAttribute();
-            		identityAttr.setName("ourIdentity");
-            		identityAttr.setType("String");
-            		flow.addFlowInput(identityAttr);*/
         			
             		String schema = handlerConfigs[j].getOutputs().getTransactionInput().getMetadata();
             		HLCResource txnResource = MetadataParser.parseSingleSchema(schema);

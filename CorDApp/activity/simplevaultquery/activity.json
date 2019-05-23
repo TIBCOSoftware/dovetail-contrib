@@ -58,7 +58,7 @@
                 "selection":"single"
             },
             "value": "LinearState",
-            "allowed":["FungibleAsset", "LinearState"]
+            "allowed":["LinearState"]
            },
            {
                 "name": "input",

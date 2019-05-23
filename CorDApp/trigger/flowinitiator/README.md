@@ -1,16 +1,16 @@
 ---
-title: Transaction
+title: flow initiator
 weight: 4603
 ---
 
-# Transaction
-At design time, it works with Hyperledger Composer Connector to display predefined user types for modeling, at runtime, it receives smart contract transactions from distributed ledger platform, resolves transaction input, dispatches transactions to appropriate flow handler, and sends transaction reponses, if any, back to caller.
+# Flow Initiator
+This trigger starts an initiating flow
 
 ## Settings
-| Setting     | Required | Description |
-|:------------|:---------|:------------|
-| model       | True     | Common data model name |
-| createAll   | True     | Create flows for all transactions defined in the model, or select a specific transaction |
-| transaction | True     | Select the transaction to implement |
+| Setting               | Required | Description |
+|:------------          |:---------|:------------|
+| useAnonymousIdentity  | True     | Select true if annonymous identity must be used for this transaction |
+| hasObservers          | True     | Select true if the transaction has observers |
+| observerManual        | True     | If there are observers, specify if this transaction should be sent in this flow or a separate flow. when a separate flow is selected, com.tibco.dovetail.container.cordapp.flows.ObserverFlowInitiator will be used. |
 
 

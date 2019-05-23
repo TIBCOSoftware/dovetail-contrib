@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.tibco.dovetail.container.corda.CordaUtil;
+import com.tibco.dovetail.container.cordapp.flows.IdentitySyncFlowInitiator;
+import com.tibco.dovetail.container.cordapp.flows.ObserverFlowInitiator;
 import com.tibco.dovetail.core.model.flow.FlowAppConfig;
 import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
@@ -21,6 +22,7 @@ import net.corda.confidential.SwapIdentitiesFlow;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.TimeWindow;
 import net.corda.core.flows.CollectSignaturesFlow;
 import net.corda.core.flows.FinalityFlow;
 import net.corda.core.flows.FlowException;
@@ -30,10 +32,11 @@ import net.corda.core.flows.ReceiveFinalityFlow;
 import net.corda.core.flows.SignTransactionFlow;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.AnonymousParty;
-import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
+import net.corda.core.node.StatesToRecord;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
+import net.corda.core.utilities.ProgressTracker;
 
 public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	private TransactionBuilder builder = new TransactionBuilder();
@@ -44,21 +47,22 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	private Set<Party> counterParties = new HashSet<Party>();
 	private boolean requireIdentitySync = false;
 	
-	private Party notary;
+	private List<Party> notaries = new ArrayList<Party>();
+	private List<Party> observers = new ArrayList<Party>();
 	private boolean isInitiator;
 	private Map<PublicKey, FlowSession> opensessions = new LinkedHashMap<PublicKey, FlowSession>();
 	private List<Party> swappedIdentityParties = new ArrayList<Party>();
 	private AbstractParty selfIdentity;
 	private Set<PublicKey> ourSignKeys = new HashSet<PublicKey>();
     private boolean isConfidential = false;
-   
+    private boolean observerSendManual;
     
 	public AppFlow(boolean initiating, boolean useAnnon) {
 		this.isInitiator = initiating;
 		this.isConfidential = useAnnon;
 	}
 	
-	public void setOurIdentity() {
+	protected void setOurIdentity() {
 		if(this.isConfidential)
 			selfIdentity = getOurIdentity().anonymise();
 		else
@@ -66,8 +70,9 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	}
 	
 	@Suspendable
-	public void swapIdentitiesInitiator(Map<String, Object> flowIn) throws FlowException {
-		for(String k : flowIn.keySet()) {
+	public void swapIdentitiesInitiator(Map<String, Object> flowIn, List<String> participants, ProgressTracker tracker) throws FlowException {
+		tracker.setCurrentStep(ProgressTrackerSteps.SWAP_IDENTITY);
+		for(String k : participants) {
 			Object v = flowIn.get(k);
 			if(v instanceof Party) {
 				Party p = (Party)v;
@@ -85,20 +90,24 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	}
 	
 	@Suspendable
-	public void swapIdentitiesReceiver(FlowSession counterpartySession) throws FlowException {
+	protected void swapIdentitiesReceiver(FlowSession counterpartySession, ProgressTracker tracker) throws FlowException {
+		
+		tracker.setCurrentStep(ProgressTrackerSteps.RECEIVE_SWAP_IDENTITIY_REQ);
 		boolean exchangeIdentities = counterpartySession.receive(Boolean.class).getFromUntrustedWorld();
         if (exchangeIdentities) {
+        		tracker.setCurrentStep(ProgressTrackerSteps.SWAP_IDENTITY);
             subFlow(new SwapIdentitiesFlow(counterpartySession));
         }
 
-
+        tracker.setCurrentStep(ProgressTrackerSteps.RECEIVE_SYNC_IDENTITIY_REQ);
         boolean syncIdentities = counterpartySession.receive(Boolean.class).getFromUntrustedWorld();
         if (syncIdentities) {
+        	tracker.setCurrentStep(ProgressTrackerSteps.SYNC_IDENTITIES);
             subFlow(new IdentitySyncFlow.Receive(counterpartySession));
         }
 	}
 	
-	public void runFlow(String flowName, ITrigger trigger, LinkedHashMap<String, Object> args) {
+	protected void runFlow(String flowName, ITrigger trigger, LinkedHashMap<String, Object> args) {
        try {
              System.out.println("****** run flow " + flowName + "... ******");
              AppContainer ctnr = new AppContainer(this);
@@ -129,15 +138,16 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 		return this.builder;
 	}
 
-	public SignedTransaction initiatorSignTxn() {
+	protected SignedTransaction initiatorSignTxn(ProgressTracker initiatorTracker) {
+		initiatorTracker.setCurrentStep(ProgressTrackerSteps.BUILD_TRANSACTION);
 		Set<PublicKey> signkeys= new HashSet<PublicKey>();
 		Set<PublicKey> inannonkeys= new HashSet<PublicKey>();
 		Set<PublicKey> outannonkeys= new HashSet<PublicKey>();
 		
-		if(notary == null) {
-			notary = this.getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
+		if(notaries.isEmpty()) {
+			notaries.add(this.getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0));
 		}
-		builder.setNotary(notary);
+		builder.setNotary(notaries.get(0));
 		
 		inputStates.forEach(in -> {
 			builder.addInputState(in);
@@ -186,16 +196,18 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 			this.requireIdentitySync = false;
 		}
 
-		return this.getServiceHub().signInitialTransaction(builder, new ArrayList(this.ourSignKeys));
+		initiatorTracker.setCurrentStep(ProgressTrackerSteps.SIGN_TRANSACTION);
+		return this.getServiceHub().signInitialTransaction(builder, new ArrayList<PublicKey>(this.ourSignKeys));
 	}
 	
 	
 	@Suspendable
-	public SignedTransaction initiatorCommit(SignedTransaction txn) throws FlowException {
+	protected SignedTransaction initiatorCommit(SignedTransaction txn, ProgressTracker initiatorTracker) throws FlowException {
 		
 		Set<FlowSession> sessions  = getCounterPartyFlowSessions();
 		
 		if(this.isConfidential) {
+			initiatorTracker.setCurrentStep(ProgressTrackerSteps.SWAP_IDENTITIY_FALSE);
 			//send false to parties that do not require swap identity
 			for(FlowSession s : sessions) {
 				if(!this.swappedIdentityParties.contains(s.getCounterparty()))
@@ -203,29 +215,68 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 			}
 			
 			//identity sync
-			if(this.requireIdentitySync) {
-				for(FlowSession s: sessions) {
-					s.send(true);
-				}
-				subFlow(new IdentitySyncFlow.Send(sessions, txn.getTx()));
-			} else {
-				for(FlowSession s : sessions) {
-					s.send(false);
-				}
+			initiatorTracker.setCurrentStep(ProgressTrackerSteps.SYNC_IDENTITIY_REQ);
+			for(FlowSession s: sessions) {
+				s.send(requireIdentitySync);
 			}
+			if(this.requireIdentitySync) {
+				initiatorTracker.setCurrentStep(ProgressTrackerSteps.SYNC_OUR_IDENTITY);
+				subFlow(new IdentitySyncFlow.Send(sessions, txn.getTx(), ProgressTrackerSteps.SYNC_OUR_IDENTITY.childProgressTracker()));
+			} 
 		}
 
-		SignedTransaction fullysigned = (SignedTransaction) subFlow(new CollectSignaturesFlow(txn, sessions, new ArrayList<PublicKey>(this.ourSignKeys)));
+		initiatorTracker.setCurrentStep(ProgressTrackerSteps.COLLECT_SIGS);
+		SignedTransaction fullysigned = (SignedTransaction) subFlow(new CollectSignaturesFlow(txn, sessions, new ArrayList<PublicKey>(this.ourSignKeys), ProgressTrackerSteps.COLLECT_SIGS.childProgressTracker()));
 		
 		if(isConfidential) {
+			//let involved participant parties know each other to sync identities
+			initiatorTracker.setCurrentStep(ProgressTrackerSteps.SYNC_OTHER_IDENTITIES);
 			for(FlowSession s : sessions) {
-				List<Party> otherParties = sessions.stream().map(in -> in.getCounterparty()).filter(f -> !f.equals(s.getCounterparty())).collect(Collectors.toList());
+				List<Party> otherParties = this.counterParties.stream().filter(f -> !f.equals(s.getCounterparty())).collect(Collectors.toList());
 				s.send(otherParties);
 			}	
 		}
 		
-		return subFlow(new FinalityFlow(fullysigned, sessions));	
+		//observers, send as part of finality flow
+		Set<FlowSession> obssessions  = new HashSet<FlowSession>();
+		if(this.observers.size() > 0 && !this.observerSendManual) {
+			this.observers.forEach(o -> obssessions.add(initiateFlow(o)));	
+			sessions.addAll(obssessions);
+		}
 		
+		initiatorTracker.setCurrentStep(ProgressTrackerSteps.FINALISE);
+		SignedTransaction tx = subFlow(new FinalityFlow(fullysigned, sessions, ProgressTrackerSteps.FINALISE.childProgressTracker()));	
+		
+		if(this.observers.size() > 0) {
+			initiatorTracker.setCurrentStep(ProgressTrackerSteps.OBSERVER_PHASE);
+			if( !this.observerSendManual) {
+				initiatorTracker.setCurrentStep(ProgressTrackerSteps.OBSERVER_IDENTITY_SYC_REQ);
+				//sync identities
+				//require sync
+				for(FlowSession s : obssessions) {
+					s.send(isConfidential);
+				}
+				if(isConfidential) {
+					initiatorTracker.setCurrentStep(ProgressTrackerSteps.SYNC_OUR_IDENTITY_WITH_OBSERVER);
+					subFlow(new IdentitySyncFlow.Send(obssessions, txn.getTx(), ProgressTrackerSteps.SYNC_OUR_IDENTITY_WITH_OBSERVER.childProgressTracker()));
+					for(FlowSession s: obssessions) {
+						initiatorTracker.setCurrentStep(ProgressTrackerSteps.SYNC_OTHER_IDENTITIES_OBSERVER);
+						s.send(new ArrayList<Party>(this.counterParties));
+					}
+				} 
+			} else{
+				try {
+						List<Party> allsigners = new ArrayList<Party>(this.counterParties);
+						allsigners.add(getOurIdentity());
+						initiatorTracker.setCurrentStep(ProgressTrackerSteps.START_MANUAL_OBSERVER_FLOW);
+						subFlow(new ObserverFlowInitiator(tx, this.observers, this.isConfidential, allsigners, ProgressTrackerSteps.START_MANUAL_OBSERVER_FLOW.childProgressTracker() ));
+				}catch(Exception e) {
+					throw new FlowException(e);
+				}
+			}
+		}
+		
+		return tx;
 	}
 	
 	private Set<FlowSession> getCounterPartyFlowSessions() {
@@ -246,22 +297,46 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	}
 	
 	@Suspendable
-	public SignedTransaction receiverSignAndCommit(SignTransactionFlow signTransactionFlow, FlowSession otherParty) throws FlowException {
+	protected SignedTransaction receiverSignAndCommit(SignTransactionFlow signTransactionFlow, FlowSession otherParty, ProgressTracker tracker) throws FlowException {
+		tracker.setCurrentStep(ProgressTrackerSteps.SIGN_TRANSACTION);
 		SignedTransaction txn = subFlow(signTransactionFlow);
 		
 		if(isConfidential) {
-			List syncParties = otherParty.receive(List.class).getFromUntrustedWorld() ;
+			tracker.setCurrentStep(ProgressTrackerSteps.RECEIVE_SYNC_OTHER_IDENTITIES);
+			List<Party> syncParties = otherParty.receive(List.class).getFromUntrustedWorld() ;
 			if(!syncParties.isEmpty()) {
-				subFlow(new IdentitySyncFlowInitiator(syncParties,txn.getTx()));
+				subFlow(new IdentitySyncFlowInitiator(syncParties,txn.getTx(), ProgressTrackerSteps.RECEIVE_SYNC_OTHER_IDENTITIES.childProgressTracker()));
 			}
 		}
 		
+		tracker.setCurrentStep(ProgressTrackerSteps.RECORD_TRANSACTION);
 		return subFlow(new ReceiveFinalityFlow(otherParty, txn.getId()));
 	}
 	
 	@Suspendable
-	public SignedTransaction initiatorSignAndCommit() throws FlowException {
-		return initiatorCommit(initiatorSignTxn());
+	protected SignedTransaction observerRecordTxn(FlowSession otherParty, ProgressTracker tracker) throws FlowException {
+		tracker.setCurrentStep(ProgressTrackerSteps.RECORD_TRANSACTION);
+		SignedTransaction txn = subFlow(new ReceiveFinalityFlow(otherParty, null, StatesToRecord.ALL_VISIBLE));
+		
+		tracker.setCurrentStep(ProgressTrackerSteps.RECEIVE_SYNC_IDENTITIY_REQ);
+		boolean syncIdentities = otherParty.receive(Boolean.class).getFromUntrustedWorld();
+        if (syncIdentities) {
+        		tracker.setCurrentStep(ProgressTrackerSteps.RECEIVE_TXN_INITIATOR_SYNC_IDENTITIY);
+            subFlow(new IdentitySyncFlow.Receive(otherParty));
+            
+            tracker.setCurrentStep(ProgressTrackerSteps.RECEIVE_SYNC_OTHER_IDENTITIES);
+            List<Party> syncParties = otherParty.receive(List.class).getFromUntrustedWorld() ;
+			if(!syncParties.isEmpty()) {
+				subFlow(new IdentitySyncFlowInitiator(syncParties,txn.getTx(), ProgressTrackerSteps.RECEIVE_SYNC_OTHER_IDENTITIES.childProgressTracker()));
+			}
+        }
+		
+		return txn;
+	}
+	
+	@Suspendable
+	protected SignedTransaction initiatorSignAndCommit(ProgressTracker initiatorTracker) throws FlowException {
+		return initiatorCommit(initiatorSignTxn(initiatorTracker), initiatorTracker);
 	}
 	
 	public void addInputStates(List<StateAndRef<?>> inputs) {
@@ -288,18 +363,117 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 		commands.add(cmd);
 	}
 	
-	@Suspendable
-	public void setTransactionNotory(String notaryNm) {
-		this.notary = this.getServiceHub().getIdentityService().wellKnownPartyFromX500Name(CordaX500Name.parse(notaryNm));
-		if (this.notary == null) {
-			throw new RuntimeException("notary party " + notaryNm + " is not found");
-		}
-	}
-	
-	
 	public boolean isInitiatingFlow() {
 		return this.isInitiator;
 	}
 
+	protected void addNotary(Party n) throws FlowException{
+		if (this.getServiceHub().getNetworkMapCache().isNotary(n))
+			this.notaries.add(n);
+		else
+			throw new FlowException("Party " + n.getName().getCommonName() + " is not a notary");
+	}
 	
+	protected void addNotary(List<Party> n) throws FlowException{
+		for(Party p : n) {
+			addNotary(p);
+		}
+	}
+	
+	
+	protected void addObserver(Party p) {
+		this.observers.add(p);
+	}
+	
+	protected void addObserver(List<Party> p) {
+		this.observers.addAll(p);
+	}
+	
+	protected void setObserverConfig(boolean isManual) {
+		this.observerSendManual = isManual;
+	}
+	
+	public void setTimeWindow(TimeWindow tw) {
+		this.builder.setTimeWindow(tw);
+	}
+	
+	public static ProgressTracker getInitiatorProgressTracker(boolean isConfidential, boolean hasObservers) {
+		if(isConfidential && hasObservers)
+			return new ProgressTracker(
+					ProgressTrackerSteps.SWAP_IDENTITY,
+					ProgressTrackerSteps.RUN_APP_FLOW,
+					ProgressTrackerSteps.BUILD_TRANSACTION,
+					ProgressTrackerSteps.SIGN_TRANSACTION,
+					ProgressTrackerSteps.SWAP_IDENTITIY_FALSE,
+					ProgressTrackerSteps.SYNC_IDENTITIY_REQ,
+					ProgressTrackerSteps.SYNC_OUR_IDENTITY,
+					ProgressTrackerSteps.COLLECT_SIGS,
+					ProgressTrackerSteps.SYNC_OTHER_IDENTITIES,
+					ProgressTrackerSteps.FINALISE,
+					ProgressTrackerSteps.OBSERVER_PHASE,
+					ProgressTrackerSteps.OBSERVER_IDENTITY_SYC_REQ,
+					ProgressTrackerSteps.SYNC_OUR_IDENTITY_WITH_OBSERVER,
+					ProgressTrackerSteps.SYNC_OTHER_IDENTITIES_OBSERVER,
+					ProgressTrackerSteps.START_MANUAL_OBSERVER_FLOW);
+		else if(isConfidential && !hasObservers)
+			return new ProgressTracker(
+					ProgressTrackerSteps.SWAP_IDENTITY,
+					ProgressTrackerSteps.RUN_APP_FLOW,
+					ProgressTrackerSteps.BUILD_TRANSACTION,
+					ProgressTrackerSteps.SIGN_TRANSACTION,
+					ProgressTrackerSteps.SWAP_IDENTITIY_FALSE,
+					ProgressTrackerSteps.SYNC_IDENTITIY_REQ,
+					ProgressTrackerSteps.SYNC_OUR_IDENTITY,
+					ProgressTrackerSteps.COLLECT_SIGS,
+					ProgressTrackerSteps.SYNC_OTHER_IDENTITIES,
+					ProgressTrackerSteps.FINALISE);
+		else if(!isConfidential && hasObservers)
+			return new ProgressTracker(
+					ProgressTrackerSteps.RUN_APP_FLOW,
+					ProgressTrackerSteps.BUILD_TRANSACTION,
+					ProgressTrackerSteps.SIGN_TRANSACTION,
+					ProgressTrackerSteps.COLLECT_SIGS,
+					ProgressTrackerSteps.FINALISE,
+					ProgressTrackerSteps.OBSERVER_PHASE,
+					ProgressTrackerSteps.OBSERVER_IDENTITY_SYC_REQ,
+					ProgressTrackerSteps.SYNC_OUR_IDENTITY_WITH_OBSERVER,
+					ProgressTrackerSteps.SYNC_OTHER_IDENTITIES_OBSERVER,
+					ProgressTrackerSteps.START_MANUAL_OBSERVER_FLOW);
+		else
+			return new ProgressTracker(
+					ProgressTrackerSteps.RUN_APP_FLOW,
+					ProgressTrackerSteps.BUILD_TRANSACTION,
+					ProgressTrackerSteps.SIGN_TRANSACTION,
+					ProgressTrackerSteps.COLLECT_SIGS,
+					ProgressTrackerSteps.FINALISE);
+			
+	}
+	
+	public static ProgressTracker getResponderProgressTracker(boolean isConfidential) {
+		if(isConfidential)
+			return new ProgressTracker(
+					ProgressTrackerSteps.RECEIVE_SWAP_IDENTITIY_REQ,
+					ProgressTrackerSteps.SWAP_IDENTITY,
+					ProgressTrackerSteps.RECEIVE_SYNC_IDENTITIY_REQ,
+					ProgressTrackerSteps.SYNC_IDENTITIES,
+					ProgressTrackerSteps.RUN_APP_FLOW,
+					ProgressTrackerSteps.SIGN_TRANSACTION,
+					ProgressTrackerSteps.RECORD_TRANSACTION,
+					ProgressTrackerSteps.RECEIVE_SYNC_OTHER_IDENTITIES);
+		else
+			return new ProgressTracker(
+					ProgressTrackerSteps.RUN_APP_FLOW,
+					ProgressTrackerSteps.SIGN_TRANSACTION,
+					ProgressTrackerSteps.RECORD_TRANSACTION);
+	}
+	
+	public static ProgressTracker getObserverProgressTracker() {
+	
+		return new ProgressTracker(
+					ProgressTrackerSteps.RUN_APP_FLOW,
+					ProgressTrackerSteps.RECORD_TRANSACTION,
+					ProgressTrackerSteps.RECEIVE_SYNC_IDENTITIY_REQ,
+					ProgressTrackerSteps.RECEIVE_TXN_INITIATOR_SYNC_IDENTITIY,
+					ProgressTrackerSteps.RECEIVE_SYNC_OTHER_IDENTITIES);
+	}
 }

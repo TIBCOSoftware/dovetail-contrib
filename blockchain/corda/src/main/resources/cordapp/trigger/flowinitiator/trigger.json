@@ -31,11 +31,11 @@
     "handler": {
       "settings": [
         {
-            "name": "allowRPCClient",
+            "name": "useAnonymousIdentity",
             "type": "boolean",
             "required": true,
             "display": {
-                "name": "Can the flow be started by RPC client?",
+                "name": "Use confidential identities for this transaction?",
                 "visible": true
             },
             "wizard": {
@@ -45,18 +45,29 @@
             "value": true
         },
         {
-            "name": "useAnonymousIdentity",
+            "name": "hasObservers",
             "type": "boolean",
-            "required": true,
             "display": {
-                "name": "Use Anonymous identity to sign this transaction",
-                "visible": true
+                "visible": true,
+                "name": "Send transactions to observers?"
             },
             "wizard": {
                 "type": "boolean",
                 "step": "Flow Settings"
             },
-            "value": false
+            "value":false
+        },
+        {
+            "name": "observerManual",
+            "type": "boolean",
+            "display": {
+                "name": "Send signed transactions to observers in a separate flow?"
+            },
+            "wizard": {
+                "type": "boolean",
+                "step": "Flow Settings"
+            },
+            "value":false
         },
         {
             "name": "inputParams",
@@ -64,12 +75,12 @@
             "display": {
                 "type": "params",
                 "name": "Flow input parameters",
-                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"Date\", \"Time\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}"
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"Date\", \"Time\"]}}, \"partyType\":{\"type\":{\"enum\":[\"\",\"Participant\", \"Observer\", \"Notary\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}"
             },
             "wizard": {
                 "type": "params",
                 "name": "Flow input parameters",
-                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"Date\", \"Time\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"Date\", \"Time\"]}}, \"partyType\":{\"type\":{\"enum\":[\"\", \"Participant\", \"Observer\", \"Notary\"]}},\"repeating\":{\"type\":\"boolean\"}}}}",
                 "step": "Flow Inputs"
             }
         }

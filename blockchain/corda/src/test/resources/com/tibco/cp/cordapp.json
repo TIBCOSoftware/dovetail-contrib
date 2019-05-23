@@ -1,198 +1,187 @@
 {
- "name": "IOUApp",
- "description": " ",
- "version": "1.0.0",
- "type": "flogo:app",
- "appModel": "1.0.0",
- "resources": [
-  {
-   "id": "flow:IssueIOUInitiator",
-   "data": {
-    "name": "IssueIOUInitiator",
-    "description": "",
-    "tasks": [
+    "name": "IOUApp",
+    "description": " ",
+    "version": "1.0.0",
+    "type": "flogo:app",
+    "appModel": "1.0.0",
+    "resources": [
      {
-      "id": "BuildTransactionProposal",
-      "name": "BuildTransactionProposal",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/txnbuilder",
-       "input": {
-        "notary": "C=FR,L=Paris,O=Notary",
-        "contract": "daaee9a0-ec38-11e8-8227-afbc072d2792",
-        "contractClass": "com.example.iou.IOU",
-        "command": "com.example.iou.IssueIOU",
-        "input": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IssueIOU\",\"type\":\"object\",\"properties\":{\"iou\":{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}},\"required\":[\"issuer\",\"owner\",\"amt\",\"linearId\"]},\"transactionId\":{\"type\":\"string\"},\"timestamp\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"iou\",\"transactionId\",\"timestamp\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\",\\\"parent\\\":\\\"org.hyperledger.composer.system.Transaction\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"transactionId\\\",\\\"decorators\\\":[{\\\"name\\\":\\\"InitiatedBy\\\",\\\"args\\\":[\\\"$tx.iou.issuer\\\"]}]},\\\"attributes\\\":[{\\\"name\\\":\\\"iou\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.example.iou.IOU\\\"},{\\\"name\\\":\\\"transactionId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"},{\\\"name\\\":\\\"timestamp\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"DateTime\\\"}]}\"}",
-         "value": ""
+      "id": "flow:IssueIOUInitiator",
+      "data": {
+       "name": "IssueIOUInitiator",
+       "description": "",
+       "tasks": [
+        {
+         "id": "BuildTransactionProposal",
+         "name": "BuildTransactionProposal",
+         "activity": {
+          "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/txnbuilder",
+          "input": {
+           "contract": "9ae09eb0-565d-11e9-9fa5-53566968a608",
+           "contractClass": "com.example.iou.IOUContract",
+           "command": "com.example.iou.IssueIOU",
+           "input": {
+            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IssueIOU\",\"type\":\"object\",\"properties\":{\"iou\":{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"paid\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}},\"required\":[\"issuer\",\"owner\",\"amt\",\"paid\",\"linearId\"]},\"transactionId\":{\"type\":\"string\"},\"timestamp\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"iou\",\"transactionId\",\"timestamp\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\",\\\"parent\\\":\\\"org.hyperledger.composer.system.Transaction\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"transactionId\\\",\\\"decorators\\\":[{\\\"name\\\":\\\"InitiatedBy\\\",\\\"args\\\":[\\\"$tx.iou.issuer\\\"]}]},\\\"attributes\\\":[{\\\"name\\\":\\\"iou\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.example.iou.IOU\\\"},{\\\"name\\\":\\\"transactionId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"},{\\\"name\\\":\\\"timestamp\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"DateTime\\\"}]}\"}",
+            "value": ""
+           },
+           "inputSchema": "[{\"name\":\"iou\",\"isOptional\":false,\"type\":\"com.example.iou.IOU\",\"isAsset\":true},{\"name\":\"transactionId\",\"isOptional\":false,\"type\":\"String\"},{\"name\":\"timestamp\",\"isOptional\":false,\"type\":\"DateTime\"}]"
+          },
+          "output": {},
+          "mappings": {
+           "input": [
+            {
+             "mapTo": "$INPUT['input']['iou']['issuer']",
+             "type": "assign",
+             "value": "$flow.ourIdentity"
+            },
+            {
+             "mapTo": "$INPUT['input']['iou']['owner']",
+             "type": "assign",
+             "value": "$flow.transactionInput.owner"
+            },
+            {
+             "mapTo": "$INPUT['input']['iou']['amt']",
+             "type": "assign",
+             "value": "$flow.transactionInput.amt"
+            },
+            {
+             "mapTo": "$INPUT['input']['iou']['paid']['currency']",
+             "type": "assign",
+             "value": "$flow.transactionInput.amt.currency"
+            },
+            {
+             "mapTo": "$INPUT['input']['iou']['paid']['quantity']",
+             "type": "literal",
+             "value": 0
+            },
+            {
+             "mapTo": "$INPUT['input']['iou']['linearId']",
+             "type": "expression",
+             "value": "cordapp.createLinearIdFromExternalId($flow.transactionInput.extId)"
+            }
+           ]
+          }
+         }
+        },
+        {
+         "id": "InitiatorSignandFinalizeaTransaction",
+         "name": "InitiatorSignandFinalizeaTransaction",
+         "activity": {
+          "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/signandcommit",
+          "input": {},
+          "output": {}
+         }
         }
-       },
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['input']['iou']['issuer']",
-          "type": "expression",
-          "value": "$flow.ourIdentity"
-         },
-         {
-          "mapTo": "$INPUT['input']['iou']['owner']",
-          "type": "expression",
-          "value": "$flow.transactionInput.owner"
-         },
-         {
-          "mapTo": "$INPUT['input']['iou']['amt']",
-          "type": "expression",
-          "value": "$flow.transactionInput.amt"
-         },
-         {
-          "mapTo": "$INPUT['input']['iou']['linearId']",
-          "type": "expression",
-          "value": "$flow.transactionInput.id"
-         }
-        ]
+       ],
+       "links": [
+        {
+         "id": 1,
+         "from": "BuildTransactionProposal",
+         "to": "InitiatorSignandFinalizeaTransaction",
+         "type": "default"
+        }
+       ],
+       "metadata": {
+        "input": [],
+        "output": []
        }
       }
      },
      {
-      "id": "InitiatorSignandFinalizeaTransaction",
-      "name": "InitiatorSignandFinalizeaTransaction",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/signandcommit",
-       "input": {},
-       "output": {}
-      }
-     }
-    ],
-    "links": [
-     {
-      "id": 1,
-      "from": "BuildTransactionProposal",
-      "to": "InitiatorSignandFinalizeaTransaction",
-      "type": "default"
-     }
-    ],
-    "metadata": {
-     "input": [],
-     "output": []
-    }
-   }
-  },
-  {
-   "id": "flow:IssueIOUResponder",
-   "data": {
-    "name": "IssueIOUResponder",
-    "description": "",
-    "tasks": [
-     {
-      "id": "ReceiverVerifyandSignTransaction",
-      "name": "ReceiverVerifyandSignTransaction",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/verifytxn",
-       "input": {},
-       "output": {}
-      }
-     },
-     {
-      "id": "CommitSignedandNotorizedTxn",
-      "name": "CommitSignedandNotorizedTxn",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/commit",
-       "input": {},
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['SignedTransaction']",
-          "type": "expression",
-          "value": "$activity[ReceiverVerifyandSignTransaction].SignedTransaction"
+      "id": "flow:IssueIOUResponder",
+      "data": {
+       "name": "IssueIOUResponder",
+       "description": "",
+       "tasks": [
+        {
+         "id": "ReceiverSignandFinalizeTransaction",
+         "name": "ReceiverSignandFinalizeTransaction",
+         "activity": {
+          "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/receiversign",
+          "input": {},
+          "output": {}
          }
-        ]
+        }
+       ],
+       "links": [],
+       "metadata": {
+        "input": [],
+        "output": []
        }
       }
      }
     ],
-    "links": [
+    "triggers": [
      {
-      "id": 1,
-      "from": "ReceiverVerifyandSignTransaction",
-      "to": "CommitSignedandNotorizedTxn",
-      "type": "default"
+      "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowinitiator",
+      "name": "CorDAppFlowInitiator",
+      "description": "",
+      "settings": {
+       "flowType": "initiator"
+      },
+      "id": "CorDAppFlowInitiator",
+      "handlers": [
+       {
+        "description": "",
+        "settings": {
+         "useAnonymousIdentity": true,
+         "hasObservers": true,
+         "observerManual": false,
+         "inputParams": {
+          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"parameterName\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"repeating\":{\"type\":\"string\"},\"required\":{\"type\":\"string\"},\"isEditable\":{\"type\":\"boolean\"},\"partyType\":{\"type\":\"string\"}},\"required\":[\"parameterName\",\"type\",\"repeating\",\"required\",\"isEditable\",\"partyType\"]}}",
+          "value": ""
+         }
+        },
+        "outputs": {
+         "transactionInput": {
+          "metadata": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"extId\":{\"type\":\"string\"},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Participant\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Participant\\\"},{\\\"name\\\":\\\"extId\\\",\\\"type\\\":\\\"String\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Participant\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"}",
+          "value": ""
+         }
+        },
+        "action": {
+         "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+         "data": {
+          "flowURI": "res://flow:IssueIOUInitiator"
+         },
+         "mappings": {
+          "input": [],
+          "output": []
+         }
+        }
+       }
+      ]
+     },
+     {
+      "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowreceiver",
+      "name": "CorDAppFlowReceiver",
+      "description": "",
+      "settings": {
+       "flowType": "receiver"
+      },
+      "id": "CorDAppFlowReceiver",
+      "handlers": [
+       {
+        "description": "",
+        "settings": {
+           "initiatorFlow": "IssueIOUInitiator",
+         "useAnonymousIdentity": true
+        },
+        "outputs": {},
+        "action": {
+         "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+         "data": {
+          "flowURI": "res://flow:IssueIOUResponder"
+         },
+         "mappings": {
+          "input": [],
+          "output": []
+         }
+        }
+       }
+      ]
      }
     ],
-    "metadata": {
-     "input": [],
-     "output": []
-    }
+    "properties": [],
+    "ui": "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",
+    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvQ29yREFwcCIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9Db3JEQXBwIn1d"
    }
-  }
- ],
- "triggers": [
-  {
-   "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowinitiator",
-   "name": "CorDAppFlowInitiator",
-   "description": "",
-   "settings": {},
-   "id": "CorDAppFlowInitiator",
-   "handlers": [
-    {
-     "description": "",
-     "settings": {
-      "allowRPCClient": true,
-      "useAnonymousIdentity": false,
-      "inputParams": {
-       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"parameterName\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"repeating\":{\"type\":\"string\"},\"required\":{\"type\":\"string\"},\"isEditable\":{\"type\":\"boolean\"}},\"required\":[\"parameterName\",\"type\",\"repeating\",\"required\",\"isEditable\"]}}",
-       "value": ""
-      }
-     },
-     "outputs": {
-      "transactionInput": {
-       "metadata": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"id\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false},{\\\"name\\\":\\\"id\\\",\\\"type\\\":\\\"string\\\",\\\"isRef\\\":false,\\\"isArray\\\":false}]}\"}",
-       "value": ""
-      },
-      "ourIdentity": ""
-     },
-     "action": {
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-      "data": {
-       "flowURI": "res://flow:IssueIOUInitiator"
-      },
-      "mappings": {
-       "input": [],
-       "output": []
-      }
-     }
-    }
-   ]
-  },
-  {
-   "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowreceiver",
-   "name": "CorDAppFlowReceiver",
-   "description": "",
-   "settings": {
-    "isReceiver": true
-   },
-   "id": "CorDAppFlowReceiver",
-   "handlers": [
-    {
-     "description": "",
-     "settings": {
-      "initiatorFlow": "IssueIOUInitiator"
-     },
-     "outputs": {},
-     "action": {
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-      "data": {
-       "flowURI": "res://flow:IssueIOUResponder"
-      },
-      "mappings": {
-       "input": [],
-       "output": []
-      }
-     }
-    }
-   ]
-  }
- ],
- "ui": "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",
- "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvQ29yREFwcCIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9Db3JEQXBwIn1d"
-}

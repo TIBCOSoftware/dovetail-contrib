@@ -12,10 +12,8 @@ import com.tibco.dovetail.core.model.flow.FlowAppConfig;
 import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
-import kotlin.Pair;
 import kotlin.Triple;
 import net.corda.core.contracts.*;
-import net.corda.core.identity.AnonymousParty;
 import net.corda.core.serialization.CordaSerializable;
 import net.corda.core.transactions.LedgerTransaction;
 
@@ -43,14 +41,14 @@ public abstract class CordaFlowContract {
 
         tx.getInputStates().forEach(it -> {
             it.getParticipants().forEach(p -> {
-                if(!(p instanceof AnonymousParty))
+               // if(!(p instanceof AnonymousParty))
                     allStateKeys.add(p.getOwningKey());
             });
         });
 
         tx.getOutputs().forEach(it -> {
             it.getData().getParticipants().forEach(p -> {
-                if(!(p instanceof AnonymousParty))
+              //  if(!(p instanceof AnonymousParty))
                     allStateKeys.add(p.getOwningKey());
             });
         });

@@ -51,7 +51,7 @@ public class TestTrigger {
 		FlowAppConfig app = FlowAppConfig.parseModel(in);
 	 	DovetailEngine engine = new DovetailEngine(app);
 	 	LinkedHashMap<String, ITrigger> contractTriggers = engine.getTriggers();
-	 	assertEquals(4, contractTriggers.size());
+	 	assertEquals(2, contractTriggers.size());
 	 	
 	 	assertNotNull(contractTriggers.get("IssueIOUInitiator"));
 	 	
@@ -59,10 +59,12 @@ public class TestTrigger {
 	 	
 	 	LinkedHashMap<String, Object> args = new LinkedHashMap<String, Object>();
 	 	TestIdentity corp = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
+	 	TestIdentity reg = new TestIdentity(new CordaX500Name("Regulator", "New York", "GB"));
 	 	
 	 	args.put("owner", corp.getParty());
 	 	args.put("amt", DOLLARS(100));
-	 	args.put("id", "testing");
+	 	args.put("extId", "testing");
+	 	args.put("regulator", reg.getParty());
 	 	
 	 	AppTransactionService txn = new AppTransactionService(args, "IssueIOUInitiator", self.getParty());
 	 	Map<String, Object> triggerData = txn.resolveTransactionInput(trigger.getHandler("IssueIOUInitiator").getFlowInputs());

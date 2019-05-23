@@ -21,8 +21,12 @@
             "type":"string",
             "required":true,
             "display":{
-                "visible":false
+                "name": "Flow type",
+                "type":"dropdown",
+                "selection":"single",
+                "visible":true
             },
+            "allowed":["receiver", "observer"],
             "value":"receiver"
         }
     ],
@@ -30,11 +34,11 @@
     "handler": {
       "settings": [
         {
-            "name": "useConfidentialIdentity",
+            "name": "useAnonymousIdentity",
             "type": "boolean",
             "required": true,
             "display": {
-                "name": "Use confidential identitiies for this transaction?",
+                "name": "Use confidential identities for this transaction?",
                 "visible": true
             },
             "value": true

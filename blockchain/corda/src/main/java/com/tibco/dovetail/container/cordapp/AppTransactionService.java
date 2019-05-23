@@ -36,33 +36,7 @@ public class AppTransactionService implements ITransactionService {
 			
 			if(value != null) {
 				doc.put("$", attr, CordaUtil.toJsonObject(value).json());
-				/*
-				if(value instanceof AbstractParty) {
-					values.put(attr, CordaUtil.serialize(value));
-        			}
-        			else if(value instanceof List){
-        				List<Object> objs = (List<Object>)value;
-        				
-	                if(objs.size() > 0) {
-		                if(objs.get(0) instanceof AbstractParty) {
-		                		List<String> parties = objs.stream().map(p -> CordaUtil.serialize(p)).collect(Collectors.toList());
-		                		values.put(attr, parties);
-		                } else if (objs.get(0) instanceof String || objs.get(0)  instanceof Long || objs.get(0)  instanceof Integer || objs.get(0)  instanceof Boolean || objs.get(0)  instanceof Double) {
-		                		values.put(attr, objs);
-		                } else {
-		                		values.put(attr, CordaUtil.toJsonObject(objs));
-		                }
-		                
-	                }
-        				
-	            } else if (value instanceof String || value instanceof Long || value instanceof Integer || value instanceof Boolean || value instanceof Double) {
-	            		values.put(attr, value);
-	            } else {
-	            		values.put(attr, CordaUtil.toJsonObject(value));
-	            }
-	            */
 			} else {
-				//values.put(attr, in.getValue());
 				doc.put("$", attr, CordaUtil.toJsonObject(in.getValue()).json());
 			}
 		});
