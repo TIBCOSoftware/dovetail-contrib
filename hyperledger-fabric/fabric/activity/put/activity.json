@@ -19,34 +19,35 @@
             "required": true
         },
         {
-            "name": "valueType",
-            "type": "string",
-            "required": true,
-            "allowed": [
-                "string",
-                "number",
-                "integer",
-                "boolean",
-                "object"
-            ],
-            "value": "string",
+            "name": "commonData",
+            "type": "object",
             "display": {
-                "name": "Data type",
-                "description": "Type of state data for the key",
-                "type": "dropdown",
-                "selection": "single"
-            }
+                "name": "Common data definition",
+                "description": "Select common data collection",
+                "type": "connection",
+                "visible": true
+            },
+            "allowed":[]
         },
         {
-            "name": "value",
-            "type": "any"
+            "name": "dataType",
+            "type": "string",
+            "display":{
+                "name": "Data object type",
+                "description": "Select input data schema",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
         },
         {
             "name": "data",
             "type": "complex_object",
+            "required": true,
             "display": {
-                "name": "Value object definition",
-                "description": "Schema definition of complex state data, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
+                "name": "Data object definition",
+                "description": "Schema of state data, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
                 "type": "texteditor",
                 "syntax": "json",
                 "mappable": true
@@ -73,14 +74,26 @@
             }
         },
         {
+            "name": "keyType",
+            "type": "string",
+            "display":{
+                "name": "Composite key type",
+                "description": "Select composite key definition",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        },
+        {
             "name": "compositeKeys",
             "type": "string",
             "display": {
                 "name": "Composite keys",
-                "description": "Define search index using composite key name and attributes (Note: the key value will be appended to composite-key if the value of the last specified attribute does not match the key), e.g. {\r\n    \"index-color\": [\"color\", \"name\"],\r\n    \"index-owner\": [\"owner\", \"name\"]\r\n}",
+                "description": "Define composite key name and attributes (Note: the state key will be appended if it is not included here), e.g. {\r\n    \"index-color\": [\"color\", \"name\"],\r\n    \"index-owner\": [\"owner\", \"name\"]\r\n}",
                 "type": "texteditor",
                 "syntax": "json",
-                "appPropertySupport": true
+                "readonly": false
             }
         }
     ],

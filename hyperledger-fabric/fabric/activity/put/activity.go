@@ -4,17 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/core/data"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/pkg/errors"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 )
 
 const (
 	ivKey           = "key"
-	ivValueType     = "valueType"
-	ivValue         = "value"
 	ivData          = "data"
 	ivIsPrivate     = "isPrivate"
 	ivCollection    = "collection"
@@ -23,7 +21,6 @@ const (
 	ovMessage       = "message"
 	ovKey           = "key"
 	ovResult        = "result"
-	objectType      = "object"
 )
 
 // Create a new logger
@@ -59,19 +56,14 @@ func (a *FabricPutActivity) Eval(ctx activity.Context) (done bool, err error) {
 		return false, errors.New("state key is not specified")
 	}
 	log.Debugf("state key: %s\n", key)
-	vtype := ctx.GetInput(ivValueType).(string)
-	log.Debugf("value type: %s\n", vtype)
-	value := ctx.GetInput(ivValue)
-	if vtype == objectType {
-		if obj, ok := ctx.GetInput(ivData).(*data.ComplexObject); ok {
-			value = obj.Value
-		} else {
-			log.Errorf("input data is not a complex object\n")
-			ctx.SetOutput(ovCode, 400)
-			ctx.SetOutput(ovMessage, "input data is not a complex object")
-			return false, errors.New("input data is not a complex object")
-		}
+	data, ok := ctx.GetInput(ivData).(*data.ComplexObject)
+	if !ok {
+		log.Errorf("input data is not a complex object\n")
+		ctx.SetOutput(ovCode, 400)
+		ctx.SetOutput(ovMessage, "input data is not a complex object")
+		return false, errors.New("input data is not a complex object")
 	}
+	value := data.Value
 	log.Debugf("input value type %T: %+v\n", value, value)
 
 	// get chaincode stub
