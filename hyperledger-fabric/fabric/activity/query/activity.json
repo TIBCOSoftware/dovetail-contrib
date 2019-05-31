@@ -54,6 +54,29 @@
             "type": "string"
         },
         {
+            "name": "commonData",
+            "type": "object",
+            "display": {
+                "name": "Common data definition",
+                "description": "Select common data collection",
+                "type": "connection",
+                "visible": true
+            },
+            "allowed":[]
+        },
+        {
+            "name": "dataType",
+            "type": "string",
+            "display":{
+                "name": "Data object type",
+                "description": "Select output data schema",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        },
+        {
             "name": "isPrivate",
             "type": "boolean",
             "required": true,
@@ -98,7 +121,8 @@
                 "name": "Result array definition",
                 "description": "Schema definition of the resulting array of key and value, e.g.,\r\n[{\r\n  \"key\": \"string\",\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",
                 "type": "texteditor",
-                "syntax": "json"
+                "syntax": "json",
+                "readonly": false
             }
         }
     ]

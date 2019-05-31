@@ -71,6 +71,7 @@ export class putHandler extends WiServiceHandlerContribution {
             let dataTypeName = context.getField("dataType").value;
             let connectorId = context.getField("commonData").value;
             if (dataTypeName && connectorId) {
+                // set pre-defined schema from shared data defs
                 return Observable.create(observer => {
                     WiContributionUtils.getConnection(this.http, connectorId).map(data => data)
                     .subscribe(data => {
@@ -86,6 +87,12 @@ export class putHandler extends WiServiceHandlerContribution {
                         }
                     });
                 });
+            } else if (fieldName === "result") {
+                // set it the same as data if not using shared data defs
+                let dataField: IFieldDefinition = context.getField("data");
+                if (dataField.value && dataField.value.value) {
+                    return dataField.value.value;
+                }
             }
         } else if (fieldName === "keyType" ) {
             let connectorId = context.getField("commonData").value;

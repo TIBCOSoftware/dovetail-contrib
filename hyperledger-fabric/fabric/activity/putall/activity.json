@@ -15,6 +15,29 @@
     "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
     "inputs": [
         {
+            "name": "commonData",
+            "type": "object",
+            "display": {
+                "name": "Common data definition",
+                "description": "Select common data collection",
+                "type": "connection",
+                "visible": true
+            },
+            "allowed":[]
+        },
+        {
+            "name": "dataType",
+            "type": "string",
+            "display":{
+                "name": "Data object type",
+                "description": "Select input data schema",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        },
+        {
             "name": "data",
             "type": "complex_object",
             "display": {
@@ -46,14 +69,26 @@
             }
         },
         {
+            "name": "keyType",
+            "type": "string",
+            "display":{
+                "name": "Composite key type",
+                "description": "Select composite key definition",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        },
+        {
             "name": "compositeKeys",
             "type": "string",
             "display": {
                 "name": "Composite keys",
-                "description": "Define search index using composite key name and attributes (Note: the key value will be appended to composite-key if the value of the last specified attribute does not match the key), e.g. {\r\n    \"color~name\": [\"color\", \"name\"],\r\n    \"owner~name\": [\"owner\", \"name\"]\r\n}",
+                "description": "Define composite key name and attributes (Note: the state key will be appended if it is not included here), e.g. {\r\n    \"color~name\": [\"color\", \"name\"],\r\n    \"owner~name\": [\"owner\", \"name\"]\r\n}",
                 "type": "texteditor",
                 "syntax": "json",
-                "appPropertySupport": true
+                "readonly": false
             }
         }
     ],

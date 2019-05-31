@@ -9,7 +9,10 @@ import {
     ActionResult,
     WiContribModelService,
     ICreateFlowActionContext,
-    CreateFlowActionResult
+    CreateFlowActionResult,
+    WiContributionUtils,
+    IActivityContribution,
+    IConnectorContribution
 } from "wi-studio/app/contrib/wi-contrib";
 import { ITriggerContribution, IFieldDefinition, MODE } from "wi-studio/common/models/contrib";
 import { IValidationResult, ValidationResult } from "wi-studio/common/models/validation";
@@ -24,51 +27,119 @@ export class transactionHandler extends WiServiceHandlerContribution {
     }
 
     value = (fieldName: string, context: ITriggerContribution): Observable<any> | any => {
+        if (fieldName === "commonData") {
+            return Observable.create(observer => {
+                WiContributionUtils.getConnections(this.http, "fabric").subscribe((data: IConnectorContribution[]) => {
+                    let connectionRefs = [];
+                    data.forEach(connection => {
+                        if ((<any>connection).isValid) {
+                            for (let i = 0; i < connection.settings.length; i++) {
+                                if (connection.settings[i].name === "name") {
+                                    connectionRefs.push({
+                                        "unique_id": WiContributionUtils.getUniqueId(connection),
+                                        "name": connection.settings[i].value
+                                    });
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                    observer.next(connectionRefs);
+                });
+            });
+        } else if (fieldName === "parametersDataType" || fieldName === "transientDataType" || fieldName === "returnsDataType") {
+            let connectorId = context.getField("commonData").value;
+            if (connectorId) {
+                return Observable.create(observer => {
+                    WiContributionUtils.getConnection(this.http, connectorId).map(data => data)
+                    .subscribe(data => {
+                        for (let setting of data.settings) {
+                            if (setting.name === "schema" && setting.value.value) {
+//                                console.log("connector data: " + setting.name + " = " + setting.value.value);
+                                let schema = [""];
+                                let sobj = JSON.parse(setting.value.value);
+                                Object.keys(sobj).forEach( (pkg) => {
+                                    Object.keys(sobj[pkg]).forEach( (n) => {
+                                        schema.push(pkg + "." + n);
+                                    });
+                                });
+                                observer.next(schema);
+                                break;
+                            }
+                        }
+                    });
+                });
+            }
+        } else if (fieldName === "parameters" || fieldName === "transient" || fieldName === "returns") {
+            let dataTypeName = context.getField(fieldName+"DataType").value;
+            let connectorId = context.getField("commonData").value;
+            if (dataTypeName && connectorId) {
+                // set pre-defined schema from shared data defs
+                return Observable.create(observer => {
+                    WiContributionUtils.getConnection(this.http, connectorId).map(data => data)
+                    .subscribe(data => {
+                        for (let setting of data.settings) {
+                            if (setting.name === "schema" && setting.value && setting.value.value) {
+//                                console.log(fieldName + " schema data: " + setting.name + " = " + setting.value.value);
+                                let sch = JSON.parse(setting.value.value);
+                                let idx = dataTypeName.lastIndexOf('.');
+                                let pkg = sch[dataTypeName.substring(0, idx)];
+                                observer.next(JSON.stringify(pkg[dataTypeName.substring(idx+1)], null, 2));
+                                break;
+                            }
+                        }
+                    });
+                });
+            }
+        }
         return null;
     }
 
     // verify user entries are valid JSON string
     validate = (fieldName: string, context: ITriggerContribution): Observable<IValidationResult> | IValidationResult => {
-        if (fieldName === "parameters") {
+        let vresult: IValidationResult = ValidationResult.newValidationResult();
+        if (fieldName === "commonData") {
             if (context.getMode() === MODE.WIZARD || context.getMode() === MODE.SERVERLESS_FLOW) {
-                let parametersField: IFieldDefinition = context.getField("parameters");
-                if (parametersField.value && parametersField.value.value) {
+                vresult.setVisible(true);
+            } else {
+                vresult.setVisible(false);
+            }
+            return vresult;
+        } else if (fieldName === "parametersDataType" || fieldName === "transientDataType" || fieldName === "returnsDataType") {
+            let vresult: IValidationResult = ValidationResult.newValidationResult();
+            let commonDataField: IFieldDefinition = context.getField("commonData");
+            if (commonDataField.value) {
+                vresult.setVisible(true);
+            } else {
+                vresult.setVisible(false);
+            }
+            return vresult;
+        } else if (fieldName === "parameters" || fieldName === "transient" || fieldName === "returns") {
+            if (context.getMode() === MODE.WIZARD || context.getMode() === MODE.SERVERLESS_FLOW) {
+                let vresult: IValidationResult = ValidationResult.newValidationResult();
+                let dataField: IFieldDefinition = context.getField(fieldName);
+                let dataTypeField: IFieldDefinition = context.getField(fieldName+"DataType");
+                if (dataTypeField.value && dataTypeField.display.visible) {
+                    vresult.setReadOnly(true);
+                } else {
+                    vresult.setReadOnly(false);
+                }
+                if (dataField.value && dataField.value.value) {
                     try {
                         // verify well-formed JSON schema
                         let valRes;
-                        valRes = JSON.parse(parametersField.value.value);
+                        valRes = JSON.parse(dataField.value.value);
                         valRes = JSON.stringify(valRes);
                     } catch (e) {
-                        return ValidationResult.newValidationResult().setError("FABTIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
+                        return vresult.setError("FABTIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
                     }
                 }
-            }
-        } else if (fieldName === "transient") {
-            if (context.getMode() === MODE.WIZARD || context.getMode() === MODE.SERVERLESS_FLOW) {
-                let transientField: IFieldDefinition = context.getField("transient");
-                if (transientField.value && transientField.value.value) {
-                    try {
-                        // verify well-formed JSON schema
-                        let valRes;
-                        valRes = JSON.parse(transientField.value.value);
-                        valRes = JSON.stringify(valRes);
-                    } catch (e) {
-                        return ValidationResult.newValidationResult().setError("FABTIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
-                    }
-                }
-            }
-        } else if (fieldName === "returns") {
-            if (context.getMode() === MODE.WIZARD || context.getMode() === MODE.SERVERLESS_FLOW) {
-                let returnsField: IFieldDefinition = context.getField("returns");
-                if (returnsField.value && returnsField.value.value) {
-                    try {
-                        let valRes;
-                        valRes = JSON.parse(returnsField.value.value);
-                        valRes = JSON.stringify(valRes);
-                    } catch (e) {
-                        return ValidationResult.newValidationResult().setError("FABTIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
-                    }
-                }
+                vresult.setReadOnly(false);
+                return vresult;
+            } else {
+                let vresult: IValidationResult = ValidationResult.newValidationResult();
+                vresult.setReadOnly(true);
+                return vresult;
             }
         }
         return null;
@@ -80,9 +151,22 @@ export class transactionHandler extends WiServiceHandlerContribution {
         let result = CreateFlowActionResult.newActionResult();
         if (context.handler && context.handler.settings && context.handler.settings.length > 0) {
             let nameField = <IFieldDefinition>context.getField("name");
+            // work around issue in FE 2.5.0
             let parametersField = <IFieldDefinition>context.getField("parameters");
+            let paramValue = parametersField.value.value;
+            if (!paramValue) {
+                paramValue = parametersField.value;
+            }
             let transientField = <IFieldDefinition>context.getField("transient");
+            let transientValue = transientField.value.value;
+            if (!transientValue) {
+                transientValue = transientField.value;
+            }
             let returnsField = <IFieldDefinition>context.getField("returns");
+            let returnsValue = returnsField.value.value;
+            if (!returnsValue) {
+                returnsValue = returnsField.value;
+            }
             if (nameField && nameField.value) {
                 let trigger = modelService.createTriggerElement("fabric/fabric-transaction");
                 if (trigger && trigger.handler && trigger.handler.settings && trigger.handler.settings.length > 0) {
@@ -96,12 +180,12 @@ export class transactionHandler extends WiServiceHandlerContribution {
                     for (let j = 0; j < trigger.outputs.length; j++) {
                         if (trigger.outputs[j].name === "parameters") {
                             trigger.outputs[j].value = {
-                                "value": parametersField.value,
+                                "value": paramValue,
                                 "metadata": ""
                             };
                         } else if (trigger.outputs[j].name === "transient") {
                             trigger.outputs[j].value = {
-                                "value": transientField.value,
+                                "value": transientValue,
                                 "metadata": ""
                             };
                         }
@@ -111,7 +195,7 @@ export class transactionHandler extends WiServiceHandlerContribution {
                     for (let j = 0; j < trigger.reply.length; j++) {
                         if (trigger.reply[j].name === "returns") {
                             trigger.reply[j].value = {
-                                "value": returnsField.value,
+                                "value": returnsValue,
                                 "metadata": ""
                             };
                             break;
