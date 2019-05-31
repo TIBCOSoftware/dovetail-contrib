@@ -25,6 +25,7 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
 
     value = (fieldName: string, context: IContributionTypes): Observable<any> | any => {
         if (fieldName === "connectionName") {
+            // return list of connector refs
             return Observable.create(observer => {
                 let connectionRefs = [];
                 WiContributionUtils.getConnections(this.http, "fabclient").subscribe((data: IConnectorContribution[]) => {
@@ -51,29 +52,20 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
 
     validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
         if (fieldName === "parameters" || fieldName === "transient" || fieldName === "result") {
-            return Observable.create(observer => {
-                let vresult: IValidationResult = ValidationResult.newValidationResult();
-                let valueField: IFieldDefinition = context.getField(fieldName);
-                if (valueField.value && valueField.value.value) {
-                    try {
-                        let valRes;
-                        valRes = JSON.parse(valueField.value.value);
-                        valRes = JSON.stringify(valRes);
-                    } catch (e) {
-                        vresult.setError("FABTIC-REQUEST-1000", "Invalid JSON: " + e.toString());
-                    }
+            let vresult: IValidationResult = ValidationResult.newValidationResult();
+            let valueField: IFieldDefinition = context.getField(fieldName);
+            if (valueField.value && valueField.value.value) {
+                try {
+                    let valRes;
+                    valRes = JSON.parse(valueField.value.value);
+                    valRes = JSON.stringify(valRes);
+                } catch (e) {
+                    vresult.setError("FABTIC-REQUEST-1000", "Invalid JSON: " + e.toString());
                 }
-                observer.next(vresult);
-            });
+            }
+            return vresult;
         } else {
             return null;
         }
-    }
-
-    action = (actionId: string, context: IContributionTypes): Observable<IActionResult> | IActionResult => {
-        return Observable.create(observer => {
-            let aresult: IActionResult = ActionResult.newActionResult();
-            observer.next(aresult);
-        });
     }
 }

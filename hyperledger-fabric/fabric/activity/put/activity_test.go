@@ -48,8 +48,6 @@ func TestEval(t *testing.T) {
 	tc := test.NewTestActivityContext(getActivityMetadata())
 
 	tc.SetInput(ivKey, "aKey")
-	tc.SetInput(ivValueType, "string")
-	tc.SetInput(ivValue, "test-string")
 	tc.SetInput(ivIsPrivate, false)
 
 	act.Eval(tc)

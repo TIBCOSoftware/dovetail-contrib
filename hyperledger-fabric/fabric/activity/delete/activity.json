@@ -20,6 +20,29 @@
             "required": true
         },
         {
+            "name": "commonData",
+            "type": "object",
+            "display": {
+                "name": "Common data definition",
+                "description": "Select common data collection",
+                "type": "connection",
+                "visible": true
+            },
+            "allowed":[]
+        },
+        {
+            "name": "dataType",
+            "type": "string",
+            "display":{
+                "name": "Data object type",
+                "description": "Select input data schema",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        },
+        {
             "name": "isPrivate",
             "type": "boolean",
             "required": true,
@@ -50,14 +73,26 @@
             "value": false
         },
         {
+            "name": "keyType",
+            "type": "string",
+            "display":{
+                "name": "Composite key type",
+                "description": "Select composite key definition",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        },
+        {
             "name": "compositeKeys",
             "type": "string",
             "display": {
-                "name": "Composite keys",
-                "description": "Define index to be deleted using composite key name and attributes (Note: the key value will be appended to composite-key if the value of the last specified attribute does not match the key), e.g. {\r\n    \"index-color\": [\"color\", \"name\"],\r\n    \"index-owner\": [\"owner\", \"name\"]\r\n}",
+                "name": "Delete Composite keys",
+                "description": "Define composite key name and attributes (Note: the state key will be appended if it is not included here), e.g. {\r\n    \"index-color\": [\"color\", \"name\"],\r\n    \"index-owner\": [\"owner\", \"name\"]\r\n}",
                 "type": "texteditor",
                 "syntax": "json",
-                "appPropertySupport": true
+                "readonly": false
             }
         }
     ],
@@ -81,7 +116,8 @@
                 "name": "Deleted object definition",
                 "description": "Schema definition of the deleted object, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
                 "type": "texteditor",
-                "syntax": "json"
+                "syntax": "json",
+                "readonly": false
             }
         }
     ]
