@@ -39,6 +39,7 @@ The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/iou-app
 make create
+make build
 make deploy
 ```
 
@@ -46,6 +47,7 @@ make deploy
 Start Hyperledger Fabric test network in dev mode:
 ```
 cd $GOPATH/src/github.com/hyperledger/fabric-samples/chaincode-docker-devmode
+rm -R chaincode
 docker-compose -f docker-compose-simple.yaml up
 ```
 In another terminal, start the chaincode:

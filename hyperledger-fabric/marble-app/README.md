@@ -1,8 +1,8 @@
 # marble-app
-This is a Flogo version of the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode, [marbles02](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02) implemented by using a [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0) model.  The model does not require any code, it contains only a JSON model file exported from the TIBCO Flogo® Enterprise.  You can download the prerequisites and then build and deploy the model to a Hyperledger Fabric network as described below.
+This is a Flogo version of the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode, [marbles02](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02) implemented by using a [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-5-0) model.  The model does not require any code, it contains only a JSON model file exported from the TIBCO Flogo® Enterprise.  You can download the prerequisites and then build and deploy the model to a Hyperledger Fabric network as described below.
 
 ## Prerequisite
-- Download [TIBCO Flogo® Enterprise 2.4](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html)
+- Download [TIBCO Flogo® Enterprise 2.5](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html)
 - [Install Go](https://golang.org/doc/install)
 - Clone [Hyperledger Fabric](https://github.com/hyperledger/fabric)
 - Clone [Hyperledger Fabric Samples](https://github.com/hyperledger/fabric-samples)
@@ -23,7 +23,7 @@ cd $GOPATH/src/github.com/hyperledger/fabric-samples
 ```
 
 ## Edit smart contract
-- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.4.0/doc/pdf/TIB_flogo_2.4_users_guide.pdf?id=1)
+- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.5.0/doc/pdf/TIB_flogo_2.5_users_guide.pdf?id=1)
 - Upload [`fabricExtension.zip`](../fabricExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can recreate this `zip` by using the script [`zip-fabric.sh`](../zip-fabric.sh)
 - Create new Flogo App of name `marble_app` and choose `Import app` to import the model [`marble_app.json`](marble_app.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
@@ -37,6 +37,7 @@ The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/marble-app
 make create
+make build
 make deploy
 ```
 
@@ -44,6 +45,7 @@ make deploy
 Start Hyperledger Fabric test network in dev mode:
 ```
 cd $GOPATH/src/github.com/hyperledger/fabric-samples/chaincode-docker-devmode
+rm -R chaincode
 docker-compose -f docker-compose-simple.yaml up
 ```
 In another terminal, start the chaincode:

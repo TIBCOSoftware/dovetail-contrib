@@ -1,7 +1,7 @@
 # Flogo extension for Hyperledger Fabric client
 
 This Flogo extension is designed to allow delopers to use the zero-code visual programming environment of the TIBCO Flogo® Enterprise to design and implement apps or services that interact with Hyperledger Fabric networks.  This extension supports the following release versions:
-- [TIBCO Flogo® Enterprise 2.4](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0)
+- [TIBCO Flogo® Enterprise 2.5](https://docs.tibco.com/products/tibco-flogo-enterprise-2-5-0)
 - [Hyperledger Fabric 1.4](https://www.hyperledger.org/projects/fabric)
 - [Hyperledger Fabric Go SDK v1.0.0-alpha5](https://github.com/hyperledger/fabric-sdk-go)
 

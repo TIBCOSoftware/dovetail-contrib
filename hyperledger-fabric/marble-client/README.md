@@ -1,5 +1,5 @@
 # marble-client
-This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0), this app interacts with the Hyperledger Fabric chaincode [`marble-app`](../marble-app) and exposes a set of REST APIs for managing the data on the marble blockchain network.
+This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-5-0), this app interacts with the Hyperledger Fabric chaincode [`marble-app`](../marble-app) and exposes a set of REST APIs for managing the data on the marble blockchain network.
 
 ## Build and start the marble-app fabric network
 First, complete the prerequisites as described in [`marble-app`](../marble-app).

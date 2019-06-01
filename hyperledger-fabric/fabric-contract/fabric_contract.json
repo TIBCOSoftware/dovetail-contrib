@@ -1,892 +1,1439 @@
 {
- "name": "fabric_contract",
- "description": " ",
- "version": "1.0.0",
- "type": "flogo:app",
- "appModel": "1.0.0",
- "resources": [
-  {
-   "id": "flow:Put_Record",
-   "data": {
-    "name": "Put Record",
-    "description": "Illustrate use of transient attributes that must be specified at creation time",
-    "tasks": [
-     {
-      "id": "LogMessage",
-      "name": "LogMessage",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-       "settings": {},
-       "input": {},
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['message']",
-          "type": "expression",
-          "value": "string.concat(\"[put_record] \", $flow.parameters.user_txn_id, \" secret: \", $flow.transient.secret)"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "Put",
-      "name": "Put",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
-       "settings": {},
-       "input": {
-        "valueType": "object",
-        "data": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
-         "value": ""
+    "name": "fabric_contract",
+    "description": " ",
+    "version": "1.0.0",
+    "type": "flogo:app",
+    "appModel": "1.0.0",
+    "feVersion": "2.5.0",
+    "resources": [
+        {
+            "id": "flow:Put_Record",
+            "data": {
+                "name": "Put Record",
+                "description": "Illustrate use of transient attributes that must be specified at creation time",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"[put_record] \", $flow.parameters.user_txn_id, \" secret: \", $flow.transient.secret)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Put",
+                        "name": "Put",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+                            "settings": {},
+                            "input": {
+                                "key": "",
+                                "commonData": {
+                                    "type": "flogo:connector",
+                                    "version": "1.0.0",
+                                    "name": "fabric-datadef",
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "Fabric Data Definition",
+                                    "description": "Fabric Data Definition",
+                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "description": "Unique name of the data definition",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Name",
+                                                "visible": true
+                                            },
+                                            "value": "audit_data"
+                                        },
+                                        {
+                                            "name": "schemaList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Schema Definitions",
+                                                "description": "Define shared data schema",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txn_id\\\":\\\"\\\",\\\"txn_time\\\":\\\"\\\",\\\"sequence\\\":0,\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLogList\",\"definition\":\"{\\\"records\\\":[{\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditKV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txn_id\\\":\\\"\\\",\\\"txn_time\\\":\\\"\\\",\\\"sequence\\\":0,\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}}]\"}]"
+                                        },
+                                        {
+                                            "name": "dataList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Shared Data",
+                                                "description": "Define shared data value",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"user_txn_id\",\"value\":\"[\\\"user_txn_id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"hash_value\",\"value\":\"[\\\"hash_value\\\"]\"}]"
+                                        },
+                                        {
+                                            "name": "schema",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All schema definitions",
+                                                "description": "Schema defined in schemaList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txn_id\": \"\",\n      \"txn_time\": \"\",\n      \"sequence\": 0,\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    },\n    \"AuditLogList\": {\n      \"records\": [\n        {\n          \"user_txn_id\": \"\",\n          \"data\": \"\",\n          \"hash_type\": \"\",\n          \"hash_value\": \"\"\n        }\n      ]\n    },\n    \"AuditKV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txn_id\": \"\",\n          \"txn_time\": \"\",\n          \"sequence\": 0,\n          \"user_txn_id\": \"\",\n          \"data\": \"\",\n          \"hash_type\": \"\",\n          \"hash_value\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                            }
+                                        },
+                                        {
+                                            "name": "data",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All data definitions",
+                                                "description": "Data values defined in dataList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"compositekey\": {\n    \"user_txn_id\": [\n      \"user_txn_id\"\n    ],\n    \"hash_value\": [\n      \"hash_value\"\n    ]\n  }\n}"
+                                            }
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "flogo",
+                                    "key": "flogo/fabric/connector/datadef/connector.json",
+                                    "display": {
+                                        "category": "fabric",
+                                        "description": "Fabric Data Definition",
+                                        "visible": true,
+                                        "smallIcon": "ic-fabric@2x.png",
+                                        "largeIcon": "ic-fabric@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Save"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1559424256285,
+                                    "createdTime": 1559424256285,
+                                    "user": "flogo",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "9c013cd0-84b3-11e9-bbbe-13288d91611e",
+                                    "connectorName": " ",
+                                    "connectorDescription": " "
+                                },
+                                "dataType": "audit.AuditRecord",
+                                "data": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n  \"txn_id\": \"\",\n  \"txn_time\": \"\",\n  \"sequence\": 0,\n  \"user_txn_id\": \"\",\n  \"data\": \"\",\n  \"hash_type\": \"\",\n  \"hash_value\": \"\"\n}"
+                                },
+                                "isPrivate": false,
+                                "collection": "",
+                                "keyType": "compositekey",
+                                "compositeKeys": "{\n  \"user_txn_id\": [\n    \"user_txn_id\"\n  ],\n  \"hash_value\": [\n    \"hash_value\"\n  ]\n}"
+                            },
+                            "output": {
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n  \"txn_id\": \"\",\n  \"txn_time\": \"\",\n  \"sequence\": 0,\n  \"user_txn_id\": \"\",\n  \"data\": \"\",\n  \"hash_type\": \"\",\n  \"hash_value\": \"\"\n}"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['key']",
+                                        "type": "expression",
+                                        "value": "string.concat($flow.txID, \":\", $flow.txTime, \":0\")"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['user_txn_id']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.user_txn_id"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['data']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.data"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['hash_type']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.hash_type"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['hash_value']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.hash_value"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['txn_id']",
+                                        "type": "assign",
+                                        "value": "$flow.txID"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['txn_time']",
+                                        "type": "assign",
+                                        "value": "$flow.txTime"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['sequence']",
+                                        "type": "literal",
+                                        "value": 0
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "assign",
+                                        "value": "$activity[Put].result"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "Put",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Put",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "transient",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"secret\":{\"type\":\"string\"},\"pin\":{\"type\":\"number\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}},\"transient\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"secret\":{\"type\":\"string\"},\"pin\":{\"type\":\"number\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
         },
-        "compositeKeys": "{\n    \"user_txn_id\": [\"user_txn_id\"],\n    \"hash_value\": [\"hash_value\"]\n}"
-       },
-       "output": {
-        "result": {
-         "metadata": "",
-         "value": ""
+        {
+            "id": "flow:Put_Records",
+            "data": {
+                "name": "Put Records",
+                "description": "PutAll cannot get array position for key sequence, so this model supports only single record",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"[put_records] \", $flow.parameters.records[0].user_txn_id)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "PutAll",
+                        "name": "PutAll",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
+                            "settings": {},
+                            "input": {
+                                "commonData": {
+                                    "type": "flogo:connector",
+                                    "version": "1.0.0",
+                                    "name": "fabric-datadef",
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "Fabric Data Definition",
+                                    "description": "Fabric Data Definition",
+                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "description": "Unique name of the data definition",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Name",
+                                                "visible": true
+                                            },
+                                            "value": "audit_data"
+                                        },
+                                        {
+                                            "name": "schemaList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Schema Definitions",
+                                                "description": "Define shared data schema",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txn_id\\\":\\\"\\\",\\\"txn_time\\\":\\\"\\\",\\\"sequence\\\":0,\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLogList\",\"definition\":\"{\\\"records\\\":[{\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditKV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txn_id\\\":\\\"\\\",\\\"txn_time\\\":\\\"\\\",\\\"sequence\\\":0,\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}}]\"}]"
+                                        },
+                                        {
+                                            "name": "dataList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Shared Data",
+                                                "description": "Define shared data value",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"user_txn_id\",\"value\":\"[\\\"user_txn_id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"hash_value\",\"value\":\"[\\\"hash_value\\\"]\"}]"
+                                        },
+                                        {
+                                            "name": "schema",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All schema definitions",
+                                                "description": "Schema defined in schemaList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txn_id\": \"\",\n      \"txn_time\": \"\",\n      \"sequence\": 0,\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    },\n    \"AuditLogList\": {\n      \"records\": [\n        {\n          \"user_txn_id\": \"\",\n          \"data\": \"\",\n          \"hash_type\": \"\",\n          \"hash_value\": \"\"\n        }\n      ]\n    },\n    \"AuditKV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txn_id\": \"\",\n          \"txn_time\": \"\",\n          \"sequence\": 0,\n          \"user_txn_id\": \"\",\n          \"data\": \"\",\n          \"hash_type\": \"\",\n          \"hash_value\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                            }
+                                        },
+                                        {
+                                            "name": "data",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All data definitions",
+                                                "description": "Data values defined in dataList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"compositekey\": {\n    \"user_txn_id\": [\n      \"user_txn_id\"\n    ],\n    \"hash_value\": [\n      \"hash_value\"\n    ]\n  }\n}"
+                                            }
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "flogo",
+                                    "key": "flogo/fabric/connector/datadef/connector.json",
+                                    "display": {
+                                        "category": "fabric",
+                                        "description": "Fabric Data Definition",
+                                        "visible": true,
+                                        "smallIcon": "ic-fabric@2x.png",
+                                        "largeIcon": "ic-fabric@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Save"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1559424256285,
+                                    "createdTime": 1559424256285,
+                                    "user": "flogo",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "9c013cd0-84b3-11e9-bbbe-13288d91611e",
+                                    "connectorName": " ",
+                                    "connectorDescription": " "
+                                },
+                                "dataType": "audit.AuditRecord",
+                                "data": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}}",
+                                    "value": "",
+                                    "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txn_id\": \"\",\n      \"txn_time\": \"\",\n      \"sequence\": 0,\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    }\n  }\n]"
+                                },
+                                "isPrivate": false,
+                                "collection": "",
+                                "keyType": "compositekey",
+                                "compositeKeys": "{\n  \"user_txn_id\": [\n    \"user_txn_id\"\n  ],\n  \"hash_value\": [\n    \"hash_value\"\n  ]\n}"
+                            },
+                            "output": {
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}}",
+                                    "value": "",
+                                    "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txn_id\": \"\",\n      \"txn_time\": \"\",\n      \"sequence\": 0,\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    }\n  }\n]"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['data']",
+                                        "type": "array",
+                                        "value": "{\"to\":\"$INPUT['data']\",\"from\":\"$flow.parameters.records\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"string.concat($flow.txID, \\\":\\\", $flow.txTime, \\\":0\\\")\",\"type\":\"expression\"},{\"to\":\"$INPUT.$$['value']['user_txn_id']\",\"from\":\"$.user_txn_id\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['data']\",\"from\":\"$.data\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['hash_type']\",\"from\":\"$.hash_type\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['hash_value']\",\"from\":\"$.hash_value\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['txn_id']\",\"from\":\"$flow.txID\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['txn_time']\",\"from\":\"$flow.txTime\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['sequence']\",\"from\":0,\"type\":\"literal\"}]}"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage1",
+                        "name": "LogMessage1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"PUT_ALL: \", $activity[PutAll].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "array",
+                                        "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[PutAll].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "PutAll",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "PutAll",
+                        "to": "LogMessage1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogMessage1",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}"
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:Put_Record_2",
+            "data": {
+                "name": "Put Record 2",
+                "description": "illustrate that transient attribute on trigger cannot be added after creation",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"[put_record_2] \", $flow.parameters.user_txn_id)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Put",
+                        "name": "Put",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+                            "settings": {},
+                            "input": {
+                                "key": "",
+                                "commonData": {
+                                    "type": "flogo:connector",
+                                    "version": "1.0.0",
+                                    "name": "fabric-datadef",
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "Fabric Data Definition",
+                                    "description": "Fabric Data Definition",
+                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "description": "Unique name of the data definition",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Name",
+                                                "visible": true
+                                            },
+                                            "value": "audit_data"
+                                        },
+                                        {
+                                            "name": "schemaList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Schema Definitions",
+                                                "description": "Define shared data schema",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txn_id\\\":\\\"\\\",\\\"txn_time\\\":\\\"\\\",\\\"sequence\\\":0,\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLogList\",\"definition\":\"{\\\"records\\\":[{\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditKV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txn_id\\\":\\\"\\\",\\\"txn_time\\\":\\\"\\\",\\\"sequence\\\":0,\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}}]\"}]"
+                                        },
+                                        {
+                                            "name": "dataList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Shared Data",
+                                                "description": "Define shared data value",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"user_txn_id\",\"value\":\"[\\\"user_txn_id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"hash_value\",\"value\":\"[\\\"hash_value\\\"]\"}]"
+                                        },
+                                        {
+                                            "name": "schema",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All schema definitions",
+                                                "description": "Schema defined in schemaList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txn_id\": \"\",\n      \"txn_time\": \"\",\n      \"sequence\": 0,\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    },\n    \"AuditLogList\": {\n      \"records\": [\n        {\n          \"user_txn_id\": \"\",\n          \"data\": \"\",\n          \"hash_type\": \"\",\n          \"hash_value\": \"\"\n        }\n      ]\n    },\n    \"AuditKV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txn_id\": \"\",\n          \"txn_time\": \"\",\n          \"sequence\": 0,\n          \"user_txn_id\": \"\",\n          \"data\": \"\",\n          \"hash_type\": \"\",\n          \"hash_value\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                            }
+                                        },
+                                        {
+                                            "name": "data",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All data definitions",
+                                                "description": "Data values defined in dataList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"compositekey\": {\n    \"user_txn_id\": [\n      \"user_txn_id\"\n    ],\n    \"hash_value\": [\n      \"hash_value\"\n    ]\n  }\n}"
+                                            }
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "flogo",
+                                    "key": "flogo/fabric/connector/datadef/connector.json",
+                                    "display": {
+                                        "category": "fabric",
+                                        "description": "Fabric Data Definition",
+                                        "visible": true,
+                                        "smallIcon": "ic-fabric@2x.png",
+                                        "largeIcon": "ic-fabric@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Save"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1559424256285,
+                                    "createdTime": 1559424256285,
+                                    "user": "flogo",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "9c013cd0-84b3-11e9-bbbe-13288d91611e",
+                                    "connectorName": " ",
+                                    "connectorDescription": " "
+                                },
+                                "dataType": "audit.AuditRecord",
+                                "data": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n  \"txn_id\": \"\",\n  \"txn_time\": \"\",\n  \"sequence\": 0,\n  \"user_txn_id\": \"\",\n  \"data\": \"\",\n  \"hash_type\": \"\",\n  \"hash_value\": \"\"\n}"
+                                },
+                                "isPrivate": false,
+                                "collection": "",
+                                "keyType": "compositekey",
+                                "compositeKeys": "{\n  \"user_txn_id\": [\n    \"user_txn_id\"\n  ],\n  \"hash_value\": [\n    \"hash_value\"\n  ]\n}"
+                            },
+                            "output": {
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n  \"txn_id\": \"\",\n  \"txn_time\": \"\",\n  \"sequence\": 0,\n  \"user_txn_id\": \"\",\n  \"data\": \"\",\n  \"hash_type\": \"\",\n  \"hash_value\": \"\"\n}"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['key']",
+                                        "type": "expression",
+                                        "value": "string.concat($flow.txID, \":\", $flow.txTime, \":0\")"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['txn_id']",
+                                        "type": "assign",
+                                        "value": "$flow.txID"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['txn_time']",
+                                        "type": "assign",
+                                        "value": "$flow.txTime"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['sequence']",
+                                        "type": "literal",
+                                        "value": 0
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['user_txn_id']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.user_txn_id"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['data']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.data"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['hash_type']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.hash_type"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['hash_value']",
+                                        "type": "assign",
+                                        "value": "$flow.parameters.hash_value"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage1",
+                        "name": "LogMessage1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"PUT: \", $activity[Put].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "assign",
+                                        "value": "$activity[Put].result"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "Put",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Put",
+                        "to": "LogMessage1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogMessage1",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:Put_Records_2",
+            "data": {
+                "name": "Put Records 2",
+                "description": "Cannot return all Put results, so returned only the last available Put record",
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"[put_records_2] \", $flow.parameters.records[0].user_txn_id, \", count: \", string.tostring(array.count($flow.parameters.records)))"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Put",
+                        "name": "Put",
+                        "settings": {
+                            "iterate": "$flow.parameters.records"
+                        },
+                        "type": "iterator",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+                            "settings": {},
+                            "input": {
+                                "key": "",
+                                "commonData": {
+                                    "type": "flogo:connector",
+                                    "version": "1.0.0",
+                                    "name": "fabric-datadef",
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "Fabric Data Definition",
+                                    "description": "Fabric Data Definition",
+                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "description": "Unique name of the data definition",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Name",
+                                                "visible": true
+                                            },
+                                            "value": "audit_data"
+                                        },
+                                        {
+                                            "name": "schemaList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Schema Definitions",
+                                                "description": "Define shared data schema",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txn_id\\\":\\\"\\\",\\\"txn_time\\\":\\\"\\\",\\\"sequence\\\":0,\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLogList\",\"definition\":\"{\\\"records\\\":[{\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditKV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txn_id\\\":\\\"\\\",\\\"txn_time\\\":\\\"\\\",\\\"sequence\\\":0,\\\"user_txn_id\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hash_type\\\":\\\"\\\",\\\"hash_value\\\":\\\"\\\"}}]\"}]"
+                                        },
+                                        {
+                                            "name": "dataList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Shared Data",
+                                                "description": "Define shared data value",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"user_txn_id\",\"value\":\"[\\\"user_txn_id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"hash_value\",\"value\":\"[\\\"hash_value\\\"]\"}]"
+                                        },
+                                        {
+                                            "name": "schema",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All schema definitions",
+                                                "description": "Schema defined in schemaList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txn_id\": \"\",\n      \"txn_time\": \"\",\n      \"sequence\": 0,\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    },\n    \"AuditLogList\": {\n      \"records\": [\n        {\n          \"user_txn_id\": \"\",\n          \"data\": \"\",\n          \"hash_type\": \"\",\n          \"hash_value\": \"\"\n        }\n      ]\n    },\n    \"AuditKV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txn_id\": \"\",\n          \"txn_time\": \"\",\n          \"sequence\": 0,\n          \"user_txn_id\": \"\",\n          \"data\": \"\",\n          \"hash_type\": \"\",\n          \"hash_value\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                            }
+                                        },
+                                        {
+                                            "name": "data",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All data definitions",
+                                                "description": "Data values defined in dataList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"compositekey\": {\n    \"user_txn_id\": [\n      \"user_txn_id\"\n    ],\n    \"hash_value\": [\n      \"hash_value\"\n    ]\n  }\n}"
+                                            }
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "flogo",
+                                    "key": "flogo/fabric/connector/datadef/connector.json",
+                                    "display": {
+                                        "category": "fabric",
+                                        "description": "Fabric Data Definition",
+                                        "visible": true,
+                                        "smallIcon": "ic-fabric@2x.png",
+                                        "largeIcon": "ic-fabric@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Save"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1559424256285,
+                                    "createdTime": 1559424256285,
+                                    "user": "flogo",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "9c013cd0-84b3-11e9-bbbe-13288d91611e",
+                                    "connectorName": " ",
+                                    "connectorDescription": " "
+                                },
+                                "dataType": "audit.AuditRecord",
+                                "data": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n  \"txn_id\": \"\",\n  \"txn_time\": \"\",\n  \"sequence\": 0,\n  \"user_txn_id\": \"\",\n  \"data\": \"\",\n  \"hash_type\": \"\",\n  \"hash_value\": \"\"\n}"
+                                },
+                                "isPrivate": false,
+                                "collection": "",
+                                "keyType": "compositekey",
+                                "compositeKeys": "{\n  \"user_txn_id\": [\n    \"user_txn_id\"\n  ],\n  \"hash_value\": [\n    \"hash_value\"\n  ]\n}"
+                            },
+                            "output": {
+                                "result": {
+                                    "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
+                                    "value": "",
+                                    "fe_metadata": "{\n  \"txn_id\": \"\",\n  \"txn_time\": \"\",\n  \"sequence\": 0,\n  \"user_txn_id\": \"\",\n  \"data\": \"\",\n  \"hash_type\": \"\",\n  \"hash_value\": \"\"\n}"
+                                }
+                            },
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['key']",
+                                        "type": "expression",
+                                        "value": "string.concat($flow.txID, $flow.txTime, string.tostring($current.iteration.key))"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['txn_id']",
+                                        "type": "assign",
+                                        "value": "$flow.txID"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['txn_time']",
+                                        "type": "assign",
+                                        "value": "$flow.txTime"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['sequence']",
+                                        "type": "assign",
+                                        "value": "$current.iteration.key"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['user_txn_id']",
+                                        "type": "assign",
+                                        "value": "$current.iteration.value.user_txn_id"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['data']",
+                                        "type": "assign",
+                                        "value": "$current.iteration.value.data"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['hash_type']",
+                                        "type": "assign",
+                                        "value": "$current.iteration.value.hash_type"
+                                    },
+                                    {
+                                        "mapTo": "$INPUT['data']['hash_value']",
+                                        "type": "assign",
+                                        "value": "$current.iteration.value.hash_value"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogMessage1",
+                        "name": "LogMessage1",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                            "settings": {},
+                            "input": {
+                                "message": "",
+                                "flowInfo": false,
+                                "addToFlow": false
+                            },
+                            "output": {},
+                            "mappings": {
+                                "input": [
+                                    {
+                                        "mapTo": "$INPUT['message']",
+                                        "type": "expression",
+                                        "value": "string.concat(\"PUT: \", $activity[Put].message)"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
+                            "settings": {},
+                            "input": {
+                                "mappings": [
+                                    {
+                                        "mapTo": "$INPUT['returns']",
+                                        "type": "array",
+                                        "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"NEWARRAY\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$activity[Put].key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$activity[Put].result\",\"type\":\"assign\"}]}"
+                                    }
+                                ]
+                            },
+                            "output": {}
+                        }
+                    }
+                ],
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "Put",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Put",
+                        "to": "LogMessage1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogMessage1",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "complex_object",
+                            "value": {
+                                "value": "",
+                                "metadata": "{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}"
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
         }
-       },
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['key']",
-          "type": "expression",
-          "value": "string.concat($flow.txID, \":\", $flow.txTime, \":0\")"
-         },
-         {
-          "mapTo": "$INPUT['data']['txn_id']",
-          "type": "assign",
-          "value": "$flow.txID"
-         },
-         {
-          "mapTo": "$INPUT['data']['txn_time']",
-          "type": "assign",
-          "value": "$flow.txTime"
-         },
-         {
-          "mapTo": "$INPUT['data']['sequence']",
-          "type": "literal",
-          "value": 0
-         },
-         {
-          "mapTo": "$INPUT['data']['user_txn_id']",
-          "type": "assign",
-          "value": "$flow.parameters.user_txn_id"
-         },
-         {
-          "mapTo": "$INPUT['data']['data']",
-          "type": "assign",
-          "value": "$flow.parameters.data"
-         },
-         {
-          "mapTo": "$INPUT['data']['hash_type']",
-          "type": "assign",
-          "value": "$flow.parameters.hash_type"
-         },
-         {
-          "mapTo": "$INPUT['data']['hash_value']",
-          "type": "assign",
-          "value": "$flow.parameters.hash_value"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "Return",
-      "name": "Return",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
-       "settings": {},
-       "input": {
-        "mappings": [
-         {
-          "mapTo": "$INPUT['returns']",
-          "type": "assign",
-          "value": "$activity[Put].result"
-         }
-        ]
-       },
-       "output": {}
-      }
-     }
     ],
-    "links": [
-     {
-      "id": 1,
-      "from": "LogMessage",
-      "to": "Put",
-      "type": "default"
-     },
-     {
-      "id": 2,
-      "from": "Put",
-      "to": "Return",
-      "type": "default"
-     }
+    "triggers": [
+        {
+            "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction",
+            "name": "FabricTransaction",
+            "description": "Illustrate use of transient attributes that must be specified at creation time",
+            "settings": {},
+            "id": "FabricTransaction",
+            "handlers": [
+                {
+                    "description": "Illustrate use of transient attributes that must be specified at creation time",
+                    "settings": {
+                        "name": "put_record",
+                        "commonData": "",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
+                            "value": "",
+                            "fe_metadata": "{\n  \"user_txn_id\": \"\",\n  \"data\": \"\",\n  \"hash_type\": \"\",\n  \"hash_value\": \"\"\n}"
+                        },
+                        "transient": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"secret\":{\"type\":\"string\"},\"pin\":{\"type\":\"number\"}}}",
+                            "value": "",
+                            "fe_metadata": "{\n    \"secret\": \"\",\n    \"pin\": 0\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:Put_Record"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['parameters']",
+                                    "type": "assign",
+                                    "value": "$.parameters"
+                                },
+                                {
+                                    "mapTo": "$INPUT['transient']",
+                                    "type": "assign",
+                                    "value": "$.transient"
+                                },
+                                {
+                                    "mapTo": "$INPUT['txID']",
+                                    "type": "assign",
+                                    "value": "$.txID"
+                                },
+                                {
+                                    "mapTo": "$INPUT['txTime']",
+                                    "type": "assign",
+                                    "value": "$.txTime"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "assign",
+                                    "value": "$.returns"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "PutAll cannot get array position for key sequence, so this model supports only single record",
+                    "settings": {
+                        "name": "put_records",
+                        "commonData": "",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}}",
+                            "value": "",
+                            "fe_metadata": "{\n  \"records\": [\n    {\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    }\n  ]\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:Put_Records"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['parameters']['records']",
+                                    "type": "array",
+                                    "value": "{\"to\":\"$INPUT['parameters']['records']\",\"from\":\"$.parameters.records\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['user_txn_id']\",\"from\":\"$.user_txn_id\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['data']\",\"from\":\"$.data\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['hash_type']\",\"from\":\"$.hash_type\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['hash_value']\",\"from\":\"$.hash_value\",\"type\":\"assign\"}]}"
+                                },
+                                {
+                                    "mapTo": "$INPUT['txID']",
+                                    "type": "assign",
+                                    "value": "$.txID"
+                                },
+                                {
+                                    "mapTo": "$INPUT['txTime']",
+                                    "type": "assign",
+                                    "value": "$.txTime"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "array",
+                                    "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "illustrate that transient attribute on trigger cannot be added after creation",
+                    "settings": {
+                        "name": "put_record_2",
+                        "commonData": "",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
+                            "value": "",
+                            "fe_metadata": "{\n  \"user_txn_id\": \"\",\n  \"data\": \"\",\n  \"hash_type\": \"\",\n  \"hash_value\": \"\"\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:Put_Record_2"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['txID']",
+                                    "type": "assign",
+                                    "value": "$.txID"
+                                },
+                                {
+                                    "mapTo": "$INPUT['txTime']",
+                                    "type": "assign",
+                                    "value": "$.txTime"
+                                },
+                                {
+                                    "mapTo": "$INPUT['parameters']",
+                                    "type": "assign",
+                                    "value": "$.parameters"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "assign",
+                                    "value": "$.returns"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "Cannot return all Put results, so returned only the last available Put record",
+                    "settings": {
+                        "name": "put_records_2",
+                        "commonData": "",
+                        "validation": false
+                    },
+                    "outputs": {
+                        "parameters": {
+                            "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}}",
+                            "value": "",
+                            "fe_metadata": "{\n  \"records\": [\n    {\n      \"user_txn_id\": \"\",\n      \"data\": \"\",\n      \"hash_type\": \"\",\n      \"hash_value\": \"\"\n    }\n  ]\n}"
+                        },
+                        "txID": "",
+                        "txTime": "",
+                        "_chaincode_stub": ""
+                    },
+                    "action": {
+                        "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                        "data": {
+                            "flowURI": "res://flow:Put_Records_2"
+                        },
+                        "mappings": {
+                            "input": [
+                                {
+                                    "mapTo": "$INPUT['parameters']['records']",
+                                    "type": "array",
+                                    "value": "{\"to\":\"$INPUT['parameters']['records']\",\"from\":\"$.parameters.records\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['user_txn_id']\",\"from\":\"$.user_txn_id\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['data']\",\"from\":\"$.data\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['hash_type']\",\"from\":\"$.hash_type\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['hash_value']\",\"from\":\"$.hash_value\",\"type\":\"assign\"}]}"
+                                },
+                                {
+                                    "mapTo": "$INPUT['txID']",
+                                    "type": "assign",
+                                    "value": "$.txID"
+                                },
+                                {
+                                    "mapTo": "$INPUT['txTime']",
+                                    "type": "assign",
+                                    "value": "$.txTime"
+                                }
+                            ],
+                            "output": [
+                                {
+                                    "mapTo": "$INPUT['returns']",
+                                    "type": "array",
+                                    "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
     ],
-    "metadata": {
-     "input": [
-      {
-       "name": "parameters",
-       "type": "complex_object",
-       "value": {
-        "value": "",
-        "metadata": "{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}"
-       }
-      },
-      {
-       "name": "transient",
-       "type": "complex_object",
-       "value": {
-        "value": "",
-        "metadata": "{\"secret\":{\"type\":\"string\"},\"pin\":{\"type\":\"number\"}}"
-       }
-      },
-      {
-       "name": "txID",
-       "type": "string"
-      },
-      {
-       "name": "txTime",
-       "type": "string"
-      }
-     ],
-     "output": [
-      {
-       "name": "returns",
-       "type": "complex_object",
-       "value": {
-        "value": "",
-        "metadata": "{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}"
-       }
-      }
-     ]
-    }
-   }
-  },
-  {
-   "id": "flow:Put_Records",
-   "data": {
-    "name": "Put Records",
-    "description": "PutAll cannot get array position for key sequence, so this model supports only single record",
-    "tasks": [
-     {
-      "id": "LogMessage1",
-      "name": "LogMessage1",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-       "settings": {},
-       "input": {},
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['message']",
-          "type": "expression",
-          "value": "string.concat(\"[put_records] \", $flow.parameters.records[0].user_txn_id)"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "PutAll",
-      "name": "PutAll",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
-       "settings": {},
-       "input": {
-        "data": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}}",
-         "value": ""
-        },
-        "compositeKeys": "{\n    \"user_txn_id\": [\"user_txn_id\"],\n    \"hash_value\": [\"hash_value\"]\n}"
-       },
-       "output": {
-        "result": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}}}}",
-         "value": ""
-        }
-       },
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['data']",
-          "type": "array",
-          "value": "{\"to\":\"$INPUT['data']\",\"from\":\"$flow.parameters.records\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"string.concat($flow.txID, \\\":\\\", $flow.txTime, \\\":0\\\")\",\"type\":\"expression\"},{\"to\":\"$INPUT.$$['value']['txn_id']\",\"from\":\"$flow.txID\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['txn_time']\",\"from\":\"$flow.txTime\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['user_txn_id']\",\"from\":\"$.user_txn_id\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['data']\",\"from\":\"$.data\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']['hash_type']\",\"from\":\"SHA256\",\"type\":\"literal\"},{\"to\":\"$INPUT.$$['value']['hash_value']\",\"from\":\"calculate hash here\",\"type\":\"literal\"}]}"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "LogMessage2",
-      "name": "LogMessage2",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-       "settings": {},
-       "input": {},
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['message']",
-          "type": "expression",
-          "value": "string.concat(\"PUT_ALL: \", $activity[PutAll].message)"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "Return1",
-      "name": "Return1",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
-       "settings": {},
-       "input": {
-        "mappings": [
-         {
-          "mapTo": "$INPUT['returns']",
-          "type": "array",
-          "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$activity[PutAll].result\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
-         }
-        ]
-       },
-       "output": {}
-      }
-     }
-    ],
-    "links": [
-     {
-      "id": 1,
-      "from": "LogMessage1",
-      "to": "PutAll",
-      "type": "default"
-     },
-     {
-      "id": 2,
-      "from": "PutAll",
-      "to": "LogMessage2",
-      "type": "default"
-     },
-     {
-      "id": 3,
-      "from": "LogMessage2",
-      "to": "Return1",
-      "type": "default"
-     }
-    ],
-    "metadata": {
-     "input": [
-      {
-       "name": "parameters",
-       "type": "complex_object",
-       "value": {
-        "value": "",
-        "metadata": "{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"}}}}}"
-       }
-      },
-      {
-       "name": "txID",
-       "type": "string"
-      },
-      {
-       "name": "txTime",
-       "type": "string"
-      }
-     ],
-     "output": [
-      {
-       "name": "returns",
-       "type": "array"
-      }
-     ]
-    }
-   }
-  },
-  {
-   "id": "flow:Put_Record_2",
-   "data": {
-    "name": "Put Record 2",
-    "description": "illustrate that transient attribute on trigger cannot be added after creation",
-    "tasks": [
-     {
-      "id": "LogMessage3",
-      "name": "LogMessage3",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-       "settings": {},
-       "input": {},
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['message']",
-          "type": "expression",
-          "value": "string.concat(\"[put_record_2] \", $flow.parameters.user_txn_id)"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "Put1",
-      "name": "Put1",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
-       "settings": {},
-       "input": {
-        "valueType": "object",
-        "data": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
-         "value": ""
-        },
-        "compositeKeys": "{\n    \"user_txn_id\": [\"user_txn_id\"],\n    \"hash_value\": [\"hash_value\"]\n}"
-       },
-       "output": {
-        "result": {
-         "metadata": "",
-         "value": ""
-        }
-       },
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['key']",
-          "type": "expression",
-          "value": "string.concat($flow.txID, \":\", $flow.txTime, \":0\")"
-         },
-         {
-          "mapTo": "$INPUT['data']['txn_id']",
-          "type": "assign",
-          "value": "$flow.txID"
-         },
-         {
-          "mapTo": "$INPUT['data']['txn_time']",
-          "type": "assign",
-          "value": "$flow.txTime"
-         },
-         {
-          "mapTo": "$INPUT['data']['sequence']",
-          "type": "literal",
-          "value": 0
-         },
-         {
-          "mapTo": "$INPUT['data']['user_txn_id']",
-          "type": "assign",
-          "value": "$flow.parameters.user_txn_id"
-         },
-         {
-          "mapTo": "$INPUT['data']['data']",
-          "type": "assign",
-          "value": "$flow.parameters.data"
-         },
-         {
-          "mapTo": "$INPUT['data']['hash_type']",
-          "type": "assign",
-          "value": "$flow.parameters.hash_type"
-         },
-         {
-          "mapTo": "$INPUT['data']['hash_value']",
-          "type": "assign",
-          "value": "$flow.parameters.hash_value"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "LogMessage4",
-      "name": "LogMessage4",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-       "settings": {},
-       "input": {},
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['message']",
-          "type": "expression",
-          "value": "string.concat(\"PUT: \", $activity[Put1].message)"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "Return2",
-      "name": "Return2",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
-       "settings": {},
-       "input": {
-        "mappings": [
-         {
-          "mapTo": "$INPUT['returns']",
-          "type": "assign",
-          "value": "$activity[Put1].result"
-         }
-        ]
-       },
-       "output": {}
-      }
-     }
-    ],
-    "links": [
-     {
-      "id": 1,
-      "from": "LogMessage3",
-      "to": "Put1",
-      "type": "default"
-     },
-     {
-      "id": 2,
-      "from": "Put1",
-      "to": "LogMessage4",
-      "type": "default"
-     },
-     {
-      "id": 3,
-      "from": "LogMessage4",
-      "to": "Return2",
-      "type": "default"
-     }
-    ],
-    "metadata": {
-     "input": [
-      {
-       "name": "parameters",
-       "type": "complex_object",
-       "value": {
-        "value": "",
-        "metadata": "{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}"
-       }
-      },
-      {
-       "name": "txID",
-       "type": "string"
-      },
-      {
-       "name": "txTime",
-       "type": "string"
-      }
-     ],
-     "output": [
-      {
-       "name": "returns",
-       "type": "complex_object",
-       "value": {
-        "value": "",
-        "metadata": "{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}"
-       }
-      }
-     ]
-    }
-   }
-  },
-  {
-   "id": "flow:Put_Records_2",
-   "data": {
-    "name": "Put Records 2",
-    "description": "Cannot return all Put results, so returned only the last available Put record",
-    "tasks": [
-     {
-      "id": "LogMessage5",
-      "name": "LogMessage5",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-       "settings": {},
-       "input": {},
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['message']",
-          "type": "expression",
-          "value": "string.concat(\"[put_records_2] \", $flow.parameters.records[0].user_txn_id, \", count: \", string.tostring(array.count($flow.parameters.records)))"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "Put2",
-      "name": "Put2",
-      "settings": {
-       "iterate": "$flow.parameters.records"
-      },
-      "type": "iterator",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
-       "settings": {},
-       "input": {
-        "valueType": "object",
-        "data": {
-         "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txn_id\":{\"type\":\"string\"},\"txn_time\":{\"type\":\"string\"},\"sequence\":{\"type\":\"number\"},\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
-         "value": ""
-        },
-        "compositeKeys": "{\n    \"user_txn_id\": [\"user_txn_id\"],\n    \"hash_value\": [\"hash_value\"]\n}"
-       },
-       "output": {
-        "result": {
-         "metadata": "",
-         "value": ""
-        }
-       },
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['key']",
-          "type": "expression",
-          "value": "string.concat($flow.txID, $flow.txTime, string.tostring($current.iteration.key))"
-         },
-         {
-          "mapTo": "$INPUT['data']['txn_id']",
-          "type": "assign",
-          "value": "$flow.txID"
-         },
-         {
-          "mapTo": "$INPUT['data']['txn_time']",
-          "type": "assign",
-          "value": "$flow.txTime"
-         },
-         {
-          "mapTo": "$INPUT['data']['sequence']",
-          "type": "assign",
-          "value": "$current.iteration.key"
-         },
-         {
-          "mapTo": "$INPUT['data']['user_txn_id']",
-          "type": "assign",
-          "value": "$current.iteration.value.user_txn_id"
-         },
-         {
-          "mapTo": "$INPUT['data']['data']",
-          "type": "assign",
-          "value": "$current.iteration.value.data"
-         },
-         {
-          "mapTo": "$INPUT['data']['hash_type']",
-          "type": "literal",
-          "value": "SHA256"
-         },
-         {
-          "mapTo": "$INPUT['data']['hash_value']",
-          "type": "literal",
-          "value": "generated-hash"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "LogMessage6",
-      "name": "LogMessage6",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-       "settings": {},
-       "input": {},
-       "output": {},
-       "mappings": {
-        "input": [
-         {
-          "mapTo": "$INPUT['message']",
-          "type": "expression",
-          "value": "string.concat(\"PUT: \", $activity[Put2].message)"
-         }
-        ]
-       }
-      }
-     },
-     {
-      "id": "Return3",
-      "name": "Return3",
-      "activity": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn",
-       "settings": {},
-       "input": {
-        "mappings": [
-         {
-          "mapTo": "$INPUT['returns']",
-          "type": "array",
-          "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"NEWARRAY\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$activity[Put2].key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$activity[Put2].result\",\"type\":\"assign\"}]}"
-         }
-        ]
-       },
-       "output": {}
-      }
-     }
-    ],
-    "links": [
-     {
-      "id": 1,
-      "from": "LogMessage5",
-      "to": "Put2",
-      "type": "default"
-     },
-     {
-      "id": 2,
-      "from": "Put2",
-      "to": "LogMessage6",
-      "type": "default"
-     },
-     {
-      "id": 3,
-      "from": "LogMessage6",
-      "to": "Return3",
-      "type": "default"
-     }
-    ],
-    "metadata": {
-     "input": [
-      {
-       "name": "parameters",
-       "type": "complex_object",
-       "value": {
-        "value": "",
-        "metadata": "{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"}}}}}"
-       }
-      },
-      {
-       "name": "txID",
-       "type": "string"
-      },
-      {
-       "name": "txTime",
-       "type": "string"
-      }
-     ],
-     "output": [
-      {
-       "name": "returns",
-       "type": "array"
-      }
-     ]
-    }
-   }
-  }
- ],
- "triggers": [
-  {
-   "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction",
-   "name": "Transaction",
-   "description": "Illustrate use of transient attributes that must be specified at creation time",
-   "settings": {},
-   "id": "Transaction",
-   "handlers": [
-    {
-     "description": "Illustrate use of transient attributes that must be specified at creation time",
-     "settings": {
-      "name": "put_record",
-      "validation": false
-     },
-     "outputs": {
-      "parameters": {
-       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
-       "value": ""
-      },
-      "transient": {
-       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"secret\":{\"type\":\"string\"},\"pin\":{\"type\":\"number\"}}}",
-       "value": ""
-      },
-      "txID": "",
-      "txTime": "",
-      "_chaincode_stub": ""
-     },
-     "action": {
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-      "data": {
-       "flowURI": "res://flow:Put_Record"
-      },
-      "mappings": {
-       "input": [
-        {
-         "mapTo": "$INPUT['parameters']",
-         "type": "assign",
-         "value": "$.parameters"
-        },
-        {
-         "mapTo": "$INPUT['transient']",
-         "type": "assign",
-         "value": "$.transient"
-        },
-        {
-         "mapTo": "$INPUT['txID']",
-         "type": "assign",
-         "value": "$.txID"
-        },
-        {
-         "mapTo": "$INPUT['txTime']",
-         "type": "assign",
-         "value": "$.txTime"
-        }
-       ],
-       "output": [
-        {
-         "mapTo": "$INPUT['returns']",
-         "type": "assign",
-         "value": "$.returns"
-        }
-       ]
-      }
-     }
-    },
-    {
-     "description": "PutAll cannot get array position for key sequence, so this model supports only single record",
-     "settings": {
-      "name": "put_records",
-      "validation": false
-     },
-     "outputs": {
-      "parameters": {
-       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"}}}}}}",
-       "value": ""
-      },
-      "txID": "",
-      "txTime": "",
-      "_chaincode_stub": ""
-     },
-     "action": {
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-      "data": {
-       "flowURI": "res://flow:Put_Records"
-      },
-      "mappings": {
-       "input": [
-        {
-         "mapTo": "$INPUT['parameters']['records']",
-         "type": "array",
-         "value": "{\"to\":\"$INPUT['parameters']['records']\",\"from\":\"$.parameters.records\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['user_txn_id']\",\"from\":\"$.user_txn_id\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['data']\",\"from\":\"$.data\",\"type\":\"assign\"}]}"
-        },
-        {
-         "mapTo": "$INPUT['txID']",
-         "type": "assign",
-         "value": "$.txID"
-        },
-        {
-         "mapTo": "$INPUT['txTime']",
-         "type": "assign",
-         "value": "$.txTime"
-        }
-       ],
-       "output": [
-        {
-         "mapTo": "$INPUT['returns']",
-         "type": "array",
-         "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
-        }
-       ]
-      }
-     }
-    },
-    {
-     "description": "illustrate that transient attribute on trigger cannot be added after creation",
-     "settings": {
-      "name": "put_record_2",
-      "validation": false
-     },
-     "outputs": {
-      "parameters": {
-       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hash_type\":{\"type\":\"string\"},\"hash_value\":{\"type\":\"string\"}}}",
-       "value": ""
-      },
-      "txID": "",
-      "txTime": "",
-      "_chaincode_stub": ""
-     },
-     "action": {
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-      "data": {
-       "flowURI": "res://flow:Put_Record_2"
-      },
-      "mappings": {
-       "input": [
-        {
-         "mapTo": "$INPUT['parameters']",
-         "type": "assign",
-         "value": "$.parameters"
-        },
-        {
-         "mapTo": "$INPUT['txID']",
-         "type": "assign",
-         "value": "$.txID"
-        },
-        {
-         "mapTo": "$INPUT['txTime']",
-         "type": "assign",
-         "value": "$.txTime"
-        }
-       ],
-       "output": [
-        {
-         "mapTo": "$INPUT['returns']",
-         "type": "assign",
-         "value": "$.returns"
-        }
-       ]
-      }
-     }
-    },
-    {
-     "description": "Cannot return all Put results, so returned only the last available Put record",
-     "settings": {
-      "name": "put_records_2",
-      "validation": false
-     },
-     "outputs": {
-      "parameters": {
-       "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"user_txn_id\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"}}}}}}",
-       "value": ""
-      },
-      "txID": "",
-      "txTime": "",
-      "_chaincode_stub": ""
-     },
-     "action": {
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-      "data": {
-       "flowURI": "res://flow:Put_Records_2"
-      },
-      "mappings": {
-       "input": [
-        {
-         "mapTo": "$INPUT['parameters']['records']",
-         "type": "array",
-         "value": "{\"to\":\"$INPUT['parameters']['records']\",\"from\":\"$.parameters.records\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['user_txn_id']\",\"from\":\"$.user_txn_id\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['data']\",\"from\":\"$.data\",\"type\":\"assign\"}]}"
-        },
-        {
-         "mapTo": "$INPUT['txID']",
-         "type": "assign",
-         "value": "$.txID"
-        },
-        {
-         "mapTo": "$INPUT['txTime']",
-         "type": "assign",
-         "value": "$.txTime"
-        }
-       ],
-       "output": [
-        {
-         "mapTo": "$INPUT['returns']",
-         "type": "array",
-         "value": "{\"to\":\"$INPUT['returns']\",\"from\":\"$.returns\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['key']\",\"from\":\"$.key\",\"type\":\"assign\"},{\"to\":\"$INPUT.$$['value']\",\"from\":\"$.value\",\"type\":\"assign\"}]}"
-        }
-       ]
-      }
-     }
-    }
-   ]
-  }
- ],
- "properties": [],
- "ui": "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",
- "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9mbG9nby1jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9XQ==",
- "connection": "UEsDBAoAAAAIALkhmk4pu0wNBAAAAAIAAAAJAAAAY29ubi5qc29ui44FAFBLAQIUAAoAAAAIALkhmk4pu0wNBAAAAAIAAAAJAAAAAAAAAAAAAAAAAAAAAABjb25uLmpzb25QSwUGAAAAAAEAAQA3AAAAKwAAAAAA"
+    "properties": [],
+    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9mbG9nby1jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9XQ==",
+    "fe_metadata": "UEsDBAoAAAAIAHCuwU6rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABwrsFOq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }
