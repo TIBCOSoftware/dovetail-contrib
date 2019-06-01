@@ -1,5 +1,5 @@
 # Flogo Enterprise extensions for Hyperledger Fabric
-This package includes [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0) extensions for developing blockchain apps and smart contracts on [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).
+This package includes [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-5-0) extensions for developing blockchain apps and smart contracts on [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).
 
 It provides the following Flogo® extensions:
 - [Fabric Chaincode Extension](fabric), which includes triggers and activities for designing and implementing Hyperledger Fabric chaincode with zero-code.

@@ -154,6 +154,21 @@ export class transactionHandler extends WiServiceHandlerContribution {
             let parametersField = <IFieldDefinition>context.getField("parameters");
             let transientField = <IFieldDefinition>context.getField("transient");
             let returnsField = <IFieldDefinition>context.getField("returns");
+
+            // workaround issues for FE 2.5
+            let parametersValue = parametersField.value.value;
+            if (!parametersValue) {
+                parametersValue = parametersField.value
+            }
+            let transientValue = transientField.value.value;
+            if (!transientValue) {
+                transientValue = transientField.value
+            }
+            let returnsValue = returnsField.value.value;
+            if (!returnsValue) {
+                returnsValue = returnsField.value
+            }
+
             if (nameField && nameField.value) {
                 let trigger = modelService.createTriggerElement("fabric/fabric-transaction");
                 if (trigger && trigger.handler && trigger.handler.settings && trigger.handler.settings.length > 0) {
@@ -167,12 +182,12 @@ export class transactionHandler extends WiServiceHandlerContribution {
                     for (let j = 0; j < trigger.outputs.length; j++) {
                         if (trigger.outputs[j].name === "parameters") {
                             trigger.outputs[j].value = {
-                                "value": parametersField.value.value,
+                                "value": parametersValue,
                                 "metadata": ""
                             };
                         } else if (trigger.outputs[j].name === "transient") {
                             trigger.outputs[j].value = {
-                                "value": transientField.value.value,
+                                "value": transientValue,
                                 "metadata": ""
                             };
                         }
@@ -182,7 +197,7 @@ export class transactionHandler extends WiServiceHandlerContribution {
                     for (let j = 0; j < trigger.reply.length; j++) {
                         if (trigger.reply[j].name === "returns") {
                             trigger.reply[j].value = {
-                                "value": returnsField.value.value,
+                                "value": returnsValue,
                                 "metadata": ""
                             };
                             break;
