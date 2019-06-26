@@ -4,133 +4,124 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/pkg/errors"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
-)
-
-const (
-	ivChaincode   = "chaincodeName"
-	ivChannel     = "channelID"
-	ivTransaction = "transactionName"
-	ivParameters  = "parameters"
-	ovCode        = "code"
-	ovMessage     = "message"
-	ovResult      = "result"
+	"github.com/project-flogo/core/activity"
 )
 
 // Create a new logger
 var log = shim.NewLogger("activity-fabric-invokechaincode")
 
+var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
+
 func init() {
 	common.SetChaincodeLogLevel(log)
+	_ = activity.Register(&Activity{}, New)
 }
 
-// FabricChaincodeActivity is a stub for executing Hyperledger Fabric invoke-chaincode operations
-type FabricChaincodeActivity struct {
-	metadata *activity.Metadata
+// Activity is a stub for executing Hyperledger Fabric get operations
+type Activity struct {
 }
 
-// NewActivity creates a new FabricChaincodeActivity
-func NewActivity(metadata *activity.Metadata) activity.Activity {
-	return &FabricChaincodeActivity{metadata: metadata}
+// New creates a new Activity
+func New(ctx activity.InitContext) (activity.Activity, error) {
+	return &Activity{}, nil
 }
 
 // Metadata implements activity.Activity.Metadata
-func (a *FabricChaincodeActivity) Metadata() *activity.Metadata {
-	return a.metadata
+func (a *Activity) Metadata() *activity.Metadata {
+	return activityMd
 }
 
 // Eval implements activity.Activity.Eval
-func (a *FabricChaincodeActivity) Eval(ctx activity.Context) (done bool, err error) {
+func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	// check input args
-	ccName, ok := ctx.GetInput(ivChaincode).(string)
-	if !ok || ccName == "" {
+	input := &Input{}
+	if err = ctx.GetInputObject(input); err != nil {
+		return false, err
+	}
+
+	if input.ChaincodeName == "" {
 		log.Error("chaincode name is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "chaincode name is not specified")
-		return false, errors.New("chaincode name is not specified")
+		output := &Output{Code: 400, Message: "chaincode name is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
-	log.Debugf("chaincode name: %s\n", ccName)
-	channelID := ""
-	if channelID, ok = ctx.GetInput(ivChannel).(string); !ok {
-		log.Info("channel ID is not specified\n")
-	}
-	log.Debugf("channel ID: %s\n", channelID)
+	log.Debugf("chaincode name: %s\n", input.ChaincodeName)
+	log.Debugf("channel ID: %s\n", input.ChannelID)
 
 	// extract transaction name and parameters
-	args, err := constructChaincodeArgs(ctx)
+	args, err := constructChaincodeArgs(ctx, input)
 	if err != nil {
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, err.Error())
+		output := &Output{Code: 400, Message: err.Error()}
+		ctx.SetOutputObject(output)
 		return false, err
 	}
 
 	// get chaincode stub
 	stub, err := common.GetChaincodeStub(ctx)
 	if err != nil || stub == nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, err.Error())
+		log.Errorf("failed to retrieve fabric stub: %+v\n", err)
+		output := &Output{Code: 500, Message: err.Error()}
+		ctx.SetOutputObject(output)
 		return false, err
 	}
 
 	// invoke chaincode
-	response := stub.InvokeChaincode(ccName, args, channelID)
-	ctx.SetOutput(ovCode, response.GetStatus())
-	ctx.SetOutput(ovMessage, response.GetMessage())
+	response := stub.InvokeChaincode(input.ChaincodeName, args, input.ChannelID)
+	output := &Output{Code: int(response.GetStatus()), Message: response.GetMessage()}
 	jsonBytes := response.GetPayload()
 	if jsonBytes == nil {
 		log.Debugf("no data returned by invoking chaincode\n")
+		ctx.SetOutputObject(output)
 		return true, nil
 	}
 	var value interface{}
 	if err := json.Unmarshal(jsonBytes, &value); err != nil {
 		log.Errorf("failed to unmarshal chaincode response %+v, error: %+v\n", jsonBytes, err)
+		ctx.SetOutputObject(output)
 		return true, nil
 	}
-	if result, ok := ctx.GetOutput(ovResult).(*data.ComplexObject); ok && result != nil {
-		log.Debugf("set activity output result: %+v\n", value)
-		result.Value = value
-		ctx.SetOutput(ovResult, result)
-	}
+	output.Result = value
+	ctx.SetOutputObject(output)
 	return true, nil
 }
 
-func constructChaincodeArgs(ctx activity.Context) ([][]byte, error) {
+func constructChaincodeArgs(ctx activity.Context, input *Input) ([][]byte, error) {
 	var result [][]byte
 	// transaction name from input
-	txnName, ok := ctx.GetInput(ivTransaction).(string)
-	if !ok || txnName == "" {
+	if input.TransactionName == "" {
 		log.Error("transaction name is not specified\n")
 		return nil, errors.New("transaction name is not specified")
 	}
-	log.Debugf("transaction name: %s\n", txnName)
-	result = append(result, []byte(txnName))
+	log.Debugf("transaction name: %s\n", input.TransactionName)
+	result = append(result, []byte(input.TransactionName))
 
-	// extract parameter definitions from metadata
-	paramObj, ok := ctx.GetInput(ivParameters).(*data.ComplexObject)
-	if !ok {
-		log.Debug("parameter is not a complex object\n")
+	if input.Parameters == nil {
+		log.Debug("no parameter is specified\n")
 		return result, nil
 	}
-	paramIndex, err := common.OrderedParameters([]byte(paramObj.Metadata))
+
+	// extract parameter definitions from metadata
+	schema, err := common.GetActivityInputSchema(ctx, "parameters")
 	if err != nil {
-		log.Errorf("failed to extract parameter definition from metadata: %+v\n", err)
+		log.Error("schema not defined for parameters\n")
+		return nil, errors.New("schema not defined for parameters")
+	}
+
+	paramIndex, err := common.OrderedParameters([]byte(schema))
+	if err != nil {
+		log.Errorf("failed to extract parameter definition from schema: %+v\n", err)
 		return result, nil
 	}
 	if paramIndex == nil || len(paramIndex) == 0 {
-		log.Debug("no parameter defined in metadata\n")
+		log.Debug("no parameter defined in schema\n")
 		return result, nil
 	}
 
 	// extract parameter values in the order of parameter index
-	paramValue, ok := paramObj.Value.(map[string]interface{})
-	if !ok {
-		log.Debugf("parameter value of type %T is not a JSON object\n", paramObj.Value)
-		return result, nil
-	}
+	paramValue := input.Parameters
 	for _, p := range paramIndex {
 		// TODO: assuming string params here to be consistent with implementaton of trigger and chaincode-shim
 		// should change all places to use []byte for best portability

@@ -4,62 +4,57 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/pkg/errors"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
-)
-
-const (
-	ivName    = "name"
-	ivPayload = "payload"
-	ovCode    = "code"
-	ovMessage = "message"
-	ovName    = "name"
-	ovResult  = "result"
+	"github.com/project-flogo/core/activity"
 )
 
 // Create a new logger
 var log = shim.NewLogger("activity-fabric-setevent")
 
+var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
+
 func init() {
 	common.SetChaincodeLogLevel(log)
+	_ = activity.Register(&Activity{}, New)
 }
 
-// FabricEventActivity is a stub for executing Hyperledger Fabric set-event operations
-type FabricEventActivity struct {
-	metadata *activity.Metadata
+// Activity is a stub for executing Hyperledger Fabric get operations
+type Activity struct {
 }
 
-// NewActivity creates a new FabricEventActivity
-func NewActivity(metadata *activity.Metadata) activity.Activity {
-	return &FabricEventActivity{metadata: metadata}
+// New creates a new Activity
+func New(ctx activity.InitContext) (activity.Activity, error) {
+	return &Activity{}, nil
 }
 
 // Metadata implements activity.Activity.Metadata
-func (a *FabricEventActivity) Metadata() *activity.Metadata {
-	return a.metadata
+func (a *Activity) Metadata() *activity.Metadata {
+	return activityMd
 }
 
 // Eval implements activity.Activity.Eval
-func (a *FabricEventActivity) Eval(ctx activity.Context) (done bool, err error) {
+func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	// check input args
-	name, ok := ctx.GetInput(ivName).(string)
-	if !ok || name == "" {
-		log.Error("event name is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "event name is not specified")
-		return false, errors.New("event name is not specified")
+	input := &Input{}
+	if err = ctx.GetInputObject(input); err != nil {
+		return false, err
 	}
-	log.Debugf("event name: %s\n", name)
+
+	if input.Name == "" {
+		log.Error("event name is not specified\n")
+		output := &Output{Code: 400, Message: "event name is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
+	}
+	log.Debugf("event name: %s\n", input.Name)
 
 	var jsonBytes []byte
-	payload := getEventPayload(ctx)
-	if payload != nil {
-		jsonBytes, err = json.Marshal(payload)
+	if input.Payload != nil {
+		jsonBytes, err = json.Marshal(input.Payload)
 		if err != nil {
-			log.Warningf("failed to marshal payload '%+v', error: %+v\n", payload, err)
+			log.Warningf("failed to marshal payload '%+v', error: %+v\n", input.Payload, err)
 		}
 	}
 	log.Debugf("event payload: %+v\n", jsonBytes)
@@ -67,35 +62,26 @@ func (a *FabricEventActivity) Eval(ctx activity.Context) (done bool, err error) 
 	// get chaincode stub
 	stub, err := common.GetChaincodeStub(ctx)
 	if err != nil || stub == nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, err.Error())
+		log.Errorf("failed to retrieve fabric stub: %+v\n", err)
+		output := &Output{Code: 500, Message: err.Error()}
+		ctx.SetOutputObject(output)
 		return false, err
 	}
 
 	// set fabric event
-	if err := stub.SetEvent(name, jsonBytes); err != nil {
-		log.Errorf("failed to set event %s, error: %+v\n", name, err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, err.Error())
+	if err := stub.SetEvent(input.Name, jsonBytes); err != nil {
+		log.Errorf("failed to set event %s, error: %+v\n", input.Name, err)
+		output := &Output{Code: 500, Message: err.Error()}
+		ctx.SetOutputObject(output)
 		return false, err
 	}
 
-	ctx.SetOutput(ovCode, 200)
-	ctx.SetOutput(ovMessage, fmt.Sprintf("set event %s, payload: %s", name, string(jsonBytes)))
-	ctx.SetOutput(ovName, name)
-	if result, ok := ctx.GetOutput(ovResult).(*data.ComplexObject); ok && result != nil {
-		log.Debugf("set activity output result: %+v\n", payload)
-		result.Value = payload
-		ctx.SetOutput(ovResult, result)
+	log.Debugf("set activity output result: %+v\n", input.Payload)
+	output := &Output{Code: 200,
+		Message: fmt.Sprintf("set event %s, payload: %s", input.Name, string(jsonBytes)),
+		Name:    input.Name,
+		Result:  input.Payload,
 	}
+	ctx.SetOutputObject(output)
 	return true, nil
-}
-
-func getEventPayload(ctx activity.Context) interface{} {
-	payload, ok := ctx.GetInput(ivPayload).(*data.ComplexObject)
-	if !ok {
-		log.Debug("payload is not a complex object\n")
-		return nil
-	}
-	return payload.Value
 }

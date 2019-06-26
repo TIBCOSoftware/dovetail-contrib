@@ -4,167 +4,161 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/common/cauthdsl"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/core/chaincode/shim/ext/statebased"
 	"github.com/pkg/errors"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
-)
-
-const (
-	ivKey           = "key"
-	ivOperation     = "operation"
-	ivRole          = "role"
-	ivOrganizations = "organizations"
-	ivPolicy        = "policy"
-	ivIsPrivate     = "isPrivate"
-	ivCollection    = "collection"
-	ovCode          = "code"
-	ovMessage       = "message"
-	ovKey           = "key"
-	ovResult        = "result"
+	"github.com/project-flogo/core/activity"
 )
 
 // Create a new logger
 var log = shim.NewLogger("activity-fabric-endorsement")
 
+var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
+
 func init() {
 	common.SetChaincodeLogLevel(log)
+	_ = activity.Register(&Activity{}, New)
 }
 
-// FabricEndorsementActivity is a stub for executing Hyperledger Fabric get operations
-type FabricEndorsementActivity struct {
-	metadata *activity.Metadata
+// Activity is a stub for executing Hyperledger Fabric get operations
+type Activity struct {
 }
 
-// NewActivity creates a new FabricEndorsementActivity
-func NewActivity(metadata *activity.Metadata) activity.Activity {
-	return &FabricEndorsementActivity{metadata: metadata}
+// New creates a new Activity
+func New(ctx activity.InitContext) (activity.Activity, error) {
+	return &Activity{}, nil
 }
 
 // Metadata implements activity.Activity.Metadata
-func (a *FabricEndorsementActivity) Metadata() *activity.Metadata {
-	return a.metadata
+func (a *Activity) Metadata() *activity.Metadata {
+	return activityMd
 }
 
 // Eval implements activity.Activity.Eval
-func (a *FabricEndorsementActivity) Eval(ctx activity.Context) (done bool, err error) {
+func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	// check input args
-	key, ok := ctx.GetInput(ivKey).(string)
-	if !ok || key == "" {
+	input := &Input{}
+	if err = ctx.GetInputObject(input); err != nil {
+		return false, err
+	}
+
+	if input.StateKey == "" {
 		log.Error("state key is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "state key is not specified")
-		return false, errors.New("state key is not specified")
+		output := &Output{Code: 400, Message: "state key is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
-	log.Debugf("state key: %s\n", key)
-	ops, ok := ctx.GetInput(ivOperation).(string)
-	if !ok || ops == "" {
+	log.Debugf("state key: %s\n", input.StateKey)
+	if input.Operation == "" {
 		log.Error("operation is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "operation is not specified")
-		return false, errors.New("operation is not specified")
+		output := &Output{Code: 400, Message: "operation is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
-	log.Debugf("operation: %s\n", ops)
+	log.Debugf("operation: %s\n", input.Operation)
 
 	// get chaincode stub
 	stub, err := common.GetChaincodeStub(ctx)
 	if err != nil || stub == nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, err.Error())
+		log.Errorf("failed to retrieve fabric stub: %+v\n", err)
+		output := &Output{Code: 500, Message: err.Error()}
+		ctx.SetOutputObject(output)
 		return false, err
 	}
 
-	if isPrivate, ok := ctx.GetInput(ivIsPrivate).(bool); ok && isPrivate {
+	if input.IsPrivate {
 		// set endorsement policy for a key on a private collection
-		return setPrivatePolicy(ctx, stub, key, ops)
+		return setPrivatePolicy(ctx, stub, input)
 	}
 
 	// set endorsement policy for the key
-	return setPolicy(ctx, stub, key, ops)
+	return setPolicy(ctx, stub, input)
 }
 
-func setPrivatePolicy(ctx activity.Context, ccshim shim.ChaincodeStubInterface, key, operation string) (bool, error) {
+func setPrivatePolicy(ctx activity.Context, ccshim shim.ChaincodeStubInterface, input *Input) (bool, error) {
 	// set endorsement policy on a private collection
-	collection, ok := ctx.GetInput(ivCollection).(string)
-	if !ok || collection == "" {
+	if input.PrivateCollection == "" {
 		log.Error("private collection is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "private collection is not specified")
-		return false, errors.New("private collection is not specified")
+		output := &Output{Code: 400, Message: "private collection is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
-	ep, err := ccshim.GetPrivateDataValidationParameter(collection, key)
+	ep, err := ccshim.GetPrivateDataValidationParameter(input.PrivateCollection, input.StateKey)
 	if err != nil {
-		log.Errorf("failed to retrieve policy for private collection %s: %+v\n", collection, err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to retrieve policy for private collection %s: %+v", collection, err))
-		return false, errors.Wrapf(err, "failed to retrieve policy for private collection %s", collection)
+		log.Errorf("failed to retrieve policy for private collection %s: %+v\n", input.PrivateCollection, err)
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to retrieve policy for private collection %s", input.PrivateCollection)}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
-	stateEP, err := getUpdatedPolicy(ctx, operation, ep)
+	stateEP, err := getUpdatedPolicy(ctx, ep, input)
 	if err != nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to create policy: %+v", err))
-		return false, errors.Wrapf(err, "failed to create policy")
+		output := &Output{Code: 500, Message: "failed to create policy"}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
-	if operation != "LIST" {
+	if input.Operation != "LIST" {
 		epBytes, err := stateEP.Policy()
 		if err != nil {
 			log.Errorf("failed to marshal policy: %+v\n", err)
-			ctx.SetOutput(ovCode, 500)
-			ctx.SetOutput(ovMessage, fmt.Sprintf("failed to marshal policy: %+v", err))
-			return false, errors.Wrapf(err, "failed to marshal policy")
+			output := &Output{Code: 500, Message: "failed to marshal policy"}
+			ctx.SetOutputObject(output)
+			return false, errors.Wrapf(err, output.Message)
 		}
 
 		// update endorsement policy for key
-		if err := ccshim.SetPrivateDataValidationParameter(collection, key, epBytes); err != nil {
-			log.Errorf("failed to set policy on private collecton %s: %+v\n", collection, err)
-			ctx.SetOutput(ovCode, 500)
-			ctx.SetOutput(ovMessage, fmt.Sprintf("failed to set policy on private collecton %s: %+v", collection, err))
-			return false, errors.Wrapf(err, "failed to to set policy on private collecton %s", collection)
+		if err := ccshim.SetPrivateDataValidationParameter(input.PrivateCollection, input.StateKey, epBytes); err != nil {
+			log.Errorf("failed to set policy on private collecton %s: %+v\n", input.PrivateCollection, err)
+			output := &Output{Code: 500, Message: fmt.Sprintf("failed to set policy on private collecton %s", input.PrivateCollection)}
+			ctx.SetOutputObject(output)
+			return false, errors.Wrapf(err, output.Message)
 		}
 	}
 
-	ctx.SetOutput(ovCode, 200)
-	ctx.SetOutput(ovMessage, fmt.Sprintf("updated policy for key %s on private collection %s", key, collection))
-	ctx.SetOutput(ovKey, key)
+	output := &Output{
+		Code:     200,
+		Message:  fmt.Sprintf("updated policy for key %s on private collection %s", input.StateKey, input.PrivateCollection),
+		StateKey: input.StateKey,
+		Result:   "",
+	}
 	orgs := stateEP.ListOrgs()
 	if len(orgs) > 0 {
-		ctx.SetOutput(ovResult, strings.Join(orgs, ","))
+		output.Result = strings.Join(orgs, ",")
 	}
+	ctx.SetOutputObject(output)
 	return true, nil
 }
 
-func getUpdatedPolicy(ctx activity.Context, operation string, ep []byte) (statebased.KeyEndorsementPolicy, error) {
-	switch operation {
+func getUpdatedPolicy(ctx activity.Context, ep []byte, input *Input) (statebased.KeyEndorsementPolicy, error) {
+	switch input.Operation {
 	case "ADD":
-		return addOrgsToPolicy(ctx, ep)
+		return addOrgsToPolicy(ctx, ep, input)
 	case "DELETE":
-		return deleteOrgsFromPolicy(ctx, ep)
+		return deleteOrgsFromPolicy(ctx, ep, input)
 	case "LIST":
 		return statebased.NewStateEP(ep)
 	case "SET":
-		return createNewPolicy(ctx)
+		return createNewPolicy(input.Policy)
 	default:
-		log.Errorf("operation %s is not supported", operation)
-		return nil, errors.Errorf("operation %s is not supported", operation)
+		log.Errorf("operation %s is not supported", input.Operation)
+		return nil, errors.Errorf("operation %s is not supported", input.Operation)
 	}
 }
 
-func createNewPolicy(ctx activity.Context) (statebased.KeyEndorsementPolicy, error) {
+func createNewPolicy(policy string) (statebased.KeyEndorsementPolicy, error) {
 	// create new policy from policy string
-	newPolicy, ok := ctx.GetInput(ivPolicy).(string)
-	if !ok {
+	if policy == "" {
 		log.Errorf("policy is not specified for SET operation\n")
 		return nil, errors.New("policy is not specified for SET operation")
 	}
-	envelope, err := cauthdsl.FromString(newPolicy)
+	envelope, err := cauthdsl.FromString(policy)
 	if err != nil {
-		log.Errorf("failed to parse policy string %s: %+v\n", newPolicy, err)
-		return nil, errors.Wrapf(err, "failed to parse policy string %s", newPolicy)
+		log.Errorf("failed to parse policy string %s: %+v\n", policy, err)
+		return nil, errors.Wrapf(err, "failed to parse policy string %s", policy)
 	}
 	epBytes, err := proto.Marshal(envelope)
 	if err != nil {
@@ -174,13 +168,13 @@ func createNewPolicy(ctx activity.Context) (statebased.KeyEndorsementPolicy, err
 	return statebased.NewStateEP(epBytes)
 }
 
-func deleteOrgsFromPolicy(ctx activity.Context, ep []byte) (statebased.KeyEndorsementPolicy, error) {
+func deleteOrgsFromPolicy(ctx activity.Context, ep []byte, input *Input) (statebased.KeyEndorsementPolicy, error) {
 	stateEP, err := statebased.NewStateEP(ep)
 	if err != nil {
 		log.Errorf("failed to construct policy from channel default: %+v\n", err)
 		return nil, err
 	}
-	orgs, err := getOrganizations(ctx)
+	orgs, err := getOrganizations(input.Organizations)
 	if err != nil {
 		return nil, err
 	}
@@ -188,30 +182,28 @@ func deleteOrgsFromPolicy(ctx activity.Context, ep []byte) (statebased.KeyEndors
 	return stateEP, nil
 }
 
-func addOrgsToPolicy(ctx activity.Context, ep []byte) (statebased.KeyEndorsementPolicy, error) {
+func addOrgsToPolicy(ctx activity.Context, ep []byte, input *Input) (statebased.KeyEndorsementPolicy, error) {
 	stateEP, err := statebased.NewStateEP(ep)
 	if err != nil {
 		log.Errorf("failed to construct policy from channel default: %+v\n", err)
 		return nil, err
 	}
-	orgs, err := getOrganizations(ctx)
+	orgs, err := getOrganizations(input.Organizations)
 	if err != nil {
 		return nil, err
 	}
-	role, ok := ctx.GetInput(ivRole).(string)
-	if !ok {
+	if input.Role == "" {
 		log.Errorf("role is not specified for Add operation\n")
 		return nil, errors.New("role is not specified for Add operation")
 	}
-	err = stateEP.AddOrgs(statebased.RoleType(role), orgs...)
+	err = stateEP.AddOrgs(statebased.RoleType(input.Role), orgs...)
 	return stateEP, err
 }
 
-func getOrganizations(ctx activity.Context) ([]string, error) {
-	orgs, ok := ctx.GetInput(ivOrganizations).(string)
-	if !ok {
-		log.Errorf("organization is not specified for Add operation\n")
-		return nil, errors.New("organization is not specified for Add operation")
+func getOrganizations(orgs string) ([]string, error) {
+	if orgs == "" {
+		log.Errorf("organization is not specified\n")
+		return nil, errors.New("organization is not specified")
 	}
 	orgArray := strings.Split(orgs, ",")
 	for i := range orgArray {
@@ -220,47 +212,51 @@ func getOrganizations(ctx activity.Context) ([]string, error) {
 	return orgArray, nil
 }
 
-func setPolicy(ctx activity.Context, ccshim shim.ChaincodeStubInterface, key, operation string) (bool, error) {
+func setPolicy(ctx activity.Context, ccshim shim.ChaincodeStubInterface, input *Input) (bool, error) {
 	// set endorsement policy for a key
-	ep, err := ccshim.GetStateValidationParameter(key)
+	ep, err := ccshim.GetStateValidationParameter(input.StateKey)
 	if err != nil {
-		log.Errorf("failed to retrieve policy for key %s: %+v\n", key, err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to retrieve policy for key %s: %+v", key, err))
-		return false, errors.Wrapf(err, "failed to retrieve policy for key %s", key)
+		log.Errorf("failed to retrieve policy for key %s: %+v\n", input.StateKey, err)
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to retrieve policy for key %s", input.StateKey)}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
-	stateEP, err := getUpdatedPolicy(ctx, operation, ep)
+	stateEP, err := getUpdatedPolicy(ctx, ep, input)
 	if err != nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to create policy: %+v", err))
-		return false, errors.Wrapf(err, "failed to create policy")
+		output := &Output{Code: 500, Message: "failed to create policy"}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
-	if operation != "LIST" {
+	if input.Operation != "LIST" {
 		epBytes, err := stateEP.Policy()
 		if err != nil {
 			log.Errorf("failed to marshal policy: %+v\n", err)
-			ctx.SetOutput(ovCode, 500)
-			ctx.SetOutput(ovMessage, fmt.Sprintf("failed to marshal policy: %+v", err))
-			return false, errors.Wrapf(err, "failed to marshal policy")
+			output := &Output{Code: 500, Message: "failed to marshal policy"}
+			ctx.SetOutputObject(output)
+			return false, errors.Wrapf(err, output.Message)
 		}
 
 		// update endorsement policy for key
-		if err := ccshim.SetStateValidationParameter(key, epBytes); err != nil {
-			log.Errorf("failed to set policy for key %s: %+v\n", key, err)
-			ctx.SetOutput(ovCode, 500)
-			ctx.SetOutput(ovMessage, fmt.Sprintf("failed to set policy for key %s: %+v", key, err))
-			return false, errors.Wrapf(err, "failed to to set policy for key %s", key)
+		if err := ccshim.SetStateValidationParameter(input.StateKey, epBytes); err != nil {
+			log.Errorf("failed to set policy for key %s: %+v\n", input.StateKey, err)
+			output := &Output{Code: 500, Message: fmt.Sprintf("failed to to set policy for key %s", input.StateKey)}
+			ctx.SetOutputObject(output)
+			return false, errors.Wrapf(err, output.Message)
 		}
 	}
 
-	ctx.SetOutput(ovCode, 200)
-	ctx.SetOutput(ovMessage, fmt.Sprintf("updated policy for key %s", key))
-	ctx.SetOutput(ovKey, key)
+	output := &Output{
+		Code:     200,
+		Message:  fmt.Sprintf("updated policy for key %s", input.StateKey),
+		StateKey: input.StateKey,
+		Result:   "",
+	}
 	orgs := stateEP.ListOrgs()
 	if len(orgs) > 0 {
-		ctx.SetOutput(ovResult, strings.Join(orgs, ","))
+		output.Result = strings.Join(orgs, ",")
 	}
+	ctx.SetOutputObject(output)
 	return true, nil
 }

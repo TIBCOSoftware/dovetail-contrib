@@ -3,77 +3,78 @@ package query
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/pkg/errors"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
-)
-
-const (
-	ivQuery         = "query"
-	ivQueryParams   = "queryParams"
-	ivUsePagination = "usePagination"
-	ivPageSize      = "pageSize"
-	ivBookmark      = "start"
-	ivIsPrivate     = "isPrivate"
-	ivCollection    = "collection"
-	ovCode          = "code"
-	ovMessage       = "message"
-	ovBookmark      = "bookmark"
-	ovCount         = "count"
-	ovResult        = "result"
+	"github.com/project-flogo/core/activity"
 )
 
 // Create a new logger
 var log = shim.NewLogger("activity-fabric-query")
 
+var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
+
 func init() {
 	common.SetChaincodeLogLevel(log)
+	_ = activity.Register(&Activity{}, New)
 }
 
-// FabricQueryActivity is a stub for executing Hyperledger Fabric query operations
-type FabricQueryActivity struct {
-	metadata *activity.Metadata
+// Activity is a stub for executing Hyperledger Fabric put operations
+type Activity struct {
 }
 
-// NewActivity creates a new FabricQueryActivity
-func NewActivity(metadata *activity.Metadata) activity.Activity {
-	return &FabricQueryActivity{metadata: metadata}
+// New creates a new Activity
+func New(ctx activity.InitContext) (activity.Activity, error) {
+	return &Activity{}, nil
 }
 
 // Metadata implements activity.Activity.Metadata
-func (a *FabricQueryActivity) Metadata() *activity.Metadata {
-	return a.metadata
+func (a *Activity) Metadata() *activity.Metadata {
+	return activityMd
 }
 
 // Eval implements activity.Activity.Eval
-func (a *FabricQueryActivity) Eval(ctx activity.Context) (done bool, err error) {
+func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	// check input args
-	query, ok := ctx.GetInput(ivQuery).(string)
-	if !ok || query == "" {
-		log.Error("query statement is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "query statement is not specified")
-		return false, errors.New("query statement is not specified")
-	}
-	log.Debugf("query statement: %s\n", query)
-	queryParams, paramTypes, err := getQueryParams(ctx)
-	if err != nil {
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, err.Error())
+	input := &Input{}
+	if err = ctx.GetInputObject(input); err != nil {
 		return false, err
 	}
-	log.Debugf("query parameters: %+v\n", queryParams)
 
-	queryStatement, err := prepareQueryStatement(query, queryParams, paramTypes)
+	if input.Query == "" {
+		log.Error("query statement is not specified\n")
+		output := &Output{Code: 400, Message: "query statement is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
+	}
+	log.Debugf("query statement: %s\n", input.Query)
+
+	// extract query parameter types from queryParams schema
+	var paramTypes map[string]string
+	if input.QueryParams != nil {
+		schema, err := common.GetActivityInputSchema(ctx, "queryParams")
+		if err != nil {
+			log.Error("schema not defined for queryParams\n")
+			output := &Output{Code: 400, Message: "schema not defined for queryParams"}
+			ctx.SetOutputObject(output)
+			return false, errors.New(output.Message)
+		}
+		if paramTypes, err = getQueryParamTypes(schema); err != nil {
+			log.Errorf("failed to parse parameter schema %+v\n", err)
+			output := &Output{Code: 400, Message: "failed to parse parameter schema"}
+			ctx.SetOutputObject(output)
+			return false, errors.Wrap(err, output.Message)
+		}
+	}
+	log.Debugf("query parameters: %+v\n", input.QueryParams)
+
+	queryStatement, err := prepareQueryStatement(input.Query, input.QueryParams, paramTypes)
 	if err != nil {
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, err.Error())
+		output := &Output{Code: 400, Message: err.Error()}
+		ctx.SetOutputObject(output)
 		return false, err
 	}
 	log.Debugf("query statement: %s\n", queryStatement)
@@ -81,45 +82,19 @@ func (a *FabricQueryActivity) Eval(ctx activity.Context) (done bool, err error) 
 	// get chaincode stub
 	stub, err := common.GetChaincodeStub(ctx)
 	if err != nil || stub == nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, err.Error())
+		log.Errorf("failed to retrieve fabric stub: %+v\n", err)
+		output := &Output{Code: 500, Message: err.Error()}
+		ctx.SetOutputObject(output)
 		return false, err
 	}
 
-	if isPrivate, ok := ctx.GetInput(ivIsPrivate).(bool); ok && isPrivate {
+	if input.IsPrivate {
 		// query private data
-		return queryPrivateData(ctx, stub, queryStatement)
+		return queryPrivateData(ctx, stub, queryStatement, input)
 	}
 
 	// query state data
-	return queryData(ctx, stub, queryStatement)
-}
-
-func getQueryParams(ctx activity.Context) (params map[string]interface{}, paramTypes map[string]string, err error) {
-	queryParams, ok := ctx.GetInput(ivQueryParams).(*data.ComplexObject)
-	if !ok || queryParams == nil || queryParams.Value == nil || queryParams.Metadata == "" {
-		log.Debug("no query parameter is specified\n")
-		return nil, nil, nil
-	}
-
-	// extract parameter definitions from metadata
-	paramTypes, err = getQueryParamTypes(queryParams.Metadata)
-	if err != nil {
-		log.Errorf("failed to parse parameter metadata %+v\n", err)
-		return nil, nil, err
-	}
-	if paramTypes == nil || len(paramTypes) == 0 {
-		log.Debugf("no parameters defined in metadata\n")
-		return nil, nil, nil
-	}
-
-	// verify parameter values
-	params, ok = queryParams.Value.(map[string]interface{})
-	if !ok {
-		log.Errorf("query parameter type %T is not JSON object\n", queryParams.Value)
-		return nil, nil, errors.Errorf("query parameter type %T is not JSON object\n", queryParams.Value)
-	}
-	return params, paramTypes, nil
+	return queryData(ctx, stub, queryStatement, input)
 }
 
 func getQueryParamTypes(metadata string) (map[string]string, error) {
@@ -199,96 +174,79 @@ func prepareQueryStatement(query string, queryParams map[string]interface{}, par
 	return r.Replace(query), nil
 }
 
-func queryPrivateData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, query string) (bool, error) {
+func queryPrivateData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, query string, input *Input) (bool, error) {
 	// check pagination
 	pageSize := int32(0)
 	bookmark := ""
-	if usePagination, ok := ctx.GetInput(ivUsePagination).(bool); ok && usePagination {
-		if f, err := strconv.ParseFloat(fmt.Sprintf("%v", ctx.GetInput(ivPageSize)), 64); err == nil {
-			pageSize = int32(f)
-			log.Debugf("pageSize=%d\n", pageSize)
-		}
-		if pageSize > 0 {
-			if bookmark, ok = ctx.GetInput(ivBookmark).(string); ok && bookmark != "" {
-				log.Debugf("bookmark=%s\n", bookmark)
-			}
-		}
+	if input.UsePagination {
+		pageSize = input.PageSize
+		bookmark = input.Start
 	}
 
 	// query data from a private collection
-	collection, ok := ctx.GetInput(ivCollection).(string)
-	if !ok || collection == "" {
+	if input.PrivateCollection == "" {
 		log.Error("private collection is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "private collection is not specified")
-		return false, errors.New("private collection is not specified")
+		output := &Output{Code: 400, Message: "private collection is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
 
 	// query private data
 	if pageSize > 0 {
 		log.Infof("private data query does not support pagination, so ignore specified page size %d and bookmark %s\n", pageSize, bookmark)
 	}
-	resultIterator, err := ccshim.GetPrivateDataQueryResult(collection, query)
+	resultIterator, err := ccshim.GetPrivateDataQueryResult(input.PrivateCollection, query)
 	if err != nil {
-		log.Errorf("failed to execute query %s on private collection %s: %+v\n", query, collection, err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to execute query %s on private collection %s: %+v", query, collection, err))
-		return false, errors.Wrapf(err, "failed to execute query %s on private collection %s", query, collection)
+		log.Errorf("failed to execute query %s on private collection %s: %+v\n", query, input.PrivateCollection, err)
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to execute query %s on private collection %s", query, input.PrivateCollection)}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 	defer resultIterator.Close()
 
 	jsonBytes, err := common.ConstructQueryResponse(resultIterator, false, nil)
 	if err != nil {
 		log.Errorf("failed to collect result from iterator: %+v\n", err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to collect result from iterator: %+v", err))
-		return false, errors.Wrapf(err, "failed to collect result from iterator")
+		output := &Output{Code: 500, Message: "failed to collect result from iterator"}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
 	if jsonBytes == nil {
-		log.Infof("no data returned for query %s on private collection %s\n", query, collection)
-		ctx.SetOutput(ovCode, 300)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("no data returned for query %s on private collection %s", query, collection))
+		log.Infof("no data returned for query %s on private collection %s\n", query, input.PrivateCollection)
+		output := &Output{Code: 300, Message: fmt.Sprintf("no data returned for query %s on private collection %s", query, input.PrivateCollection)}
+		ctx.SetOutputObject(output)
 		return true, nil
 	}
-	log.Debugf("query result from private collection %s: %s\n", collection, string(jsonBytes))
+	log.Debugf("query result from private collection %s: %s\n", input.PrivateCollection, string(jsonBytes))
 
-	var value interface{}
+	var value []interface{}
 	if err := json.Unmarshal(jsonBytes, &value); err != nil {
 		log.Errorf("failed to parse JSON data: %+v\n", err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to parse JSON data: %+v", err))
-		return false, errors.Wrapf(err, "failed to parse JSON data %s", string(jsonBytes))
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to parse JSON data: %s", string(jsonBytes))}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
-	ctx.SetOutput(ovCode, 200)
-	ctx.SetOutput(ovMessage, fmt.Sprintf("result of query %s from private collection %s: %s", query, collection, string(jsonBytes)))
-	if result, ok := ctx.GetOutput(ovResult).(*data.ComplexObject); ok && result != nil {
-		log.Debugf("set activity output result: %+v\n", value)
-		result.Value = value
-		ctx.SetOutput(ovResult, result)
-		ctx.SetOutput(ovBookmark, "")
-		if vArray, ok := value.([]interface{}); ok {
-			ctx.SetOutput(ovCount, len(vArray))
-		}
+	output := &Output{Code: 200,
+		Message:  fmt.Sprintf("result of query %s from private collection %s: %s", query, input.PrivateCollection, string(jsonBytes)),
+		Count:    len(value),
+		Bookmark: "",
+		Result:   value,
 	}
+	ctx.SetOutputObject(output)
 	return true, nil
 }
 
-func queryData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, query string) (bool, error) {
+func queryData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, query string, input *Input) (bool, error) {
 	// check pagination
 	pageSize := int32(0)
 	bookmark := ""
-	if usePagination, ok := ctx.GetInput(ivUsePagination).(bool); ok && usePagination {
-		if f, err := strconv.ParseFloat(fmt.Sprintf("%v", ctx.GetInput(ivPageSize)), 64); err == nil {
-			pageSize = int32(f)
-			log.Debugf("pageSize=%d\n", pageSize)
-		}
-		if pageSize > 0 {
-			if bookmark, ok = ctx.GetInput(ivBookmark).(string); ok && bookmark != "" {
-				log.Debugf("bookmark=%s\n", bookmark)
-			}
-		}
+	if input.UsePagination {
+		pageSize = input.PageSize
+		log.Debug("pageSize:", pageSize)
+		bookmark = input.Start
+		log.Debug("bookmark:", bookmark)
 	}
 
 	// query state data
@@ -298,16 +256,16 @@ func queryData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, query s
 	if pageSize > 0 {
 		if resultIterator, resultMetadata, err = ccshim.GetQueryResultWithPagination(query, pageSize, bookmark); err != nil {
 			log.Errorf("failed to execute query %s with page size %d: %+v\n", query, pageSize, err)
-			ctx.SetOutput(ovCode, 500)
-			ctx.SetOutput(ovMessage, fmt.Sprintf("failed to execute query %s with page size %d: %+v", query, pageSize, err))
-			return false, errors.Wrapf(err, "failed to execute query %s with page size %d", query, pageSize)
+			output := &Output{Code: 500, Message: fmt.Sprintf("failed to execute query %s with page size %d", query, pageSize)}
+			ctx.SetOutputObject(output)
+			return false, errors.Wrapf(err, output.Message)
 		}
 	} else {
 		if resultIterator, err = ccshim.GetQueryResult(query); err != nil {
 			log.Errorf("failed to execute query %s: %+v\n", query, err)
-			ctx.SetOutput(ovCode, 500)
-			ctx.SetOutput(ovMessage, fmt.Sprintf("failed to execute query %s: %+v", query, err))
-			return false, errors.Wrapf(err, "failed to execute query %s", query)
+			output := &Output{Code: 500, Message: fmt.Sprintf("failed to execute query %s", query)}
+			ctx.SetOutputObject(output)
+			return false, errors.Wrapf(err, output.Message)
 		}
 	}
 	defer resultIterator.Close()
@@ -315,45 +273,46 @@ func queryData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, query s
 	jsonBytes, err := common.ConstructQueryResponse(resultIterator, false, nil)
 	if err != nil {
 		log.Errorf("failed to collect result from iterator: %+v\n", err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to collect result from iterator: %+v", err))
-		return false, errors.Wrapf(err, "failed to collect result from iterator")
+		output := &Output{Code: 500, Message: "failed to collect result from iterator"}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
 	if jsonBytes == nil {
 		log.Infof("no data returned for query %s\n", query)
-		ctx.SetOutput(ovCode, 300)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("no data returned for query %s", query))
+		output := &Output{Code: 300, Message: fmt.Sprintf("no data returned for query %s", query)}
+		ctx.SetOutputObject(output)
 		return true, nil
 	}
 	log.Debugf("query returned data: %s\n", string(jsonBytes))
 
-	var value interface{}
+	var value []interface{}
 	if err := json.Unmarshal(jsonBytes, &value); err != nil {
 		log.Errorf("failed to parse JSON data: %+v\n", err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to parse JSON data: %+v", err))
-		return false, errors.Wrapf(err, "failed to parse JSON data %s", string(jsonBytes))
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to parse JSON data: %s", string(jsonBytes))}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
-	ctx.SetOutput(ovCode, 200)
-	ctx.SetOutput(ovMessage, fmt.Sprintf("data returned for query %s: %s", query, string(jsonBytes)))
-	if result, ok := ctx.GetOutput(ovResult).(*data.ComplexObject); ok && result != nil {
-		log.Debugf("set activity output result: %+v\n", value)
-		result.Value = value
-		ctx.SetOutput(ovResult, result)
-		if resultMetadata != nil {
-			// Note: bookmark of the last page is returned repeatedly for rich query
-			// this may be a bug. Pagination of range query returns blank when returned last page
-			log.Debugf("set pagination metadata: count=%d, bookmark=%s\n", resultMetadata.FetchedRecordsCount, resultMetadata.Bookmark)
-			ctx.SetOutput(ovCount, int(resultMetadata.FetchedRecordsCount))
-			ctx.SetOutput(ovBookmark, resultMetadata.Bookmark)
-		} else {
-			ctx.SetOutput(ovBookmark, "")
-			if vArray, ok := value.([]interface{}); ok {
-				ctx.SetOutput(ovCount, len(vArray))
-			}
+	if resultMetadata != nil {
+		log.Debugf("set pagination metadata: count=%d, bookmark=%s\n", resultMetadata.FetchedRecordsCount, resultMetadata.Bookmark)
+		// Note: bookmark of the last page is returned repeatedly for rich query
+		// this may be a fabric bug. Pagination of range query returns blank when returned last page
+		output := &Output{Code: 200,
+			Message:  fmt.Sprintf("data returned for query %s: %s", query, string(jsonBytes)),
+			Count:    int(resultMetadata.FetchedRecordsCount),
+			Bookmark: resultMetadata.Bookmark,
+			Result:   value,
 		}
+		ctx.SetOutputObject(output)
+	} else {
+		output := &Output{Code: 200,
+			Message:  fmt.Sprintf("data returned for query %s: %s", query, string(jsonBytes)),
+			Count:    len(value),
+			Bookmark: "",
+			Result:   value,
+		}
+		ctx.SetOutputObject(output)
 	}
 	return true, nil
 }

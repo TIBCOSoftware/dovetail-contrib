@@ -5,94 +5,79 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/pkg/errors"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
-)
-
-const (
-	ivData          = "data"
-	ivIsPrivate     = "isPrivate"
-	ivCollection    = "collection"
-	ivCompositeKeys = "compositeKeys"
-	ovCode          = "code"
-	ovMessage       = "message"
-	ovCount         = "count"
-	ovErrors        = "errors"
-	ovResult        = "result"
+	"github.com/project-flogo/core/activity"
 )
 
 // Create a new logger
 var log = shim.NewLogger("activity-fabric-putall")
 
+var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
+
 func init() {
 	common.SetChaincodeLogLevel(log)
+	_ = activity.Register(&Activity{}, New)
 }
 
-// FabricPutAllActivity is a stub for executing Hyperledger Fabric put-all operations
-type FabricPutAllActivity struct {
-	metadata *activity.Metadata
+// Activity is a stub for executing Hyperledger Fabric put operations
+type Activity struct {
 }
 
-// NewActivity creates a new FabricPutAllActivity
-func NewActivity(metadata *activity.Metadata) activity.Activity {
-	return &FabricPutAllActivity{metadata: metadata}
+// New creates a new Activity
+func New(ctx activity.InitContext) (activity.Activity, error) {
+	return &Activity{}, nil
 }
 
 // Metadata implements activity.Activity.Metadata
-func (a *FabricPutAllActivity) Metadata() *activity.Metadata {
-	return a.metadata
+func (a *Activity) Metadata() *activity.Metadata {
+	return activityMd
 }
 
 // Eval implements activity.Activity.Eval
-func (a *FabricPutAllActivity) Eval(ctx activity.Context) (done bool, err error) {
+func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	// check input args
-	obj, ok := ctx.GetInput(ivData).(*data.ComplexObject)
-	if !ok {
-		log.Errorf("input data is not a complex object\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "input data is not a complex object")
-		return false, errors.New("input data is not a complex object")
+	input := &Input{}
+	if err = ctx.GetInputObject(input); err != nil {
+		return false, err
 	}
-	valueArray, ok := obj.Value.([]interface{})
-	if !ok {
-		log.Errorf("input value %T is not an array of objects\n", obj.Value)
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("input value %T is not an array of objects", obj.Value))
-		return false, errors.Errorf("input value %T is not an array of objects", obj.Value)
+
+	if input.StateData == nil {
+		log.Errorf("input data is nil\n")
+		output := &Output{Code: 400, Message: "input data is nil"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
-	log.Debugf("input value type %T: %+v\n", valueArray, valueArray)
+	log.Debugf("input value type %T: %+v\n", input.StateData, input.StateData)
 
 	// get composite key definitions
-	compositeKeyDefs, _ := getCompositeKeyDefinition(ctx)
+	compositeKeyDefs, _ := getCompositeKeyDefinition(input.CompositeKeys)
 
 	// get chaincode stub
 	stub, err := common.GetChaincodeStub(ctx)
 	if err != nil || stub == nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, err.Error())
-		return false, err
+		log.Errorf("failed to retrieve fabric stub: %+v\n", err)
+		output := &Output{Code: 500, Message: err.Error()}
+		ctx.SetOutputObject(output)
 	}
 
 	var successCount, errorCount int
 	var errorKeys []string
-	var resultValue []map[string]interface{}
-	if isPrivate, ok := ctx.GetInput(ivIsPrivate).(bool); ok && isPrivate {
+	var resultValue []interface{}
+	if input.IsPrivate {
 		// store data on a private collection
-		collection, ok := ctx.GetInput(ivCollection).(string)
-		if !ok || collection == "" {
+		if input.PrivateCollection == "" {
 			log.Error("private collection is not specified\n")
-			ctx.SetOutput(ovCode, 400)
-			ctx.SetOutput(ovMessage, "private collection is not specified")
-			return false, errors.New("private collection is not specified")
+			output := &Output{Code: 400, Message: "private collection is not specified"}
+			ctx.SetOutputObject(output)
+			return false, errors.New(output.Message)
 		}
 
-		for _, v := range valueArray {
+		for _, v := range input.StateData {
 			vmap := v.(map[string]interface{})
 			vkey := vmap[common.KeyField].(string)
-			if err := storePrivateData(stub, collection, compositeKeyDefs, vkey, vmap[common.ValueField]); err != nil {
+			if err := storePrivateData(stub, input.PrivateCollection, compositeKeyDefs, vkey, vmap[common.ValueField]); err != nil {
 				errorCount++
 				errorKeys = append(errorKeys, vkey)
 			} else {
@@ -102,7 +87,7 @@ func (a *FabricPutAllActivity) Eval(ctx activity.Context) (done bool, err error)
 		}
 	} else {
 		// store data on the ledger
-		for _, v := range valueArray {
+		for _, v := range input.StateData {
 			vmap := v.(map[string]interface{})
 			vkey := vmap[common.KeyField].(string)
 			if err := storeData(stub, compositeKeyDefs, vkey, vmap[common.ValueField]); err != nil {
@@ -115,33 +100,34 @@ func (a *FabricPutAllActivity) Eval(ctx activity.Context) (done bool, err error)
 		}
 	}
 
-	result, ok := ctx.GetOutput(ovResult).(*data.ComplexObject)
-	ctx.SetOutput(ovCount, successCount)
-	ctx.SetOutput(ovErrors, errorCount)
 	if errorCount > 0 {
-		errMsg := fmt.Sprintf("failed to store keys: %s", strings.Join(errorKeys, ","))
-		ctx.SetOutput(ovMessage, errMsg)
+		output := &Output{
+			Code:    500,
+			Message: fmt.Sprintf("failed to store keys: %s", strings.Join(errorKeys, ",")),
+			Count:   successCount,
+			Errors:  errorCount,
+			Result:  resultValue,
+		}
 		if successCount > 0 {
 			// return 300 if partial successs
-			ctx.SetOutput(ovCode, 300)
-			if ok && result != nil {
-				result.Value = resultValue
-				ctx.SetOutput(ovResult, result)
-			}
+			output.Code = 300
+			ctx.SetOutputObject(output)
 			return true, nil
 		}
 		// return 500 if all failures
-		ctx.SetOutput(ovCode, 500)
-		return false, errors.New(errMsg)
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
 	// return 200 if no errors
-	ctx.SetOutput(ovCode, 200)
-	ctx.SetOutput(ovMessage, fmt.Sprintf("stored data on ledger: %+v", resultValue))
-	if ok && result != nil {
-		log.Debugf("set activity output result: %+v\n", resultValue)
-		result.Value = resultValue
-		ctx.SetOutput(ovResult, result)
+	log.Debugf("set activity output result: %+v\n", resultValue)
+	output := &Output{
+		Code:    200,
+		Message: fmt.Sprintf("stored data on ledger: %+v", resultValue),
+		Count:   successCount,
+		Errors:  errorCount,
+		Result:  resultValue,
 	}
+	ctx.SetOutputObject(output)
 	return true, nil
 }
 
@@ -208,11 +194,11 @@ func storeData(ccshim shim.ChaincodeStubInterface, compositeKeyDefs map[string][
 	return nil
 }
 
-func getCompositeKeyDefinition(ctx activity.Context) (map[string][]string, error) {
-	if ckJSON, ok := ctx.GetInput(ivCompositeKeys).(string); ok && ckJSON != "" {
-		log.Debugf("Got composite key definition: %s\n", ckJSON)
+func getCompositeKeyDefinition(compositeKeys string) (map[string][]string, error) {
+	if compositeKeys != "" {
+		log.Debugf("Got composite key definition: %s\n", compositeKeys)
 		ckDefs := make(map[string][]string)
-		if err := json.Unmarshal([]byte(ckJSON), &ckDefs); err != nil {
+		if err := json.Unmarshal([]byte(compositeKeys), &ckDefs); err != nil {
 			log.Warningf("failed to unmarshal composite key definitions: %+v\n", err)
 			return nil, err
 		}
