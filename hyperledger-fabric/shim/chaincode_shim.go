@@ -5,17 +5,18 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TIBCOSoftware/flogo-lib/app"
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
-	"github.com/TIBCOSoftware/flogo-lib/engine"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"github.com/hyperledger/fabric/protos/peer"
 	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	trigger "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/protos/peer"
+	"github.com/project-flogo/core/app"
+	_ "github.com/project-flogo/core/data/expression/script"
+	"github.com/project-flogo/core/engine"
+	"github.com/project-flogo/core/support/log"
 )
 
 const (
-	fabricTrigger = "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction"
+	fabricTrigger = "#transaction"
 )
 
 // Contract implements chaincode interface for invoking Flogo flows
@@ -46,21 +47,19 @@ func (t *Contract) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	return shim.Success([]byte(result))
 }
 
-var cp app.ConfigProvider
+var (
+	cfgJson       string
+	cfgCompressed bool
+)
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
+	log.SetLogLevel(log.RootLogger(), log.DebugLevel)
 	common.SetChaincodeLogLevel(logger)
 
-	// configure flogo engine
-	if cp == nil {
-		// Use default config provider
-		cp = app.DefaultConfigProvider()
-	}
-
-	ac, err := cp.GetApp()
+	cfg, err := engine.LoadAppConfig(cfgJson, cfgCompressed)
 	if err != nil {
-		fmt.Printf("failed to read Flogo app config: %+v\n", err)
+		log.RootLogger().Errorf("Failed to load flogo config: %s", err.Error())
 		os.Exit(1)
 	}
 
@@ -68,15 +67,11 @@ func main() {
 	// this is a workaround until flogo-lib can accept pass-through flow attributes in
 	// handler.Handle(context.Background(), triggerData) that bypasses the mapper.
 	// see issue: https://github.com/TIBCOSoftware/flogo-lib/issues/267
-	inputAssignMap(ac, fabricTrigger, common.FabricStub)
-	e, err := engine.New(ac)
-	if err != nil {
-		fmt.Printf("Failed to create flogo engine instance: %+v\n", err)
-		os.Exit(1)
-	}
+	inputAssignMap(cfg, fabricTrigger, common.FabricStub)
 
-	if err := e.Init(true); err != nil {
-		fmt.Printf("Failed to initialize flogo engine: %+v\n", err)
+	_, err = engine.New(cfg, engine.DirectRunner)
+	if err != nil {
+		log.RootLogger().Errorf("Failed to create flogo engine instance: %+v", err)
 		os.Exit(1)
 	}
 
@@ -125,19 +120,13 @@ func inputAssignMap(ac *app.Config, triggerRef, name string) {
 	for _, tc := range ac.Triggers {
 		if tc.Ref == triggerRef {
 			for _, hc := range tc.Handlers {
-				ivMap := hc.Action.Mappings.Input
-				done := false
-				for _, def := range ivMap {
-					if def.MapTo == name {
-						done = true
-						continue
+				for _, acc := range hc.Actions {
+					if acc.Ref == "github.com/project-flogo/flow" {
+						_, done := acc.Input[name]
+						if !done {
+							acc.Input[name] = "=$." + name
+						}
 					}
-				}
-				if !done {
-					hc.GetSetting(trigger.STransaction)
-					logger.Infof("Add input mapper for %s to handler %+v", name, hc.GetSetting(trigger.STransaction))
-					mapDef := data.MappingDef{Type: data.MtAssign, Value: "$." + name, MapTo: name}
-					hc.Action.Mappings.Input = append(ivMap, &mapDef)
 				}
 			}
 		}

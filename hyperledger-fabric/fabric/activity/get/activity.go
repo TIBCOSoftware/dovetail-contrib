@@ -4,115 +4,111 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/pkg/errors"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
-)
-
-const (
-	ivKey        = "key"
-	ivIsPrivate  = "isPrivate"
-	ivCollection = "collection"
-	ovCode       = "code"
-	ovMessage    = "message"
-	ovKey        = "key"
-	ovResult     = "result"
+	"github.com/project-flogo/core/activity"
 )
 
 // Create a new logger
 var log = shim.NewLogger("activity-fabric-get")
 
+var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
+
 func init() {
 	common.SetChaincodeLogLevel(log)
+	_ = activity.Register(&Activity{}, New)
 }
 
-// FabricGetActivity is a stub for executing Hyperledger Fabric get operations
-type FabricGetActivity struct {
-	metadata *activity.Metadata
+// Activity is a stub for executing Hyperledger Fabric get operations
+type Activity struct {
 }
 
-// NewActivity creates a new FabricGetActivity
-func NewActivity(metadata *activity.Metadata) activity.Activity {
-	return &FabricGetActivity{metadata: metadata}
+// New creates a new Activity
+func New(ctx activity.InitContext) (activity.Activity, error) {
+	return &Activity{}, nil
 }
 
 // Metadata implements activity.Activity.Metadata
-func (a *FabricGetActivity) Metadata() *activity.Metadata {
-	return a.metadata
+func (a *Activity) Metadata() *activity.Metadata {
+	return activityMd
 }
 
 // Eval implements activity.Activity.Eval
-func (a *FabricGetActivity) Eval(ctx activity.Context) (done bool, err error) {
+func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	// check input args
-	key, ok := ctx.GetInput(ivKey).(string)
-	if !ok || key == "" {
-		log.Error("state key is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "state key is not specified")
-		return false, errors.New("state key is not specified")
+	input := &Input{}
+	if err = ctx.GetInputObject(input); err != nil {
+		return false, err
 	}
-	log.Debugf("state key: %s\n", key)
+
+	if input.StateKey == "" {
+		log.Error("state key is not specified\n")
+		output := &Output{Code: 400, Message: "state key is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
+	}
+	log.Debugf("state key: %s\n", input.StateKey)
 
 	// get chaincode stub
 	stub, err := common.GetChaincodeStub(ctx)
 	if err != nil || stub == nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, err.Error())
+		log.Errorf("failed to retrieve fabric stub: %+v\n", err)
+		output := &Output{Code: 500, Message: err.Error()}
+		ctx.SetOutputObject(output)
 		return false, err
 	}
 
-	if isPrivate, ok := ctx.GetInput(ivIsPrivate).(bool); ok && isPrivate {
+	if input.IsPrivate {
 		// retrieve data from a private collection
-		return retrievePrivateData(ctx, stub, key)
+		return retrievePrivateData(ctx, stub, input)
 	}
 
 	// retrieve data for the key
-	return retrieveData(ctx, stub, key)
+	return retrieveData(ctx, stub, input.StateKey)
 }
 
-func retrievePrivateData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, key string) (bool, error) {
+func retrievePrivateData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, input *Input) (bool, error) {
 	// retrieve data from a private collection
-	collection, ok := ctx.GetInput(ivCollection).(string)
-	if !ok || collection == "" {
+	if input.PrivateCollection == "" {
 		log.Error("private collection is not specified\n")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "private collection is not specified")
-		return false, errors.New("private collection is not specified")
+		output := &Output{Code: 400, Message: "private collection is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
-	jsonBytes, err := ccshim.GetPrivateData(collection, key)
+	jsonBytes, err := ccshim.GetPrivateData(input.PrivateCollection, input.StateKey)
 	if err != nil {
-		log.Errorf("failed to retrieve data from private collection %s: %+v\n", collection, err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to retrieve data from private collection %s: %+v", collection, err))
-		return false, errors.Wrapf(err, "failed to retrieve data from private collection %s", collection)
+		log.Errorf("failed to retrieve data from private collection %s: %+v\n", input.PrivateCollection, err)
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to retrieve data from private collection %s", input.PrivateCollection)}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 	if jsonBytes == nil {
-		log.Infof("no data found for key %s on private collection %s\n", key, collection)
-		ctx.SetOutput(ovCode, 300)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("no data found for key %s on private collection %s", key, collection))
-		ctx.SetOutput(ovKey, key)
+		log.Infof("no data found for key %s on private collection %s\n", input.StateKey, input.PrivateCollection)
+		output := &Output{Code: 300,
+			Message:  fmt.Sprintf("no data found for key %s on private collection %s", input.StateKey, input.PrivateCollection),
+			StateKey: input.StateKey,
+		}
+		ctx.SetOutputObject(output)
 		return true, nil
 	}
-	log.Debugf("retrieved from private collection %s, data: %s\n", collection, string(jsonBytes))
+	log.Debugf("retrieved from private collection %s, data: %s\n", input.PrivateCollection, string(jsonBytes))
 
-	var value interface{}
+	var value map[string]interface{}
 	if err := json.Unmarshal(jsonBytes, &value); err != nil {
 		log.Errorf("failed to parse JSON data: %+v\n", err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to parse JSON data: %+v", err))
-		return false, errors.Wrapf(err, "failed to parse JSON data %s", string(jsonBytes))
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to parse JSON data: %s", string(jsonBytes))}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
-	ctx.SetOutput(ovCode, 200)
-	ctx.SetOutput(ovMessage, fmt.Sprintf("retrieved data from private collection %s, data: %s", collection, string(jsonBytes)))
-	if result, ok := ctx.GetOutput(ovResult).(*data.ComplexObject); ok && result != nil {
-		log.Debugf("set activity output result: %+v\n", value)
-		result.Value = value
-		ctx.SetOutput(ovResult, result)
-		ctx.SetOutput(ovKey, key)
+	output := &Output{
+		Code:     200,
+		Message:  fmt.Sprintf("retrieved data from private collection %s, data: %s", input.PrivateCollection, string(jsonBytes)),
+		StateKey: input.StateKey,
+		Result:   value,
 	}
+	ctx.SetOutputObject(output)
 	return true, nil
 }
 
@@ -121,34 +117,35 @@ func retrieveData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, key 
 	jsonBytes, err := ccshim.GetState(key)
 	if err != nil {
 		log.Errorf("failed to retrieve data for key %s: %+v\n", key, err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to retrieve data for key %s: %+v", key, err))
-		return false, errors.Wrapf(err, "failed to retrieve data for key %s", key)
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to retrieve data for key %s", key)}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 	if jsonBytes == nil {
 		log.Infof("no data found for key %s\n", key)
-		ctx.SetOutput(ovCode, 300)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("no data found for key %s", key))
-		ctx.SetOutput(ovKey, key)
+		output := &Output{Code: 300,
+			Message:  fmt.Sprintf("no data found for key %s", key),
+			StateKey: key,
+		}
+		ctx.SetOutputObject(output)
 		return true, nil
 	}
 	log.Debugf("retrieved data from ledger: %s\n", string(jsonBytes))
 
-	var value interface{}
+	var value map[string]interface{}
 	if err := json.Unmarshal(jsonBytes, &value); err != nil {
 		log.Errorf("failed to parse JSON data: %+v\n", err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("failed to parse JSON data: %+v", err))
-		return false, errors.Wrapf(err, "failed to parse JSON data %s", string(jsonBytes))
+		output := &Output{Code: 500, Message: fmt.Sprintf("failed to parse JSON data: %s", string(jsonBytes))}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
-	ctx.SetOutput(ovCode, 200)
-	ctx.SetOutput(ovMessage, fmt.Sprintf("retrieved data for key %s: %s", key, string(jsonBytes)))
-	if result, ok := ctx.GetOutput(ovResult).(*data.ComplexObject); ok && result != nil {
-		log.Debugf("set activity output result: %+v\n", value)
-		result.Value = value
-		ctx.SetOutput(ovResult, result)
-		ctx.SetOutput(ovKey, key)
+	output := &Output{
+		Code:     200,
+		Message:  fmt.Sprintf("retrieved data for key %s: %s", key, string(jsonBytes)),
+		StateKey: key,
+		Result:   value,
 	}
+	ctx.SetOutputObject(output)
 	return true, nil
 }

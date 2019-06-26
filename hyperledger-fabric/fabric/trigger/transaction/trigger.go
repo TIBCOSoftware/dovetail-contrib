@@ -7,32 +7,28 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
 	"time"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
-	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
+	"github.com/project-flogo/core/data/metadata"
+	"github.com/project-flogo/core/trigger"
 
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	jschema "github.com/xeipuuv/gojsonschema"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
 )
 
 const (
 	// STransaction is the name of the handler setting entry for transaction name
 	STransaction = "name"
-	sValidation  = "validation"
 	oParameters  = "parameters"
 	oTransient   = "transient"
-	oTxID        = "txID"
-	oTxTime      = "txTime"
-	rReturns     = "returns"
 )
 
 // Create a new logger
 var log = shim.NewLogger("trigger-fabric-transaction")
 
 func init() {
+	_ = trigger.Register(&Trigger{}, &Factory{})
 	common.SetChaincodeLogLevel(log)
 }
 
@@ -47,72 +43,91 @@ func GetTrigger(name string) (*Trigger, bool) {
 	return trig, ok
 }
 
-// TriggerFactory Fabric Trigger factory
-type TriggerFactory struct {
-	metadata *trigger.Metadata
+var triggerMd = trigger.NewMetadata(&Settings{}, &HandlerSettings{}, &Output{}, &Reply{})
+
+// Factory for trigger
+type Factory struct {
 }
 
-// NewFactory create a new Trigger factory
-func NewFactory(md *trigger.Metadata) trigger.Factory {
-	return &TriggerFactory{metadata: md}
+// New implements trigger.Factory.New
+func (t *Factory) New(config *trigger.Config) (trigger.Trigger, error) {
+	s := &Settings{}
+	if err := metadata.MapToStruct(config.Settings, s, true); err != nil {
+		return nil, err
+	}
+	trig := Trigger{
+		id:           config.Id,
+		handlers:     map[string]trigger.Handler{},
+		schemas:      map[string]*trigger.SchemaConfig{},
+		parameters:   map[string][]common.ParameterIndex{},
+		transientMap: map[string]bool{},
+	}
+	// extract parameters from handler schema
+	for _, hc := range config.Handlers {
+		name, ok := hc.Settings[STransaction].(string)
+		if !ok {
+			return nil, fmt.Errorf("Trigger handler setting does not contain attribute '%s'", STransaction)
+		}
+		log.Info("set schema config for handler:", name)
+		trig.schemas[name] = hc.Schemas
+
+		if _, ok := hc.Schemas.Output[oTransient]; ok {
+			log.Info("set transient map for handler:", name)
+			trig.transientMap[name] = true
+		}
+
+		if schema, ok := hc.Schemas.Output[oParameters].(map[string]interface{}); ok {
+			log.Infof("schema config: %+v\n", schema)
+			log.Infof("schema value: %T: %+v\n", schema["value"], schema["value"])
+			if index, err := common.OrderedParameters([]byte(schema["value"].(string))); err == nil {
+				if index != nil {
+					log.Debugf("cache parameters for handler %s: %+v\n", name, index)
+					trig.parameters[name] = index
+				}
+			} else {
+				log.Errorf("failed to calculate handler parameters: %+v", err)
+			}
+		}
+	}
+	return &trig, nil
 }
 
-// New Creates a new trigger instance for a given id
-func (t *TriggerFactory) New(config *trigger.Config) trigger.Trigger {
-	return &Trigger{metadata: t.metadata, config: config, parameters: map[string][]common.ParameterIndex{}}
+// Metadata implements trigger.Factory.Metadata
+func (*Factory) Metadata() *trigger.Metadata {
+	return triggerMd
 }
 
 // Trigger is a stub for the Trigger implementation
 type Trigger struct {
-	metadata   *trigger.Metadata
-	config     *trigger.Config
-	handlers   []*trigger.Handler
-	parameters map[string][]common.ParameterIndex
+	id           string
+	handlers     map[string]trigger.Handler
+	schemas      map[string]*trigger.SchemaConfig
+	parameters   map[string][]common.ParameterIndex
+	transientMap map[string]bool
 }
 
 // Initialize implements trigger.Init.Initialize
 func (t *Trigger) Initialize(ctx trigger.InitContext) error {
-	t.handlers = ctx.GetHandlers()
-	for _, handler := range t.handlers {
-		name := handler.GetStringSetting(STransaction)
+	for _, handler := range ctx.GetHandlers() {
+		setting := &HandlerSettings{}
+		if err := metadata.MapToStruct(handler.Settings(), setting, true); err != nil {
+			return err
+		}
+
+		name := setting.Name
 		log.Info("init transaction trigger:", name)
 		_, ok := triggerMap[name]
 		if ok {
 			log.Warningf("transaction name %s used by multiple trigger handlers, only the last handler is effective", name)
 		}
 		triggerMap[name] = t
-
-		// collect input parameter name and types from metadata
-		params, ok := handler.GetOutput()[oParameters].(*data.ComplexObject)
-		if ok {
-			// cache transaction parameters for each handler.
-			// Note: Flogo enterprise uses one handler per flow, but share the same trigger instance
-			if index, err := common.OrderedParameters([]byte(params.Metadata)); err == nil {
-				if index != nil {
-					log.Debugf("cache parameters for flow %s: %+v\n", name, index)
-					t.parameters[name] = index
-				}
-			} else {
-				log.Errorf("failed to initialize transaction parameters: %+v", err)
-			}
-		}
+		t.handlers[name] = handler
 
 		// verify validation setting, value is not used
-		handler.GetSetting(sValidation)
-		validate := false
-		if v, ok := handler.GetSetting(sValidation); ok {
-			if bv, err := data.CoerceToBoolean(v); err == nil {
-				validate = bv
-			}
-		}
+		validate := setting.Validation
 		log.Info("validate output:", validate)
 	}
 	return nil
-}
-
-// Metadata implements trigger.Trigger.Metadata
-func (t *Trigger) Metadata() *trigger.Metadata {
-	return t.metadata
 }
 
 // Start implements trigger.Trigger.Start
@@ -131,81 +146,76 @@ func (t *Trigger) Stop() error {
 func (t *Trigger) Invoke(stub shim.ChaincodeStubInterface, fn string, args []string) (string, error) {
 	log.Debugf("fabric.Trigger invokes fn %s with args %+v", fn, args)
 
-	for _, handler := range t.handlers {
-		if f := handler.GetStringSetting(STransaction); f != fn {
-			log.Debugf("skip handler for transaction %s that is different from requested function %s", f, fn)
-			continue
-		}
-		triggerData := make(map[string]interface{})
+	handler, ok := t.handlers[fn]
+	if !ok {
+		return "", fmt.Errorf("Handler not defined for transaction %s", fn)
+	}
+	triggerData := &Output{}
 
-		// construct transaction parameters
-		paramIndex := t.parameters[fn]
-		if paramIndex != nil && len(paramIndex) > 0 {
-			paramData, err := prepareParameters(paramIndex, args)
-			if err != nil {
-				return "", err
-			}
-			if log.IsEnabledFor(shim.LogDebug) {
-				// debug flow data
-				paramBytes, _ := json.Marshal(paramData)
-				log.Debugf("trigger parameters: %s", string(paramBytes))
-			}
-
-			// set trigger parameters
-			params, _ := handler.GetOutput()[oParameters].(*data.ComplexObject)
-			params.Value = paramData
-			triggerData[oParameters] = params
-		}
-
-		// construct transient attributes
-		if transMap, ok := handler.GetOutput()[oTransient].(*data.ComplexObject); ok && transMap != nil && transMap.Metadata != "" {
-			transData, err := prepareTransient(stub)
-			if err != nil {
-				return "", err
-			}
-			if log.IsEnabledFor(shim.LogDebug) {
-				// debug flow data
-				transBytes, _ := json.Marshal(transData)
-				log.Debugf("trigger transient attributes: %s", string(transBytes))
-			}
-
-			// set trigger transient attributes
-			transMap.Value = transData
-			triggerData[oTransient] = transMap
-		}
-
-		triggerData[common.FabricStub] = stub
-		triggerData[oTxID] = stub.GetTxID()
-		if ts, err := stub.GetTxTimestamp(); err == nil {
-			triggerData[oTxTime] = time.Unix(ts.Seconds, int64(ts.Nanos)).UTC().Format(time.RFC3339Nano)
-		}
-
-		// execute flogo flow
-		log.Debugf("flogo flow started transaction %s with timestamp %s", triggerData[oTxID], triggerData[oTxTime])
-		results, err := handler.Handle(context.Background(), triggerData)
+	// construct transaction parameters
+	paramIndex := t.parameters[fn]
+	if paramIndex != nil && len(paramIndex) > 0 {
+		paramData, err := prepareParameters(paramIndex, args)
 		if err != nil {
-			log.Errorf("flogo flow returned error: %+v", err)
 			return "", err
 		}
-		if len(results) != 0 {
-			if dataAttr, ok := results[rReturns]; ok {
-				// return serialized JSON string
-				cobj := dataAttr.Value().(*data.ComplexObject)
-				replyData, err := json.Marshal(cobj.Value)
-				if err != nil {
-					log.Errorf("failed to serialize reply: %+v", err)
-					return "", err
-				}
-				log.Debugf("flogo flow returned data of type %T: %s", cobj.Value, string(replyData))
-				return string(replyData), nil
-			}
-			log.Warningf("flogo flow result does not contain attribute %s", rReturns)
+		if log.IsEnabledFor(shim.LogDebug) {
+			// debug flow data
+			paramBytes, _ := json.Marshal(paramData)
+			log.Debugf("trigger parameters: %s", string(paramBytes))
 		}
+
+		// set trigger parameters
+		triggerData.Parameters = paramData
+	}
+
+	// construct transient attributes
+	if trans, ok := t.transientMap[fn]; ok && trans {
+		transData, err := prepareTransient(stub)
+		if err != nil {
+			return "", err
+		}
+		if log.IsEnabledFor(shim.LogDebug) {
+			// debug flow data
+			transBytes, _ := json.Marshal(transData)
+			log.Debugf("trigger transient attributes: %s", string(transBytes))
+		}
+
+		// set trigger transient attributes
+		triggerData.Transient = transData
+	}
+
+	triggerData.ChaincodeStub = stub
+	triggerData.TxID = stub.GetTxID()
+	if ts, err := stub.GetTxTimestamp(); err == nil {
+		triggerData.TxTime = time.Unix(ts.Seconds, int64(ts.Nanos)).UTC().Format(time.RFC3339Nano)
+	}
+
+	// execute flogo flow
+	log.Debugf("flogo flow started transaction %s with timestamp %s", triggerData.TxID, triggerData.TxTime)
+	results, err := handler.Handle(context.Background(), triggerData.ToMap())
+	if err != nil {
+		log.Errorf("flogo flow returned error: %+v", err)
+		return "", err
+	}
+
+	reply := &Reply{}
+	if err := reply.FromMap(results); err != nil {
+		return "", err
+	}
+
+	if reply.Returns == nil {
 		log.Info("flogo flow did not return any data")
 		return "", nil
 	}
-	log.Warningf("no flogo handler is activated for transaction %s", fn)
-	return "", nil
+
+	replyData, err := json.Marshal(reply.Returns)
+	if err != nil {
+		log.Errorf("failed to serialize reply: %+v", err)
+		return "", err
+	}
+	log.Debugf("flogo flow returned data of type %T: %s", reply.Returns, string(replyData))
+	return string(replyData), nil
 }
 
 // construct trigger output transient attributes
@@ -230,7 +240,7 @@ func prepareTransient(stub shim.ChaincodeStubInterface) (map[string]interface{},
 }
 
 // construct trigger output parameters for specified parameter index, and values of the parameters
-func prepareParameters(paramIndex []common.ParameterIndex, values []string) (interface{}, error) {
+func prepareParameters(paramIndex []common.ParameterIndex, values []string) (map[string]interface{}, error) {
 	log.Debugf("prepare parameters %+v values %+v", paramIndex, values)
 	if paramIndex == nil && len(values) > 0 {
 		// unknown parameter schema
