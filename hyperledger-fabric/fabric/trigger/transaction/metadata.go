@@ -25,7 +25,7 @@ type Output struct {
 
 // Reply from the trigger
 type Reply struct {
-	Returns map[string]interface{} `md:"returns"`
+	Returns interface{} `md:"returns"`
 }
 
 // FromMap sets trigger output values from a map
@@ -64,7 +64,7 @@ func (o *Output) ToMap() map[string]interface{} {
 // FromMap sets trigger reply values from a map
 func (r *Reply) FromMap(values map[string]interface{}) error {
 	var err error
-	if r.Returns, err = coerce.ToObject(values["returns"]); err != nil {
+	if r.Returns, err = coerce.ToAny(values["returns"]); err != nil {
 		return err
 	}
 	return nil

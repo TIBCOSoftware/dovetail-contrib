@@ -11,6 +11,7 @@ import (
 	"github.com/hyperledger/fabric/protos/peer"
 	"github.com/project-flogo/core/app"
 	_ "github.com/project-flogo/core/data/expression/script"
+	"github.com/project-flogo/core/data/schema"
 	"github.com/project-flogo/core/engine"
 	"github.com/project-flogo/core/support/log"
 )
@@ -56,6 +57,10 @@ var (
 func main() {
 	log.SetLogLevel(log.RootLogger(), log.DebugLevel)
 	common.SetChaincodeLogLevel(logger)
+
+	// necessary to access schema of complex object attributes from activity context
+	schema.Enable()
+	schema.DisableValidation()
 
 	cfg, err := engine.LoadAppConfig(cfgJson, cfgCompressed)
 	if err != nil {

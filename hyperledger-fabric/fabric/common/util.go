@@ -51,6 +51,7 @@ func GetActivityInputSchema(ctx activity.Context, name string) (string, error) {
 	if sIO, ok := ctx.(schema.HasSchemaIO); ok {
 		s := sIO.GetInputSchema(name)
 		if s != nil {
+			log.Debugf("schema for attribute '%s': %T, %s\n", name, s, s.Value())
 			return s.Value(), nil
 		}
 	}
