@@ -52,7 +52,17 @@ In another terminal, start the chaincode:
 ```
 docker exec -it chaincode bash
 cd marble_cc
-CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=marble_cc:0 CORE_CHAINCODE_LOGGING_LEVEL=DEBUG ./marble_cc
+# display Flogo debug logs for debugging
+FLOGO_LOG_LEVEL=DEBUG CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=marble_cc:0 CORE_CHAINCODE_LOGGING_LEVEL=DEBUG ./marble_cc
+```
+Note that the above command assumes that `marble_cc` is built and then mounted in the chaincode container.  To rebuild it in the chaincode container, you must use Go Modules with packages in the vendor folder, which must be done outside the `$GOPATH`, i.e.,
+```
+docker exec -it chaincode bash
+cp -R marble_cc /tmp
+cd /tmp/marble_cc
+# clean all cached packages only if necessary
+# go clean -cache -modcache -i -r
+GO111MODULE=on GOCACHE=cache go build -mod vendor -o marble_cc
 ```
 In a third terminal, install chaincode and send test requests:
 ```
@@ -97,9 +107,6 @@ peer chaincode instantiate $ORDERER_ARGS -C mychannel -n marble_cc -v 1.0 -c '{"
 Use `cli` container to send marble transaction requests:
 ```
 ORG1_ARGS="--peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
-ORG2_ARGS="--peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
-
-# For Ubuntu only, change the ORG2_ARGS to use port 9051, i.e.,
 ORG2_ARGS="--peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 
 # insert test data

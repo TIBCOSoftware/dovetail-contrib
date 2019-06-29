@@ -6,6 +6,7 @@ LOG_LEVEL     := INFO
 BUILD_PATH    := /tmp/marble
 CC_DEPLOY     := $(GOPATH)/src/github.com/hyperledger/fabric-samples/chaincode
 SHIM_PATH     := $(dir $(SRC_PATH))shim
+PATCH_PATH    := $(dir $(SRC_PATH))flogo-patch
 
 .PHONY: all
 all: create build
@@ -35,6 +36,7 @@ build: $(BUILD_PATH)/$(APP_NAME)
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	env GOOS=linux GOARCH=amd64 go build -o $(APP_NAME) && \
 	go mod vendor
+	cp $(PATCH_PATH)/ref.go $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo/core/support
 
 .PHONY: deploy
 deploy: build
@@ -43,7 +45,6 @@ deploy: build
 	cp -Rf $(BUILD_PATH)/$(APP_NAME)/src $(CC_DEPLOY)/$(APP_NAME)
 
 .PHONY: package
-package: deploy
-	docker exec cli peer chaincode package -n $(APP_NAME) -v 1.0 \
-	-p github.com/chaincode/$(APP_NAME) ../../../chaincode/$(APP_NAME).cds
+package: 
+	docker exec cli peer chaincode package -n $(APP_NAME) -v 1.0 -p github.com/chaincode/$(APP_NAME) ../../../chaincode/$(APP_NAME).cds
 	mv $(CC_DEPLOY)/$(APP_NAME).cds $(SRC_PATH)
