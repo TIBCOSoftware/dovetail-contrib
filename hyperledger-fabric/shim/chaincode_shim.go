@@ -55,7 +55,7 @@ var (
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
-	log.SetLogLevel(log.RootLogger(), log.DebugLevel)
+
 	common.SetChaincodeLogLevel(logger)
 
 	// necessary to access schema of complex object attributes from activity context

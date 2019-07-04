@@ -6,20 +6,17 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
+	"github.com/project-flogo/core/data"
+	"github.com/project-flogo/core/data/coerce"
 )
 
 // GetSettings returns map of parameter values of a connector
-func GetSettings(connection interface{}) (map[string]interface{}, error) {
-	connectionObject, err := data.CoerceToObject(connection)
-	if err != nil {
-		return nil, err
-	}
-	if connectionObject == nil {
+func GetSettings(connector map[string]interface{}) (map[string]interface{}, error) {
+	if connector == nil {
 		return nil, errors.New("Connection object is nil")
 	}
 
-	settings, ok := connectionObject["settings"].([]interface{})
+	settings, ok := connector["settings"].([]interface{})
 	configs := make(map[string]interface{})
 	if ok {
 		attrs := make([]*data.Attribute, len(settings))
@@ -34,7 +31,7 @@ func GetSettings(connection interface{}) (map[string]interface{}, error) {
 		}
 
 		for _, v := range attrs {
-			val, _ := data.CoerceToValue(v.Value(), v.Type())
+			val, _ := coerce.ToType(v.Value(), v.Type())
 			configs[v.Name()] = val
 		}
 	}
@@ -46,7 +43,7 @@ func ExtractFileContent(fileSelectorValue interface{}) ([]byte, error) {
 	if fileSelectorValue == nil {
 		return nil, nil
 	}
-	fileValue, err := data.CoerceToObject(fileSelectorValue)
+	fileValue, err := coerce.ToObject(fileSelectorValue)
 	if err != nil {
 		return nil, err
 	}

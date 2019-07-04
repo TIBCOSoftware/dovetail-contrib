@@ -8,7 +8,6 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/core"
@@ -28,19 +27,6 @@ type FabricClient struct {
 	name   string
 	sdk    *fabsdk.FabricSDK
 	client *channel.Client
-}
-
-// SetFlogoLogLevel sets log level of a Flogo app logger according to env 'FLOGO_LOG_LEVEL'
-func SetFlogoLogLevel(log logger.Logger) {
-	loglevel := "DEBUG"
-	if l, ok := os.LookupEnv("FLOGO_LOG_LEVEL"); ok {
-		loglevel = l
-	}
-	if level, err := logger.GetLevelForName(loglevel); err != nil {
-		log.SetLogLevel(level)
-	} else {
-		log.SetLogLevel(logger.DebugLevel)
-	}
 }
 
 // ConnectorSpec contains configuration parameters of a Fabric connector
