@@ -4,26 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
-	"github.com/TIBCOSoftware/flogo-lib/core/data"
-	"github.com/TIBCOSoftware/flogo-lib/logger"
-	"github.com/pkg/errors"
 	client "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/common"
 	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
+	"github.com/pkg/errors"
+	"github.com/project-flogo/core/activity"
+	"github.com/project-flogo/core/support/log"
 )
 
 const (
-	ivConnection     = "connectionName"
-	ivRequestType    = "requestType"
-	ivOrgName        = "orgName"
-	ivUserName       = "userName"
-	ivChaincode      = "chaincodeID"
-	ivTransaction    = "transactionName"
-	ivParameters     = "parameters"
-	ivTransient      = "transient"
-	ovCode           = "code"
-	ovMessage        = "message"
-	ovResult         = "result"
 	conName          = "name"
 	conConfig        = "config"
 	conEntityMatcher = "entityMatcher"
@@ -33,123 +21,124 @@ const (
 )
 
 // Create a new logger
-var log = logger.GetLogger("activity-fabclient-request")
+var logger = log.ChildLogger(log.RootLogger(), "activity-fabclient-request")
+
+var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
 
 func init() {
-	client.SetFlogoLogLevel(log)
+	_ = activity.Register(&Activity{}, New)
 }
 
-// FabricRequestActivity is a stub for sending Hyperledger Fabric invoke/query request
-type FabricRequestActivity struct {
-	metadata *activity.Metadata
+// Activity is a stub for executing Hyperledger Fabric get operations
+type Activity struct {
 }
 
-// NewActivity creates a new FabricRequestActivity
-func NewActivity(metadata *activity.Metadata) activity.Activity {
-	return &FabricRequestActivity{metadata: metadata}
+// New creates a new Activity
+func New(ctx activity.InitContext) (activity.Activity, error) {
+	return &Activity{}, nil
 }
 
 // Metadata implements activity.Activity.Metadata
-func (a *FabricRequestActivity) Metadata() *activity.Metadata {
-	return a.metadata
+func (a *Activity) Metadata() *activity.Metadata {
+	return activityMd
 }
 
 // Eval implements activity.Activity.Eval
-func (a *FabricRequestActivity) Eval(ctx activity.Context) (done bool, err error) {
+func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	// check input args
-	ccID, ok := ctx.GetInput(ivChaincode).(string)
-	if !ok || ccID == "" {
-		log.Error("chaincode ID is not specified")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "chaincode ID is not specified")
-		return false, errors.New("chaincode ID is not specified")
+	input := &Input{}
+	if err = ctx.GetInputObject(input); err != nil {
+		return false, err
 	}
-	log.Debugf("chaincode ID: %s", ccID)
-	txName, ok := ctx.GetInput(ivTransaction).(string)
-	if !ok || txName == "" {
-		log.Error("transaction name is not specified")
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, "transaction name is not specified")
-		return false, errors.New("transaction name is not specified")
+
+	if input.ChaincodeID == "" {
+		logger.Error("chaincode ID is not specified")
+		output := &Output{Code: 400, Message: "chaincode ID is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
 	}
-	log.Debugf("transaction name: %s", txName)
-	reqType, ok := ctx.GetInput(ivRequestType).(string)
-	if !ok || reqType == "" {
-		log.Warn("request type is not specified, assume `query`")
+	logger.Debugf("chaincode ID: %s", input.ChaincodeID)
+
+	if input.TransactionName == "" {
+		logger.Error("transaction name is not specified")
+		output := &Output{Code: 400, Message: "transaction name is not specified"}
+		ctx.SetOutputObject(output)
+		return false, errors.New(output.Message)
+	}
+	logger.Debugf("transaction name: %s", input.TransactionName)
+
+	reqType := input.RequestType
+	if reqType == "" {
+		logger.Warn("request type is not specified, assume `query`")
 		reqType = opQuery
 	}
-	log.Debugf("request type: %s", reqType)
+	logger.Debugf("request type: %s", reqType)
 
-	params, err := getParameters(ctx)
+	params, err := getParameters(ctx, input)
 	if err != nil {
-		ctx.SetOutput(ovCode, 400)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("invalid parameters: %+v", err))
-		return false, err
+		output := &Output{Code: 400, Message: "invalid parameters"}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
-	transientMap := getTransient(ctx)
+	transientMap := getTransient(input.Transient)
 
-	client, err := getFabricClient(ctx)
+	client, err := getFabricClient(input)
 	if err != nil {
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("fabric connector failure: %+v", err))
-		return false, err
+		output := &Output{Code: 500, Message: "fabric connector failure"}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
 	// invoke fabric transaction
 	var response []byte
 	if reqType == opInvoke {
-		log.Debugf("execute chaincode %s transaction %s", ccID, txName)
-		response, err = client.ExecuteChaincode(ccID, txName, params, transientMap)
+		logger.Debugf("execute chaincode %s transaction %s", input.ChaincodeID, input.TransactionName)
+		response, err = client.ExecuteChaincode(input.ChaincodeID, input.TransactionName, params, transientMap)
 	} else {
-		log.Debugf("query chaincode %s transaction %s", ccID, txName)
-		response, err = client.QueryChaincode(ccID, txName, params, transientMap)
+		logger.Debugf("query chaincode %s transaction %s", input.ChaincodeID, input.TransactionName)
+		response, err = client.QueryChaincode(input.ChaincodeID, input.TransactionName, params, transientMap)
 	}
 
 	if err != nil {
-		log.Errorf("Fabric returned error %+v", err)
-		ctx.SetOutput(ovCode, 500)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("Fabric request returned error: %+v", err))
-		return false, errors.Wrapf(err, "Fabric request returned error")
+		logger.Errorf("Fabric returned error %+v", err)
+		output := &Output{Code: 500, Message: "Fabric request returned error"}
+		ctx.SetOutputObject(output)
+		return false, errors.Wrapf(err, output.Message)
 	}
 
 	if response == nil {
-		log.Debugf("no data returned from fabric")
-		ctx.SetOutput(ovCode, 300)
-		ctx.SetOutput(ovMessage, "no data returned from fabric")
+		logger.Debugf("no data returned from fabric")
+		output := &Output{Code: 300, Message: "no data returned from fabric"}
+		ctx.SetOutputObject(output)
 		return true, nil
 	}
-	log.Debugf("Fabric response: %s\n", string(response))
+	logger.Debugf("Fabric response: %s\n", string(response))
 
 	var value interface{}
 	if err := json.Unmarshal(response, &value); err != nil {
-		log.Errorf("failed to unmarshal fabric response %+v, error: %+v", response, err)
-		ctx.SetOutput(ovCode, 300)
-		ctx.SetOutput(ovMessage, fmt.Sprintf("data returned from fabric is not JSON: %v", response))
+		logger.Warnf("failed to unmarshal fabric response %+v, error: %+v", response, err)
+		output := &Output{Code: 200,
+			Message: fmt.Sprintf("data returned from fabric is not JSON: %s", string(response)),
+			Result:  response,
+		}
+		ctx.SetOutputObject(output)
 		return true, nil
 	}
-	if result, ok := ctx.GetOutput(ovResult).(*data.ComplexObject); ok && result != nil {
-		log.Debugf("set activity output result: %+v", value)
-		result.Value = value
-		ctx.SetOutput(ovCode, 200)
-		ctx.SetOutput(ovMessage, string(response))
-		ctx.SetOutput(ovResult, result)
+	output := &Output{Code: 200,
+		Message: string(response),
+		Result:  value,
 	}
+	ctx.SetOutputObject(output)
 	return true, nil
 }
 
-func getFabricClient(ctx activity.Context) (*client.FabricClient, error) {
-	userName, ok := ctx.GetInput(ivUserName).(string)
-	if !ok || userName == "" {
-		log.Error("user name is not specified")
+func getFabricClient(input *Input) (*client.FabricClient, error) {
+	if input.UserName == "" {
+		logger.Error("user name is not specified")
 		return nil, errors.New("user name is not specified")
 	}
-	orgName, ok := ctx.GetInput(ivOrgName).(string)
-	if !ok {
-		log.Info("org name is not specified, use default in network config")
-		orgName = ""
-	}
-	conn := ctx.GetInput(ivConnection)
-	configs, err := client.GetSettings(conn)
+
+	configs, err := client.GetSettings(input.FabricConnector)
 	if err != nil {
 		return nil, err
 	}
@@ -165,28 +154,21 @@ func getFabricClient(ctx activity.Context) (*client.FabricClient, error) {
 		Name:           configs[conName].(string),
 		NetworkConfig:  networkConfig,
 		EntityMatchers: entityMatcher,
-		OrgName:        orgName,
-		UserName:       userName,
+		OrgName:        input.OrgName,
+		UserName:       input.UserName,
 		ChannelID:      configs[conChannel].(string),
 	})
 }
 
-func getTransient(ctx activity.Context) map[string][]byte {
-	// extract transient object
-	transObj, ok := ctx.GetInput(ivTransient).(*data.ComplexObject)
-	if !ok {
-		log.Debug("transient data is not a complex object")
-		return nil
-	}
-	transData, ok := transObj.Value.(map[string]interface{})
-	if !ok {
-		log.Info("transient data is not a JSON object")
+func getTransient(transData map[string]interface{}) map[string][]byte {
+	if transData == nil {
+		logger.Debug("no transient data is specified")
 		return nil
 	}
 	transMap := make(map[string][]byte)
 	for k, v := range transData {
 		if jsonBytes, err := json.Marshal(v); err != nil {
-			log.Infof("failed to marshal transient data %+v", err)
+			logger.Infof("failed to marshal transient data %+v", err)
 		} else {
 			transMap[k] = jsonBytes
 		}
@@ -194,37 +176,39 @@ func getTransient(ctx activity.Context) map[string][]byte {
 	return transMap
 }
 
-func getParameters(ctx activity.Context) ([][]byte, error) {
+func getParameters(ctx activity.Context, input *Input) ([][]byte, error) {
 	var result [][]byte
 	// extract parameter definitions from metadata
-	paramObj, ok := ctx.GetInput(ivParameters).(*data.ComplexObject)
-	if !ok {
-		log.Debug("parameter is not a complex object")
+	if input.Parameters == nil {
+		logger.Debug("no parameter is specified")
 		return result, nil
 	}
-	paramIndex, err := common.OrderedParameters([]byte(paramObj.Metadata))
+
+	schema, err := common.GetActivityInputSchema(ctx, "parameters")
 	if err != nil {
-		log.Errorf("failed to extract parameter definition from metadata: %+v", err)
+		logger.Error("schema not defined for parameters\n")
+		return nil, errors.New("schema not defined for parameters")
+	}
+
+	paramIndex, err := common.OrderedParameters([]byte(schema))
+	if err != nil {
+		logger.Errorf("failed to extract parameter definition from metadata: %+v\n", err)
 		return result, nil
 	}
 	if paramIndex == nil || len(paramIndex) == 0 {
-		log.Debug("no parameter defined in metadata")
+		logger.Debug("no parameter defined in metadata")
 		return result, nil
 	}
 
 	// extract parameter values in the order of parameter index
-	paramValue, ok := paramObj.Value.(map[string]interface{})
-	if !ok {
-		log.Debugf("parameter value of type %T is not a JSON object", paramObj.Value)
-		return result, nil
-	}
+	paramValue := input.Parameters
 	for _, p := range paramIndex {
 		// TODO: assuming string params here to be consistent with implementaton of trigger and chaincode-shim
 		// should change all places to use []byte for best portability
 		param := ""
 		if v, ok := paramValue[p.Name]; ok && v != nil {
 			param = fmt.Sprintf("%v", v)
-			log.Debugf("add chaincode parameter: %s=%s", p.Name, param)
+			logger.Debugf("add chaincode parameter: %s=%s", p.Name, param)
 		}
 		result = append(result, []byte(param))
 	}

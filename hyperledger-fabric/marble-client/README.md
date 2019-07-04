@@ -1,5 +1,5 @@
 # marble-client
-This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-5-0), this app interacts with the Hyperledger Fabric chaincode [`marble-app`](../marble-app) and exposes a set of REST APIs for managing the data on the marble blockchain network.
+This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1), this app interacts with the Hyperledger Fabric chaincode [`marble-app`](../marble-app) and exposes a set of REST APIs for managing the data on the marble blockchain network.
 
 ## Build and start the marble-app fabric network
 First, complete the prerequisites as described in [`marble-app`](../marble-app).
@@ -38,13 +38,6 @@ make build
 make run
 ```
 
-The step for `create` may take a few minutes because it uses `dep` to analyze and fetch Go dependencies, and `dep` is slow.  This issue will be resolved in a future Flogo release when `dep` is replaced by `Go modules`.  Sometimes, `dep` may fail on the first try, in which case, you may manually execute the `dep` one more time, i.e.,
-```
-cd marble_client/src/marble_client
-dep ensure -v -update
-cd ../..
-```
-
 ## Test marble-client app
 This app implements a set of REST APIs:
 - **Create Marble** (PUT): it creates a new marble.
@@ -68,21 +61,21 @@ curl -H 'Content-Type: application/json' -X PUT -d '{"name":"marble4","color":"p
 curl -H 'Content-Type: application/json' -X PUT -d '{"name":"marble5","color":"purple","size":90,"owner":"tom"}' http://localhost:8989/marble/create
 curl -H 'Content-Type: application/json' -X PUT -d '{"name":"marble6","color":"purple","size":100,"owner":"tom"}' http://localhost:8989/marble/create
 curl -X GET http://localhost:8989/marble/key/marble2
-curl -X GET http://localhost:8989/marble/range?startKey=marble1&endKey=marble5
+curl -X GET "http://localhost:8989/marble/range?startKey=marble1&endKey=marble5"
 
 # transfer marble ownership
 curl -H 'Content-Type: application/json' -X PUT -d '{"name":"marble2","newOwner":"jerry"}' http://localhost:8989/marble/transfer
 curl -H 'Content-Type: application/json' -X PUT -d '{"color":"blue","newOwner":"jerry"}' http://localhost:8989/marble/transfercolor
 curl -X GET http://localhost:8989/marble/owner/jerry
-curl -X GET http://localhost:8989/marble/range?startKey=marble1&endKey=marble5
+curl -X GET "http://localhost:8989/marble/range?startKey=marble1&endKey=marble5"
 
 # delete marble state, not history
 curl -X DELETE http://localhost:8989/marble/delete/marble1
 curl -X GET http://localhost:8989/marble/history/marble1
 
 # query pagination using page-size and starting bookmark
-curl -X GET http://localhost:8989/marble/rangepage?startKey=marble1&endKey=marble7&pageSize=3
-curl -X GET http://localhost:8989/marble/rangepage?startKey=marble1&endKey=marble7&pageSize=3&bookmark=marble5
+curl -X GET "http://localhost:8989/marble/rangepage?startKey=marble1&endKey=marble7&pageSize=3"
+curl -X GET "http://localhost:8989/marble/rangepage?startKey=marble1&endKey=marble7&pageSize=3&bookmark=marble5"
 ```
 
 ## Cleanup the marble-app fabric network

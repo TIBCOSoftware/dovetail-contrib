@@ -47,11 +47,11 @@ go get -u github.com/hyperledger/fabric-ca/cmd/...
 ```
 
 ## Edit and build marble-client app
-Use [TIBCO Flogo® Enterprise v2.4](https://docs.tibco.com/products/tibco-flogo-enterprise-2-4-0) to edit the [`marble_client_app.json`](../marble-client/marble_client_app.json):
+Use [TIBCO Flogo® Enterprise v2.6](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) to edit the [`marble_client_app.json`](../marble-client/marble_client_app.json):
 
 * Start Flogo Enterprise
 ```
-cd $FLOGO_HOME/2.4/bin
+cd $FLOGO_HOME/2.6/bin
 ./run-studio.sh
 ```
 * Launch Flogo Console in Chrome at `http://localhost:8090`

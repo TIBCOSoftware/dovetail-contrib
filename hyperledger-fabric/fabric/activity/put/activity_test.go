@@ -1,38 +1,30 @@
 package put
 
 import (
-	"io/ioutil"
 	"testing"
 
-	"github.com/TIBCOSoftware/flogo-contrib/action/flow/test"
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
+	"github.com/project-flogo/core/activity"
+	"github.com/project-flogo/core/data/mapper"
+	"github.com/project-flogo/core/data/resolve"
+	"github.com/project-flogo/core/support/test"
+	"github.com/stretchr/testify/assert"
 )
 
-var activityMetadata *activity.Metadata
+func TestRegister(t *testing.T) {
 
-func getActivityMetadata() *activity.Metadata {
+	ref := activity.GetRef(&Activity{})
+	act := activity.Get(ref)
 
-	if activityMetadata == nil {
-		jsonMetadataBytes, err := ioutil.ReadFile("activity.json")
-		if err != nil {
-			panic("No Json Metadata found for activity.json path")
-		}
-
-		activityMetadata = activity.NewMetadata(string(jsonMetadataBytes))
-	}
-
-	return activityMetadata
+	assert.NotNil(t, act)
 }
 
 func TestCreate(t *testing.T) {
 
-	act := NewActivity(getActivityMetadata())
-
-	if act == nil {
-		t.Error("Activity Not Created")
-		t.Fail()
-		return
-	}
+	mf := mapper.NewFactory(resolve.GetBasicResolver())
+	iCtx := test.NewActivityInitContext(Settings{}, mf)
+	act, err := New(iCtx)
+	assert.Nil(t, err)
+	assert.NotNil(t, act, "activity should not be nil")
 }
 
 func TestEval(t *testing.T) {
@@ -44,11 +36,13 @@ func TestEval(t *testing.T) {
 		}
 	}()
 
-	act := NewActivity(getActivityMetadata())
-	tc := test.NewTestActivityContext(getActivityMetadata())
+	mf := mapper.NewFactory(resolve.GetBasicResolver())
+	iCtx := test.NewActivityInitContext(Settings{}, mf)
+	act, err := New(iCtx)
+	assert.Nil(t, err)
 
-	tc.SetInput(ivKey, "aKey")
-	tc.SetInput(ivIsPrivate, false)
+	tc := test.NewActivityContext(act.Metadata())
+	tc.SetInputObject(&Input{StateKey: "testKey", IsPrivate: false})
 
 	act.Eval(tc)
 

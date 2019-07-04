@@ -1,5 +1,5 @@
 # marble-private-client
-This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-5-0), this app interacts with the Hyperledger Fabric chaincode [`marble-private`](../marble-private) and exposes a set of REST APIs for managing private data collections on the marble blockchain network.
+This is a sample client app for Hyperledger Fabric.  Implemented using the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1), this app interacts with the Hyperledger Fabric chaincode [`marble-private`](../marble-private) and exposes a set of REST APIs for managing private data collections on the marble blockchain network.
 
 ## Build and start the marble-private fabric network
 First, complete the prerequisites as described in [`marble-private`](../marble-private).
@@ -42,13 +42,6 @@ make build
 make run
 ```
 
-The step for `create` may take a few minutes because it uses `dep` to analyze and fetch Go dependencies, and `dep` is slow.  This issue will be resolved in a future Flogo release when `dep` is replaced by `Go modules`.  Sometimes, `dep` may fail on the first try, in which case, you may manually execute the `dep` one more time, i.e.,
-```
-cd marbleprivate_client/src/marbleprivate_client
-dep ensure -v -update
-cd ../..
-```
-
 ## Test marble-private-client app
 This app implements a set of REST APIs:
 - **Create Marble** (PUT): it creates a new marble.
@@ -79,7 +72,7 @@ curl -X GET http://localhost:8989/marbleprivate/price/marble1
 
 # test query and delete
 curl -X GET http://localhost:8989/marbleprivate/owner/jerry
-curl -X GET http://localhost:8989/marbleprivate/range?startKey=marble1&endKey=marble4
+curl -X GET "http://localhost:8989/marbleprivate/range?startKey=marble1&endKey=marble4"
 curl -X DELETE http://localhost:8989/marbleprivate/delete/marble2
 curl -X GET http://localhost:8989/marbleprivate/owner/jerry
 ```

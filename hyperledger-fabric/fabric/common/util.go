@@ -9,8 +9,11 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/project-flogo/core/activity"
+	"github.com/project-flogo/core/data/expression"
+	"github.com/project-flogo/core/data/resolve"
+	"github.com/project-flogo/core/data/schema"
 	jschema "github.com/xeipuuv/gojsonschema"
 )
 
@@ -43,13 +46,25 @@ func SetChaincodeLogLevel(logger *shim.ChaincodeLogger) {
 	}
 }
 
+// GetActivityInputSchema returns schema of an activity input attribute
+func GetActivityInputSchema(ctx activity.Context, name string) (string, error) {
+	if sIO, ok := ctx.(schema.HasSchemaIO); ok {
+		s := sIO.GetInputSchema(name)
+		if s != nil {
+			log.Debugf("schema for attribute '%s': %T, %s\n", name, s, s.Value())
+			return s.Value(), nil
+		}
+	}
+	return "", errors.Errorf("schema not found for attribute %s", name)
+}
+
 // GetChaincodeStub returns Fabric chaincode stub from the activity context
 func GetChaincodeStub(ctx activity.Context) (shim.ChaincodeStubInterface, error) {
 	// get chaincode stub
-	stub, err := ResolveFlowData("$flow."+FabricStub, ctx)
-	if err != nil || stub == nil {
-		log.Errorf("failed to get stub: %+v\n", err)
-		return nil, errors.Wrapf(err, "failed to get stub")
+	stub, ok := ctx.ActivityHost().Scope().GetValue(FabricStub)
+	if !ok {
+		log.Error("failed to retrieve fabric stub")
+		return nil, errors.New("failed to retrieve fabric stub")
 	}
 
 	ccshim, ok := stub.(shim.ChaincodeStubInterface)
@@ -61,12 +76,21 @@ func GetChaincodeStub(ctx activity.Context) (shim.ChaincodeStubInterface, error)
 }
 
 // ResolveFlowData resolves and returns data from the flow's context, unmarshals JSON string to map[string]interface{}.
-// The name to Resolve is a valid output attribute of a flogo activity, e.g., `activity[app_16].value` or `$flow.content`,
-// which is shown in normal flogo mapper as, e.g., "$flow.content"
+// The name to Resolve is a valid output attribute of a flogo activity, e.g., `activity[app_16].value` or `$.content`,
+// which is shown in normal flogo mapper as, e.g., "$.content"
 func ResolveFlowData(toResolve string, context activity.Context) (value interface{}, err error) {
 	actionCtx := context.ActivityHost()
-	log.Debugf("Fabric context data: %+v", actionCtx.WorkingData())
-	actValue, err := actionCtx.GetResolver().Resolve(toResolve, actionCtx.WorkingData())
+	log.Debugf("Resolving flow data %s; context data: %+v", toResolve, actionCtx.Scope())
+	factory := expression.NewFactory(resolve.GetBasicResolver())
+	expr, err := factory.NewExpr(toResolve)
+	if err != nil {
+		log.Errorf("failed to construct resolver expression: %+v", err)
+	}
+	actValue, err := expr.Eval(actionCtx.Scope())
+	if err != nil {
+		log.Errorf("failed to resolve expression %+v", err)
+	}
+	log.Debugf("Resolved value for %s: %T - %+v", toResolve, actValue, actValue)
 	return actValue, err
 }
 

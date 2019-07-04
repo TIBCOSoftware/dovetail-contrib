@@ -1,14 +1,14 @@
 # fabric-contract
-This is a sample smart contract for [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) implemented by a [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-5-0) model.
+This is a sample smart contract for [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) implemented by a [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) model.
 
 ## Prerequisite
-- Download [TIBCO Flogo® Enterprise 2.5](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html)
+- Download [TIBCO Flogo® Enterprise 2.6](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html)
 - [Install Go](https://golang.org/doc/install)
 - Clone [Hyperledger Fabric Samples](https://github.com/hyperledger/fabric-samples)
 - Clone dovetail-contrib with this Flogo extension
 
 ## Edit smart contract
-- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.5.0/doc/pdf/TIB_flogo_2.5_users_guide.pdf?id=1)
+- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.6.1/doc/pdf/TIB_flogo_2.6_users_guide.pdf?id=2)
 - Upload [`fabticExtension.zip`](../fabricExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can recreate this `zip` by using the script [`zip-fabric.sh`](../zip-fabric.sh)
 - Create new Flogo App of name `fabric_contract` and choose `Import app` to import the model [`fabric_contract.json`](fabric_contract.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
@@ -43,4 +43,4 @@ peer chaincode invoke -n flogo_cc -c '{"Args":["put_record","user_txn_1","hello_
 peer chaincode invoke -n flogo_cc -c '{"Args":["put_records","[{\"user_txn_id\":\"trans_1\",\"data\":\"hello_1\"}]"]}' -C myc --transient "{\"secret\": \"$SECRET\"}"
 ```
 
-Note that the above tests did not invoke transactions that use Flogo Enterprise functions, because we did not include those functions in the chaincode build.  To use the Flogo Enterprise functions at runtime, we must make the source code of `$FLOGO_ROOT/2.4/lib/core/src/git.tibco.com` available in github, and then build the chaincode with imports of the funciton packages, e.g., [fe_functions.go](../shim/fe_functions.go).
+Note that the above tests did not invoke transactions that use Flogo Enterprise functions, because we did not include those functions in the chaincode build.  To use the Flogo Enterprise functions at runtime, we must make the source code of `$FLOGO_ROOT/2.6/lib/core/src/git.tibco.com` available in github, and then build the chaincode with imports of the funciton packages, e.g., [fe_functions.go](../shim/fe_functions.go).
