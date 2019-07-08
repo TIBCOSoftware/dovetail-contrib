@@ -1,5 +1,12 @@
 # fabric-tools
-This package is designed to support configuration and deplooyment of dovetail applications in public cloud services, including AWS, Azure, and IBM Cloud.  Since [IBM Blockchain Platform (IBP)](https://cloud.ibm.com/catalog/services/blockchain-platform-20) is currently the only public cloud environment that supports Hyperledger Fabric v1.4, we describe the deployment process for [marble-app](../marble-app) and [marble-client](../marble-client) for IBP only.
+This package is designed to support configuration and deployment of dovetail applications in public cloud services, including AWS, Azure, and IBM Cloud.  Since [IBM Blockchain Platform (IBP)](https://cloud.ibm.com/catalog/services/blockchain-platform-20) is currently the only public cloud environment that supports Hyperledger Fabric v1.4, we describe the deployment process for [marble-app](../marble-app) and [marble-client](../marble-client) for IBP only.
+
+## Build and install fabric-tools
+```
+cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric-tools
+go install
+fabric-tools help
+```
 
 ## Create Hyperledger Fabric network in IBM Cloud
 The [IBP Tutorial](https://github.com/IBM/blockchainbean2) describes how to create a Hyperledger Fabric network in IBM Cloud, which involves the following steps:
@@ -23,18 +30,25 @@ Note that this command requires that you start the local `cli` docker container,
 cd $GOPATH/src/github.com/hyperledger/fabric-samples/first-network
 ./byfn.sh up -s couchdb
 ```
-You can then install and instantiate the resulting package, `marble-app.cds` using the `IBP console` as shown in the [IBP Tutorial (Step 6)](https://github.com/IBM/blockchainbean2#step-6-deploy-blockchainbean2-smart-contract-on-the-network).
+
+If you do not want to start a local fabric sample network, you can use the `fabric-tools` to generate the `cds` file from chaincode source code, e.g., `/tmp/marble_app/marble_cc/src`, as follows.
+```
+mkdir -p $GOPATH/src/github.com/chaincode
+cp -R /tmp/marble_app/marble_cc/src $GOPATH/src/github.com/chaincode/marble_cc
+fabric-tools package -n marble_cc -v 1.0 -p $GOPATH/src/github.com/chaincode/marble_cc
+rm -R $GOPATH/src/github.com/chaincode
+```
+
+You can then install and instantiate the resulting package, `marble_cc.cds` using the `IBP console` as shown in the [IBP Tutorial (Step 6)](https://github.com/IBM/blockchainbean2#step-6-deploy-blockchainbean2-smart-contract-on-the-network).
 
 ## Prepare IBP network for client app
-Download the connection profile of the instantiated `marble-app.cds` as shown in the [IBP Tutorial (Step 7)](https://github.com/IBM/blockchainbean2#step-7-connect-application-to-the-network).  Save the profile in the `scripts` folder, e.g., [scripts/ibpConnection.json](./scripts/ibpConnection.json).
+Download the connection profile of the instantiated `marble_cc.cds` as shown in the [IBP Tutorial (Step 7)](https://github.com/IBM/blockchainbean2#step-7-connect-application-to-the-network).  Save the profile in the `scripts` folder, e.g., [scripts/ibpConnection.json](./scripts/ibpConnection.json).
 
 In IBP Console, register a user with type of `client` in `Org1 CA` as shown in the [IBP Tutorial (Step 5)](https://github.com/IBM/blockchainbean2#use-your-ca-to-register-identities).  This user, e.g., `user1`, will be used by the [marble-client](../marble-client) to invoke the chaincode.
 
 Execute the following script to create the network config and user crypto data for the client app:
 ```
-cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric-tools
-go install
-cd scripts
+cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric-tools/scripts
 ./setup-ibp.sh ibpConnection.json user1 user1pw
 ```
 This script uses the connection profile and user and password specified in the above steps, so change them to match the names in your configuration.
