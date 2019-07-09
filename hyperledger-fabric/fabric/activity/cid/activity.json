@@ -1,0 +1,40 @@
+
+{
+    "name": "fabric-cid",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Cid",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "visible": true,
+        "smallIcon": "ic-cid.png",
+        "description": "This activity returns requesting client ID"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/cid",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/cid",
+    "inputs": [
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "cid",
+            "type": "string"
+        },
+        {
+            "name": "mspid",
+            "type": "string"
+        },
+        {
+            "name": "attrs",
+            "type": "object"
+        }
+    ]
+}
