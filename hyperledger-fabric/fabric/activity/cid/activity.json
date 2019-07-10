@@ -33,8 +33,18 @@
             "type": "string"
         },
         {
+            "name": "name",
+            "type": "string"
+        },
+        {
             "name": "attrs",
-            "type": "object"
+            "type": "complex_object",
+            "display": {
+                "name": "Define CID attributes",
+                "description": "Schema definition of the attributes, e.g.,\r\n{\r\n  \"attr1\": \"\",\r\n  \"attr2\": \"\"\r\n}",
+                "type": "texteditor",
+                "syntax": "json"
+            }
         }
     ]
 }

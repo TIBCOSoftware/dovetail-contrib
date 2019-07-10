@@ -18,6 +18,7 @@ type Output struct {
 	Message string            `md:"message" json:"message,omitempty"`
 	Cid     string            `md:"cid" json:"cid"`
 	Mspid   string            `md:"mspid" json:"mspid"`
+	Name    string            `md:"name" json:"name"`
 	Attrs   map[string]string `md:"attrs" json:"attrs"`
 }
 
@@ -28,6 +29,7 @@ func (o *Output) ToMap() map[string]interface{} {
 		"message": o.Message,
 		"cid":     o.Cid,
 		"mspid":   o.Mspid,
+		"name":    o.Name,
 		"attrs":   o.Attrs,
 	}
 }
@@ -46,6 +48,9 @@ func (o *Output) FromMap(values map[string]interface{}) error {
 		return err
 	}
 	if o.Mspid, err = coerce.ToString(values["mspid"]); err != nil {
+		return err
+	}
+	if o.Name, err = coerce.ToString(values["name"]); err != nil {
 		return err
 	}
 	if o.Attrs, err = coerce.ToParams(values["attrs"]); err != nil {
