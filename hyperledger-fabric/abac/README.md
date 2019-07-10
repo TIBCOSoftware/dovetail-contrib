@@ -86,7 +86,7 @@ cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/abac
 ```
 
 ## Build and start the Flogo app to test ABAC
-Build and start the fabric client app using pre-created the model file [`abac_lient.json`](abac_client.json):
+Build and start the fabric client app using the pre-created model file [`abac_lient.json`](abac_client.json):
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/abac
 make create-client
