@@ -88,7 +88,7 @@ func retrieveCid(ctx activity.Context, ccshim shim.ChaincodeStubInterface) (bool
 	name := cert.Subject.CommonName
 	log.Debug("client subject cn:", name)
 
-	schema, err := common.GetActivityInputSchema(ctx, "attrs")
+	schema, err := common.GetActivityOutputSchema(ctx, "attrs")
 	if err != nil {
 		log.Error("schema not defined for CID attributes\n")
 		output := &Output{Code: 400, Message: "schema not defined for CID attributes"}
