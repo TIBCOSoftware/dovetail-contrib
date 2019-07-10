@@ -34,7 +34,7 @@ peer chaincode instantiate $ORDERER_ARGS -C mychannel -n marble_private_cc -v 1.
 ```
 
 ## Build and start the marble-private-client app
-Create, build and start the marble-private-client app from the model file [`marble_private_lient.json`](marble_private_client.json):
+Create, build and start the marble-private-client app from the model file [`marble_private_client.json`](marble_private_client.json):
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/marble-private-client
 make create
