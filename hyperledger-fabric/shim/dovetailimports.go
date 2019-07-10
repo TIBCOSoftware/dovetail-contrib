@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/cid"
 	_ "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/delete"
 	_ "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/endorsement"
 	_ "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get"

@@ -58,6 +58,18 @@ func GetActivityInputSchema(ctx activity.Context, name string) (string, error) {
 	return "", errors.Errorf("schema not found for attribute %s", name)
 }
 
+// GetActivityOutputSchema returns schema of an activity output attribute
+func GetActivityOutputSchema(ctx activity.Context, name string) (string, error) {
+	if sIO, ok := ctx.(schema.HasSchemaIO); ok {
+		s := sIO.GetOutputSchema(name)
+		if s != nil {
+			log.Debugf("schema for attribute '%s': %T, %s\n", name, s, s.Value())
+			return s.Value(), nil
+		}
+	}
+	return "", errors.Errorf("schema not found for attribute %s", name)
+}
+
 // GetChaincodeStub returns Fabric chaincode stub from the activity context
 func GetChaincodeStub(ctx activity.Context) (shim.ChaincodeStubInterface, error) {
 	// get chaincode stub
