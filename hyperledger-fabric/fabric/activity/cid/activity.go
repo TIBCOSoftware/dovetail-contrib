@@ -102,9 +102,9 @@ func retrieveCid(ctx activity.Context, ccshim shim.ChaincodeStubInterface) (bool
 		if err != nil {
 			log.Errorf("failed to retrieve attribute %s: %+v\n", k, err)
 		} else if !ok {
-			log.Infof("attribute %s is not found", k)
+			log.Debugf("attribute %s is not found", k)
 		} else {
-			log.Infof("found attribute %s = %s", k, v)
+			log.Debugf("found attribute %s = %s", k, v)
 			attrs[k] = v
 		}
 	}
