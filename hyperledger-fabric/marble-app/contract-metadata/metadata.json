@@ -7,30 +7,67 @@
     "contracts": {
         "marble_app": {
             "name": "marble_app",
-            "transactions": [{
+            "transactions": [
+                {
                     "name": "initMarble",
                     "description": "create a new marble, store into chaincode state",
                     "operation": "invoke",
                     "parameters": {
-                        "$ref": "#/components/schemas/Marble"
+                        "$ref": "#/components/schemas/marble_app_0"
                     },
                     "returns": {
-                        "$ref": "#/components/schemas/Marble"
+                        "$ref": "#/components/schemas/marble_app_0"
                     }
                 },
                 {
                     "name": "readMarble",
                     "description": "read a marble from chancode state",
+                    "operation": "query",
                     "parameters": {
                         "type": "object",
-                        "properites": {
+                        "properties": {
                             "name": {
                                 "type": "string"
                             }
                         }
                     },
                     "returns": {
-                        "$ref": "#/components/schemas/Marble"
+                        "$ref": "#/components/schemas/marble_app_0"
+                    }
+                },
+                {
+                    "name": "delete",
+                    "description": "remove a marble key/value pair from chaincode state",
+                    "operation": "invoke",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_app_0"
+                    }
+                },
+                {
+                    "name": "transferMarble",
+                    "description": "transfer a marble to a new owner",
+                    "operation": "invoke",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "newOwner": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_app_0"
                     }
                 },
                 {
@@ -49,7 +86,152 @@
                         }
                     },
                     "returns": {
-                        "$ref": "#/components/schemas/MarbleList"
+                        "$ref": "#/components/schemas/marble_app_array0"
+                    }
+                },
+                {
+                    "name": "transferMarblesBasedOnColor",
+                    "description": "transfer marbles of a given color to a new owner",
+                    "operation": "invoke",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "color": {
+                                "type": "string"
+                            },
+                            "newOwner": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_app_array0"
+                    }
+                },
+                {
+                    "name": "queryMarblesByOwner",
+                    "description": "queries for marbles based on a specified owner",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "owner": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_app_array0"
+                    }
+                },
+                {
+                    "name": "queryMarbles",
+                    "description": "uses a query string to perform a query for marbles",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_app_array0"
+                    }
+                },
+                {
+                    "name": "getMarblesByRangeWithPagination",
+                    "description": "performs a range query based on the start and end key, page size, and a bookmark",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "startKey": {
+                                "type": "string"
+                            },
+                            "endKey": {
+                                "type": "string"
+                            },
+                            "pageSize": {
+                                "type": "number"
+                            },
+                            "bookmark": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_app_1"
+                    }
+                },
+                {
+                    "name": "queryMarblesWithPagination",
+                    "description": "uses a query string, page size and a bookmark too perform a query for marbles",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string"
+                            },
+                            "pageSize": {
+                                "type": "number"
+                            },
+                            "bookmark": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_app_1"
+                    }
+                },
+                {
+                    "name": "getHistoryForMarble",
+                    "description": "retrieve history of a specified marble",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "txID": {
+                                    "type": "string"
+                                },
+                                "txTime": {
+                                    "type": "string"
+                                },
+                                "isDeleted": {
+                                    "type": "boolean"
+                                },
+                                "value": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "color": {
+                                            "type": "string"
+                                        },
+                                        "size": {
+                                            "type": "number"
+                                        },
+                                        "owner": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             ]
@@ -57,8 +239,8 @@
     },
     "components": {
         "schemas": {
-            "Marble": {
-                "$id": "Marble",
+            "marble_app_0": {
+                "$id": "marble_app_0",
                 "type": "object",
                 "properties": {
                     "name": {
@@ -75,8 +257,48 @@
                     }
                 }
             },
-            "MarbleList": {
-                "$id": "MarbleList",
+            "marble_app_1": {
+                "$id": "marble_app_1",
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number"
+                    },
+                    "bookmark": {
+                        "type": "string"
+                    },
+                    "marbles": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "color": {
+                                            "type": "string"
+                                        },
+                                        "size": {
+                                            "type": "number"
+                                        },
+                                        "owner": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "marble_app_array0": {
+                "$id": "marble_app_array0",
                 "type": "array",
                 "items": {
                     "type": "object",
@@ -85,7 +307,21 @@
                             "type": "string"
                         },
                         "value": {
-                            "$ref": "#/components/schemas/Marble"
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "color": {
+                                    "type": "string"
+                                },
+                                "size": {
+                                    "type": "number"
+                                },
+                                "owner": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 }

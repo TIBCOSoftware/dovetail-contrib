@@ -68,6 +68,12 @@ func generateMetadata(appfile, outpath string) error {
 		return err
 	}
 
+	// collect flow activity info
+	activityData, err := collectFlowActivities(appconfig)
+	if err != nil {
+		return err
+	}
+
 	// extract contract info from flogo app config
 	var contractData struct {
 		Name     string `json:"name"`
@@ -84,7 +90,7 @@ func generateMetadata(appfile, outpath string) error {
 		} `json:"triggers"`
 	}
 	if err := json.Unmarshal(appconfig, &contractData); err != nil {
-		return errors.Wrapf(err, "failed to extract data from flogo config file %s", appfile)
+		return errors.Wrapf(err, "failed to extract contract data from flogo config file %s", appfile)
 	}
 
 	// construct output metadata
@@ -104,8 +110,11 @@ func generateMetadata(appfile, outpath string) error {
 				txn := extractTransactionSchema(handler.Schemas)
 				txn.Name = handler.Settings.Name
 				txn.Description = handler.Description
-				// TODO: determine if it is invoke or query
-				txn.Operation = "invoke"
+				if readOnly, ok := activityData[txn.Name]; ok && readOnly {
+					txn.Operation = "query"
+				} else {
+					txn.Operation = "invoke"
+				}
 				contract.Transactions = append(contract.Transactions, &txn)
 			}
 			break
@@ -243,4 +252,38 @@ func objectPropertyCount(schema []byte) (int, error) {
 		return -1, errors.Wrapf(err, "failed to unmarshal object properties: %s", string(schema))
 	}
 	return len(props), nil
+}
+
+// determine if a transaction is read-only
+func collectFlowActivities(appconfig []byte) (map[string]bool, error) {
+	var flowData struct {
+		Resources []struct {
+			Data struct {
+				Name  string `json:"name"`
+				Tasks []struct {
+					Name     string `json:"name"`
+					Activity struct {
+						Ref string `json:"ref"`
+					} `json:"activity"`
+				} `json:"tasks"`
+			} `json:"data"`
+		} `json:"resources"`
+	}
+	if err := json.Unmarshal(appconfig, &flowData); err != nil {
+		return nil, errors.Wrap(err, "failed to extract activity data from flogo config")
+	}
+	result := make(map[string]bool)
+	for _, resource := range flowData.Resources {
+		name := resource.Data.Name
+		readOnly := true
+		for _, task := range resource.Data.Tasks {
+			ref := task.Activity.Ref
+			if ref == "#put" || ref == "#putall" || ref == "#delete" {
+				readOnly = false
+				break
+			}
+		}
+		result[name] = readOnly
+	}
+	return result, nil
 }
