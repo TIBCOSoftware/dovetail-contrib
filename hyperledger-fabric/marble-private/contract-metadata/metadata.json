@@ -1,0 +1,124 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "info": {
+        "title": "marble_private",
+        "version": "1.1.0"
+    },
+    "contracts": {
+        "marble_private": {
+            "name": "marble_private",
+            "transactions": [{
+                    "name": "initMarble",
+                    "description": "create a new marble, store into chaincode state",
+                    "operation": "invoke",
+                    "transient": {
+                        "type": "object",
+                        "properties": {
+                            "marble": {
+                                "$ref": "#/components/schemas/MarbleDetail"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/Marble"
+                    }
+                },
+                {
+                    "name": "readMarble",
+                    "description": "retrieve a marble state",
+                    "parameters": {
+                        "type": "object",
+                        "properites": {
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/Marble"
+                    }
+                },
+                {
+                    "name": "getMarblesByRange",
+                    "description": "performs a range query based on the start and end keys provided",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "startKey": {
+                                "type": "string"
+                            },
+                            "endKey": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/MarbleList"
+                    }
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "MarbleDetail": {
+                "$id": "MarbleDetail",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "number"
+                    },
+                    "owner": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Marble": {
+                "$id": "Marble",
+                "type": "object",
+                "properties": {
+                    "docType": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "number"
+                    },
+                    "owner": {
+                        "type": "string"
+                    }
+                }
+            },
+            "MarbleList": {
+                "$id": "MarbleList",
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "$ref": "#/components/schemas/Marble"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

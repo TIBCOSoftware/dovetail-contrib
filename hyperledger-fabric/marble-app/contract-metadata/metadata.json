@@ -1,0 +1,95 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "info": {
+        "title": "marble_app",
+        "version": "1.1.0"
+    },
+    "contracts": {
+        "marble_app": {
+            "name": "marble_app",
+            "transactions": [{
+                    "name": "initMarble",
+                    "description": "create a new marble, store into chaincode state",
+                    "operation": "invoke",
+                    "parameters": {
+                        "$ref": "#/components/schemas/Marble"
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/Marble"
+                    }
+                },
+                {
+                    "name": "readMarble",
+                    "description": "read a marble from chancode state",
+                    "parameters": {
+                        "type": "object",
+                        "properites": {
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/Marble"
+                    }
+                },
+                {
+                    "name": "getMarblesByRange",
+                    "description": "performs a range query based on the start and end keys provided",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "startKey": {
+                                "type": "string"
+                            },
+                            "endKey": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/MarbleList"
+                    }
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "Marble": {
+                "$id": "Marble",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "number"
+                    },
+                    "owner": {
+                        "type": "string"
+                    }
+                }
+            },
+            "MarbleList": {
+                "$id": "MarbleList",
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "$ref": "#/components/schemas/Marble"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
