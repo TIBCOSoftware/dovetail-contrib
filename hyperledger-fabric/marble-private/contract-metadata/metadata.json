@@ -7,7 +7,8 @@
     "contracts": {
         "marble_private": {
             "name": "marble_private",
-            "transactions": [{
+            "transactions": [
+                {
                     "name": "initMarble",
                     "description": "create a new marble, store into chaincode state",
                     "operation": "invoke",
@@ -15,27 +16,117 @@
                         "type": "object",
                         "properties": {
                             "marble": {
-                                "$ref": "#/components/schemas/MarbleDetail"
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "type": "string"
+                                    },
+                                    "size": {
+                                        "type": "number"
+                                    },
+                                    "owner": {
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "type": "number"
+                                    }
+                                }
                             }
                         }
                     },
                     "returns": {
-                        "$ref": "#/components/schemas/Marble"
+                        "$ref": "#/components/schemas/marble_private_0"
                     }
                 },
                 {
                     "name": "readMarble",
                     "description": "retrieve a marble state",
+                    "operation": "query",
                     "parameters": {
                         "type": "object",
-                        "properites": {
+                        "properties": {
                             "name": {
                                 "type": "string"
                             }
                         }
                     },
                     "returns": {
-                        "$ref": "#/components/schemas/Marble"
+                        "$ref": "#/components/schemas/marble_private_0"
+                    }
+                },
+                {
+                    "name": "readMarblePrivateDetails",
+                    "description": "read a marble private details from chaincode state",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "type": "object",
+                        "properties": {
+                            "docType": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "price": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "delete",
+                    "description": "remove a marble key/value pair from state",
+                    "operation": "invoke",
+                    "transient": {
+                        "type": "object",
+                        "properties": {
+                            "marble_delete": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_private_0"
+                    }
+                },
+                {
+                    "name": "transferMarble",
+                    "description": "transfer a marble by setting a new owner name on the marble",
+                    "operation": "invoke",
+                    "transient": {
+                        "type": "object",
+                        "properties": {
+                            "marble_owner": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "owner": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_private_0"
                     }
                 },
                 {
@@ -54,7 +145,23 @@
                         }
                     },
                     "returns": {
-                        "$ref": "#/components/schemas/MarbleList"
+                        "$ref": "#/components/schemas/marble_private_array0"
+                    }
+                },
+                {
+                    "name": "queryMarblesByOwner",
+                    "description": "queries for marbles based on a passed-in owner",
+                    "operation": "query",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "owner": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/marble_private_array0"
                     }
                 }
             ]
@@ -62,29 +169,8 @@
     },
     "components": {
         "schemas": {
-            "MarbleDetail": {
-                "$id": "MarbleDetail",
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "color": {
-                        "type": "string"
-                    },
-                    "size": {
-                        "type": "number"
-                    },
-                    "owner": {
-                        "type": "string"
-                    },
-                    "price": {
-                        "type": "number"
-                    }
-                }
-            },
-            "Marble": {
-                "$id": "Marble",
+            "marble_private_0": {
+                "$id": "marble_private_0",
                 "type": "object",
                 "properties": {
                     "docType": {
@@ -104,8 +190,8 @@
                     }
                 }
             },
-            "MarbleList": {
-                "$id": "MarbleList",
+            "marble_private_array0": {
+                "$id": "marble_private_array0",
                 "type": "array",
                 "items": {
                     "type": "object",
@@ -114,7 +200,24 @@
                             "type": "string"
                         },
                         "value": {
-                            "$ref": "#/components/schemas/Marble"
+                            "type": "object",
+                            "properties": {
+                                "docType": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "color": {
+                                    "type": "string"
+                                },
+                                "size": {
+                                    "type": "number"
+                                },
+                                "owner": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 }
