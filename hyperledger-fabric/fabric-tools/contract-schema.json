@@ -1,0 +1,117 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://tibcosoftware.github.io/dovetail/schemas/contract-schema.json",
+    "type": "object",
+    "title": "Dovetail smart contract metadata JSON Schema",
+    "required": [
+        "info",
+        "contracts"
+    ],
+    "properties": {
+        "info": {
+            "$ref": "#/definitions/info"
+        },
+        "contracts": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": {
+                    "$ref": "#/definitions/contract"
+                }
+            }
+        },
+        "components": {
+            "$ref": "#/definitions/components"
+        }
+    },
+    "definitions": {
+        "info": {
+            "type": "object",
+            "description": "General information about the API.",
+            "required": [
+                "version",
+                "title"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "A unique and precise title of the API."
+                },
+                "version": {
+                    "type": "string",
+                    "description": "A semantic version number of the API."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "A longer description of the API. Should be different from the title.  GitHub Flavored Markdown is allowed."
+                }
+            }
+        },
+        "contract": {
+            "type": "object",
+            "description": "A smart contract interface definition",
+            "required": [
+                "name",
+                "transactions"
+            ],
+            "properties": {
+                "info": {
+                    "$ref": "#/definitions/info"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "A unique and precise title of the API."
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/transaction"
+                    }
+                }
+            }
+        },
+        "transaction": {
+            "type": "object",
+            "description": "single transaction specification",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "name of the transaction"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "longer description of the transaction"
+                },
+                "operation": {
+                    "type": "string",
+                    "description": "execution type: query=readonly, invoke=readwrite",
+                    "enum": ["invoke", "query"]
+                },
+                "parameters": {
+                    "$ref": "http://json-schema.org/draft-07/schema#"
+                },
+                "transient": {
+                    "$ref": "http://json-schema.org/draft-07/schema#"
+                },
+                "returns": {
+                    "$ref": "http://json-schema.org/draft-07/schema#"
+                }
+            }
+        },
+        "components": {
+            "type": "object",
+            "properties": {
+                "schemas": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^.*$": {
+                            "$ref": "http://json-schema.org/draft-07/schema#"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
