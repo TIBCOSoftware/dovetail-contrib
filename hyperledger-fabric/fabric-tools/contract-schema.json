@@ -5,19 +5,14 @@
     "title": "Dovetail smart contract metadata JSON Schema",
     "required": [
         "info",
-        "contracts"
+        "contract"
     ],
     "properties": {
         "info": {
             "$ref": "#/definitions/info"
         },
-        "contracts": {
-            "type": "object",
-            "patternProperties": {
-                "^.*$": {
-                    "$ref": "#/definitions/contract"
-                }
-            }
+        "contract": {
+            "$ref": "#/definitions/contract"
         },
         "components": {
             "$ref": "#/definitions/components"
@@ -54,17 +49,16 @@
                 "transactions"
             ],
             "properties": {
-                "info": {
-                    "$ref": "#/definitions/info"
-                },
                 "name": {
                     "type": "string",
                     "description": "A unique and precise title of the API."
                 },
                 "transactions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/transaction"
+                    "type": "object",
+                    "patternProperties": {
+                        "^.*$": {
+                            "$ref": "#/definitions/transaction"
+                        }
                     }
                 }
             }
@@ -102,14 +96,9 @@
         },
         "components": {
             "type": "object",
-            "properties": {
-                "schemas": {
-                    "type": "object",
-                    "patternProperties": {
-                        "^.*$": {
-                            "$ref": "http://json-schema.org/draft-07/schema#"
-                        }
-                    }
+            "patternProperties": {
+                "^.*$": {
+                    "$ref": "http://json-schema.org/draft-07/schema#"
                 }
             }
         }

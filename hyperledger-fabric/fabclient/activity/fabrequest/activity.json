@@ -28,6 +28,19 @@
             "allowed": []
         },
         {
+            "name": "transactionName",
+            "required": true,
+            "type": "string",
+            "display": {
+                "name": "Transaction Name",
+                "description": "Select name of the transaction",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": true
+            },
+            "allowed": []
+        },
+        {
             "name": "requestType",
             "required": true,
             "type": "string",
@@ -35,10 +48,10 @@
                 "name": "Request Type",
                 "description": "Select type of Fabric request",
                 "type": "dropdown",
-                "selection": "single"
+                "selection": "single",
+                "readonly": true
             },
-            "allowed": ["invoke", "query"],
-            "value": "invoke"
+            "allowed": ["invoke", "query"]
         },
         {
             "name": "orgName",
@@ -51,11 +64,6 @@
         },
         {
             "name": "chaincodeID",
-            "required": true,
-            "type": "string"
-        },
-        {
-            "name": "transactionName",
             "required": true,
             "type": "string"
         },
