@@ -1,4 +1,3 @@
-
 {
     "name": "fabclient-connector",
     "version": "1.0.0",
@@ -67,6 +66,18 @@
             "display": {
                 "name": "Channel ID",
                 "description": "Channel ID",
+                "visible": true
+            }
+        },
+        {
+            "name": "contract",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Smart contract metadata file",
+                "description": "Select the smart contract file for the client",
+                "type": "fileselector",
+                "fileExtensions": [".json"],
                 "visible": true
             }
         }

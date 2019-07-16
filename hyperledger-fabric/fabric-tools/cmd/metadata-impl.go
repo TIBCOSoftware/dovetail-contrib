@@ -13,6 +13,9 @@ import (
 	"github.com/pkg/errors"
 )
 
+// TODO: change this to http://tibcosoftware.github.io/dovetail/schemas/contract-schema.json
+const metaSchema = "http://json-schema.org/draft-07/schema#"
+
 // Transaction describes data schemas in metadata of a transaction
 type Transaction struct {
 	Name        string          `json:"name,omitempty"`
@@ -33,8 +36,8 @@ type SchemaValue struct {
 
 // Contract describes json schema of a contract
 type Contract struct {
-	Name         string         `json:"name"`
-	Transactions []*Transaction `json:"transactions"`
+	Name         string                  `json:"name"`
+	Transactions map[string]*Transaction `json:"transactions"`
 }
 
 // Info describes metadata info
@@ -45,12 +48,10 @@ type Info struct {
 
 // Metadata describes smart contracts of an app
 type Metadata struct {
-	Schema     string               `json:"$schema"`
-	Info       Info                 `json:"info"`
-	Contracts  map[string]*Contract `json:"contracts"`
-	Components struct {
-		Schemas map[string]SchemaValue `json:"schemas,omitempty"`
-	} `json:"components,omitempty"`
+	Schema     string                 `json:"$schema"`
+	Info       Info                   `json:"info"`
+	Contract   *Contract              `json:"contract"`
+	Components map[string]SchemaValue `json:"components,omitempty"`
 }
 
 var schemaCache map[string]*SchemaValue
@@ -95,12 +96,10 @@ func generateMetadata(appfile, outpath string) error {
 
 	// construct output metadata
 	metadata := Metadata{
-		Schema:    "http://json-schema.org/draft-04/schema#",
-		Info:      Info{Title: contractData.Name, Version: contractData.Version},
-		Contracts: map[string]*Contract{},
+		Schema:   metaSchema,
+		Info:     Info{Title: contractData.Name, Version: contractData.Version},
+		Contract: &Contract{Name: contractData.Name, Transactions: map[string]*Transaction{}},
 	}
-	contract := Contract{Name: contractData.Name}
-	metadata.Contracts[contract.Name] = &contract
 
 	// select all handlers of the first fabric transaction trigger
 	for _, trig := range contractData.Triggers {
@@ -115,7 +114,7 @@ func generateMetadata(appfile, outpath string) error {
 				} else {
 					txn.Operation = "invoke"
 				}
-				contract.Transactions = append(contract.Transactions, &txn)
+				metadata.Contract.Transactions[txn.Name] = &txn
 			}
 			break
 		}
@@ -124,15 +123,15 @@ func generateMetadata(appfile, outpath string) error {
 	// set unique id for shared schema
 	setSharedSchemaRef(contractData.Name)
 	if len(sharedSchema) > 0 {
-		metadata.Components.Schemas = map[string]SchemaValue{}
+		metadata.Components = map[string]SchemaValue{}
 		for k := range sharedSchema {
 			sv := schemaCache[k]
-			metadata.Components.Schemas[sv.Ref] = *sv
+			metadata.Components[sv.Ref] = *sv
 		}
 	}
 
 	// use shared schema in transacions
-	for _, txn := range contract.Transactions {
+	for _, txn := range metadata.Contract.Transactions {
 		replaceSharedSchema(txn)
 	}
 	metabytes, _ := json.MarshalIndent(metadata, "", "    ")
@@ -157,7 +156,7 @@ func toSharedSchema(schema []byte) []byte {
 	if _, ok := sharedSchema[svkey]; ok {
 		sv := schemaCache[svkey]
 		shared := fmt.Sprintf(`{
-			"$ref": "#/components/schemas/%s"
+			"$ref": "#/components/%s"
 		}`, sv.Ref)
 		return []byte(shared)
 	}

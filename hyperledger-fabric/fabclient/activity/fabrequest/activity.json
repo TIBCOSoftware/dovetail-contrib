@@ -28,6 +28,19 @@
             "allowed": []
         },
         {
+            "name": "transactionName",
+            "required": true,
+            "type": "string",
+            "display": {
+                "name": "Transaction Name",
+                "description": "Select name of the transaction",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": true
+            },
+            "allowed": []
+        },
+        {
             "name": "requestType",
             "required": true,
             "type": "string",
@@ -35,10 +48,10 @@
                 "name": "Request Type",
                 "description": "Select type of Fabric request",
                 "type": "dropdown",
-                "selection": "single"
+                "selection": "single",
+                "readonly": true
             },
-            "allowed": ["invoke", "query"],
-            "value": "invoke"
+            "allowed": ["invoke", "query"]
         },
         {
             "name": "orgName",
@@ -55,11 +68,6 @@
             "type": "string"
         },
         {
-            "name": "transactionName",
-            "required": true,
-            "type": "string"
-        },
-        {
             "name": "parameters",
             "type": "complex_object",
             "display": {
@@ -68,7 +76,7 @@
                 "type": "texteditor",
                 "syntax": "json",
                 "mappable": true,
-                "visible": true
+                "readonly": false
             }
         },
         {
@@ -80,7 +88,7 @@
                 "type": "texteditor",
                 "syntax": "json",
                 "mappable": true,
-                "visible": true
+                "readonly": false
             }
         }
     ],
@@ -100,7 +108,8 @@
                 "name": "Deleted object definition",
                 "description": "Schema definition of the transaction result, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
                 "type": "texteditor",
-                "syntax": "json"
+                "syntax": "json",
+                "readonly": false
             }
         }
     ]
