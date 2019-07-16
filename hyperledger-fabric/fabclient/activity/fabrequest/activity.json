@@ -76,7 +76,7 @@
                 "type": "texteditor",
                 "syntax": "json",
                 "mappable": true,
-                "visible": true
+                "readonly": false
             }
         },
         {
@@ -88,7 +88,7 @@
                 "type": "texteditor",
                 "syntax": "json",
                 "mappable": true,
-                "visible": true
+                "readonly": false
             }
         }
     ],
@@ -108,7 +108,8 @@
                 "name": "Deleted object definition",
                 "description": "Schema definition of the transaction result, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
                 "type": "texteditor",
-                "syntax": "json"
+                "syntax": "json",
+                "readonly": false
             }
         }
     ]

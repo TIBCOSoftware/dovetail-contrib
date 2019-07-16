@@ -58,7 +58,6 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
                             let txn = [""];
                             let con = this.metadata["contract"]
                             Object.keys(con["transactions"]).forEach( (t) => {
-                                console.log(t);
                                 txn.push(t);
                             });
                             observer.next(txn);
@@ -71,8 +70,27 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
             if (txnName && this.metadata) {
                 let con = this.metadata["contract"];
                 let txn = con["transactions"][txnName];
-                console.log("txn: " + txn + " operation: " + txn["operation"]);
                 return txn["operation"];
+            }
+        } else if (fieldName === "parameters" || fieldName === "transient" || fieldName === "result") {
+            let txnName = context.getField("transactionName").value;
+            let connectorId = context.getField("connectionName").value;
+            if (txnName && connectorId) {
+                return Observable.create(observer => {
+                    WiContributionUtils.getConnection(this.http, connectorId).map(data => data)
+                    .subscribe(data => {
+                        this.setMetadata(data)
+                        if (this.metadata) {
+                            let attr = fieldName;
+                            if (fieldName === "result") {
+                                attr = "returns";
+                            }
+                            let schema = this.getDataSchema(txnName, attr)
+//                            console.log("schema of " + fieldName + ": " + schema)
+                            observer.next(schema);
+                        }
+                    });
+                });
             }
         }
         return null;
@@ -91,9 +109,25 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
                     vresult.setError("FABTIC-REQUEST-1000", "Invalid JSON: " + e.toString());
                 }
             }
+            vresult.setReadOnly(true);
             return vresult;
         }
         return null;
+    }
+
+    getDataSchema = (txnName: string, attr: string): string => {
+        let con = this.metadata["contract"];
+        let txn = con["transactions"][txnName];
+        let schema = txn[attr];
+        if (!schema) {
+            return null;
+        }
+        let ref = schema["$ref"];
+        if (ref) {
+            let shared = this.metadata["components"][ref.substring(13)];
+            return JSON.stringify(shared, null, 2);
+        }
+        return JSON.stringify(schema, null, 2);;
     }
 
     setMetadata = (connector: any) => {
