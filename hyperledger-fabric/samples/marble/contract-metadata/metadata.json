@@ -20,7 +20,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_0"
+                    "$ref": "#/components/marble_app_1"
                 }
             },
             "getHistoryForMarble": {
@@ -111,7 +111,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_1"
+                    "$ref": "#/components/marble_app_0"
                 }
             },
             "initMarble": {
@@ -119,10 +119,10 @@
                 "description": "create a new marble, store into chaincode state",
                 "operation": "invoke",
                 "parameters": {
-                    "$ref": "#/components/marble_app_0"
+                    "$ref": "#/components/marble_app_1"
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_0"
+                    "$ref": "#/components/marble_app_1"
                 }
             },
             "queryMarbles": {
@@ -176,7 +176,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_1"
+                    "$ref": "#/components/marble_app_0"
                 }
             },
             "readMarble": {
@@ -192,7 +192,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_0"
+                    "$ref": "#/components/marble_app_1"
                 }
             },
             "transferMarble": {
@@ -211,7 +211,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_0"
+                    "$ref": "#/components/marble_app_1"
                 }
             },
             "transferMarblesBasedOnColor": {
@@ -238,24 +238,6 @@
     "components": {
         "marble_app_0": {
             "$id": "marble_app_0",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "color": {
-                    "type": "string"
-                },
-                "size": {
-                    "type": "number"
-                },
-                "owner": {
-                    "type": "string"
-                }
-            }
-        },
-        "marble_app_1": {
-            "$id": "marble_app_1",
             "type": "object",
             "properties": {
                 "count": {
@@ -291,6 +273,24 @@
                             }
                         }
                     }
+                }
+            }
+        },
+        "marble_app_1": {
+            "$id": "marble_app_1",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "number"
+                },
+                "owner": {
+                    "type": "string"
                 }
             }
         },
