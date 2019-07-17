@@ -207,28 +207,22 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "LogMessage2",
+                        "to": "Log",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "Log",
+                        "to": "Return",
                         "type": "expression",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
-                        "id": 3,
-                        "from": "LogMessage2",
-                        "to": "Return",
-                        "type": "default"
-                    },
-                    {
                         "id": 4,
-                        "from": "FabricRequest",
-                        "to": "LogMessage1",
+                        "from": "Log",
+                        "to": "ThrowError",
                         "type": "expression",
                         "value": "$activity[FabricRequest].code != 200"
-                    },
-                    {
-                        "id": 5,
-                        "from": "LogMessage1",
-                        "to": "ThrowError",
-                        "type": "default"
                     }
                 ],
                 "tasks": [
@@ -249,7 +243,6 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "9b9831d0-9dcd-11e9-ad3e-dfb8cac521b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -272,7 +265,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "local-first-network"
+                                            "value": "marble private client"
                                         },
                                         {
                                             "name": "description",
@@ -285,7 +278,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "Fabric sample first-network running on localhost"
+                                            "value": "marble private client using fabric sample first network"
                                         },
                                         {
                                             "name": "config",
@@ -339,6 +332,26 @@
                                                 "valid": true
                                             },
                                             "value": "mychannel"
+                                        },
+                                        {
+                                            "name": "contract",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Smart contract metadata file",
+                                                "description": "Select the smart contract file for the client",
+                                                "type": "fileselector",
+                                                "fileExtensions": [
+                                                    ".json"
+                                                ],
+                                                "visible": true,
+                                                "readonly": false,
+                                                "valid": true
+                                            },
+                                            "value": {
+                                                "filename": "metadata.json",
+                                                "content": "data:application/json;base64,ewogICAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAgICJpbmZvIjogewogICAgICAgICJ0aXRsZSI6ICJtYXJibGVfcHJpdmF0ZSIsCiAgICAgICAgInZlcnNpb24iOiAiMS4xLjAiCiAgICB9LAogICAgImNvbnRyYWN0IjogewogICAgICAgICJuYW1lIjogIm1hcmJsZV9wcml2YXRlIiwKICAgICAgICAidHJhbnNhY3Rpb25zIjogewogICAgICAgICAgICAiZGVsZXRlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiZGVsZXRlIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJyZW1vdmUgYSBtYXJibGUga2V5L3ZhbHVlIHBhaXIgZnJvbSBzdGF0ZSIsCiAgICAgICAgICAgICAgICAib3BlcmF0aW9uIjogImludm9rZSIsCiAgICAgICAgICAgICAgICAidHJhbnNpZW50IjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJtYXJibGVfZGVsZXRlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9LAogICAgICAgICAgICAiZ2V0TWFyYmxlc0J5UmFuZ2UiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJnZXRNYXJibGVzQnlSYW5nZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicGVyZm9ybXMgYSByYW5nZSBxdWVyeSBiYXNlZCBvbiB0aGUgc3RhcnQgYW5kIGVuZCBrZXlzIHByb3ZpZGVkIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgInN0YXJ0S2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAiZW5kS2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJpbml0TWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiaW5pdE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiY3JlYXRlIGEgbmV3IG1hcmJsZSwgc3RvcmUgaW50byBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJpbnZva2UiLAogICAgICAgICAgICAgICAgInRyYW5zaWVudCI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibWFyYmxlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInF1ZXJ5TWFyYmxlc0J5T3duZXIiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJxdWVyeU1hcmJsZXNCeU93bmVyIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJxdWVyaWVzIGZvciBtYXJibGVzIGJhc2VkIG9uIGEgcGFzc2VkLWluIG93bmVyIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJyZWFkTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAicmVhZE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmV0cmlldmUgYSBtYXJibGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyI6IHsKICAgICAgICAgICAgICAgICJuYW1lIjogInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmVhZCBhIG1hcmJsZSBwcml2YXRlIGRldGFpbHMgZnJvbSBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAiZG9jVHlwZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgIm5hbWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInRyYW5zZmVyTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAidHJhbnNmZXJNYXJibGUiLAogICAgICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogInRyYW5zZmVyIGEgbWFyYmxlIGJ5IHNldHRpbmcgYSBuZXcgb3duZXIgbmFtZSBvbiB0aGUgbWFyYmxlIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAiaW52b2tlIiwKICAgICAgICAgICAgICAgICJ0cmFuc2llbnQiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm1hcmJsZV9vd25lciI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfSwKICAgICJjb21wb25lbnRzIjogewogICAgICAgICJtYXJibGVfcHJpdmF0ZV8wIjogewogICAgICAgICAgICAiJGlkIjogIm1hcmJsZV9wcml2YXRlXzAiLAogICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICJkb2NUeXBlIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgImNvbG9yIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAic2l6ZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIm1hcmJsZV9wcml2YXRlX2FycmF5MCI6IHsKICAgICAgICAgICAgIiRpZCI6ICJtYXJibGVfcHJpdmF0ZV9hcnJheTAiLAogICAgICAgICAgICAidHlwZSI6ICJhcnJheSIsCiAgICAgICAgICAgICJpdGVtcyI6IHsKICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAia2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAidmFsdWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgImRvY1R5cGUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"
+                                            }
                                         }
                                     ],
                                     "outputs": [],
@@ -370,19 +383,28 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1562184282782,
+                                    "lastUpdatedTime": 1563376278179,
+                                    "createdTime": 1563376278179,
                                     "user": "flogo",
-                                    "connectorName": "local-first-network",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "209dbf30-a8a5-11e9-8c80-757cccc7efac",
+                                    "connectorName": " ",
                                     "connectorDescription": " "
                                 },
+                                "transactionName": "initMarble",
                                 "requestType": "invoke",
                                 "orgName": "",
                                 "userName": "=$property[\"CLIENT_USER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_PRIVATE_CC\"]",
-                                "transactionName": "initMarble",
                                 "transient": {
                                     "mapping": {
-                                        "marble": "=$flow.content"
+                                        "marble": {
+                                            "name": "=$flow.content.name",
+                                            "color": "=$flow.content.color",
+                                            "size": "=$flow.content.size",
+                                            "owner": "=$flow.content.owner",
+                                            "price": "=$flow.content.price"
+                                        }
                                     }
                                 }
                             },
@@ -390,23 +412,23 @@
                                 "input": {
                                     "transient": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"marble\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"},\"price\":{\"type\":\"number\"}}}}}",
-                                        "fe_metadata": "{\n    \"marble\": {\n        \"name\": \"\",\n        \"color\": \"\",\n        \"size\": 0,\n        \"owner\": \"\",\n        \"price\": 0\n    }\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"marble\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"name\": {\n          \"type\": \"string\"\n        },\n        \"color\": {\n          \"type\": \"string\"\n        },\n        \"size\": {\n          \"type\": \"number\"\n        },\n        \"owner\": {\n          \"type\": \"string\"\n        },\n        \"price\": {\n          \"type\": \"number\"\n        }\n      }\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"marble\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"name\": {\n          \"type\": \"string\"\n        },\n        \"color\": {\n          \"type\": \"string\"\n        },\n        \"size\": {\n          \"type\": \"number\"\n        },\n        \"owner\": {\n          \"type\": \"string\"\n        },\n        \"price\": {\n          \"type\": \"number\"\n        }\n      }\n    }\n  }\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"name\": \"\",\n    \"color\": \"\",\n    \"size\": 0,\n    \"owner\": \"\"\n}"
+                                        "value": "{\n  \"$id\": \"marble_private_0\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"color\": {\n      \"type\": \"string\"\n    },\n    \"size\": {\n      \"type\": \"number\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"$id\": \"marble_private_0\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"color\": {\n      \"type\": \"string\"\n    },\n    \"size\": {\n      \"type\": \"number\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "LogMessage2",
-                        "name": "LogMessage2",
+                        "id": "Log",
+                        "name": "Log",
                         "activity": {
                             "ref": "#log",
                             "input": {
@@ -425,25 +447,10 @@
                                     "returns": {
                                         "mapping": {
                                             "code": "=$activity[FabricRequest].code",
-                                            "data": {
-                                                "name": "=$activity[FabricRequest].result.name",
-                                                "color": "=$activity[FabricRequest].result.color",
-                                                "size": "=$activity[FabricRequest].result.size",
-                                                "owner": "=$activity[FabricRequest].result.owner"
-                                            }
+                                            "data": "=$activity[FabricRequest].result"
                                         }
                                     }
                                 }
-                            }
-                        }
-                    },
-                    {
-                        "id": "LogMessage1",
-                        "name": "LogMessage1",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"Fabric error: \", $activity[FabricRequest].message)"
                             }
                         }
                     },
@@ -495,34 +502,28 @@
                     {
                         "id": 1,
                         "from": "LogMessage3",
-                        "to": "FabricRequest1",
+                        "to": "FabricRequest",
                         "type": "default"
                     },
                     {
                         "id": 2,
-                        "from": "FabricRequest1",
-                        "to": "LogMessage4",
-                        "type": "expression",
-                        "value": "$activity[FabricRequest1].code == 200"
+                        "from": "FabricRequest",
+                        "to": "Log",
+                        "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "LogMessage4",
-                        "to": "Return1",
-                        "type": "default"
+                        "from": "Log",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "FabricRequest1",
-                        "to": "LogMessage5",
+                        "from": "Log",
+                        "to": "ThrowError",
                         "type": "expression",
-                        "value": "$activity[FabricRequest1].code != 200"
-                    },
-                    {
-                        "id": 5,
-                        "from": "LogMessage5",
-                        "to": "ThrowError1",
-                        "type": "default"
+                        "value": "$activity[FabricRequest].code != 200"
                     }
                 ],
                 "tasks": [
@@ -538,13 +539,12 @@
                         }
                     },
                     {
-                        "id": "FabricRequest1",
-                        "name": "FabricRequest1",
+                        "id": "FabricRequest",
+                        "name": "FabricRequest",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "9b9831d0-9dcd-11e9-ad3e-dfb8cac521b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -567,7 +567,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "local-first-network"
+                                            "value": "marble private client"
                                         },
                                         {
                                             "name": "description",
@@ -580,7 +580,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "Fabric sample first-network running on localhost"
+                                            "value": "marble private client using fabric sample first network"
                                         },
                                         {
                                             "name": "config",
@@ -634,6 +634,26 @@
                                                 "valid": true
                                             },
                                             "value": "mychannel"
+                                        },
+                                        {
+                                            "name": "contract",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Smart contract metadata file",
+                                                "description": "Select the smart contract file for the client",
+                                                "type": "fileselector",
+                                                "fileExtensions": [
+                                                    ".json"
+                                                ],
+                                                "visible": true,
+                                                "readonly": false,
+                                                "valid": true
+                                            },
+                                            "value": {
+                                                "filename": "metadata.json",
+                                                "content": "data:application/json;base64,ewogICAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAgICJpbmZvIjogewogICAgICAgICJ0aXRsZSI6ICJtYXJibGVfcHJpdmF0ZSIsCiAgICAgICAgInZlcnNpb24iOiAiMS4xLjAiCiAgICB9LAogICAgImNvbnRyYWN0IjogewogICAgICAgICJuYW1lIjogIm1hcmJsZV9wcml2YXRlIiwKICAgICAgICAidHJhbnNhY3Rpb25zIjogewogICAgICAgICAgICAiZGVsZXRlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiZGVsZXRlIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJyZW1vdmUgYSBtYXJibGUga2V5L3ZhbHVlIHBhaXIgZnJvbSBzdGF0ZSIsCiAgICAgICAgICAgICAgICAib3BlcmF0aW9uIjogImludm9rZSIsCiAgICAgICAgICAgICAgICAidHJhbnNpZW50IjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJtYXJibGVfZGVsZXRlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9LAogICAgICAgICAgICAiZ2V0TWFyYmxlc0J5UmFuZ2UiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJnZXRNYXJibGVzQnlSYW5nZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicGVyZm9ybXMgYSByYW5nZSBxdWVyeSBiYXNlZCBvbiB0aGUgc3RhcnQgYW5kIGVuZCBrZXlzIHByb3ZpZGVkIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgInN0YXJ0S2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAiZW5kS2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJpbml0TWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiaW5pdE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiY3JlYXRlIGEgbmV3IG1hcmJsZSwgc3RvcmUgaW50byBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJpbnZva2UiLAogICAgICAgICAgICAgICAgInRyYW5zaWVudCI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibWFyYmxlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInF1ZXJ5TWFyYmxlc0J5T3duZXIiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJxdWVyeU1hcmJsZXNCeU93bmVyIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJxdWVyaWVzIGZvciBtYXJibGVzIGJhc2VkIG9uIGEgcGFzc2VkLWluIG93bmVyIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJyZWFkTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAicmVhZE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmV0cmlldmUgYSBtYXJibGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyI6IHsKICAgICAgICAgICAgICAgICJuYW1lIjogInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmVhZCBhIG1hcmJsZSBwcml2YXRlIGRldGFpbHMgZnJvbSBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAiZG9jVHlwZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgIm5hbWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInRyYW5zZmVyTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAidHJhbnNmZXJNYXJibGUiLAogICAgICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogInRyYW5zZmVyIGEgbWFyYmxlIGJ5IHNldHRpbmcgYSBuZXcgb3duZXIgbmFtZSBvbiB0aGUgbWFyYmxlIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAiaW52b2tlIiwKICAgICAgICAgICAgICAgICJ0cmFuc2llbnQiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm1hcmJsZV9vd25lciI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfSwKICAgICJjb21wb25lbnRzIjogewogICAgICAgICJtYXJibGVfcHJpdmF0ZV8wIjogewogICAgICAgICAgICAiJGlkIjogIm1hcmJsZV9wcml2YXRlXzAiLAogICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICJkb2NUeXBlIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgImNvbG9yIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAic2l6ZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIm1hcmJsZV9wcml2YXRlX2FycmF5MCI6IHsKICAgICAgICAgICAgIiRpZCI6ICJtYXJibGVfcHJpdmF0ZV9hcnJheTAiLAogICAgICAgICAgICAidHlwZSI6ICJhcnJheSIsCiAgICAgICAgICAgICJpdGVtcyI6IHsKICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAia2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAidmFsdWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgImRvY1R5cGUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"
+                                            }
                                         }
                                     ],
                                     "outputs": [],
@@ -665,16 +685,19 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1562184282782,
+                                    "lastUpdatedTime": 1563376278179,
+                                    "createdTime": 1563376278179,
                                     "user": "flogo",
-                                    "connectorName": "local-first-network",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "209dbf30-a8a5-11e9-8c80-757cccc7efac",
+                                    "connectorName": " ",
                                     "connectorDescription": " "
                                 },
+                                "transactionName": "readMarble",
                                 "requestType": "query",
                                 "orgName": "",
                                 "userName": "=$property[\"CLIENT_USER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_PRIVATE_CC\"]",
-                                "transactionName": "readMarble",
                                 "parameters": {
                                     "mapping": {
                                         "name": "=$flow.name"
@@ -685,42 +708,42 @@
                                 "input": {
                                     "parameters": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"name\": \"\"\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"name\": \"\",\n    \"color\": \"\",\n    \"size\": 0,\n    \"owner\": \"\"\n}"
+                                        "value": "{\n  \"$id\": \"marble_private_0\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"color\": {\n      \"type\": \"string\"\n    },\n    \"size\": {\n      \"type\": \"number\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"$id\": \"marble_private_0\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"color\": {\n      \"type\": \"string\"\n    },\n    \"size\": {\n      \"type\": \"number\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "LogMessage4",
-                        "name": "LogMessage4",
+                        "id": "Log",
+                        "name": "Log",
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest1].message)",
+                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest].message)",
                                 "addDetails": false
                             }
                         }
                     },
                     {
-                        "id": "Return1",
-                        "name": "Return1",
+                        "id": "Return",
+                        "name": "Return",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
                                     "returns": {
                                         "mapping": {
-                                            "code": "=$activity[FabricRequest1].code",
-                                            "data": "=$activity[FabricRequest1].result"
+                                            "code": "=$activity[FabricRequest].code",
+                                            "data": "=$activity[FabricRequest].result"
                                         }
                                     }
                                 }
@@ -728,22 +751,12 @@
                         }
                     },
                     {
-                        "id": "LogMessage5",
-                        "name": "LogMessage5",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"Fabric error: \", $activity[FabricRequest1].message)"
-                            }
-                        }
-                    },
-                    {
-                        "id": "ThrowError1",
-                        "name": "ThrowError1",
+                        "id": "ThrowError",
+                        "name": "ThrowError",
                         "activity": {
                             "ref": "#error",
                             "input": {
-                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest1].message)"
+                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest].message)"
                             }
                         }
                     }
@@ -781,34 +794,28 @@
                     {
                         "id": 1,
                         "from": "LogMessage6",
-                        "to": "FabricRequest2",
+                        "to": "FabricRequest",
                         "type": "default"
                     },
                     {
                         "id": 2,
-                        "from": "FabricRequest2",
-                        "to": "LogMessage7",
-                        "type": "expression",
-                        "value": "$activity[FabricRequest2].code == 200"
+                        "from": "FabricRequest",
+                        "to": "Log",
+                        "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "LogMessage7",
-                        "to": "Return2",
-                        "type": "default"
+                        "from": "Log",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "FabricRequest2",
-                        "to": "LogMessage8",
+                        "from": "Log",
+                        "to": "ThrowError",
                         "type": "expression",
-                        "value": "$activity[FabricRequest2].code != 200"
-                    },
-                    {
-                        "id": 5,
-                        "from": "LogMessage8",
-                        "to": "ThrowError2",
-                        "type": "default"
+                        "value": "$activity[FabricRequest].code != 200"
                     }
                 ],
                 "tasks": [
@@ -824,13 +831,12 @@
                         }
                     },
                     {
-                        "id": "FabricRequest2",
-                        "name": "FabricRequest2",
+                        "id": "FabricRequest",
+                        "name": "FabricRequest",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "9b9831d0-9dcd-11e9-ad3e-dfb8cac521b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -853,7 +859,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "local-first-network"
+                                            "value": "marble private client"
                                         },
                                         {
                                             "name": "description",
@@ -866,7 +872,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "Fabric sample first-network running on localhost"
+                                            "value": "marble private client using fabric sample first network"
                                         },
                                         {
                                             "name": "config",
@@ -920,6 +926,26 @@
                                                 "valid": true
                                             },
                                             "value": "mychannel"
+                                        },
+                                        {
+                                            "name": "contract",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Smart contract metadata file",
+                                                "description": "Select the smart contract file for the client",
+                                                "type": "fileselector",
+                                                "fileExtensions": [
+                                                    ".json"
+                                                ],
+                                                "visible": true,
+                                                "readonly": false,
+                                                "valid": true
+                                            },
+                                            "value": {
+                                                "filename": "metadata.json",
+                                                "content": "data:application/json;base64,ewogICAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAgICJpbmZvIjogewogICAgICAgICJ0aXRsZSI6ICJtYXJibGVfcHJpdmF0ZSIsCiAgICAgICAgInZlcnNpb24iOiAiMS4xLjAiCiAgICB9LAogICAgImNvbnRyYWN0IjogewogICAgICAgICJuYW1lIjogIm1hcmJsZV9wcml2YXRlIiwKICAgICAgICAidHJhbnNhY3Rpb25zIjogewogICAgICAgICAgICAiZGVsZXRlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiZGVsZXRlIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJyZW1vdmUgYSBtYXJibGUga2V5L3ZhbHVlIHBhaXIgZnJvbSBzdGF0ZSIsCiAgICAgICAgICAgICAgICAib3BlcmF0aW9uIjogImludm9rZSIsCiAgICAgICAgICAgICAgICAidHJhbnNpZW50IjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJtYXJibGVfZGVsZXRlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9LAogICAgICAgICAgICAiZ2V0TWFyYmxlc0J5UmFuZ2UiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJnZXRNYXJibGVzQnlSYW5nZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicGVyZm9ybXMgYSByYW5nZSBxdWVyeSBiYXNlZCBvbiB0aGUgc3RhcnQgYW5kIGVuZCBrZXlzIHByb3ZpZGVkIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgInN0YXJ0S2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAiZW5kS2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJpbml0TWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiaW5pdE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiY3JlYXRlIGEgbmV3IG1hcmJsZSwgc3RvcmUgaW50byBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJpbnZva2UiLAogICAgICAgICAgICAgICAgInRyYW5zaWVudCI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibWFyYmxlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInF1ZXJ5TWFyYmxlc0J5T3duZXIiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJxdWVyeU1hcmJsZXNCeU93bmVyIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJxdWVyaWVzIGZvciBtYXJibGVzIGJhc2VkIG9uIGEgcGFzc2VkLWluIG93bmVyIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJyZWFkTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAicmVhZE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmV0cmlldmUgYSBtYXJibGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyI6IHsKICAgICAgICAgICAgICAgICJuYW1lIjogInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmVhZCBhIG1hcmJsZSBwcml2YXRlIGRldGFpbHMgZnJvbSBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAiZG9jVHlwZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgIm5hbWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInRyYW5zZmVyTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAidHJhbnNmZXJNYXJibGUiLAogICAgICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogInRyYW5zZmVyIGEgbWFyYmxlIGJ5IHNldHRpbmcgYSBuZXcgb3duZXIgbmFtZSBvbiB0aGUgbWFyYmxlIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAiaW52b2tlIiwKICAgICAgICAgICAgICAgICJ0cmFuc2llbnQiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm1hcmJsZV9vd25lciI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfSwKICAgICJjb21wb25lbnRzIjogewogICAgICAgICJtYXJibGVfcHJpdmF0ZV8wIjogewogICAgICAgICAgICAiJGlkIjogIm1hcmJsZV9wcml2YXRlXzAiLAogICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICJkb2NUeXBlIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgImNvbG9yIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAic2l6ZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIm1hcmJsZV9wcml2YXRlX2FycmF5MCI6IHsKICAgICAgICAgICAgIiRpZCI6ICJtYXJibGVfcHJpdmF0ZV9hcnJheTAiLAogICAgICAgICAgICAidHlwZSI6ICJhcnJheSIsCiAgICAgICAgICAgICJpdGVtcyI6IHsKICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAia2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAidmFsdWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgImRvY1R5cGUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"
+                                            }
                                         }
                                     ],
                                     "outputs": [],
@@ -951,16 +977,19 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1562184282782,
+                                    "lastUpdatedTime": 1563376278179,
+                                    "createdTime": 1563376278179,
                                     "user": "flogo",
-                                    "connectorName": "local-first-network",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "209dbf30-a8a5-11e9-8c80-757cccc7efac",
+                                    "connectorName": " ",
                                     "connectorDescription": " "
                                 },
+                                "transactionName": "readMarblePrivateDetails",
                                 "requestType": "query",
                                 "orgName": "",
                                 "userName": "=$property[\"CLIENT_USER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_PRIVATE_CC\"]",
-                                "transactionName": "readMarblePrivateDetails",
                                 "parameters": {
                                     "mapping": {
                                         "name": "=$flow.name"
@@ -971,41 +1000,42 @@
                                 "input": {
                                     "parameters": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"name\": \"\"\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"price\":{\"type\":\"number\"}}}",
-                                        "fe_metadata": "{\n    \"name\": \"\",\n    \"price\": 0\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"price\": {\n      \"type\": \"number\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"price\": {\n      \"type\": \"number\"\n    }\n  }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "LogMessage7",
-                        "name": "LogMessage7",
+                        "id": "Log",
+                        "name": "Log",
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest2].message)"
+                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest].message)",
+                                "addDetails": false
                             }
                         }
                     },
                     {
-                        "id": "Return2",
-                        "name": "Return2",
+                        "id": "Return",
+                        "name": "Return",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
                                     "returns": {
                                         "mapping": {
-                                            "code": "=$activity[FabricRequest2].code",
-                                            "data": "=$activity[FabricRequest2].result"
+                                            "code": "=$activity[FabricRequest].code",
+                                            "data": "=$activity[FabricRequest].result"
                                         }
                                     }
                                 }
@@ -1013,22 +1043,12 @@
                         }
                     },
                     {
-                        "id": "LogMessage8",
-                        "name": "LogMessage8",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"Fabric error: \", $activity[FabricRequest2].message)"
-                            }
-                        }
-                    },
-                    {
-                        "id": "ThrowError2",
-                        "name": "ThrowError2",
+                        "id": "ThrowError",
+                        "name": "ThrowError",
                         "activity": {
                             "ref": "#error",
                             "input": {
-                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest2].message)"
+                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest].message)"
                             }
                         }
                     }
@@ -1066,34 +1086,28 @@
                     {
                         "id": 1,
                         "from": "LogMessage9",
-                        "to": "FabricRequest3",
+                        "to": "FabricRequest",
                         "type": "default"
                     },
                     {
                         "id": 2,
-                        "from": "FabricRequest3",
-                        "to": "LogMessage10",
-                        "type": "expression",
-                        "value": "$activity[FabricRequest3].code == 200"
+                        "from": "FabricRequest",
+                        "to": "Log",
+                        "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "LogMessage10",
-                        "to": "Return3",
-                        "type": "default"
+                        "from": "Log",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "FabricRequest3",
-                        "to": "LogMessage11",
+                        "from": "Log",
+                        "to": "ThrowError",
                         "type": "expression",
-                        "value": "$activity[FabricRequest3].code != 200"
-                    },
-                    {
-                        "id": 5,
-                        "from": "LogMessage11",
-                        "to": "ThrowError3",
-                        "type": "default"
+                        "value": "$activity[FabricRequest].code != 200"
                     }
                 ],
                 "tasks": [
@@ -1109,13 +1123,12 @@
                         }
                     },
                     {
-                        "id": "FabricRequest3",
-                        "name": "FabricRequest3",
+                        "id": "FabricRequest",
+                        "name": "FabricRequest",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "9b9831d0-9dcd-11e9-ad3e-dfb8cac521b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1138,7 +1151,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "local-first-network"
+                                            "value": "marble private client"
                                         },
                                         {
                                             "name": "description",
@@ -1151,7 +1164,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "Fabric sample first-network running on localhost"
+                                            "value": "marble private client using fabric sample first network"
                                         },
                                         {
                                             "name": "config",
@@ -1205,6 +1218,26 @@
                                                 "valid": true
                                             },
                                             "value": "mychannel"
+                                        },
+                                        {
+                                            "name": "contract",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Smart contract metadata file",
+                                                "description": "Select the smart contract file for the client",
+                                                "type": "fileselector",
+                                                "fileExtensions": [
+                                                    ".json"
+                                                ],
+                                                "visible": true,
+                                                "readonly": false,
+                                                "valid": true
+                                            },
+                                            "value": {
+                                                "filename": "metadata.json",
+                                                "content": "data:application/json;base64,ewogICAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAgICJpbmZvIjogewogICAgICAgICJ0aXRsZSI6ICJtYXJibGVfcHJpdmF0ZSIsCiAgICAgICAgInZlcnNpb24iOiAiMS4xLjAiCiAgICB9LAogICAgImNvbnRyYWN0IjogewogICAgICAgICJuYW1lIjogIm1hcmJsZV9wcml2YXRlIiwKICAgICAgICAidHJhbnNhY3Rpb25zIjogewogICAgICAgICAgICAiZGVsZXRlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiZGVsZXRlIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJyZW1vdmUgYSBtYXJibGUga2V5L3ZhbHVlIHBhaXIgZnJvbSBzdGF0ZSIsCiAgICAgICAgICAgICAgICAib3BlcmF0aW9uIjogImludm9rZSIsCiAgICAgICAgICAgICAgICAidHJhbnNpZW50IjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJtYXJibGVfZGVsZXRlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9LAogICAgICAgICAgICAiZ2V0TWFyYmxlc0J5UmFuZ2UiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJnZXRNYXJibGVzQnlSYW5nZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicGVyZm9ybXMgYSByYW5nZSBxdWVyeSBiYXNlZCBvbiB0aGUgc3RhcnQgYW5kIGVuZCBrZXlzIHByb3ZpZGVkIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgInN0YXJ0S2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAiZW5kS2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJpbml0TWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiaW5pdE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiY3JlYXRlIGEgbmV3IG1hcmJsZSwgc3RvcmUgaW50byBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJpbnZva2UiLAogICAgICAgICAgICAgICAgInRyYW5zaWVudCI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibWFyYmxlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInF1ZXJ5TWFyYmxlc0J5T3duZXIiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJxdWVyeU1hcmJsZXNCeU93bmVyIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJxdWVyaWVzIGZvciBtYXJibGVzIGJhc2VkIG9uIGEgcGFzc2VkLWluIG93bmVyIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJyZWFkTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAicmVhZE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmV0cmlldmUgYSBtYXJibGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyI6IHsKICAgICAgICAgICAgICAgICJuYW1lIjogInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmVhZCBhIG1hcmJsZSBwcml2YXRlIGRldGFpbHMgZnJvbSBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAiZG9jVHlwZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgIm5hbWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInRyYW5zZmVyTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAidHJhbnNmZXJNYXJibGUiLAogICAgICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogInRyYW5zZmVyIGEgbWFyYmxlIGJ5IHNldHRpbmcgYSBuZXcgb3duZXIgbmFtZSBvbiB0aGUgbWFyYmxlIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAiaW52b2tlIiwKICAgICAgICAgICAgICAgICJ0cmFuc2llbnQiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm1hcmJsZV9vd25lciI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfSwKICAgICJjb21wb25lbnRzIjogewogICAgICAgICJtYXJibGVfcHJpdmF0ZV8wIjogewogICAgICAgICAgICAiJGlkIjogIm1hcmJsZV9wcml2YXRlXzAiLAogICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICJkb2NUeXBlIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgImNvbG9yIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAic2l6ZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIm1hcmJsZV9wcml2YXRlX2FycmF5MCI6IHsKICAgICAgICAgICAgIiRpZCI6ICJtYXJibGVfcHJpdmF0ZV9hcnJheTAiLAogICAgICAgICAgICAidHlwZSI6ICJhcnJheSIsCiAgICAgICAgICAgICJpdGVtcyI6IHsKICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAia2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAidmFsdWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgImRvY1R5cGUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"
+                                            }
                                         }
                                     ],
                                     "outputs": [],
@@ -1236,16 +1269,19 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1562184282782,
+                                    "lastUpdatedTime": 1563376278179,
+                                    "createdTime": 1563376278179,
                                     "user": "flogo",
-                                    "connectorName": "local-first-network",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "209dbf30-a8a5-11e9-8c80-757cccc7efac",
+                                    "connectorName": " ",
                                     "connectorDescription": " "
                                 },
+                                "transactionName": "transferMarble",
                                 "requestType": "invoke",
                                 "orgName": "",
                                 "userName": "=$property[\"CLIENT_USER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_PRIVATE_CC\"]",
-                                "transactionName": "transferMarble",
                                 "transient": {
                                     "mapping": {
                                         "marble_owner": {
@@ -1259,47 +1295,42 @@
                                 "input": {
                                     "transient": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"marble_owner\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}",
-                                        "fe_metadata": "{\n    \"marble_owner\": {\n        \"name\": \"\",\n        \"owner\": \"\"\n    }\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"marble_owner\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"name\": {\n          \"type\": \"string\"\n        },\n        \"owner\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"marble_owner\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"name\": {\n          \"type\": \"string\"\n        },\n        \"owner\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"name\": \"\",\n    \"color\": \"\",\n    \"size\": 0,\n    \"owner\": \"\"\n}"
+                                        "value": "{\n  \"$id\": \"marble_private_0\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"color\": {\n      \"type\": \"string\"\n    },\n    \"size\": {\n      \"type\": \"number\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"$id\": \"marble_private_0\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"color\": {\n      \"type\": \"string\"\n    },\n    \"size\": {\n      \"type\": \"number\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "LogMessage10",
-                        "name": "LogMessage10",
+                        "id": "Log",
+                        "name": "Log",
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest3].message)",
+                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest].message)",
                                 "addDetails": false
                             }
                         }
                     },
                     {
-                        "id": "Return3",
-                        "name": "Return3",
+                        "id": "Return",
+                        "name": "Return",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
                                     "returns": {
                                         "mapping": {
-                                            "code": "=$activity[FabricRequest3].code",
-                                            "data": {
-                                                "name": "=$activity[FabricRequest3].result.name",
-                                                "color": "=$activity[FabricRequest3].result.color",
-                                                "size": "=$activity[FabricRequest3].result.size",
-                                                "owner": "=$activity[FabricRequest3].result.owner"
-                                            }
+                                            "code": "=$activity[FabricRequest].code",
+                                            "data": "=$activity[FabricRequest].result"
                                         }
                                     }
                                 }
@@ -1307,22 +1338,12 @@
                         }
                     },
                     {
-                        "id": "LogMessage11",
-                        "name": "LogMessage11",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"Fabric error: \", $activity[FabricRequest3].message)"
-                            }
-                        }
-                    },
-                    {
-                        "id": "ThrowError3",
-                        "name": "ThrowError3",
+                        "id": "ThrowError",
+                        "name": "ThrowError",
                         "activity": {
                             "ref": "#error",
                             "input": {
-                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest3].message)"
+                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest].message)"
                             }
                         }
                     }
@@ -1364,34 +1385,28 @@
                     {
                         "id": 1,
                         "from": "LogMessage12",
-                        "to": "FabricRequest4",
+                        "to": "FabricRequest",
                         "type": "default"
                     },
                     {
                         "id": 2,
-                        "from": "FabricRequest4",
-                        "to": "LogMessage13",
-                        "type": "expression",
-                        "value": "$activity[FabricRequest4].code == 200"
+                        "from": "FabricRequest",
+                        "to": "Log",
+                        "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "LogMessage13",
-                        "to": "Return4",
-                        "type": "default"
+                        "from": "Log",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "FabricRequest4",
-                        "to": "LogMessage14",
+                        "from": "Log",
+                        "to": "ThrowError",
                         "type": "expression",
-                        "value": "$activity[FabricRequest4].code != 200"
-                    },
-                    {
-                        "id": 5,
-                        "from": "LogMessage14",
-                        "to": "ThrowError4",
-                        "type": "default"
+                        "value": "$activity[FabricRequest].code != 200"
                     }
                 ],
                 "tasks": [
@@ -1407,13 +1422,12 @@
                         }
                     },
                     {
-                        "id": "FabricRequest4",
-                        "name": "FabricRequest4",
+                        "id": "FabricRequest",
+                        "name": "FabricRequest",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "9b9831d0-9dcd-11e9-ad3e-dfb8cac521b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1436,7 +1450,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "local-first-network"
+                                            "value": "marble private client"
                                         },
                                         {
                                             "name": "description",
@@ -1449,7 +1463,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "Fabric sample first-network running on localhost"
+                                            "value": "marble private client using fabric sample first network"
                                         },
                                         {
                                             "name": "config",
@@ -1503,6 +1517,26 @@
                                                 "valid": true
                                             },
                                             "value": "mychannel"
+                                        },
+                                        {
+                                            "name": "contract",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Smart contract metadata file",
+                                                "description": "Select the smart contract file for the client",
+                                                "type": "fileselector",
+                                                "fileExtensions": [
+                                                    ".json"
+                                                ],
+                                                "visible": true,
+                                                "readonly": false,
+                                                "valid": true
+                                            },
+                                            "value": {
+                                                "filename": "metadata.json",
+                                                "content": "data:application/json;base64,ewogICAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAgICJpbmZvIjogewogICAgICAgICJ0aXRsZSI6ICJtYXJibGVfcHJpdmF0ZSIsCiAgICAgICAgInZlcnNpb24iOiAiMS4xLjAiCiAgICB9LAogICAgImNvbnRyYWN0IjogewogICAgICAgICJuYW1lIjogIm1hcmJsZV9wcml2YXRlIiwKICAgICAgICAidHJhbnNhY3Rpb25zIjogewogICAgICAgICAgICAiZGVsZXRlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiZGVsZXRlIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJyZW1vdmUgYSBtYXJibGUga2V5L3ZhbHVlIHBhaXIgZnJvbSBzdGF0ZSIsCiAgICAgICAgICAgICAgICAib3BlcmF0aW9uIjogImludm9rZSIsCiAgICAgICAgICAgICAgICAidHJhbnNpZW50IjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJtYXJibGVfZGVsZXRlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9LAogICAgICAgICAgICAiZ2V0TWFyYmxlc0J5UmFuZ2UiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJnZXRNYXJibGVzQnlSYW5nZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicGVyZm9ybXMgYSByYW5nZSBxdWVyeSBiYXNlZCBvbiB0aGUgc3RhcnQgYW5kIGVuZCBrZXlzIHByb3ZpZGVkIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgInN0YXJ0S2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAiZW5kS2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJpbml0TWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiaW5pdE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiY3JlYXRlIGEgbmV3IG1hcmJsZSwgc3RvcmUgaW50byBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJpbnZva2UiLAogICAgICAgICAgICAgICAgInRyYW5zaWVudCI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibWFyYmxlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInF1ZXJ5TWFyYmxlc0J5T3duZXIiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJxdWVyeU1hcmJsZXNCeU93bmVyIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJxdWVyaWVzIGZvciBtYXJibGVzIGJhc2VkIG9uIGEgcGFzc2VkLWluIG93bmVyIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJyZWFkTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAicmVhZE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmV0cmlldmUgYSBtYXJibGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyI6IHsKICAgICAgICAgICAgICAgICJuYW1lIjogInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmVhZCBhIG1hcmJsZSBwcml2YXRlIGRldGFpbHMgZnJvbSBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAiZG9jVHlwZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgIm5hbWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInRyYW5zZmVyTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAidHJhbnNmZXJNYXJibGUiLAogICAgICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogInRyYW5zZmVyIGEgbWFyYmxlIGJ5IHNldHRpbmcgYSBuZXcgb3duZXIgbmFtZSBvbiB0aGUgbWFyYmxlIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAiaW52b2tlIiwKICAgICAgICAgICAgICAgICJ0cmFuc2llbnQiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm1hcmJsZV9vd25lciI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfSwKICAgICJjb21wb25lbnRzIjogewogICAgICAgICJtYXJibGVfcHJpdmF0ZV8wIjogewogICAgICAgICAgICAiJGlkIjogIm1hcmJsZV9wcml2YXRlXzAiLAogICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICJkb2NUeXBlIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgImNvbG9yIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAic2l6ZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIm1hcmJsZV9wcml2YXRlX2FycmF5MCI6IHsKICAgICAgICAgICAgIiRpZCI6ICJtYXJibGVfcHJpdmF0ZV9hcnJheTAiLAogICAgICAgICAgICAidHlwZSI6ICJhcnJheSIsCiAgICAgICAgICAgICJpdGVtcyI6IHsKICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAia2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAidmFsdWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgImRvY1R5cGUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"
+                                            }
                                         }
                                     ],
                                     "outputs": [],
@@ -1534,16 +1568,19 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1562184282782,
+                                    "lastUpdatedTime": 1563376278179,
+                                    "createdTime": 1563376278179,
                                     "user": "flogo",
-                                    "connectorName": "local-first-network",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "209dbf30-a8a5-11e9-8c80-757cccc7efac",
+                                    "connectorName": " ",
                                     "connectorDescription": " "
                                 },
+                                "transactionName": "getMarblesByRange",
                                 "requestType": "query",
                                 "orgName": "",
                                 "userName": "=$property[\"CLIENT_USER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_PRIVATE_CC\"]",
-                                "transactionName": "getMarblesByRange",
                                 "parameters": {
                                     "mapping": {
                                         "startKey": "=$flow.startKey",
@@ -1555,43 +1592,43 @@
                                 "input": {
                                     "parameters": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"startKey\": \"\",\n    \"endKey\": \"\"\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"startKey\": {\n      \"type\": \"string\"\n    },\n    \"endKey\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"startKey\": {\n      \"type\": \"string\"\n    },\n    \"endKey\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[{\n    \"key\": \"\",\n    \"value\": {\n        \"name\": \"\",\n        \"color\": \"\",\n        \"size\": 0,\n        \"owner\": \"\"\n    }\n}]"
+                                        "value": "{\n  \"$id\": \"marble_private_array0\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"docType\": {\n            \"type\": \"string\"\n          },\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"color\": {\n            \"type\": \"string\"\n          },\n          \"size\": {\n            \"type\": \"number\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"$id\": \"marble_private_array0\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"docType\": {\n            \"type\": \"string\"\n          },\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"color\": {\n            \"type\": \"string\"\n          },\n          \"size\": {\n            \"type\": \"number\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "LogMessage13",
-                        "name": "LogMessage13",
+                        "id": "Log",
+                        "name": "Log",
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest4].message)",
+                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest].message)",
                                 "addDetails": false
                             }
                         }
                     },
                     {
-                        "id": "Return4",
-                        "name": "Return4",
+                        "id": "Return",
+                        "name": "Return",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
                                     "returns": {
                                         "mapping": {
-                                            "code": "=$activity[FabricRequest4].code",
+                                            "code": "=$activity[FabricRequest].code",
                                             "data": {
-                                                "@foreach($activity[FabricRequest4].result)": {
+                                                "@foreach($activity[FabricRequest].result)": {
                                                     "key": "=$.key",
                                                     "value": "=$.value"
                                                 }
@@ -1603,22 +1640,12 @@
                         }
                     },
                     {
-                        "id": "LogMessage14",
-                        "name": "LogMessage14",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"Fabric error: \", $activity[FabricRequest4].message)"
-                            }
-                        }
-                    },
-                    {
-                        "id": "ThrowError4",
-                        "name": "ThrowError4",
+                        "id": "ThrowError",
+                        "name": "ThrowError",
                         "activity": {
                             "ref": "#error",
                             "input": {
-                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest4].message)"
+                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest].message)"
                             }
                         }
                     }
@@ -1660,34 +1687,28 @@
                     {
                         "id": 1,
                         "from": "LogMessage15",
-                        "to": "FabricRequest5",
+                        "to": "FabricRequest",
                         "type": "default"
                     },
                     {
                         "id": 2,
-                        "from": "FabricRequest5",
-                        "to": "LogMessage16",
-                        "type": "expression",
-                        "value": "$activity[FabricRequest5].code == 200"
+                        "from": "FabricRequest",
+                        "to": "Log",
+                        "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "LogMessage16",
-                        "to": "Return5",
-                        "type": "default"
+                        "from": "Log",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "FabricRequest5",
-                        "to": "LogMessage17",
+                        "from": "Log",
+                        "to": "ThrowError",
                         "type": "expression",
-                        "value": "$activity[FabricRequest5].code != 200"
-                    },
-                    {
-                        "id": 5,
-                        "from": "LogMessage17",
-                        "to": "ThrowError5",
-                        "type": "default"
+                        "value": "$activity[FabricRequest].code != 200"
                     }
                 ],
                 "tasks": [
@@ -1702,13 +1723,12 @@
                         }
                     },
                     {
-                        "id": "FabricRequest5",
-                        "name": "FabricRequest5",
+                        "id": "FabricRequest",
+                        "name": "FabricRequest",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "9b9831d0-9dcd-11e9-ad3e-dfb8cac521b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1731,7 +1751,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "local-first-network"
+                                            "value": "marble private client"
                                         },
                                         {
                                             "name": "description",
@@ -1744,7 +1764,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "Fabric sample first-network running on localhost"
+                                            "value": "marble private client using fabric sample first network"
                                         },
                                         {
                                             "name": "config",
@@ -1798,6 +1818,26 @@
                                                 "valid": true
                                             },
                                             "value": "mychannel"
+                                        },
+                                        {
+                                            "name": "contract",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Smart contract metadata file",
+                                                "description": "Select the smart contract file for the client",
+                                                "type": "fileselector",
+                                                "fileExtensions": [
+                                                    ".json"
+                                                ],
+                                                "visible": true,
+                                                "readonly": false,
+                                                "valid": true
+                                            },
+                                            "value": {
+                                                "filename": "metadata.json",
+                                                "content": "data:application/json;base64,ewogICAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAgICJpbmZvIjogewogICAgICAgICJ0aXRsZSI6ICJtYXJibGVfcHJpdmF0ZSIsCiAgICAgICAgInZlcnNpb24iOiAiMS4xLjAiCiAgICB9LAogICAgImNvbnRyYWN0IjogewogICAgICAgICJuYW1lIjogIm1hcmJsZV9wcml2YXRlIiwKICAgICAgICAidHJhbnNhY3Rpb25zIjogewogICAgICAgICAgICAiZGVsZXRlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiZGVsZXRlIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJyZW1vdmUgYSBtYXJibGUga2V5L3ZhbHVlIHBhaXIgZnJvbSBzdGF0ZSIsCiAgICAgICAgICAgICAgICAib3BlcmF0aW9uIjogImludm9rZSIsCiAgICAgICAgICAgICAgICAidHJhbnNpZW50IjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJtYXJibGVfZGVsZXRlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9LAogICAgICAgICAgICAiZ2V0TWFyYmxlc0J5UmFuZ2UiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJnZXRNYXJibGVzQnlSYW5nZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicGVyZm9ybXMgYSByYW5nZSBxdWVyeSBiYXNlZCBvbiB0aGUgc3RhcnQgYW5kIGVuZCBrZXlzIHByb3ZpZGVkIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgInN0YXJ0S2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAiZW5kS2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJpbml0TWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiaW5pdE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiY3JlYXRlIGEgbmV3IG1hcmJsZSwgc3RvcmUgaW50byBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJpbnZva2UiLAogICAgICAgICAgICAgICAgInRyYW5zaWVudCI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibWFyYmxlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInF1ZXJ5TWFyYmxlc0J5T3duZXIiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJxdWVyeU1hcmJsZXNCeU93bmVyIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJxdWVyaWVzIGZvciBtYXJibGVzIGJhc2VkIG9uIGEgcGFzc2VkLWluIG93bmVyIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJyZWFkTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAicmVhZE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmV0cmlldmUgYSBtYXJibGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyI6IHsKICAgICAgICAgICAgICAgICJuYW1lIjogInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmVhZCBhIG1hcmJsZSBwcml2YXRlIGRldGFpbHMgZnJvbSBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAiZG9jVHlwZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgIm5hbWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInRyYW5zZmVyTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAidHJhbnNmZXJNYXJibGUiLAogICAgICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogInRyYW5zZmVyIGEgbWFyYmxlIGJ5IHNldHRpbmcgYSBuZXcgb3duZXIgbmFtZSBvbiB0aGUgbWFyYmxlIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAiaW52b2tlIiwKICAgICAgICAgICAgICAgICJ0cmFuc2llbnQiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm1hcmJsZV9vd25lciI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfSwKICAgICJjb21wb25lbnRzIjogewogICAgICAgICJtYXJibGVfcHJpdmF0ZV8wIjogewogICAgICAgICAgICAiJGlkIjogIm1hcmJsZV9wcml2YXRlXzAiLAogICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICJkb2NUeXBlIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgImNvbG9yIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAic2l6ZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIm1hcmJsZV9wcml2YXRlX2FycmF5MCI6IHsKICAgICAgICAgICAgIiRpZCI6ICJtYXJibGVfcHJpdmF0ZV9hcnJheTAiLAogICAgICAgICAgICAidHlwZSI6ICJhcnJheSIsCiAgICAgICAgICAgICJpdGVtcyI6IHsKICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAia2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAidmFsdWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgImRvY1R5cGUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"
+                                            }
                                         }
                                     ],
                                     "outputs": [],
@@ -1829,16 +1869,19 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1562184282782,
+                                    "lastUpdatedTime": 1563376278179,
+                                    "createdTime": 1563376278179,
                                     "user": "flogo",
-                                    "connectorName": "local-first-network",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "209dbf30-a8a5-11e9-8c80-757cccc7efac",
+                                    "connectorName": " ",
                                     "connectorDescription": " "
                                 },
+                                "transactionName": "delete",
                                 "requestType": "invoke",
                                 "orgName": "",
                                 "userName": "=$property[\"CLIENT_USER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_PRIVATE_CC\"]",
-                                "transactionName": "delete",
                                 "transient": {
                                     "mapping": {
                                         "marble_delete": {
@@ -1851,41 +1894,42 @@
                                 "input": {
                                     "transient": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"marble_delete\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}}}",
-                                        "fe_metadata": "{\n    \"marble_delete\": {\n        \"name\": \"\"\n    }\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"marble_delete\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"name\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"marble_delete\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"name\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"name\": \"\",\n    \"color\": \"\",\n    \"size\": 0,\n    \"owner\": \"\"\n}"
+                                        "value": "{\n  \"$id\": \"marble_private_0\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"color\": {\n      \"type\": \"string\"\n    },\n    \"size\": {\n      \"type\": \"number\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"$id\": \"marble_private_0\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"docType\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"color\": {\n      \"type\": \"string\"\n    },\n    \"size\": {\n      \"type\": \"number\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "LogMessage16",
-                        "name": "LogMessage16",
+                        "id": "Log",
+                        "name": "Log",
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest5].message)"
+                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest].message)",
+                                "addDetails": false
                             }
                         }
                     },
                     {
-                        "id": "Return5",
-                        "name": "Return5",
+                        "id": "Return",
+                        "name": "Return",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
                                     "returns": {
                                         "mapping": {
-                                            "code": "=$activity[FabricRequest5].code",
-                                            "data": "=$activity[FabricRequest5].result"
+                                            "code": "=$activity[FabricRequest].code",
+                                            "data": "=$activity[FabricRequest].result"
                                         }
                                     }
                                 }
@@ -1893,22 +1937,12 @@
                         }
                     },
                     {
-                        "id": "LogMessage17",
-                        "name": "LogMessage17",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"Fabric error: \", $activity[FabricRequest5].message)"
-                            }
-                        }
-                    },
-                    {
-                        "id": "ThrowError5",
-                        "name": "ThrowError5",
+                        "id": "ThrowError",
+                        "name": "ThrowError",
                         "activity": {
                             "ref": "#error",
                             "input": {
-                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest5].message)"
+                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest].message)"
                             }
                         }
                     }
@@ -1946,34 +1980,28 @@
                     {
                         "id": 1,
                         "from": "LogMessage18",
-                        "to": "FabricRequest6",
+                        "to": "FabricRequest",
                         "type": "default"
                     },
                     {
                         "id": 2,
-                        "from": "FabricRequest6",
-                        "to": "LogMessage19",
-                        "type": "expression",
-                        "value": "$activity[FabricRequest6].code == 200"
+                        "from": "FabricRequest",
+                        "to": "Log",
+                        "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "LogMessage19",
-                        "to": "Return6",
-                        "type": "default"
+                        "from": "Log",
+                        "to": "Return",
+                        "type": "expression",
+                        "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "FabricRequest6",
-                        "to": "LogMessage20",
+                        "from": "Log",
+                        "to": "ThrowError",
                         "type": "expression",
-                        "value": "$activity[FabricRequest6].code != 200"
-                    },
-                    {
-                        "id": 5,
-                        "from": "LogMessage20",
-                        "to": "ThrowError6",
-                        "type": "default"
+                        "value": "$activity[FabricRequest].code != 200"
                     }
                 ],
                 "tasks": [
@@ -1989,13 +2017,12 @@
                         }
                     },
                     {
-                        "id": "FabricRequest6",
-                        "name": "FabricRequest6",
+                        "id": "FabricRequest",
+                        "name": "FabricRequest",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "9b9831d0-9dcd-11e9-ad3e-dfb8cac521b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2018,7 +2045,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "local-first-network"
+                                            "value": "marble private client"
                                         },
                                         {
                                             "name": "description",
@@ -2031,7 +2058,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "Fabric sample first-network running on localhost"
+                                            "value": "marble private client using fabric sample first network"
                                         },
                                         {
                                             "name": "config",
@@ -2085,6 +2112,26 @@
                                                 "valid": true
                                             },
                                             "value": "mychannel"
+                                        },
+                                        {
+                                            "name": "contract",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Smart contract metadata file",
+                                                "description": "Select the smart contract file for the client",
+                                                "type": "fileselector",
+                                                "fileExtensions": [
+                                                    ".json"
+                                                ],
+                                                "visible": true,
+                                                "readonly": false,
+                                                "valid": true
+                                            },
+                                            "value": {
+                                                "filename": "metadata.json",
+                                                "content": "data:application/json;base64,ewogICAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAgICJpbmZvIjogewogICAgICAgICJ0aXRsZSI6ICJtYXJibGVfcHJpdmF0ZSIsCiAgICAgICAgInZlcnNpb24iOiAiMS4xLjAiCiAgICB9LAogICAgImNvbnRyYWN0IjogewogICAgICAgICJuYW1lIjogIm1hcmJsZV9wcml2YXRlIiwKICAgICAgICAidHJhbnNhY3Rpb25zIjogewogICAgICAgICAgICAiZGVsZXRlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiZGVsZXRlIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJyZW1vdmUgYSBtYXJibGUga2V5L3ZhbHVlIHBhaXIgZnJvbSBzdGF0ZSIsCiAgICAgICAgICAgICAgICAib3BlcmF0aW9uIjogImludm9rZSIsCiAgICAgICAgICAgICAgICAidHJhbnNpZW50IjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJtYXJibGVfZGVsZXRlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9LAogICAgICAgICAgICAiZ2V0TWFyYmxlc0J5UmFuZ2UiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJnZXRNYXJibGVzQnlSYW5nZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicGVyZm9ybXMgYSByYW5nZSBxdWVyeSBiYXNlZCBvbiB0aGUgc3RhcnQgYW5kIGVuZCBrZXlzIHByb3ZpZGVkIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgInN0YXJ0S2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAiZW5kS2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJpbml0TWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAiaW5pdE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiY3JlYXRlIGEgbmV3IG1hcmJsZSwgc3RvcmUgaW50byBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJpbnZva2UiLAogICAgICAgICAgICAgICAgInRyYW5zaWVudCI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibWFyYmxlIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInF1ZXJ5TWFyYmxlc0J5T3duZXIiOiB7CiAgICAgICAgICAgICAgICAibmFtZSI6ICJxdWVyeU1hcmJsZXNCeU93bmVyIiwKICAgICAgICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJxdWVyaWVzIGZvciBtYXJibGVzIGJhc2VkIG9uIGEgcGFzc2VkLWluIG93bmVyIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAicXVlcnkiLAogICAgICAgICAgICAgICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV9hcnJheTAiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICAgICJyZWFkTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAicmVhZE1hcmJsZSIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmV0cmlldmUgYSBtYXJibGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAiJHJlZiI6ICIjL2NvbXBvbmVudHMvbWFyYmxlX3ByaXZhdGVfMCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyI6IHsKICAgICAgICAgICAgICAgICJuYW1lIjogInJlYWRNYXJibGVQcml2YXRlRGV0YWlscyIsCiAgICAgICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAicmVhZCBhIG1hcmJsZSBwcml2YXRlIGRldGFpbHMgZnJvbSBjaGFpbmNvZGUgc3RhdGUiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAiZG9jVHlwZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgIm5hbWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICJwcmljZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwKICAgICAgICAgICAgInRyYW5zZmVyTWFyYmxlIjogewogICAgICAgICAgICAgICAgIm5hbWUiOiAidHJhbnNmZXJNYXJibGUiLAogICAgICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogInRyYW5zZmVyIGEgbWFyYmxlIGJ5IHNldHRpbmcgYSBuZXcgb3duZXIgbmFtZSBvbiB0aGUgbWFyYmxlIiwKICAgICAgICAgICAgICAgICJvcGVyYXRpb24iOiAiaW52b2tlIiwKICAgICAgICAgICAgICAgICJ0cmFuc2llbnQiOiB7CiAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgIm1hcmJsZV9vd25lciI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICJyZXR1cm5zIjogewogICAgICAgICAgICAgICAgICAgICIkcmVmIjogIiMvY29tcG9uZW50cy9tYXJibGVfcHJpdmF0ZV8wIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfSwKICAgICJjb21wb25lbnRzIjogewogICAgICAgICJtYXJibGVfcHJpdmF0ZV8wIjogewogICAgICAgICAgICAiJGlkIjogIm1hcmJsZV9wcml2YXRlXzAiLAogICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICJkb2NUeXBlIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgImNvbG9yIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAic2l6ZSI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgIm93bmVyIjogewogICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIm1hcmJsZV9wcml2YXRlX2FycmF5MCI6IHsKICAgICAgICAgICAgIiRpZCI6ICJtYXJibGVfcHJpdmF0ZV9hcnJheTAiLAogICAgICAgICAgICAidHlwZSI6ICJhcnJheSIsCiAgICAgICAgICAgICJpdGVtcyI6IHsKICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICAgICAgICAgICAia2V5IjogewogICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAidmFsdWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgImRvY1R5cGUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29sb3IiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJzaXplIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAib3duZXIiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"
+                                            }
                                         }
                                     ],
                                     "outputs": [],
@@ -2116,16 +2163,19 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1562184282782,
+                                    "lastUpdatedTime": 1563376278179,
+                                    "createdTime": 1563376278179,
                                     "user": "flogo",
-                                    "connectorName": "local-first-network",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "209dbf30-a8a5-11e9-8c80-757cccc7efac",
+                                    "connectorName": " ",
                                     "connectorDescription": " "
                                 },
+                                "transactionName": "queryMarblesByOwner",
                                 "requestType": "query",
                                 "orgName": "",
                                 "userName": "=$property[\"CLIENT_USER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_PRIVATE_CC\"]",
-                                "transactionName": "queryMarblesByOwner",
                                 "parameters": {
                                     "mapping": {
                                         "owner": "=$flow.owner"
@@ -2136,42 +2186,43 @@
                                 "input": {
                                     "parameters": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"owner\": \"\"\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[{\n    \"key\": \"\",\n    \"value\": {\n        \"name\": \"\",\n        \"color\": \"\",\n        \"size\": 0,\n        \"owner\": \"\"\n    }\n}]"
+                                        "value": "{\n  \"$id\": \"marble_private_array0\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"docType\": {\n            \"type\": \"string\"\n          },\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"color\": {\n            \"type\": \"string\"\n          },\n          \"size\": {\n            \"type\": \"number\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"$id\": \"marble_private_array0\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"docType\": {\n            \"type\": \"string\"\n          },\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"color\": {\n            \"type\": \"string\"\n          },\n          \"size\": {\n            \"type\": \"number\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "LogMessage19",
-                        "name": "LogMessage19",
+                        "id": "Log",
+                        "name": "Log",
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest6].message)"
+                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest].message)",
+                                "addDetails": false
                             }
                         }
                     },
                     {
-                        "id": "Return6",
-                        "name": "Return6",
+                        "id": "Return",
+                        "name": "Return",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
                                     "returns": {
                                         "mapping": {
-                                            "code": "=$activity[FabricRequest6].code",
+                                            "code": "=$activity[FabricRequest].code",
                                             "data": {
-                                                "@foreach($activity[FabricRequest6].result)": {
+                                                "@foreach($activity[FabricRequest].result)": {
                                                     "key": "=$.key",
                                                     "value": "=$.value"
                                                 }
@@ -2183,22 +2234,12 @@
                         }
                     },
                     {
-                        "id": "LogMessage20",
-                        "name": "LogMessage20",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"Fabric error: \", $activity[FabricRequest6].message)"
-                            }
-                        }
-                    },
-                    {
-                        "id": "ThrowError6",
-                        "name": "ThrowError6",
+                        "id": "ThrowError",
+                        "name": "ThrowError",
                         "activity": {
                             "ref": "#error",
                             "input": {
-                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest6].message)"
+                                "message": "=string.concat(\"Failed: \", $activity[FabricRequest].message)"
                             }
                         }
                     }
@@ -2240,6 +2281,6 @@
             "value": "User1"
         }
     ],
-    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9oeXBlcmxlZGdlci1mYWJyaWMvZmFiY2xpZW50IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L2ZhYmNsaWVudCJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvdHJpZ2dlci9yZXN0IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvdHJpZ2dlci9yZXN0In1d",
-    "fe_metadata": "UEsDBAoAAAAIAPOu5E6rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACADzruROq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi90cmlnZ2VyL3Jlc3QiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC90cmlnZ2VyL3Jlc3QifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9kb3ZldGFpbC1jb250cmliL2h5cGVybGVkZ2VyLWZhYnJpYy9mYWJjbGllbnQiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vZmFiY2xpZW50In0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi9hY3Rpdml0eS9lcnJvciIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2Vycm9yIn1d",
+    "fe_metadata": "UEsDBAoAAAAIAHSI8U6rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAB0iPFOq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }
