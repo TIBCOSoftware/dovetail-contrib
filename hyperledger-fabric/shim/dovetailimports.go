@@ -14,4 +14,5 @@ import (
 	_ "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query"
 	_ "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/setevent"
 	_ "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction"
+	_ "github.com/project-flogo/core/app/propertyresolver"
 )
