@@ -16,7 +16,7 @@
         {
             "ref": "#rest",
             "name": "ReceiveHTTPMessage",
-            "description": "",
+            "description": "invoke abac chaincode",
             "settings": {
                 "port": "8989",
                 "enableTLS": false,
@@ -26,18 +26,19 @@
             "id": "ReceiveHTTPMessage",
             "handlers": [
                 {
-                    "description": "",
+                    "description": "invoke abac chaincode",
                     "settings": {
                         "method": "GET",
-                        "path": "/abac/:name"
+                        "path": "/abac/:org/:user"
                     },
                     "action": {
                         "ref": "github.com/project-flogo/flow",
                         "settings": {
-                            "flowURI": "res://flow:test_abac"
+                            "flowURI": "res://flow:check_abac"
                         },
                         "input": {
-                            "name": "=$.pathParams.name"
+                            "user": "=$.pathParams.user",
+                            "org": "=$.pathParams.org"
                         },
                         "output": {
                             "code": "=$.returns.code",
@@ -53,10 +54,10 @@
     ],
     "resources": [
         {
-            "id": "flow:test_abac",
+            "id": "flow:check_abac",
             "data": {
-                "name": "test_abac",
-                "description": "",
+                "name": "check_abac",
+                "description": "invoke abac chaincode",
                 "links": [
                     {
                         "id": 1,
@@ -84,7 +85,7 @@
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"test_abac for user: \", $flow.name)",
+                                "message": "=string.concat(\"check_abac for user: \", $flow.user, \"@\", $flow.org)",
                                 "addDetails": false
                             }
                         }
@@ -96,7 +97,6 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "9b9831d0-9dcd-11e9-ad3e-dfb8cac521b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -119,7 +119,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "local-first-network"
+                                            "value": "abac client"
                                         },
                                         {
                                             "name": "description",
@@ -132,7 +132,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "Fabric sample first-network running on localhost"
+                                            "value": "abac client connector with fabric sample first-network"
                                         },
                                         {
                                             "name": "config",
@@ -186,6 +186,26 @@
                                                 "valid": true
                                             },
                                             "value": "mychannel"
+                                        },
+                                        {
+                                            "name": "contract",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Smart contract metadata file",
+                                                "description": "Select the smart contract file for the client",
+                                                "type": "fileselector",
+                                                "fileExtensions": [
+                                                    ".json"
+                                                ],
+                                                "visible": true,
+                                                "readonly": false,
+                                                "valid": true
+                                            },
+                                            "value": {
+                                                "filename": "metadata.json",
+                                                "content": "data:application/json;base64,ewogICAgIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNy9zY2hlbWEjIiwKICAgICJpbmZvIjogewogICAgICAgICJ0aXRsZSI6ICJhYmFjX2FwcCIsCiAgICAgICAgInZlcnNpb24iOiAiMS4xLjAiCiAgICB9LAogICAgImNvbnRyYWN0IjogewogICAgICAgICJuYW1lIjogImFiYWNfYXBwIiwKICAgICAgICAidHJhbnNhY3Rpb25zIjogewogICAgICAgICAgICAiY2hlY2tfYWJhYyI6IHsKICAgICAgICAgICAgICAgICJuYW1lIjogImNoZWNrX2FiYWMiLAogICAgICAgICAgICAgICAgIm9wZXJhdGlvbiI6ICJxdWVyeSIsCiAgICAgICAgICAgICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAicmV0dXJucyI6IHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgICAgICAgICAgICAgICAiY2lkIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAibXNwaWQiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICAgICAgICAgICJuYW1lIjogewogICAgICAgICAgICAgICAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgICAgICAgICAgICAidmFsdWUiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="
+                                            }
                                         }
                                     ],
                                     "outputs": [],
@@ -217,19 +237,22 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1562184282782,
+                                    "lastUpdatedTime": 1563424023350,
+                                    "createdTime": 1563424023350,
                                     "user": "flogo",
-                                    "connectorName": "local-first-network",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "4af4ad60-a914-11e9-8c80-757cccc7efac",
+                                    "connectorName": " ",
                                     "connectorDescription": " "
                                 },
-                                "requestType": "invoke",
-                                "orgName": "=$property[\"ORG\"]",
-                                "userName": "=$flow.name",
-                                "chaincodeID": "abac_cc",
                                 "transactionName": "check_abac",
+                                "requestType": "query",
+                                "orgName": "=$flow.org",
+                                "userName": "=$flow.user",
+                                "chaincodeID": "abac_cc",
                                 "parameters": {
                                     "mapping": {
-                                        "name": "abac.init"
+                                        "name": "=$flow.user"
                                     }
                                 }
                             },
@@ -237,15 +260,15 @@
                                 "input": {
                                     "parameters": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"name\": \"\"\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"cid\":{\"type\":\"string\"},\"mspid\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"cid\": \"\",\n    \"mspid\": \"\",\n    \"name\": \"\",\n    \"value\":\"\"\n}"
+                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"cid\": {\n      \"type\": \"string\"\n    },\n    \"mspid\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"value\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"cid\": {\n      \"type\": \"string\"\n    },\n    \"mspid\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"value\": {\n      \"type\": \"string\"\n    }\n  }\n}"
                                     }
                                 }
                             }
@@ -257,7 +280,7 @@
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"Fabric returned value: \", $activity[FabricRequest].message)",
+                                "message": "=string.concat(\"Fabric returned: \", $activity[FabricRequest].message)",
                                 "addDetails": false
                             }
                         }
@@ -283,7 +306,11 @@
                 "metadata": {
                     "input": [
                         {
-                            "name": "name",
+                            "name": "user",
+                            "type": "string"
+                        },
+                        {
+                            "name": "org",
                             "type": "string"
                         }
                     ],
@@ -298,20 +325,14 @@
                         }
                     ],
                     "fe_metadata": {
-                        "input": "{\n    \"name\": \"\"\n}",
+                        "input": "{\n    \"user\": \"\",\n    \"org\": \"\"\n}",
                         "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": {\n            \"cid\": \"\",\n            \"mspid\": \"\",\n            \"name\": \"\",\n            \"value\": \"\"\n        }\n    }\n}"
                     }
                 }
             }
         }
     ],
-    "properties": [
-        {
-            "name": "ORG",
-            "type": "string",
-            "value": "org1"
-        }
-    ],
+    "properties": [],
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvdHJpZ2dlci9yZXN0IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvdHJpZ2dlci9yZXN0In0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi9hY3Rpdml0eS9sb2ciLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9sb2cifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9kb3ZldGFpbC1jb250cmliL2h5cGVybGVkZ2VyLWZhYnJpYy9mYWJjbGllbnQiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vZmFiY2xpZW50In1d",
-    "fe_metadata": "UEsDBAoAAAAIAIew6k6rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACACHsOpOq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAJ0k8k6rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACACdJPJOq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }
