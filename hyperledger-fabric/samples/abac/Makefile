@@ -2,11 +2,11 @@ MAKEFILE_THIS := $(lastword $(MAKEFILE_LIST))
 SRC_PATH      := $(patsubst %/,%,$(dir $(abspath $(MAKEFILE_THIS))))
 APP_FILE      := abac_app.json
 APP_NAME      := abac_cc
-LOG_LEVEL     := INFO
 BUILD_PATH    := /tmp/abac
-CC_DEPLOY     := $(GOPATH)/src/github.com/hyperledger/fabric-samples/chaincode
-SHIM_PATH     := $(dir $(SRC_PATH))shim
-PATCH_PATH    := $(dir $(SRC_PATH))flogo-patch
+FAB_PATH      := $(GOPATH)/src/github.com/hyperledger/fabric-samples
+CC_DEPLOY     := $(FAB_PATH)/chaincode
+SHIM_PATH     := $(SRC_PATH)/../../shim
+PATCH_PATH    := $(SRC_PATH)/../../flogo-patch
 
 CLIENT_FILE   := abac_client.json
 CLIENT_PATH   := /tmp/abac_client
@@ -46,11 +46,36 @@ build: $(BUILD_PATH)/$(APP_NAME)
 deploy: build
 	rm -Rf $(CC_DEPLOY)/$(APP_NAME)
 	cp -Rf $(BUILD_PATH)/$(APP_NAME)/src $(CC_DEPLOY)/$(APP_NAME)
+	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
+	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts
 
-.PHONY: package
-package: 
+.PHONY: start-fn
+start-fn:
+	./start-fn.sh
+	./gen-user.sh Alice 1
+	./gen-user.sh Bob 2
+
+.PHONY: cli-init
+cli-init:
+	docker exec cli bash -c 'cd scripts; ./fn-cli-init.sh'
+
+.PHONY: cli-test
+cli-test:
+	docker exec cli bash -c 'cd scripts; ./fn-cli-test.sh'
+
+.PHONY: package-old
+package-old: 
 	docker exec cli peer chaincode package -n $(APP_NAME) -v 1.0 -p github.com/chaincode/$(APP_NAME) ../../../chaincode/$(APP_NAME).cds
 	mv $(CC_DEPLOY)/$(APP_NAME).cds $(SRC_PATH)
+
+.PHONY: package
+package:
+	-rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
+	mkdir -p $(GOPATH)/src/github.com/chaincode
+	cp -R $(BUILD_PATH)/$(APP_NAME)/src $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
+	fabric-tools package -n $(APP_NAME) -p $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
+	rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
+	fabric-tools metadata -f $(APP_FILE) -o $(SRC_PATH)/contract-metadata/metadata.json
 
 .PHONY: clean-client
 clean-client:
@@ -79,4 +104,4 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 
 .PHONY: run
 run:
-	FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
+	FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)

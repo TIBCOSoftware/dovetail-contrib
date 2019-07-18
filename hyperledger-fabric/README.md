@@ -1,18 +1,16 @@
 # Flogo Enterprise extensions for Hyperledger Fabric
+
 This package includes [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) extensions for developing blockchain apps and smart contracts on [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).
 
 It provides the following Flogo® extensions:
 - [Fabric Chaincode Extension](fabric), which includes triggers and activities for designing and implementing Hyperledger Fabric chaincode with zero-code.
 - [Fabric Client Extension](fabclient), which includes connector and activities for designing and implementing Hyperledger Fabric client apps, such as a REST service that interacts with a Hyperledger Fabric network, by visual programming with zero-code.
 
-Samples for Hyperledger Fabric chaincode:
-- [`marble-app`](marble-app)
-- [`marble-private`](marble-private)
+## Getting Started
 
-These are the zero-code version of the `marbles02` and `marbles02_private` chaincode in [`fabric samples`](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode).  The hundreds of lines of boilerplate code are replaced by a JSON model file exported from the TIBCO Flogo® Enterprise, where the chaincode is modeled by drag-and-drop.
+Start by looking at the following end-to-end samples:
+- [`marble`](samples/marble), which is a zero-code version of the `marbles02` chaincode in [`fabric samples`](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode) and a REST client that invokes the chaincode transactions.
+- [`marble-private`](samples/marble-private), which is a zero-code version of the `marbles02_private` chaincode in [`fabric samples`](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode) and a REST client.  It demonstrates the use of private collections.
+- [ `abac`](samples/abac), which is a zero-code version of a sample to demonstrating the use of `Attribute Based Access Control`(ABAC). This feature is important for use-cases, such as IOU trading or exchanging, that requires user-level access control.
 
-Sample REST services as a Hyperledger Fabric client:
-- [`marble-client`](marble-client)
-- [`marble-private-client`](marble-private-client)
-
-These sample REST services are clients of the `marble-app` and `marble-private` networks.  They implement REST APIs that interact with the distributed ledger in Hyperledger Fabric network.  These Flogo apps do not require any code, each app contains only a JSON model file exported from the the TIBCO Flogo® Enterprise, where the REST APIs are modeled by drag-and-drop.
+By comparing typical implementation of chaincode and client applications, you can see that hundreds of lines of boilerplate code are replaced by a single JSON model file exported from the TIBCO Flogo® Enterprise.  Thus, by using the Flogo visual programming environment, you do not have to learn much of the blockchain API and special programming languages.  You can implement chaincode and client apps for Hyperledger Fabric by drag-drop-mapping in Flogo.
