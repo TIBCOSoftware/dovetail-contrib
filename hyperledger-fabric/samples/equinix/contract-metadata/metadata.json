@@ -1,0 +1,280 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "info": {
+        "title": "equinix",
+        "version": "1.1.0"
+    },
+    "contract": {
+        "name": "equinix",
+        "transactions": {
+            "faUpdate": {
+                "name": "faUpdate",
+                "description": "Update Value of Asset",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "assetUniqueId": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "purchasePrice": {
+                            "type": "number"
+                        },
+                        "location": {
+                            "type": "string"
+                        },
+                        "model": {
+                            "type": "string"
+                        },
+                        "orgId": {
+                            "type": "string"
+                        },
+                        "installDate": {
+                            "type": "string"
+                        },
+                        "invoiceDate": {
+                            "type": "string"
+                        },
+                        "netBookValue": {
+                            "type": "number"
+                        },
+                        "serialNum": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/equinix_0"
+                }
+            },
+            "installAsset": {
+                "name": "installAsset",
+                "description": "Data entry and validation when asset is installed",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "assetUniqueId": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "acquisitionDate": {
+                            "type": "string"
+                        },
+                        "location": {
+                            "type": "string"
+                        },
+                        "manufacturer": {
+                            "type": "string"
+                        },
+                        "vendor": {
+                            "type": "string"
+                        },
+                        "model": {
+                            "type": "string"
+                        },
+                        "serialNum": {
+                            "type": "string"
+                        },
+                        "orgId": {
+                            "type": "string"
+                        },
+                        "installDate": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/equinix_0"
+                }
+            },
+            "receiveAsset": {
+                "name": "receiveAsset",
+                "description": "Data entry and validation when asset is received at IBX",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "assetUniqueId": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "acquisitionDate": {
+                            "type": "string"
+                        },
+                        "location": {
+                            "type": "string"
+                        },
+                        "manufacturer": {
+                            "type": "string"
+                        },
+                        "vendor": {
+                            "type": "string"
+                        },
+                        "model": {
+                            "type": "string"
+                        },
+                        "serialNum": {
+                            "type": "string"
+                        },
+                        "orgId": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/equinix_0"
+                }
+            },
+            "receiveInvoice": {
+                "name": "receiveInvoice",
+                "description": "Entry of Invoice data on ledger",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "assetUniqueId": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "location": {
+                            "type": "string"
+                        },
+                        "invoiceDate": {
+                            "type": "string"
+                        },
+                        "orgId": {
+                            "type": "string"
+                        },
+                        "invoicePrice": {
+                            "type": "number"
+                        },
+                        "vendor": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/equinix_0"
+                }
+            },
+            "submitPO": {
+                "name": "submitPO",
+                "description": "Submit Purchase Order for an asset",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "assetUniqueId": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "purchasePrice": {
+                            "type": "number"
+                        },
+                        "location": {
+                            "type": "string"
+                        },
+                        "vendor": {
+                            "type": "string"
+                        },
+                        "orgId": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/equinix_0"
+                }
+            }
+        }
+    },
+    "components": {
+        "equinix_0": {
+            "$id": "equinix_0",
+            "type": "object",
+            "properties": {
+                "assetUniqueId": {
+                    "type": "string"
+                },
+                "assetNum": {
+                    "type": "string"
+                },
+                "assetTag": {
+                    "type": "string"
+                },
+                "orgId": {
+                    "type": "string"
+                },
+                "siteId": {
+                    "type": "string"
+                },
+                "statusDate": {
+                    "type": "string"
+                },
+                "serialNum": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "purchasePrice": {
+                    "type": "number"
+                },
+                "invoicePrice": {
+                    "type": "number"
+                },
+                "netBookValue": {
+                    "type": "number"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "vendor": {
+                    "type": "string"
+                },
+                "manufacturer": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "acquisitionDate": {
+                    "type": "string"
+                },
+                "installDate": {
+                    "type": "string"
+                },
+                "invoiceDate": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "retireDate": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
