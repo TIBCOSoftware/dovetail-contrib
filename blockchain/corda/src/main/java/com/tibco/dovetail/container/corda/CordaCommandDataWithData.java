@@ -44,4 +44,8 @@ public class CordaCommandDataWithData implements CommandData {
     public void deserialize() {
     		data = (Map<String, Object>) CordaUtil.deserialize(serializedData, new TypeReference<Map<String, Object>>(){});
     }
+    
+    public String getCommand() {
+    		return (String) data.get("command");
+    }
 }

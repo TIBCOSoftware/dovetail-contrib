@@ -3,7 +3,7 @@
 * This file is subject to the license terms contained
 * in the license file that is distributed with this file.
  */
-package transform
+package mapper
 
 import (
 	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/mapper"

@@ -8,7 +8,6 @@ package com.tibco.dovetail.container.corda;
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 
-import kotlin.Triple;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
 
@@ -21,18 +20,15 @@ import java.util.stream.Collectors;
 
 public class CordaDataService implements IDataService {
 	 private List<DocumentContext> outputStates = new ArrayList< DocumentContext>();
-	 private List<Triple<String, DocumentContext, CommandData>> outputStatesAndNames = new ArrayList<Triple<String, DocumentContext, CommandData>>();
 	 private List<DocumentContext> inputStates = new ArrayList<DocumentContext>();
 	 private List<String> inputStatesClassName = new ArrayList<String>();
-	 private List<CommandData> commands = new ArrayList<CommandData>();
+	 private ContractCommandOutput cmdOutput = new ContractCommandOutput();
 	 
 	public CordaDataService(List<ContractState> inputs) {
 		inputs.forEach(state -> {
 			inputStates.add(CordaUtil.toJsonObject(state));
-			//if(state instanceof Cash.State)
-			//	inputStatesClassName.add("com.tibco.dovetail.system.Cash");
-			//else
-				inputStatesClassName.add(state.getClass().getName());
+			
+			inputStatesClassName.add(state.getClass().getName());
 		});
 	}
     
@@ -45,22 +41,15 @@ public class CordaDataService implements IDataService {
         return outputStates;
     }
     
-    public List<Triple<String, DocumentContext, CommandData>> getModifiedStatesAndNames() {
-        return outputStatesAndNames;
-    }
-    
-    public List<CommandData> getCommands() {
-        return this.commands;
+    public ContractCommandOutput getContractCommandOutput() {
+        return this.cmdOutput;
     }
 
 	@Override
 	public DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
-		if(assetName.equals("com.tibco.dovetail.system.Cash")) {
-			return assetValue;
-		}
 			
 		outputStates.add(assetValue);
-		outputStatesAndNames.add(new Triple<String, DocumentContext, CommandData>(assetName, assetValue, null));
+		cmdOutput.addOutputState(assetName, assetValue, null);
 		return assetValue;
 	}
 
@@ -134,7 +123,8 @@ public class CordaDataService implements IDataService {
 
 		LinkedHashMap<String, Long> payoutputs = new LinkedHashMap<String, Long>();
 		LinkedHashMap<String, Long> changeoutputs = new LinkedHashMap<String, Long>();
-		
+		net.corda.finance.contracts.asset.Cash c = new net.corda.finance.contracts.asset.Cash();
+		CommandData move = c.generateMoveCommand();
 		
 		Map<String, List<LinkedHashMap>> groupbyIssuer = funds.stream().collect(Collectors.groupingBy(f -> f.get("issuer").toString()));
 		for(String issuer : groupbyIssuer.keySet()) {
@@ -143,6 +133,7 @@ public class CordaDataService implements IDataService {
 			long chgByIssuer = changeoutputs.get(issuer) == null? 0 :  changeoutputs.get(issuer) ;
 			
 			for(LinkedHashMap m : v) {
+				this.cmdOutput.addCommand(move, CordaUtil.decodeKey(m.get("owner").toString()));
 				long amt = Long.valueOf(((LinkedHashMap)m.get("amt")).get("quantity").toString());
 				if (remaining > 0) {
 					if (amt >= remaining) {
@@ -163,9 +154,7 @@ public class CordaDataService implements IDataService {
 		}
 		
 		if (remaining > 0)
-			throw new RuntimeException("payment::not enough funds");
-		
-		net.corda.finance.contracts.asset.Cash c = new net.corda.finance.contracts.asset.Cash();
+			throw new RuntimeException("payment::not enough funds");	
 		
 		payoutputs.forEach((k,v) -> {
 			if(v > 0) {
@@ -173,7 +162,8 @@ public class CordaDataService implements IDataService {
 				doc.put("$", "owner", payTo);
 				doc.put("$.amt", "quantity", v);
 				outputStates.add(doc);
-				outputStatesAndNames.add(new Triple<String, DocumentContext, CommandData>("net.corda.finance.contracts.asset.Cash$State", doc, c.generateMoveCommand()));
+				this.cmdOutput.addOutputState("net.corda.finance.contracts.asset.Cash$State", doc, move);
+				this.cmdOutput.addCommand(move, CordaUtil.decodeKey(payTo));
 			}
 			
 		});
@@ -184,7 +174,8 @@ public class CordaDataService implements IDataService {
 				doc.put("$", "owner", changeTo);
 				doc.put("$.amt", "quantity", v);
 				outputStates.add(doc);
-				outputStatesAndNames.add(new Triple<String, DocumentContext, CommandData>("net.corda.finance.contracts.asset.Cash$State", doc, c.generateMoveCommand()));
+				this.cmdOutput.addOutputState("net.corda.finance.contracts.asset.Cash$State", doc, move);
+				this.cmdOutput.addCommand(move, CordaUtil.decodeKey(changeTo));
 			}
 			
 		});

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.container.corda.CordaUtil;
-import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.container.cordapp.AppDataService;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.engine.Context;
@@ -23,18 +22,11 @@ public class wallet implements IActivity{
 	@Override
 	public void eval(Context ctx) throws IllegalArgumentException {
 		String op = ctx.getInput("operation").toString();
-		Object input = ctx.getInput("input");
-		Object issuers = null;
-		LinkedHashMap val = null;
 		
-		 if(input == null) {
-			throw new RuntimeException("wallet:: input must be set");
-		 }
-		 
-		 val = ((DocumentContext) input).json();
-		 issuers = val.get("issuers");
+		LinkedHashMap<String, Object> val = getInputValue(ctx);	
+		Object issuers = val.get("issuers");
+		
 		AppDataService dataservice = (AppDataService) ctx.getContainerService().getDataService();
-		AppContainer container = (AppContainer) ctx.getContainerService();
 		
 		switch (op) {
 			case "Account Balance":
@@ -48,14 +40,27 @@ public class wallet implements IActivity{
 					((List)issuers).forEach(i -> pIssuers.add(CordaUtil.partyFromString(i.toString())));
 				}
 				
-				Object amt = val.get("amt");
-				if (amt == null)
-					throw new RuntimeException("wallet::Retreive Funds - must specifiy an amount to get");
-				
-				LinkedHashMap amtval = (LinkedHashMap)amt;
-				List<StateAndRef<Cash.State>> funds = dataservice.getFunds(pIssuers,  new Amount<Currency>(Long.valueOf(amtval.get("quantity").toString()), Currency.getInstance(amtval.get("currency").toString())));
+				List<StateAndRef<Cash.State>> funds = dataservice.getFunds(pIssuers, getRetriveAmt(val));
 				ctx.setOutput("output", CordaUtil.toJsonObject(funds));
 		}
+	}
+	
+	private LinkedHashMap<String, Object> getInputValue(Context ctx) {
+		Object input = ctx.getInput("input");
+		if(input == null) {
+			throw new IllegalArgumentException("wallet:: input must be set");
+		}
+		
+		return ((DocumentContext) input).json();
+	}
+	
+	private Amount<Currency> getRetriveAmt(LinkedHashMap<String, Object> val) {
+		Object amt = val.get("amt");
+		if (amt == null)
+			throw new IllegalArgumentException("wallet::Retreive Funds - must specifiy an amount to get");
+		
+		LinkedHashMap<String, Object> amtval = (LinkedHashMap<String, Object>)amt;
+		return new Amount<Currency>(Long.valueOf(amtval.get("quantity").toString()), Currency.getInstance(amtval.get("currency").toString()));
 	}
 
 }

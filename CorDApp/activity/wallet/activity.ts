@@ -33,24 +33,24 @@ export class WalletActivityContributionHandler extends WiServiceHandlerContribut
         let op = context.getField("operation").value;
         switch(fieldName){
             case "input":
-                switch(op){
-                    case "Account Balance":
+                if(op == "Account Balance")
                         return balschema;
-                    case "Make a Payment":
+                else if (op == "Make a Payment")
                         return payschema;
-                    case "Retrieve Funds":
+                else if (op == "Retrieve Funds")
                         return fundschema;
-                }
+                else
+                    console.log("error, op is not supported");
                 break;
             case "output":
-                switch(op){
-                    case "Account Balance":
-                        return baloutschema;
-                    case "Make a Payment":
-                        return payoutschema;
-                    case "Retrieve Funds":
-                        return fundoutschema;
-                }
+                if(op == "Account Balance")
+                    return baloutschema;
+                else if (op == "Make a Payment")
+                    return payoutschema;
+                else if (op == "Retrieve Funds")
+                    return fundoutschema;
+                else
+                    console.log("error, op is not supported");
             break;
         }
         return null;

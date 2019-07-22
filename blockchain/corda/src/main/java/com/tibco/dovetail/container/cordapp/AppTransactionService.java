@@ -28,19 +28,26 @@ public class AppTransactionService implements ITransactionService {
 	public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
 		LinkedHashMap<String, Object> values = new LinkedHashMap<String, Object>();
 		values.put("ourIdentity", this.ourIdentity);
-		DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
+	
+		if (txnInputs.size() == 1 && txnInputs.get(0).getName() == "transactionInput") {
+			values.put("transactionInput", CordaUtil.toJsonObject(flowInputs.get("transactionInput")));
+		} else {
+			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
+			txnInputs.forEach ( in -> {
+				String attr = in.getName();
+				
+				Object value = flowInputs.get(attr);
+				
+				if(value != null) {
+					doc.put("$", attr, CordaUtil.toJsonObject(value).json());
+				} else {
+					doc.put("$", attr, CordaUtil.toJsonObject(in.getValue()).json());
+				}
+				values.put("transactionInput", doc);
+				
+			});
+		}
 		
-		txnInputs.forEach ( in -> {
-			String attr = in.getName();
-			Object value = flowInputs.get(attr);
-			
-			if(value != null) {
-				doc.put("$", attr, CordaUtil.toJsonObject(value).json());
-			} else {
-				doc.put("$", attr, CordaUtil.toJsonObject(in.getValue()).json());
-			}
-		});
-		values.put("transactionInput", doc);
 		return values;
 	}
 

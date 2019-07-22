@@ -3,6 +3,8 @@ package cordapp.trigger.flowinitiator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.tibco.dovetail.core.model.composer.HLCResource;
+import com.tibco.dovetail.core.model.composer.MetadataParser;
 import com.tibco.dovetail.core.model.flow.HandlerConfig;
 import com.tibco.dovetail.core.model.flow.Resources;
 import com.tibco.dovetail.core.model.flow.TriggerConfig;
@@ -13,9 +15,6 @@ import com.tibco.dovetail.core.runtime.services.IContainerService;
 import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
 import com.tibco.dovetail.core.runtime.transaction.TxnInputAttribute;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
-
-import smartcontract.trigger.transaction.MetadataParser;
-import smartcontract.trigger.transaction.model.composer.HLCResource;
 
 public class flowinitiator implements ITrigger{
 	private Map<String, TransactionFlow> handlers = new LinkedHashMap<String, TransactionFlow>();

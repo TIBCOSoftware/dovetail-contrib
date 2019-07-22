@@ -71,17 +71,33 @@
             "value":false
         },
         {
+            "name": "schemaSelection",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Select schema to use",
+                "type": "dropdown",
+                "selection": "single"
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Flow Inputs"
+            },
+            "allowed":[]
+        },
+        {
             "name": "inputParams",
             "type": "complex_object",
             "display": {
                 "type": "params",
                 "name": "Flow input parameters",
-                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"Date\", \"Time\"]}}, \"partyType\":{\"type\":{\"enum\":[\"\",\"Participant\", \"Observer\", \"Notary\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}"
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"LocalDate\", \"DateTime\"]}}, \"partyType\":{\"type\":{\"enum\":[\"\",\"Participant\", \"Observer\", \"Notary\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}"
             },
             "wizard": {
                 "type": "params",
                 "name": "Flow input parameters",
-                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"Date\", \"Time\"]}}, \"partyType\":{\"type\":{\"enum\":[\"\", \"Participant\", \"Observer\", \"Notary\"]}},\"repeating\":{\"type\":\"boolean\"}}}}",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"LocalDate\", \"DateTime\"]}}, \"partyType\":{\"type\":{\"enum\":[\"\", \"Participant\", \"Observer\", \"Notary\"]}},\"repeating\":{\"type\":\"boolean\"}}}}",
                 "step": "Flow Inputs"
             }
         }

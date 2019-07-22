@@ -10,6 +10,7 @@
        "uid": "r3-flow-receiver",
        "category": "CorDApp",
        "visible": true, 
+       "wizard": ["Flow Settings"],
        "smallIcon": "trigger.png",
        "largeIcon": "trigger.png"
     },
@@ -41,6 +42,10 @@
                 "name": "Use confidential identities for this transaction?",
                 "visible": true
             },
+            "wizard": {
+                "type": "boolean",
+                "step": "Flow Settings"
+            },
             "value": true
         },
         {
@@ -50,11 +55,20 @@
             "display":{
                 "name": "Specify Initiator flow name",
                 "visible":true
+            },
+            "wizard": {
+                "type": "string",
+                "step": "Flow Settings"
             }
         }
      ]
     },
     "outputs": [
+        {
+            "name": "ledgerTxn",
+            "type": "any",
+            "required":false
+        }
     ],
     "actions": [
           {

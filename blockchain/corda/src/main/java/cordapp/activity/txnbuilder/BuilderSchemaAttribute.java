@@ -1,8 +1,7 @@
 package cordapp.activity.txnbuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import smartcontract.trigger.transaction.model.composer.HLCAttribute;
+import com.tibco.dovetail.core.model.composer.HLCAttribute;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BuilderSchemaAttribute extends HLCAttribute {

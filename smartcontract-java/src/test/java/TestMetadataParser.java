@@ -13,10 +13,9 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-
-import smartcontract.trigger.transaction.MetadataParser;
-import smartcontract.trigger.transaction.model.composer.HLCMetadata.ResourceType;
-import smartcontract.trigger.transaction.model.composer.HLCResource;
+import com.tibco.dovetail.core.model.composer.HLCResource;
+import com.tibco.dovetail.core.model.composer.MetadataParser;
+import com.tibco.dovetail.core.model.composer.HLCMetadata.ResourceType;
 
 public class TestMetadataParser {
 

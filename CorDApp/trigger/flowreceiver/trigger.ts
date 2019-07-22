@@ -34,12 +34,14 @@ export class R3FlowReceiverTriggerHandler extends WiServiceHandlerContribution {
         let input = context.getField("flowType").value;
         switch (fieldName) {
             case "useAnonymousIdentity":
+            case "output":
                 return Observable.create(observer => {
                     let vresult: IValidationResult = ValidationResult.newValidationResult();
                     if(input==="receiver")
                         vresult.setVisible(true);
                     else
-                    vresult.setVisible(false);
+                        vresult.setVisible(false);
+
                     observer.next(vresult);
                 });
         }

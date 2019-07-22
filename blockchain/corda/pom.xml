@@ -16,13 +16,13 @@
   	<dependency>
   		<groupId>net.corda</groupId>
   		<artifactId>corda-core</artifactId>
-  		<version>4.0</version>
+  		<version>4.1</version>
   		<scope>provided</scope>
   	</dependency>
   	<dependency>
   		<groupId>net.corda</groupId>
   		<artifactId>corda-finance-contracts</artifactId>
-  		<version>4.0</version>
+  		<version>4.1</version>
   	</dependency>
   	<dependency>
   		<groupId>junit</groupId>
@@ -33,17 +33,18 @@
   	<dependency>
   		<groupId>net.corda</groupId>
   		<artifactId>corda-confidential-identities</artifactId>
-  		<version>4.0</version>
+  		<version>4.1</version>
   	</dependency>
   	<dependency>
   		<groupId>net.corda</groupId>
   		<artifactId>corda-test-utils</artifactId>
-  		<version>4.0</version>
+  		<version>4.1</version>
+  		<scope>test</scope>
   	</dependency>
   	<dependency>
         <groupId>net.corda</groupId>
         <artifactId>corda-node-driver</artifactId>
-        <version>4.0</version>
+        <version>4.1</version>
         <scope>test</scope>
     </dependency>
   	<dependency>
@@ -70,7 +71,13 @@
   	<dependency>
   		<groupId>net.corda</groupId>
   		<artifactId>corda-finance-workflows</artifactId>
-  		<version>4.0</version>
+  		<version>4.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.gradle</groupId>
+  		<artifactId>gradle-tooling-api</artifactId>
+  		<version>4.10.1</version>
+  		<scope>provided</scope>
   	</dependency>
    </dependencies>
   <build>
@@ -219,6 +226,14 @@
       <id>jitpack</id>
       <name>jitpack Repository</name>
       <url>https://jitpack.io</url>
+    </repository>
+     <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>gradle</id>
+      <name>gradle Repository</name>
+      <url> https://repo.gradle.org/gradle/libs-releases-local/</url>
     </repository>
   </repositories>
    <version>0.1.4</version>

@@ -32,7 +32,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.testing.core.TestIdentity;
 import net.corda.testing.node.MockServices;
-import smartcontract.activity.payment.payment;
+import smartcontract_corda.activity.payment.payment;
 
 public class TestActivity {
 	
@@ -113,9 +113,11 @@ public class TestActivity {
 			
 			bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
 			TestIdentity charlie = new TestIdentity(new CordaX500Name("Charlie", "New York", "GB"));
+			TestIdentity alice = new TestIdentity(new CordaX500Name("alice", "New York", "GB"));
+			TestIdentity john = new TestIdentity(new CordaX500Name("alice", "New York", "GB"));
 			mock = new MockServices(bob);
 			
-			String json = "{\"funds\":[{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"bob\",\"issuerRef\":\"100\",\"owner\":\"charlie\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"bob\",\"issuerRef\":\"100\",\"owner\":\"charlie\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"alice\",\"issuerRef\":\"100\",\"owner\":\"charlie\"}], \"sendPaymentTo\":\"john\", \"sendChangeTo\":\"charlie\", \"paymentAmt\":{\"currency\":\"USD\", \"quantity\":250}}";
+			String json = "{\"funds\":[{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.partyToString(bob.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.partyToString(charlie.getParty()) + "\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.partyToString(bob.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.partyToString(charlie.getParty()) + "\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.partyToString(alice.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.partyToString(charlie.getParty()) + "\"}], \"sendPaymentTo\":\"" + CordaUtil.partyToString(john.getParty()) + "\", \"sendChangeTo\":\""+ CordaUtil.partyToString(charlie.getParty()) + "\", \"paymentAmt\":{\"currency\":\"USD\", \"quantity\":250}}";
 			DocumentContext doc = JsonUtil.getJsonParser().parse(json);
 			
 			

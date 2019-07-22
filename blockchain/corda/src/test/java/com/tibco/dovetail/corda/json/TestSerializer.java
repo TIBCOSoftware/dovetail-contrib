@@ -36,7 +36,6 @@ public class TestSerializer {
 		//CordaUtil.initWithCordaRuntime(mock);
 		CordaUtil.setServiceHub(mock);
 		
-		
 }
 	@Test
 	public void testAmount() {
@@ -91,10 +90,10 @@ public class TestSerializer {
 		try {
 			System.out.println("bob=" + pbob.toString());
 			
-			String json = CordaUtil.serialize( pbob);
+			String json = CordaUtil.partyToString( pbob);
 			System.out.println("json=" + json); 
 			
-			Party amt2 = (Party) CordaUtil.deserialize(json, AbstractParty.class);
+			Party amt2 = (Party) CordaUtil.partyFromString(json);
 			
 			System.out.println("bob2="+ amt2.toString());
 		} catch (Exception e) {

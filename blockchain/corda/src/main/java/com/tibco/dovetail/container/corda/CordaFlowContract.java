@@ -8,11 +8,8 @@ package com.tibco.dovetail.container.corda;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.jayway.jsonpath.DocumentContext;
-import com.tibco.dovetail.core.model.flow.FlowAppConfig;
-import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
-import kotlin.Triple;
 import net.corda.core.contracts.*;
 import net.corda.core.serialization.CordaSerializable;
 import net.corda.core.transactions.LedgerTransaction;
@@ -25,10 +22,11 @@ import java.util.stream.Collectors;
 
 @CordaSerializable
 public abstract class CordaFlowContract {
-    private static LinkedHashMap<String, ITrigger> contractTriggers = null;
+ //   private static LinkedHashMap<String, ITrigger> contractTriggers = null;
 
     protected abstract String getResourceHash();
     protected abstract InputStream getTransactionJson();
+	protected abstract ITrigger getTrigger(String name);
 
     public void verifyTransaction(LedgerTransaction tx) throws IllegalArgumentException {
 
@@ -41,24 +39,22 @@ public abstract class CordaFlowContract {
 
         tx.getInputStates().forEach(it -> {
             it.getParticipants().forEach(p -> {
-               // if(!(p instanceof AnonymousParty))
-                    allStateKeys.add(p.getOwningKey());
+                allStateKeys.add(p.getOwningKey());
             });
         });
 
         tx.getOutputs().forEach(it -> {
             it.getData().getParticipants().forEach(p -> {
-              //  if(!(p instanceof AnonymousParty))
-                    allStateKeys.add(p.getOwningKey());
+            		allStateKeys.add(p.getOwningKey());
             });
         });
 
         ContractsDSL.requireThat(check -> {
-            check.using("signatures for all state participants must exist: cmd keys=" + allCmdKeys.toString() + ", state keys=" + allStateKeys.toString(), allCmdKeys.containsAll(allStateKeys));
+            check.using("signatures for all state participants must exist: cmd keys=" + CordaUtil.serialize(allCmdKeys) + ", state keys=" + CordaUtil.serialize(allStateKeys), allCmdKeys.containsAll(allStateKeys));
             return null;
         });
 
-       compileAndCacheTrigger();
+      // compileAndCacheTrigger();
 
         tx.getCommands().stream().filter(c -> c.getValue() instanceof CordaCommandDataWithData)
                                  .forEach(c -> {
@@ -72,7 +68,7 @@ public abstract class CordaFlowContract {
                                          CordaContainer ctnr = new CordaContainer(tx.getInputStates(),  txName);
                                          CordaTransactionService txnSvc = new CordaTransactionService(tx, command);
                                         
-                                         contractTriggers.get(txName).invoke(ctnr, txnSvc);
+                                         getTrigger(txName).invoke(ctnr, txnSvc);
 
                                          CordaDataService data = (CordaDataService) ctnr.getDataService();
                                          validateOutputs(tx, data.getModifiedStates());
@@ -90,7 +86,7 @@ public abstract class CordaFlowContract {
         CordaUtil.compare(txOuts, outputs);
     }
     
-    private synchronized void compileAndCacheTrigger() {
+  /*  private synchronized void compileAndCacheTrigger() {
     	 try {
  	        //compile flow app and cache the trigger object
     		   InputStream txJson = getTransactionJson();
@@ -104,10 +100,10 @@ public abstract class CordaFlowContract {
          		throw new IllegalArgumentException(e);
          }
     }
-    
-    public List<Triple<String, DocumentContext, CommandData>> runCommand(CordaCommandDataWithData command, List<ContractState> inputStates) {
+    */
+    public ContractCommandOutput runCommand(CordaCommandDataWithData command, List<ContractState> inputStates) {
     		try {
-    			 compileAndCacheTrigger();
+    		//	 compileAndCacheTrigger();
     	
              String txName = (String)command.getData("command");
             
@@ -115,10 +111,10 @@ public abstract class CordaFlowContract {
              CordaContainer ctnr = new CordaContainer(inputStates,  txName);
              CordaTransactionService txnSvc = new CordaTransactionService(null, command);
             
-             contractTriggers.get(txName).invoke(ctnr, txnSvc);
+             getTrigger(txName).invoke(ctnr, txnSvc);
 
              CordaDataService data = (CordaDataService) ctnr.getDataService();
-             List<Triple<String,DocumentContext, CommandData>> outputs = data.getModifiedStatesAndNames();
+             ContractCommandOutput outputs = data.getContractCommandOutput();
             
              System.out.println("****** finish " + txName + ". ********");
              return outputs;

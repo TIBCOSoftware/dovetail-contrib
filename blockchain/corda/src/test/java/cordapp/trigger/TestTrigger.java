@@ -7,7 +7,9 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -15,22 +17,34 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
+import com.tibco.cp.TestRuntime.MockDataService;
+import com.tibco.cp.TestRuntime.MockEventService;
+import com.tibco.cp.TestRuntime.MockLogService;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
+import com.tibco.dovetail.container.cordapp.AppDataService;
 import com.tibco.dovetail.container.cordapp.AppFlow;
 import com.tibco.dovetail.container.cordapp.AppTransactionService;
 import com.tibco.dovetail.core.model.flow.FlowAppConfig;
 import com.tibco.dovetail.core.model.flow.HandlerConfig;
 import com.tibco.dovetail.core.model.flow.Resources;
 import com.tibco.dovetail.core.model.flow.TriggerConfig;
+import com.tibco.dovetail.core.runtime.compilers.AppCompiler;
 import com.tibco.dovetail.core.runtime.compilers.FlowCompiler;
 import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
+import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.flow.TransactionFlow;
+import com.tibco.dovetail.core.runtime.services.IContainerService;
+import com.tibco.dovetail.core.runtime.services.IDataService;
+import com.tibco.dovetail.core.runtime.services.IEventService;
+import com.tibco.dovetail.core.runtime.services.ILogService;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.FlowException;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.transactions.SignedTransaction;
+import net.corda.core.transactions.TransactionBuilder;
 import net.corda.testing.core.TestIdentity;
 import net.corda.testing.node.MockServices;
 public class TestTrigger {
@@ -48,10 +62,8 @@ public class TestTrigger {
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream in = this.getClass().getResourceAsStream("iouapp.json");
 		
-		FlowAppConfig app = FlowAppConfig.parseModel(in);
-	 	DovetailEngine engine = new DovetailEngine(app);
-	 	LinkedHashMap<String, ITrigger> contractTriggers = engine.getTriggers();
-	 	assertEquals(2, contractTriggers.size());
+		LinkedHashMap<String, ITrigger> contractTriggers = AppCompiler.compileApp(in);
+	 	assertEquals(4, contractTriggers.size());
 	 	
 	 	assertNotNull(contractTriggers.get("IssueIOUInitiator"));
 	 	
@@ -74,6 +86,43 @@ public class TestTrigger {
 	 		else
 	 			System.out.println(k + "=" + v);
 	 	});
+	 	
+	 	
+	// 	AppContainer ctnr = new AppContainer(mock, new MockFlow(false));
+	// 	contractTriggers.get("IssueIOUInitiator").invoke(ctnr, txn);
+	}
+	
+	@Test
+	public void testschedulable () throws Exception {
+		CordaUtil.setServiceHub(mock);
+		ObjectMapper mapper = new ObjectMapper();
+		InputStream in = this.getClass().getResourceAsStream("iouapp.json");
+		
+		LinkedHashMap<String, ITrigger> contractTriggers = AppCompiler.compileApp(in);
+	 	assertNotNull(contractTriggers.get("autopayment"));
+	 	
+	 	ITrigger trigger = contractTriggers.get("autopayment");
+	 	
+	 	LinkedHashMap<String, Object> args = new LinkedHashMap<String, Object>();
+	 	TestIdentity issuer = new TestIdentity(new CordaX500Name("Issuer", "New York", "GB"));
+	 	TestIdentity owner = new TestIdentity(new CordaX500Name("Owner", "New York", "GB"));
+	 	
+	 	args.put("transactionInput", new com.example.iou.IOU(issuer.getParty(), owner.getParty(), DOLLARS(100), DOLLARS(0), new UniqueIdentifier()));
+	 	
+	 	
+	 	AppTransactionService txn = new AppTransactionService(args, "autopayment", self.getParty());
+	 	Map<String, Object> triggerData = txn.resolveTransactionInput(trigger.getHandler("autopayment").getFlowInputs());
+	 	triggerData.forEach((k,v) -> {
+	 		if (v instanceof DocumentContext)
+	 			System.out.println(k + "=" + ((DocumentContext)v).jsonString());
+	 		else
+	 			System.out.println(k + "=" + v);
+	 	});
+	 	
+	 	
+	 	AppContainer ctnr = new AppContainer(mock, new MockFlow(false));
+	 	ReplyData reply = trigger.invoke(ctnr, txn);
+	 	System.out.println("rely=" + reply.getObjectData());
 	}
 	
 	class MockFlow extends AppFlow {
@@ -90,4 +139,118 @@ public class TestTrigger {
 		}
 		
 	}
+	
+	public class MockContainer implements IContainerService {
+
+		@Override
+		public IDataService getDataService() {
+			return new AppDataService(mock, new TransactionBuilder(), UUID.randomUUID());
+		}
+
+		@Override
+		public IEventService getEventService() {
+			return new MockEventService();
+		}
+
+		@Override
+		public ILogService getLogService() {
+			return new MockLogService();
+		}
+
+		@Override
+		public void addContainerProperty(String name, Object v) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Object getContainerProperty(String name) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
+	
+	public class MockDataService implements IDataService {
+
+		@Override
+		public DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
+			// TODO Auto-generated method stub
+			return assetValue;
+		}
+
+		@Override
+		public DocumentContext getState(String assetName, String assetKey, DocumentContext keyValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public DocumentContext deleteState(String assetName, String assetKey, DocumentContext keyValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<DocumentContext> lookupState(String assetName, String assetKey, DocumentContext keyValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<DocumentContext> getHistory(String assetName, String assetKey, DocumentContext keyValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<DocumentContext> queryState(Object query) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean processPayment(DocumentContext assetValue) {
+			// TODO Auto-generated method stub
+			return true;
+		}
+	}
+	
+	public class MockEventService implements IEventService {
+
+		@Override
+		public void publish(String evtName, String metadata, String evtPayload) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+	
+	public class MockLogService implements ILogService {
+
+		@Override
+		public void debug(String msg) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void info(String msg) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void warning(String msg) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void error(String errCode, String msg, Throwable err) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
 }

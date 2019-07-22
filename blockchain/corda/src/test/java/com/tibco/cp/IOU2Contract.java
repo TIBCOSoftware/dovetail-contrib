@@ -7,6 +7,8 @@ package com.tibco.cp;
 
 import com.tibco.dovetail.container.corda.CordaCommandDataWithData;
 import com.tibco.dovetail.container.corda.CordaFlowContract;
+import com.tibco.dovetail.core.runtime.trigger.ITrigger;
+
 import net.corda.core.contracts.Contract;
 import net.corda.core.transactions.LedgerTransaction;
 
@@ -49,5 +51,11 @@ public class IOU2Contract extends  CordaFlowContract implements Contract {
 	@Override
 	public void verify(LedgerTransaction tx) throws IllegalArgumentException {
 		verifyTransaction(tx);
+	}
+
+	@Override
+	protected ITrigger getTrigger(String name) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

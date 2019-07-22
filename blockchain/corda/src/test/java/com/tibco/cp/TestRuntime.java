@@ -108,6 +108,18 @@ public class TestRuntime {
 		public ILogService getLogService() {
 			return new MockLogService();
 		}
+
+		@Override
+		public void addContainerProperty(String name, Object v) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Object getContainerProperty(String name) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 		
 	}
 	

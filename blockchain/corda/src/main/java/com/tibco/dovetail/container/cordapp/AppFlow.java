@@ -1,6 +1,5 @@
 package com.tibco.dovetail.container.cordapp;
 
-import java.io.InputStream;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,8 +11,7 @@ import java.util.stream.Collectors;
 
 import com.tibco.dovetail.container.cordapp.flows.IdentitySyncFlowInitiator;
 import com.tibco.dovetail.container.cordapp.flows.ObserverFlowInitiator;
-import com.tibco.dovetail.core.model.flow.FlowAppConfig;
-import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
+import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
 import co.paralleluniverse.fibers.Suspendable;
@@ -42,7 +40,7 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	private TransactionBuilder builder = new TransactionBuilder();
 	private ArrayList<StateAndRef<?>> inputStates = new ArrayList<StateAndRef<?>>();
 	private ArrayList<ContractState> outputStates = new ArrayList<ContractState>();
-	private Set<CommandData> commands = new HashSet<CommandData>();
+	private Map<CommandData, Set<PublicKey>> commands = new LinkedHashMap<CommandData, Set<PublicKey>>();
 	
 	private Set<Party> counterParties = new HashSet<Party>();
 	private boolean requireIdentitySync = false;
@@ -107,32 +105,21 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
         }
 	}
 	
-	protected void runFlow(String flowName, ITrigger trigger, LinkedHashMap<String, Object> args) {
+	@Suspendable
+	protected ReplyData runFlow(String flowName, ITrigger trigger, LinkedHashMap<String, Object> args) throws FlowException {
        try {
              System.out.println("****** run flow " + flowName + "... ******");
              AppContainer ctnr = new AppContainer(this);
              AppTransactionService txnSvc = new AppTransactionService(args, flowName, selfIdentity==null?getOurIdentity():selfIdentity);
             
-             trigger.invoke(ctnr, txnSvc);
+             ReplyData reply = trigger.invoke(ctnr, txnSvc);
              
              System.out.println("****** flow " + flowName + " done ********");
+             return reply;
          }catch (Exception e){
-             throw new RuntimeException(e);
+             throw new FlowException(e);
          }
 	}
-	
-	protected synchronized LinkedHashMap<String, ITrigger> compileAndCacheTrigger(InputStream txJson) {
-   	 try {
-	        //compile flow app and cache the trigger object
-        	 	FlowAppConfig app = FlowAppConfig.parseModel(txJson);
-        	 	DovetailEngine engine = new DovetailEngine(app);
-        	 	return engine.getTriggers();
-	        
-        }catch(Exception e) {
-        		throw new RuntimeException(e);
-        }
-   }
-	
 	
 	public TransactionBuilder getTransactionBuilder() {
 		return this.builder;
@@ -140,7 +127,7 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 
 	protected SignedTransaction initiatorSignTxn(ProgressTracker initiatorTracker) {
 		initiatorTracker.setCurrentStep(ProgressTrackerSteps.BUILD_TRANSACTION);
-		Set<PublicKey> signkeys= new HashSet<PublicKey>();
+
 		Set<PublicKey> inannonkeys= new HashSet<PublicKey>();
 		Set<PublicKey> outannonkeys= new HashSet<PublicKey>();
 		
@@ -152,7 +139,6 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 		inputStates.forEach(in -> {
 			builder.addInputState(in);
 			in.getState().getData().getParticipants().forEach(p -> {
-				signkeys.add(p.getOwningKey());
 				Party signparty = null;
 				if(p instanceof AnonymousParty) {
 					signparty = this.getServiceHub().getIdentityService().requireWellKnownPartyFromAnonymous(p);
@@ -172,7 +158,6 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 		outputStates.forEach(out -> {
 			builder.addOutputState(out);
 			out.getParticipants().forEach(p -> {
-				signkeys.add(p.getOwningKey());
 				Party signparty = null;
 				if(p instanceof AnonymousParty) {
 					signparty = this.getServiceHub().getIdentityService().requireWellKnownPartyFromAnonymous(p);
@@ -188,7 +173,7 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 			});
 		});
 		
-		commands.forEach(cmd -> builder.addCommand(cmd, new ArrayList<PublicKey>(signkeys)));
+		commands.forEach((cmd, keys) -> builder.addCommand(cmd, new ArrayList<PublicKey>(keys)));
 		
 		if(!inputStates.isEmpty() && !inannonkeys.containsAll(outannonkeys)) {
 			this.requireIdentitySync = true;
@@ -359,8 +344,13 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 		outputStates.add(output);
 	}
 
-	public void addCommand(CommandData cmd) {
-		commands.add(cmd);
+	public void addCommand(CommandData cmd, Set<PublicKey> signkeys) {
+		Set<PublicKey> keys = this.commands.get(cmd);
+		if(keys == null) {
+			commands.put(cmd, signkeys);
+		} else {
+			keys.addAll(signkeys);
+		}
 	}
 	
 	public boolean isInitiatingFlow() {
@@ -475,5 +465,11 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 					ProgressTrackerSteps.RECEIVE_SYNC_IDENTITIY_REQ,
 					ProgressTrackerSteps.RECEIVE_TXN_INITIATOR_SYNC_IDENTITIY,
 					ProgressTrackerSteps.RECEIVE_SYNC_OTHER_IDENTITIES);
+	}
+	
+	public static ProgressTracker getSchedulableProgressTracker() {
+		
+		return new ProgressTracker(
+					ProgressTrackerSteps.RUN_APP_FLOW);
 	}
 }

@@ -7,6 +7,7 @@ package com.tibco.dovetail.container.corda;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
@@ -18,6 +19,7 @@ import com.tibco.dovetail.corda.json.MoneyAmtDeserializer;
 import com.tibco.dovetail.corda.json.MoneyAmtSerializer;
 import com.tibco.dovetail.corda.json.PartyDeserializer;
 import com.tibco.dovetail.corda.json.PartySerializer;
+import com.tibco.dovetail.corda.json.PublicKeySerializer;
 import com.tibco.dovetail.corda.json.StateAndRefSerializer;
 import com.tibco.dovetail.corda.json.AbstractPartyDeserializer;
 import com.tibco.dovetail.corda.json.AbstractPartySerializer;
@@ -42,6 +44,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.AnonymousParty;
+import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.node.ServiceHub;
 
@@ -70,6 +73,7 @@ public class CordaUtil {
 		module.addSerializer(Cash.State.class, new CashSerializer());
 		module.addDeserializer(Cash.State.class, new CashDeserializer());
 		module.addSerializer(StateAndRef.class, new StateAndRefSerializer());
+		module.addSerializer(PublicKey.class, new PublicKeySerializer());
 		mapper.registerModule(module);
 	}
 	
@@ -156,9 +160,9 @@ public class CordaUtil {
     
     public static String partyToString(AbstractParty p) {
  		return Base58.encode(p.getOwningKey().getEncoded());
- }
+    }
  
-	 public static AbstractParty partyFromString(String s) {
+	public static AbstractParty partyFromString(String s) {
 		 if(serviceHub == null)
 			 throw new RuntimeException("serviceHub is not initalized");
 		 
@@ -170,9 +174,24 @@ public class CordaUtil {
  			return serviceHub.getIdentityService().partyFromKey(key);
 
 	 }
+	
+	public static AbstractParty partyFromCommonName(String s) {
+		 if(serviceHub == null)
+			 throw new RuntimeException("serviceHub is not initalized");
+		 
+		 return serviceHub.getIdentityService().wellKnownPartyFromX500Name(CordaX500Name.parse(s));
+	 }
 	 
 	 public static void setServiceHub(ServiceHub hub) {
 		 serviceHub = hub;
+	 }
+	 
+	 public static PublicKey decodeKey(String key) {
+		 return net.corda.core.crypto.Crypto.decodePublicKey(Base58.decode(key));
+	 }
+	 
+	 public static JsonNode toJsonNode(Object v) {
+		 return mapper.valueToTree(v);
 	 }
     
 }

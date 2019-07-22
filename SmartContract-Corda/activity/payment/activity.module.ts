@@ -22,6 +22,6 @@ import { WiServiceContribution} from "wi-studio/app/contrib/wi-contrib";
   bootstrap: []
 })
 
-export default class PaymebntActivityModule {
+export default class PaymentActivityModule {
 
 }

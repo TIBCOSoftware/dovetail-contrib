@@ -1,4 +1,4 @@
-package smartcontract.activity.payment;
+package smartcontract_corda.activity.payment;
 
 
 import com.jayway.jsonpath.DocumentContext;

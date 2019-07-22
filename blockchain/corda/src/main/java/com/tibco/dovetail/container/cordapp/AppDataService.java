@@ -10,6 +10,7 @@ import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.corda.json.StateAndRefSerializer;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 
+import co.paralleluniverse.fibers.Suspendable;
 import kotlin.jvm.functions.Function0;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.ContractState;
@@ -32,17 +33,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 
 public class AppDataService implements IDataService {
 	private ServiceHub serviceHub;
 	private TransactionBuilder builder;
+	private UUID flowRunId;
 	private Map<String, StateAndRef> states = new LinkedHashMap<String, StateAndRef>();
 	
-	public AppDataService(ServiceHub hub, TransactionBuilder builder) {
+	public AppDataService(ServiceHub hub, TransactionBuilder builder, UUID runId) {
 		this.serviceHub = hub;
 		this.builder = builder;
+		this.flowRunId = runId;
 	}
 
 	@Override
@@ -96,6 +100,7 @@ public class AppDataService implements IDataService {
 		return this.states.get(ref);
 	}
 	
+	@Suspendable
 	public List<StateAndRef<Cash.State>> getFunds(Set<AbstractParty> issuers, Amount<Currency> amt) {
 	
 		try {
@@ -107,7 +112,7 @@ public class AppDataService implements IDataService {
 					}
 				});
 			
-			List<StateAndRef<Cash.State>> funds = db.unconsumedCashStatesForSpending(this.serviceHub, amt, issuers, null, builder.getLockId(), new HashSet<OpaqueBytes>());
+			List<StateAndRef<Cash.State>> funds = db.unconsumedCashStatesForSpending(this.serviceHub, amt, issuers, null, this.flowRunId, new HashSet<OpaqueBytes>());
 			funds.forEach(s -> {
 				states.put(StateAndRefSerializer.getRef(s), s);
 			});

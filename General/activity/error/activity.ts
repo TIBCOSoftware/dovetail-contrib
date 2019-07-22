@@ -14,7 +14,7 @@ import {
 
 @WiContrib({})
 @Injectable()
-export class TxnResponseActivityContributionHandler extends WiServiceHandlerContribution {
+export class ErrorActivityContributionHandler extends WiServiceHandlerContribution {
     constructor(private injector: Injector, private http: Http,) {
         super(injector, http);
     }

@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.jayway.jsonpath.DocumentContext;
+import com.tibco.dovetail.core.model.composer.HLCDecorator;
+import com.tibco.dovetail.core.model.composer.HLCMetadata;
+import com.tibco.dovetail.core.model.composer.HLCResource;
+import com.tibco.dovetail.core.model.composer.MetadataParser;
+import com.tibco.dovetail.core.model.composer.HLCMetadata.ResourceType;
 import com.tibco.dovetail.core.model.flow.HandlerConfig;
 import com.tibco.dovetail.core.model.flow.Resources;
 import com.tibco.dovetail.core.model.flow.TriggerConfig;
@@ -24,10 +29,6 @@ import com.tibco.dovetail.core.runtime.transaction.TxnACL;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
 import co.paralleluniverse.fibers.Suspendable;
-import smartcontract.trigger.transaction.model.composer.HLCDecorator;
-import smartcontract.trigger.transaction.model.composer.HLCMetadata;
-import smartcontract.trigger.transaction.model.composer.HLCMetadata.ResourceType;
-import smartcontract.trigger.transaction.model.composer.HLCResource;
 
 public class transaction implements ITrigger{
 	private Map<String, TransactionFlow> handlers = new LinkedHashMap<String, TransactionFlow>();

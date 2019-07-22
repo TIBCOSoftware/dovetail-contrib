@@ -1,3 +1,4 @@
+/// <amd-dependency path="./common"/>
 import {Injectable, Injector} from "@angular/core";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
@@ -16,6 +17,7 @@ import {
 } from "wi-studio/app/contrib/wi-contrib";
 import { ITriggerContribution, IFieldDefinition, IConnectionAllowedValue, MODE } from "wi-studio/common/models/contrib";
 import * as lodash from "lodash";
+const commonjs = require("./common");
 
 @WiContrib({})
 @Injectable()
@@ -26,24 +28,66 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
     
     value = (fieldName: string, context: ITriggerContribution): Observable<any> | any => {
         switch(fieldName) {
-    
             case "transactionInput":
-               let params = context.getField("inputParams").value;
-               return this.createFlowInputSchema(params.value);
+                let schemaSelection = context.getField("schemaSelection").value;
+                if (schemaSelection === "user"){
+                    if(Boolean(context.getField("inputParams").value))
+                        return commonjs.createFlowInputSchema(context.getField("inputParams").value.value)
+                    else
+                        return null;
+                       
+                } else {
+                    return Observable.create(observer => {
+                        this.getSchemas(schemaSelection).subscribe( schema => {
+                            observer.next(schema);
+                        });
+                    });  
+                }
+            case "schemaSelection":
+                
+                let connectionRefs = [];
+                connectionRefs.push({
+                    "unique_id": "user",
+                    "name": "User Defined..."
+                });
+                return Observable.create(observer => {
+                        WiContributionUtils.getConnections(this.http, "CorDApp").subscribe((data: IConnectorContribution[]) => {
+                            data.forEach(connection => {
+                                if ((<any>connection).isValid) {
+                                    for(let i=0; i < connection.settings.length; i++) {
+                                        if(connection.settings[i].name === "name"){
+                                            connectionRefs.push({
+                                                "unique_id": WiContributionUtils.getUniqueId(connection),
+                                                "name": connection.settings[i].value
+                                            });
+                                            break;
+                                        }
+                                    }
+                                }
+                            });
+                            observer.next(connectionRefs);
+                        });
+                    });
+                
             default:
                 return null;
         }
-       
-            
     }
 
     validate = (fieldName: string, context: ITriggerContribution): Observable<IValidationResult> | IValidationResult => {
         let input = context.getField("hasObservers").value;
+        let schemaSelection = context.getField("schemaSelection").value;
         switch (fieldName) {
             case "observerManual":
                 return Observable.create(observer => {
                     let vresult: IValidationResult = ValidationResult.newValidationResult();
                     vresult.setVisible(input);
+                    observer.next(vresult);
+                });
+            case "inputParams":
+                return Observable.create(observer => {
+                    let vresult: IValidationResult = ValidationResult.newValidationResult();
+                    vresult.setVisible(schemaSelection == "user");
                     observer.next(vresult);
                 });
         }
@@ -76,6 +120,8 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
                     initrigger.handler.settings[s].value = context.getField("observerFlowName").value;
                 } else if (initrigger.handler.settings[s].name === "useExisting") {
                     initrigger.handler.settings[s].value = context.getField("useExisting").value;
+                } else if (initrigger.handler.settings[s].name === "schemaSelection") {
+                    initrigger.handler.settings[s].value = context.getField("schemaSelection").value;
                 } else {
                     let inputp = context.getField("inputParams");
                     initrigger.handler.settings[s].value = {
@@ -84,107 +130,39 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
                     };
                 }
             }
+            /*
             for (let j = 0; j < initrigger.outputs.length; j++) {
                 if (initrigger.outputs[j].name === "transactionInput") {
                     initrigger.outputs[j].value =  {
-                        "value": this.createFlowInputSchema(context.getField("inputParams").value),
+                        "value": context.getField("transactionInput").value,
                         "metadata": ""
                     };
                     break;
                 }
-            }
+            }*/
         }
 
         let flowName = context.getFlowName();
         let iniflowModel = modelService.createFlow(flowName, context.getFlowDescription());
         let builder = modelService.createFlowElement("CorDApp/txnbuilder");
         iniflowModel.addFlowElement(builder);
-      //  let sign = modelService.createFlowElement("CorDApp/signandcommit");
-      //  iniflowModel.addFlowElement(sign);
         result = result.addTriggerFlowMapping(lodash.cloneDeep(initrigger), lodash.cloneDeep(iniflowModel));
-
-    /*    let rectrigger = modelService.createTriggerElement("CorDApp/R3FlowReceiver");
-        if (rectrigger) {
-            for (let j = 0; j < rectrigger.settings.length; j++) {
-                if (rectrigger.handler.settings[j].name === "initiatorFlow") {
-                    rectrigger.handler.settings[j].value = flowName + "Initiator"; 
-                } else if(rectrigger.handler.settings[j].name === "useAnonymousIdentity"){
-                    rectrigger.handler.settings[j].value = context.getField("useAnonymousIdentity").value;
-                }
-            }
-        }
-        
-        let recflowModel = modelService.createFlow(flowName+"Responder", context.getFlowDescription());
-        let recsign = modelService.createFlowElement("CorDApp/receiversign");
-        recflowModel.addFlowElement(recsign);
-        result = result.addTriggerFlowMapping(lodash.cloneDeep(rectrigger), lodash.cloneDeep(recflowModel));
-        */
         return flowName;
     }
-
-    createFlowInputSchema(inputParams):String {
-        if(Boolean(inputParams) == false)
-            return "{}";
-
-       let inputs = JSON.parse(inputParams);
-       let schema = {schema:"http://json-schema.org/draft-04/schema#", type: "object", properties:{}}
-       let metadata = {metadata: {type: "Transaction"}, attributes: []};
-
-       if(inputs) {
-           for(let i=0; i<inputs.length; i++){
-                let name = inputs[i].parameterName;
-                let tp = inputs[i].type;
-                let repeating = inputs[i].repeating;
-                let partyType = inputs[i].partyType;
-
-                let datatype = {type: tp.toLowerCase()};
-                let javatype = tp;
-                let isRef = false;
-                let isArray = false;
-             //   let useConfidentialIdentity = inputs[i].anonymous;
-                let attr = {};
-
-                switch (tp) {
-                    case "Party":
-                        datatype.type = "string";
-                        javatype = "net.corda.core.identity.Party";
-                        isRef = true;
-                        break;
-                    case "LinearId":
-                        datatype.type = "string";
-                       // datatype.type = "object";
-                      //  datatype["properties"] = {uuid: {type: "string"}, externalId: {type: "string"}};
-                        javatype = "net.corda.core.contracts.UniqueIdentifier";
-                        break;
-                    case "Amount<Currency>":
-                        datatype.type = "object";
-                        datatype["properties"] = {currency: {type: "string"}, quantity: {type: "number"}};
-                        javatype = "net.corda.core.contracts.Amount<Currency>";
-                        break;
-                    case "Integer":
-                    case "Long":
-                        datatype.type = "number";
-                        break;
-                }
-                if(repeating === "true"){
-                    schema.properties[name] = {type: "array", items: {datatype}}
-                    isArray = true;
-                } else {
-                    schema.properties[name] = datatype
-                }
-
-                attr["name"] = name;
-                attr["type"] = javatype;
-                attr["isRef"] = isRef
-                attr["isArray"] = isArray;
-                attr["partyType"] = partyType;
-               // attr["isAnonymous"] = useConfidentialIdentity;
-                metadata.attributes.push(attr);
-           }
-           schema["description"] = JSON.stringify(metadata);
-           return JSON.stringify(schema);
-       } else {
-           return "{}";
-       }
+    getSchemas(conId):  Observable<any> {
+        let schemas = new Map();
+        return Observable.create(observer => {
+            WiContributionUtils.getConnection(this.http, conId)
+                            .map(data => data)
+                            .subscribe(data => {
+                                let schemas = new Map();
+                                for (let setting of data.settings) {
+                                    if(setting.name === "inputParams") {
+                                        observer.next(commonjs.createFlowInputSchema(setting.value.value));
+                                        break;
+                                    }
+                                }
+                            });
+                        });
     }
 }

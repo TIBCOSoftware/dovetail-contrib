@@ -149,17 +149,33 @@
       <name>jitpack Repository</name>
       <url>https://jitpack.io</url>
     </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>gradle</id>
+      <name>gradle Repository</name>
+      <url>https://repo.gradle.org/gradle/libs-releases-local/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
       <groupId>net.corda</groupId>
       <artifactId>corda-core</artifactId>
-      <version>4.0</version>
+      <version>4.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
+          <artifactId>kotlin-stdlib-jdk8</artifactId>
+          <groupId>org.jetbrains.kotlin</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>jcl-over-slf4j</artifactId>
           <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>caffeine</artifactId>
+          <groupId>com.github.ben-manes.caffeine</groupId>
         </exclusion>
         <exclusion>
           <artifactId>rxjava</artifactId>
@@ -186,15 +202,23 @@
           <groupId>org.bouncycastle</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>hibernate-jpa-2.1-api</artifactId>
-          <groupId>org.hibernate.javax.persistence</groupId>
+          <artifactId>javax.persistence-api</artifactId>
+          <groupId>javax.persistence</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hibernate-core</artifactId>
+          <groupId>org.hibernate</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>classgraph</artifactId>
+          <groupId>io.github.classgraph</groupId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>net.corda</groupId>
       <artifactId>corda-finance-contracts</artifactId>
-      <version>4.0</version>
+      <version>4.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -202,23 +226,59 @@
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.corda</groupId>
       <artifactId>corda-confidential-identities</artifactId>
-      <version>4.0</version>
+      <version>4.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>net.corda</groupId>
       <artifactId>corda-test-utils</artifactId>
-      <version>4.0</version>
-      <scope>compile</scope>
+      <version>4.1</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>corda-test-common</artifactId>
+          <groupId>net.corda</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>corda-node</artifactId>
+          <groupId>net.corda</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>corda-mock</artifactId>
+          <groupId>net.corda</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>kotlin-test</artifactId>
+          <groupId>org.jetbrains.kotlin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>guava-testlib</artifactId>
+          <groupId>com.google.guava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>okhttp</artifactId>
+          <groupId>com.squareup.okhttp3</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>kotlin-stdlib-jdk8</artifactId>
+          <groupId>org.jetbrains.kotlin</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.corda</groupId>
       <artifactId>corda-node-driver</artifactId>
-      <version>4.0</version>
+      <version>4.1</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -268,8 +328,14 @@
     <dependency>
       <groupId>net.corda</groupId>
       <artifactId>corda-finance-workflows</artifactId>
-      <version>4.0</version>
+      <version>4.1</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.gradle</groupId>
+      <artifactId>gradle-tooling-api</artifactId>
+      <version>4.10.1</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <properties>

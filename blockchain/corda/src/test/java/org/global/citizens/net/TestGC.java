@@ -21,6 +21,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.container.corda.CordaContainer;
 import com.tibco.dovetail.container.corda.CordaDataService;
 import com.tibco.dovetail.container.corda.CordaUtil;
+import com.tibco.dovetail.core.model.composer.HLCResource;
 import com.tibco.dovetail.core.runtime.compilers.FlowCompiler;
 import com.tibco.dovetail.core.runtime.engine.ContextImpl;
 import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
@@ -34,7 +35,6 @@ import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.testing.core.TestIdentity;
 import smartcontract.trigger.transaction.ModelSchemaCompiler;
-import smartcontract.trigger.transaction.model.composer.HLCResource;
 
 
 public class TestGC {

@@ -7,8 +7,7 @@ package smartcontract.trigger.transaction;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import smartcontract.trigger.transaction.model.composer.HLCResource;
+import com.tibco.dovetail.core.model.composer.HLCResource;
 
 import java.io.IOException;
 import java.io.InputStream;
