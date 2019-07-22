@@ -7,30 +7,29 @@ import (
 	"github.com/project-flogo/core/data/expression/function"
 )
 
-type Equals struct {
-}
-
 func init() {
-	function.Register(&Equals{})
+	_ = function.Register(&fnEquals{})
 }
 
-func (s *Equals) Name() string {
+type fnEquals struct {
+}
+
+func (fnEquals) Name() string {
 	return "equals"
 }
 
-func (s *Equals) Sig() (paramTypes []data.Type, isVariadic bool) {
+func (fnEquals) Sig() (paramTypes []data.Type, isVariadic bool) {
 	return []data.Type{data.TypeString, data.TypeString}, false
 }
 
-func (s *Equals) Eval(params ...interface{}) (interface{}, error) {
-
-	str, err := coerce.ToString(params[0])
+func (fnEquals) Eval(params ...interface{}) (interface{}, error) {
+	s1, err := coerce.ToString(params[0])
 	if err != nil {
 		return nil, fmt.Errorf("string.equals function first parameter [%+v] must be string", params[0])
 	}
-	str2, err := coerce.ToString(params[1])
+	s2, err := coerce.ToString(params[1])
 	if err != nil {
 		return nil, fmt.Errorf("string.quals function second parameter [%+v] must be string", params[1])
 	}
-	return str == str2, nil
+	return s1 == s2, nil
 }

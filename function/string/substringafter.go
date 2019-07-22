@@ -22,9 +22,6 @@ func (s *Substringafter) Name() string {
 	return "substringAfter"
 }
 
-func (s *Substringafter) GetCategory() string {
-	return "string"
-}
 func (s *Substringafter) Sig() (paramTypes []data.Type, isVariadic bool) {
 	return []data.Type{data.TypeString, data.TypeString}, false
 }

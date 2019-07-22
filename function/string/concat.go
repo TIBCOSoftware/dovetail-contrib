@@ -6,44 +6,35 @@ import (
 	"github.com/project-flogo/core/data"
 	"github.com/project-flogo/core/data/coerce"
 	"github.com/project-flogo/core/data/expression/function"
-	"github.com/project-flogo/core/support/log"
 )
 
-
-type Concat struct {
-}
-
 func init() {
-	function.Register(&Concat{})
+	_ = function.Register(&fnConcat{})
 }
 
-func (s *Concat) Name() string {
+type fnConcat struct {
+}
+
+func (fnConcat) Name() string {
 	return "concat"
 }
 
-func (s *Concat) GetCategory() string {
-	return "string"
-}
-
-func (s *Concat) Sig() (paramTypes []data.Type, isVariadic bool) {
+func (fnConcat) Sig() (paramTypes []data.Type, isVariadic bool) {
 	return []data.Type{data.TypeString}, true
 }
 
-func (s *Concat) Eval(strs ...interface{}) (interface{}, error) {
-	log.RootLogger().Debugf("Start concat function with parameters %s", strs)
-	if len(strs) >= 2 {
+func (fnConcat) Eval(params ...interface{}) (interface{}, error) {
+	if len(params) >= 2 {
 		var buffer bytes.Buffer
 
-		for _, v := range strs {
+		for _, v := range params {
 			s, err := coerce.ToString(v)
 			if err != nil {
 				return nil, fmt.Errorf("concat function parameter [%+v] must be string.", v)
 			}
 			buffer.WriteString(s)
 		}
-		log.RootLogger().Debugf("Done concat function with result %s", buffer.String())
 		return buffer.String(), nil
 	}
-
-	return "", fmt.Errorf("Concat function at least have 2 arguments")
+	return "", fmt.Errorf("fnConcat function must have at least two arguments")
 }

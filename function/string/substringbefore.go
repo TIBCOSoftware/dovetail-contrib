@@ -10,7 +10,6 @@ import (
 	"github.com/project-flogo/core/data/expression/function"
 )
 
-
 type Substringbefore struct {
 }
 
@@ -22,9 +21,6 @@ func (s *Substringbefore) Name() string {
 	return "substringBefore"
 }
 
-func (s *Substringbefore) GetCategory() string {
-	return "string"
-}
 func (s *Substringbefore) Sig() (paramTypes []data.Type, isVariadic bool) {
 	return []data.Type{data.TypeString, data.TypeString}, false
 }
