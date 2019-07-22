@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var sp = &Split{}
+var sp = &fnSplit{}
 
 func TestStaticFunc_Split(t *testing.T) {
 	final1, _ := sp.Eval("TIBCO Web Integrator", " ")
@@ -24,24 +24,4 @@ func TestStaticFunc_Split(t *testing.T) {
 	assert.Equal(t, "网路", final[1])
 	assert.Equal(t, "Integrator", final[2])
 
-}
-
-func TestSplitExpression(t *testing.T) {
-	fun, err := factory.NewExpr(`string.split("seafood,name", ",")`)
-	assert.Nil(t, err)
-	assert.NotNil(t, fun)
-	v, err := fun.Eval(nil)
-	assert.Nil(t, err)
-	assert.NotNil(t, v)
-	fmt.Println(v)
-}
-
-func TestSplitExpression2(t *testing.T) {
-	fun, err := factory.NewExpr(`string.split("seafood namefood", " ")`)
-	assert.Nil(t, err)
-	assert.NotNil(t, fun)
-	v, err := fun.Eval(nil)
-	assert.Nil(t, err)
-	assert.NotNil(t, v)
-	fmt.Println(v)
 }

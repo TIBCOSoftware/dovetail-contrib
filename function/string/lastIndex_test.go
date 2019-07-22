@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-var in = &LastIndex{}
+var in = &fnLastIndex{}
 
 func TestStaticFunc_Index(t *testing.T) {
 	final1, _ := in.Eval("Integration with TIBCO Web Integrator", "Integrat")
@@ -20,14 +20,4 @@ func TestStaticFunc_Index(t *testing.T) {
 	final3, _ := in.Eval("Integration with TIBCO 网络 Integrator", "Integrat")
 	fmt.Println(final3)
 	assert.Equal(t, 30, final3)
-}
-
-func TestLastIndexExpression(t *testing.T) {
-	fun, err := factory.NewExpr(`string.lastIndex("TIBCO NAME", "NAME")`)
-	assert.Nil(t, err)
-	assert.NotNil(t, fun)
-	v, err := fun.Eval(nil)
-	assert.Nil(t, err)
-	assert.NotNil(t, v)
-	fmt.Println(v)
 }

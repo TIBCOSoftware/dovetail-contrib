@@ -7,10 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFnConcat_Eval(t *testing.T) {
-	f := &fnConcat{}
-	v, err := function.Eval(f, "a", "b")
+func TestFnLen_Eval(t *testing.T) {
+	f := &fnLen{}
+	v, err := function.Eval(f, "abc")
 
 	assert.Nil(t, err)
-	assert.Equal(t, "ab", v)
+	assert.Equal(t, 3, v)
 }
