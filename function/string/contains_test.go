@@ -1,29 +1,20 @@
 package string
 
 import (
-	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/project-flogo/core/data/expression/function"
+	"github.com/stretchr/testify/assert"
 )
 
-var con = &Contains{}
+func TestFnContains_Eval(t *testing.T) {
+	f := &fnContains{}
 
-func TestStaticFunc_Contains(t *testing.T) {
-	final1, _ := con.Eval("TIBCO Web Integrator", "Web")
-	fmt.Println(final1)
-	assert.Equal(t, true, final1)
-
-	final2, _ := con.Eval("TIBCO 网路 Integrator", "网路")
-	fmt.Println(final2)
-	assert.Equal(t, true, final2)
-}
-
-func TestContainsExpression(t *testing.T) {
-	fun, err := factory.NewExpr(`string.contains("TIBCO Web Integrator","Web")`)
+	v, err := function.Eval(f, "foo", "Bar")
 	assert.Nil(t, err)
-	assert.NotNil(t, fun)
-	v, err := fun.Eval(nil)
+	assert.False(t, v.(bool))
+
+	v, err = function.Eval(f, "foobar", "foo")
 	assert.Nil(t, err)
-	assert.Equal(t, true, v)
-	fmt.Println(v)
+	assert.True(t, v.(bool))
 }
