@@ -12,6 +12,8 @@ rm -rf /var/lib/wi/wi-contrib.git
 mkdir -p /var/lib/wi/wi-contrib.git
 echo "Copying function content to tempdir ..."
 cp -r "function" $temp_dir
+echo "Copying activity content to tempdir ..."
+cp -r "SmartContract/activity" $temp_dir
 cp Dockerfile $temp_dir
 cd $temp_dir
 echo "Building ${IMAGE_NAME}:${IMAGE_TAG} ..."
