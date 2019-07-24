@@ -124,7 +124,11 @@ func (t *smartContract) receiveAsset(stub shim.ChaincodeStubInterface, args []st
 			return shim.Error("Failed to set event")
 		}
 
-		return shim.Error(statusStr)
+		// return coode must be <400 to send event, otherwise, it won't be endorsed, and thus no block will be commited
+		return sc.Response{
+			Status:  300,
+			Message: statusStr,
+		}
 	}
 
 	//Append new attributes (For now overwrite any conflicts)
@@ -384,6 +388,7 @@ func emitEvent(stub shim.ChaincodeStubInterface, eventName string, assetUID stri
 	errevBytes, _ := json.Marshal(errev)
 	eventerr := stub.SetEvent(eventName, errevBytes)
 	if eventerr != nil {
+		fmt.Printf("failed to send event %+v\n", eventerr)
 		return -1
 	}
 	return 0

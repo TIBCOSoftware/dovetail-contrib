@@ -142,13 +142,13 @@ func (t *Trigger) Stop() error {
 }
 
 // Invoke starts the trigger and invokes the action registered in the handler,
-// and returns result as JSON string
-func (t *Trigger) Invoke(stub shim.ChaincodeStubInterface, fn string, args []string) (string, error) {
+// and returns status code and result as JSON string
+func (t *Trigger) Invoke(stub shim.ChaincodeStubInterface, fn string, args []string) (int, string, error) {
 	log.Debugf("fabric.Trigger invokes fn %s with args %+v", fn, args)
 
 	handler, ok := t.handlers[fn]
 	if !ok {
-		return "", fmt.Errorf("Handler not defined for transaction %s", fn)
+		return 400, "", fmt.Errorf("Handler not defined for transaction %s", fn)
 	}
 	triggerData := &Output{}
 
@@ -157,7 +157,7 @@ func (t *Trigger) Invoke(stub shim.ChaincodeStubInterface, fn string, args []str
 	if paramIndex != nil && len(paramIndex) > 0 {
 		paramData, err := prepareParameters(paramIndex, args)
 		if err != nil {
-			return "", err
+			return 400, "", err
 		}
 		if log.IsEnabledFor(shim.LogDebug) {
 			// debug flow data
@@ -173,7 +173,7 @@ func (t *Trigger) Invoke(stub shim.ChaincodeStubInterface, fn string, args []str
 	if trans, ok := t.transientMap[fn]; ok && trans {
 		transData, err := prepareTransient(stub)
 		if err != nil {
-			return "", err
+			return 400, "", err
 		}
 		if log.IsEnabledFor(shim.LogDebug) {
 			// debug flow data
@@ -196,26 +196,34 @@ func (t *Trigger) Invoke(stub shim.ChaincodeStubInterface, fn string, args []str
 	results, err := handler.Handle(context.Background(), triggerData.ToMap())
 	if err != nil {
 		log.Errorf("flogo flow returned error: %+v", err)
-		return "", err
+		return 500, "", err
 	}
 
 	reply := &Reply{}
 	if err := reply.FromMap(results); err != nil {
-		return "", err
+		return 500, "", err
 	}
 
+	if reply.Status != 200 {
+		log.Infof("flogo flow returned status %d with message %s", reply.Status, reply.Message)
+		return reply.Status, reply.Message, nil
+	}
 	if reply.Returns == nil {
 		log.Info("flogo flow did not return any data")
-		return "", nil
+		if reply.Message != "" {
+			return 300, reply.Message, nil
+		} else {
+			return 300, "No data returned", nil
+		}
 	}
 
 	replyData, err := json.Marshal(reply.Returns)
 	if err != nil {
 		log.Errorf("failed to serialize reply: %+v", err)
-		return "", err
+		return 500, "", err
 	}
 	log.Debugf("flogo flow returned data of type %T: %s", reply.Returns, string(replyData))
-	return string(replyData), nil
+	return 200, string(replyData), nil
 }
 
 // construct trigger output transient attributes
