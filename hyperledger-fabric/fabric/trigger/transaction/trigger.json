@@ -140,7 +140,7 @@
     "reply": [
         {
             "name": "status",
-            "type": "int"
+            "type": "number"
         },
         {
             "name": "message",

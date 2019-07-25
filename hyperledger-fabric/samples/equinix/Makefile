@@ -1,7 +1,7 @@
 MAKEFILE_THIS := $(lastword $(MAKEFILE_LIST))
 SRC_PATH      := $(patsubst %/,%,$(dir $(abspath $(MAKEFILE_THIS))))
 APP_FILE      := equinix.json
-APP_NAME      := equinix
+APP_NAME      := equinix_cc
 BUILD_PATH    := /tmp/equinix
 FAB_PATH      := $(GOPATH)/src/github.com/hyperledger/fabric-samples
 CC_DEPLOY     := $(FAB_PATH)/chaincode
