@@ -2,7 +2,9 @@ package main
 
 import (
 	"bytes"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"os"
 	"strings"
@@ -16,7 +18,9 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
+	"github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric/protos/ledger/rwset"
+	"github.com/hyperledger/fabric/protos/msp"
 	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/hyperledger/fabric/protos/utils"
 )
@@ -28,6 +32,8 @@ const (
 	org               = "org1"
 	channelID         = "mychannel"
 	cryptoPath        = "/Users/yxu/go/src/github.com/hyperledger/fabric-samples/first-network/crypto-config"
+	subEvent          = "CHAINCODE" // BLOCK, FILTERED, CHAINCODE
+	eventFilter       = "PO|add"
 )
 
 func main() {
@@ -49,117 +55,418 @@ func main() {
 		panic(errors.Wrapf(err, "Failed to create event client"))
 	}
 
-	registration, blkChan, err := client.RegisterBlockEvent()
-	if err != nil {
-		panic(errors.Wrapf(err, "Failed to register block event"))
+	if subEvent == "BLOCK" {
+		// register and wait for one block event
+		registration, blkChan, err := client.RegisterBlockEvent()
+		if err != nil {
+			panic(errors.Wrapf(err, "Failed to register block event"))
+		}
+		defer client.Unregister(registration)
+
+		fmt.Println("block event registered successfully")
+		receiveBlockEvent(blkChan)
+	} else if subEvent == "FILTERED" {
+		// register and wait for one filtered block event
+		registration, blkChan, err := client.RegisterFilteredBlockEvent()
+		if err != nil {
+			panic(errors.Wrapf(err, "Failed to register filtered block event"))
+		}
+		defer client.Unregister(registration)
+
+		fmt.Println("filtered block event registered successfully")
+		receiveFilteredBlockEvent(blkChan)
+	} else if subEvent == "CHAINCODE" {
+		// register and wait for one chaincode event
+		registration, ccChan, err := client.RegisterChaincodeEvent("equinix_cc", eventFilter)
+		if err != nil {
+			panic(errors.Wrapf(err, "Failed to register chaincode event"))
+		}
+		defer client.Unregister(registration)
+
+		fmt.Println("chaincode event registered successfully")
+		receiveChaincodeEvent(ccChan)
 	}
-	defer client.Unregister(registration)
+}
 
-	fmt.Println("block event registered successfully")
+func receiveChaincodeEvent(ccChan <-chan *fab.CCEvent) {
+	var ccEvent *fab.CCEvent
+	select {
+	case ccEvent = <-ccChan:
+		cce := unmarshalChaincodeEvent(ccEvent)
+		ccejson, err := json.Marshal(cce)
+		if err != nil {
+			fmt.Printf("got chaincode event %+v\n", cce)
+		} else {
+			fmt.Printf("got chaincode event %s\n", ccejson)
+		}
+	case <-time.After(time.Second * 3600):
+		fmt.Println("Timeout waiting for chaincode event")
+	}
+}
 
+func unmarshalChaincodeEvent(ccEvent *fab.CCEvent) *CCEventDetail {
+	ced := CCEventDetail{
+		BlockNumber: ccEvent.BlockNumber,
+		SourceURL:   ccEvent.SourceURL,
+		TxID:        ccEvent.TxID,
+		ChaincodeID: ccEvent.ChaincodeID,
+		EventName:   ccEvent.EventName,
+		Payload:     string(ccEvent.Payload),
+	}
+	return &ced
+}
+
+func receiveFilteredBlockEvent(blkChan <-chan *fab.FilteredBlockEvent) {
+	var blkEvent *fab.FilteredBlockEvent
+	select {
+	case blkEvent = <-blkChan:
+		bed, err := unmarshalFilteredBlockEvent(blkEvent)
+		if err != nil {
+			panic(err)
+		}
+		blk, err := json.Marshal(bed)
+		if err != nil {
+			fmt.Printf("got filtered block %+v\n", bed)
+		} else {
+			fmt.Printf("got filtered block %s\n", blk)
+		}
+	case <-time.After(time.Second * 3600):
+		fmt.Println("Timeout waiting for filtered block event")
+	}
+}
+
+func unmarshalFilteredBlockEvent(blkEvent *fab.FilteredBlockEvent) (*BlockEventDetail, error) {
+	blk := blkEvent.FilteredBlock
+	//	blkjson, _ := json.Marshal(blk)
+	//	fmt.Println(string(blkjson))
+
+	bed := BlockEventDetail{
+		SourceURL:    blkEvent.SourceURL,
+		Number:       blk.Number,
+		Transactions: []*TransactionDetail{},
+	}
+
+	for _, d := range blk.FilteredTransactions {
+		td := TransactionDetail{
+			TxType:    common.HeaderType_name[int32(d.Type)],
+			TxID:      d.Txid,
+			ChannelID: blk.ChannelId,
+			Actions:   []*ActionDetail{},
+		}
+		bed.Transactions = append(bed.Transactions, &td)
+		actions := d.GetTransactionActions()
+		if actions != nil {
+			for _, ta := range actions.ChaincodeActions {
+				ce := ta.GetChaincodeEvent()
+				if ce != nil && ce.ChaincodeId != "" {
+					action := ActionDetail{
+						Chaincode: &ChaincodeID{Name: ce.ChaincodeId},
+						Result: &ChaincodeResult{
+							Event: &ChaincodeEvent{
+								Name:    ce.EventName,
+								Payload: string(ce.Payload),
+							},
+						},
+					}
+					td.Actions = append(td.Actions, &action)
+				}
+			}
+		}
+	}
+	return &bed, nil
+}
+
+func receiveBlockEvent(blkChan <-chan *fab.BlockEvent) {
 	var blkEvent *fab.BlockEvent
 	select {
 	case blkEvent = <-blkChan:
-		// block number
-		fmt.Printf("Received block peer-URL %s, number %d\n", blkEvent.SourceURL, blkEvent.Block.Header.GetNumber())
-		for _, d := range blkEvent.Block.Data.Data {
-			envelope, err := utils.GetEnvelopeFromBlock(d)
-			if err != nil {
-				panic(errors.Wrapf(err, "failed to get envelope"))
-			}
-			payload, err := utils.GetPayload(envelope)
-			if err != nil {
-				panic(errors.Wrapf(err, "failed to get payload"))
-			}
-
-			// channel header
-			if payload.Header == nil {
-				panic(errors.Errorf("payload header is empty"))
-			}
-			chdr, err := utils.UnmarshalChannelHeader(payload.Header.ChannelHeader)
-			if err != nil {
-				panic(errors.Wrapf(err, "failed to unmarshal channel header"))
-			}
-			cheader, err := json.Marshal(chdr)
-			if err != nil {
-				fmt.Printf("failed to marshal channel header to json: %+v\n", err)
-			}
-			fmt.Printf("channel header: %s\n", string(cheader))
-			fmt.Printf("channel id %s, txID: %s, timestamp: %s\n", chdr.ChannelId, chdr.TxId, chdr.Timestamp.String())
-
-			txn, err := utils.GetTransaction(payload.Data)
-			if err != nil {
-				panic(errors.Wrapf(err, "failed to get transaction"))
-			}
-			for _, t := range txn.Actions {
-				// transaction payload
-				ccAction, err := utils.GetChaincodeActionPayload(t.Payload)
-				if err != nil {
-					panic(errors.Wrapf(err, "failed to get action payload"))
-				}
-				proposalPayload, err := utils.GetChaincodeProposalPayload(ccAction.ChaincodeProposalPayload)
-				if err != nil {
-					panic(errors.Wrapf(err, "failed to get proposal payload"))
-				}
-				cis := &pb.ChaincodeInvocationSpec{}
-				err = proto.Unmarshal(proposalPayload.Input, cis)
-				if err != nil {
-					fmt.Printf("failed to unmarshal chaincode input: %+v\n", err)
-				}
-				ccjson, err := json.Marshal(cis.ChaincodeSpec)
-				if err != nil {
-					fmt.Printf("failed to marshal chaincode spec to json: %+v\n", err)
-				}
-				fmt.Printf("chaincode spec: %s\n", string(ccjson))
-				fmt.Print("input args: ")
-				for _, arg := range cis.ChaincodeSpec.Input.Args {
-					fmt.Print(string(arg) + ", ")
-				}
-				fmt.Println("")
-				// transient map: proposalPayload.TransientMap
-
-				prespPayload, err := utils.GetProposalResponsePayload(ccAction.Action.ProposalResponsePayload)
-				if err != nil {
-					panic(errors.Wrapf(err, "failed to get proposal response payload"))
-				}
-				cact, err := utils.GetChaincodeAction(prespPayload.Extension)
-				if err != nil {
-					panic(errors.Wrapf(err, "failed to get chaincode action"))
-				}
-				if cact.Events != nil {
-					ccEvt, err := utils.GetChaincodeEvents(cact.Events)
-					if err != nil {
-						fmt.Printf("failed to get chaincode event: %+v\n", err)
-					}
-					if ccevtjson, err := json.Marshal(ccEvt); err != nil {
-						fmt.Printf("failed to marshal chaincode event to json: %+v\n", err)
-					} else {
-						fmt.Printf("chaincode event: %s\n", ccevtjson)
-						fmt.Printf("event payload: %s\n", string(ccEvt.Payload))
-					}
-				}
-				if cact.Response != nil {
-					fmt.Printf("response status: %d message: %s payload %s\n", cact.Response.Status, cact.Response.Message, string(cact.Response.Payload))
-				}
-				if cact.Results != nil {
-					txrw := &rwset.TxReadWriteSet{}
-					err := proto.Unmarshal(cact.Results, txrw)
-					if err != nil {
-						fmt.Printf("failed to unmarshal tx rwset: %+v\n", err)
-					} else {
-						fmt.Printf("Number of rwsets: %d\n", len(txrw.NsRwset))
-					}
-				}
-				if ccid, err := json.Marshal(cact.ChaincodeId); err != nil {
-					fmt.Printf("failed to marshal chaincode id to json: %+v\n", err)
-				} else {
-					fmt.Printf("chaincode id: %s\n", ccid)
-				}
-			}
+		bed, err := unmarshalBlockEvent(blkEvent)
+		if err != nil {
+			panic(err)
+		}
+		blk, err := json.Marshal(bed)
+		if err != nil {
+			fmt.Printf("got block %+v\n", bed)
+		} else {
+			fmt.Printf("got block %s\n", blk)
 		}
 	case <-time.After(time.Second * 3600):
 		fmt.Println("Timeout waiting for block event")
 	}
+}
+
+func unmarshalBlockEvent(blkEvent *fab.BlockEvent) (*BlockEventDetail, error) {
+	bed := BlockEventDetail{
+		SourceURL:    blkEvent.SourceURL,
+		Number:       blkEvent.Block.Header.Number,
+		Transactions: []*TransactionDetail{},
+	}
+	for _, d := range blkEvent.Block.Data.Data {
+		txn, err := unmarshalTransaction(d)
+		if err != nil {
+			fmt.Printf("Error unmarshalling transaction: %+v\n", err)
+			continue
+		} else {
+			bed.Transactions = append(bed.Transactions, txn)
+		}
+	}
+	return &bed, nil
+}
+
+func unmarshalTransaction(data []byte) (*TransactionDetail, error) {
+	envelope, err := utils.GetEnvelopeFromBlock(data)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to get envelope")
+	}
+	payload, err := utils.GetPayload(envelope)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to get payload")
+	}
+	if payload.Header == nil {
+		return nil, errors.Errorf("payload header is empty")
+	}
+
+	// channel header
+	chdr, err := utils.UnmarshalChannelHeader(payload.Header.ChannelHeader)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to unmarshal channel header")
+	}
+	td := TransactionDetail{
+		TxType:    common.HeaderType_name[chdr.Type],
+		TxID:      chdr.TxId,
+		TxTime:    time.Unix(chdr.Timestamp.Seconds, int64(chdr.Timestamp.Nanos)).UTC().String(),
+		ChannelID: chdr.ChannelId,
+		Actions:   []*ActionDetail{},
+	}
+
+	// signature header
+	shdr := &common.SignatureHeader{}
+	if err = proto.Unmarshal(payload.Header.SignatureHeader, shdr); err != nil {
+		fmt.Printf("failed to unmarshal signature header: %+v\n", err)
+	} else {
+		cid, err := unmarshalIdentity(shdr.Creator)
+		if err != nil {
+			fmt.Printf("failed to unmarshal creator identity: %+v\n", err)
+		} else {
+			td.CreatorIdentity = cid
+		}
+	}
+
+	txn, err := utils.GetTransaction(payload.Data)
+	if err != nil {
+		return &td, errors.Wrapf(err, "failed to get transaction")
+	}
+	for _, ta := range txn.Actions {
+		act, err := unmarshalAction(ta.Payload)
+		if err != nil {
+			fmt.Printf("Error unmarshalling action: %+v\n", err)
+			continue
+		} else {
+			td.Actions = append(td.Actions, act)
+		}
+	}
+	return &td, nil
+}
+
+func unmarshalIdentity(data []byte) (*Identity, error) {
+	cid := &msp.SerializedIdentity{}
+	if err := proto.Unmarshal(data, cid); err != nil {
+		return nil, err
+	}
+	id := Identity{Mspid: cid.Mspid, Cert: string(cid.IdBytes)}
+
+	// extract info from x509 certificate
+	block, _ := pem.Decode(cid.IdBytes)
+	if block == nil {
+		fmt.Println("creator certificate is empty")
+		return &id, nil
+	}
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		fmt.Printf("failed to parse creator certificate: %+v\n", err)
+		return &id, nil
+	}
+	id.Subject = cert.Subject.CommonName
+	id.Issuer = cert.Issuer.CommonName
+	return &id, nil
+}
+
+func unmarshalAction(data []byte) (*ActionDetail, error) {
+	ccAction, err := utils.GetChaincodeActionPayload(data)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to get action payload")
+	}
+
+	// proposal payload
+	proposalPayload, err := utils.GetChaincodeProposalPayload(ccAction.ChaincodeProposalPayload)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to get proposal payload")
+	}
+	cis := &pb.ChaincodeInvocationSpec{}
+	err = proto.Unmarshal(proposalPayload.Input, cis)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to unmarshal chaincode input")
+	}
+
+	// chaincode spec
+	ccID := ChaincodeID{
+		Type: pb.ChaincodeSpec_Type_name[int32(cis.ChaincodeSpec.Type)],
+		Name: cis.ChaincodeSpec.ChaincodeId.Name,
+	}
+
+	// chaincode input
+	args := cis.ChaincodeSpec.Input.Args
+	ccInput := ChaincodeInput{
+		Function: string(args[0]),
+		Args:     []string{},
+	}
+	if len(args) > 1 {
+		for _, arg := range args[1:] {
+			ccInput.Args = append(ccInput.Args, string(arg))
+		}
+	}
+	if proposalPayload.TransientMap != nil {
+		tm := make(map[string]string)
+		for k, v := range proposalPayload.TransientMap {
+			tm[k] = string(v)
+		}
+		if tb, err := json.Marshal(tm); err != nil {
+			fmt.Printf("failed to marshal transient map to JSON: %+v\n", err)
+		} else {
+			ccInput.TransientMap = string(tb)
+		}
+	}
+
+	// action response payload
+	prespPayload, err := utils.GetProposalResponsePayload(ccAction.Action.ProposalResponsePayload)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to get proposal response payload")
+	}
+	cact, err := utils.GetChaincodeAction(prespPayload.Extension)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to get chaincode action")
+	}
+	if cact.Response == nil {
+		return nil, errors.New("chaincode response is empty")
+	}
+	if cact.ChaincodeId != nil {
+		ccID.Version = cact.ChaincodeId.Version
+	}
+
+	// chaincode response
+	ccResult := ChaincodeResult{
+		Response: &ChaincodeResponse{
+			Status:  cact.Response.Status,
+			Message: cact.Response.Message,
+			Payload: string(cact.Response.Payload),
+		},
+	}
+	action := ActionDetail{
+		Chaincode:     &ccID,
+		Input:         &ccInput,
+		Result:        &ccResult,
+		EndorserCount: len(ccAction.Action.Endorsements),
+	}
+
+	// chaincode result
+	if cact.Results != nil {
+		txrw := &rwset.TxReadWriteSet{}
+		err := proto.Unmarshal(cact.Results, txrw)
+		if err != nil {
+			fmt.Printf("failed to unmarshal tx rwset: %+v\n", err)
+		} else {
+			ccResult.ReadWriteCount = len(txrw.NsRwset)
+		}
+	}
+
+	// chaincode event
+	if cact.Events != nil {
+		if ccEvt, err := utils.GetChaincodeEvents(cact.Events); err != nil {
+			fmt.Printf("failed to get chaincode event: %+v\n", err)
+		} else {
+			ccResult.Event = &ChaincodeEvent{
+				Name:    ccEvt.EventName,
+				Payload: string(ccEvt.Payload),
+			}
+		}
+	}
+	return &action, nil
+}
+
+type CCEventDetail struct {
+	BlockNumber uint64 `json:"block"`
+	SourceURL   string `json:"source,omitempty"`
+	TxID        string `json:"txId"`
+	ChaincodeID string `json:"chaincode"`
+	EventName   string `json:"name"`
+	Payload     string `json:"payload"`
+}
+
+// BlockEventDetail contains data in a block event
+type BlockEventDetail struct {
+	Number       uint64               `json:"block"`
+	SourceURL    string               `json:"source,omitempty"`
+	Transactions []*TransactionDetail `json:"transactions"`
+}
+
+// TransactionDetail contains data in a transaction
+type TransactionDetail struct {
+	TxType          string          `json:"type"`
+	TxID            string          `json:"txId"`
+	TxTime          string          `json:"txTime,omitempty"`
+	ChannelID       string          `json:"channel"`
+	CreatorIdentity *Identity       `json:"creator,omitempty"`
+	Actions         []*ActionDetail `json:"actions,omitempty"`
+}
+
+// Identity contains creator's mspid and certificate
+type Identity struct {
+	Mspid   string `json:"mspid"`
+	Subject string `json:"subject,omitempty"`
+	Issuer  string `json:"issuer,omitempty"`
+	Cert    string `json:"cert,omitempty"`
+}
+
+// ActionDetail contains data in a chaincode invocation
+type ActionDetail struct {
+	Chaincode     *ChaincodeID     `json:"chaincode,omitempty"`
+	Input         *ChaincodeInput  `json:"input,omitempty"`
+	Result        *ChaincodeResult `json:"result,omitempty"`
+	EndorserCount int              `json:"endorsers,omitempty"`
+}
+
+// ChaincodeID defines chaincode identity
+type ChaincodeID struct {
+	Type    string `json:"type,omitempty"`
+	Name    string `json:"name"`
+	Version string `json:"version,omitempty"`
+}
+
+// ChaincodeInput defines input parameters of a chaincode invocation
+type ChaincodeInput struct {
+	Function     string   `json:"function"`
+	Args         []string `json:"args,omitempty"`
+	TransientMap string   `json:"transient,omitempty"`
+}
+
+// ChaincodeResult defines result of a chaincode invocation
+type ChaincodeResult struct {
+	ReadWriteCount int                `json:"rwset,omitempty"`
+	Response       *ChaincodeResponse `json:"response,omitempty"`
+	Event          *ChaincodeEvent    `json:"event,omitempty"`
+}
+
+// ChaincodeResponse defines response from a chaincode invocation
+type ChaincodeResponse struct {
+	Status  int32  `json:"status"`
+	Message string `json:"message,omitempty"`
+	Payload string `json:"payload,omitempty"`
+}
+
+// ChaincodeEvent defines event created by a chaincode invocation
+type ChaincodeEvent struct {
+	Name    string `json:"name"`
+	Payload string `json:"payload,omitempty"`
 }
 
 func networkConfigProvider(networkConfig []byte, entityMatcherOverride []byte) core.ConfigProvider {
