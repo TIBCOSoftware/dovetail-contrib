@@ -18,7 +18,6 @@ import {
 @WiContrib({})
 @Injectable()
 export class fabrequestHandler extends WiServiceHandlerContribution {
-
     metadata: object
 
     constructor(private injector: Injector, private http: Http) {

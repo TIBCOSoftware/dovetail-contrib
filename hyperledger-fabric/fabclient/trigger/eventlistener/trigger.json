@@ -1,0 +1,124 @@
+{
+    "name": "fabclient-eventlistener",
+    "version": "1.0.0",
+    "type": "flogo:trigger",
+    "title": "Fabric Event Listener",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabclient",
+        "description": "This trigger listens to fabric events",
+        "visible": true,
+        "smallIcon": "ic-fabeventlistener@2x.png",
+        "largeIcon": "ic-fabeventlistener@3x.png",
+        "wizard": ["Step 1"]
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/trigger/eventlistener",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/trigger/eventlistener",
+    "settings": [],
+    "handler": {
+        "settings": [{
+            "name": "connectionName",
+            "type": "object",
+            "display": {
+                "name": "Fabric connection",
+                "description": "Select a Fabric connection",
+                "type": "connection",
+                "visible": true
+            },
+            "wizard": {
+                "type": "connection",
+                "step": "Step 1"
+            },
+            "allowed":[]
+        },
+        {
+            "name": "eventType",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Event Type",
+                "description": "Select type of event for subscription",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": true
+            },
+            "wizard": {
+                "type": "dropdown",
+                "step": "Step 1"
+            },
+            "allowed": ["Block", "Filtered Block", "Chaincode"]
+        },
+        {
+            "name": "chaincodeID",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Chaincode name",
+                "description": "Specify name of chaincode",
+                "appPropertySupport": true,
+                "visible": false
+            }
+        },
+        {
+            "name": "eventFilter",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Event Filter",
+                "description": "Define pattern of interested event name",
+                "appPropertySupport": true,
+                "visible": false
+            }
+        },
+        {
+            "name": "user",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "User Name",
+                "description": "Name of the client user with access right for receiving events",
+                "appPropertySupport": true,
+                "visible": true
+            }
+        },
+        {
+            "name": "org",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Org Name",
+                "description": "Name of the org. Leave it blank to use the client org specified in the network config file",
+                "appPropertySupport": true,
+                "visible": true
+            }
+        },
+        {
+            "name": "validation",
+            "type": "boolean",
+            "required": false,
+            "display": {
+                "name": "Output validation",
+                "description": "Selection for output validation, default false",
+                "appPropertySupport": true
+            },
+            "value": false
+        }]
+    },
+    "outputs": [
+        {
+            "name": "data",
+            "type": "complex_object",
+            "display": {
+                "name": "Event data schema",
+                "description": "event data schema of the specified type",
+                "type": "texteditor",
+                "syntax": "json",
+                "readonly": true
+            }
+        }
+    ],
+    "reply": [],
+    "actions": [{
+        "name": "Finish"
+    }]
+}
