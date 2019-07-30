@@ -2,6 +2,7 @@ package eventlistener
 
 import (
 	"context"
+	"encoding/json"
 
 	client "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/common"
 	"github.com/pkg/errors"
@@ -90,7 +91,11 @@ func flowEventHandler(handler trigger.Handler) EventHandler {
 	return func(data interface{}) {
 		output := &Output{}
 		output.Data = data
-		logger.Infof("Got event data %+v", data)
+		if logger.DebugEnabled() {
+			if jsonbytes, err := json.MarshalIndent(data, "", "  "); err == nil {
+				logger.Debug("Got event data: ", string(jsonbytes))
+			}
+		}
 		if _, err := handler.Handle(context.Background(), output); err != nil {
 			logger.Errorf("error processing event: %s", err.Error())
 		}
