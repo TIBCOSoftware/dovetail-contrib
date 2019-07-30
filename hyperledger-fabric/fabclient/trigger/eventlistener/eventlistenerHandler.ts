@@ -206,12 +206,12 @@ export class eventlistenerHandler extends WiServiceHandlerContribution {
         return null;
     }
 
-    // verify user entries are valid JSON string
+    // make chaincodeName and eventFilter editable for chaincode event
     validate = (fieldName: string, context: ITriggerContribution): Observable<IValidationResult> | IValidationResult => {
-        let vresult: IValidationResult = ValidationResult.newValidationResult();
-        if (fieldName === "eventFilter" || fieldName === "chaincodeID") {
+        if (fieldName === "chaincodeID" || fieldName === "eventFilter") {
+            let vresult: IValidationResult = ValidationResult.newValidationResult();
             let eventTypeField: IFieldDefinition = context.getField("eventType");
-            if (eventTypeField.value == "Chaincode") {
+            if (eventTypeField.value === "Chaincode") {
                 vresult.setVisible(true);
             } else {
                 vresult.setVisible(false);

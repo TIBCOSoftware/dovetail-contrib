@@ -49,17 +49,6 @@
             "allowed": ["Block", "Filtered Block", "Chaincode"]
         },
         {
-            "name": "chaincodeID",
-            "type": "string",
-            "required": false,
-            "display": {
-                "name": "Chaincode name",
-                "description": "Specify name of chaincode",
-                "appPropertySupport": true,
-                "visible": false
-            }
-        },
-        {
             "name": "eventFilter",
             "type": "string",
             "required": false,
@@ -67,7 +56,18 @@
                 "name": "Event Filter",
                 "description": "Define pattern of interested event name",
                 "appPropertySupport": true,
-                "visible": false
+                "visible": true
+            }
+        },
+        {
+            "name": "chaincodeID",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Chaincode Name",
+                "description": "Specify name of chaincode",
+                "appPropertySupport": true,
+                "visible": true
             }
         },
         {
