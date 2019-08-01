@@ -66,7 +66,8 @@ func NewListener(spec *Spec, handler EventHandler) (*Listener, error) {
 
 // Start starts the event listener
 func (c *Listener) Start() error {
-	if c.eventType == EventBlock {
+	switch c.eventType {
+	case EventBlock:
 		// register and wait for one block event
 		registration, blkChan, err := c.client.RegisterBlockEvent()
 		if err != nil {
@@ -81,7 +82,7 @@ func (c *Listener) Start() error {
 			defer c.client.Unregister(registration)
 			receiveBlockEvent(blkChan, c.handler, c.stopchan)
 		}()
-	} else if c.eventType == EventFiltered {
+	case EventFiltered:
 		// register and wait for one filtered block event
 		registration, blkChan, err := c.client.RegisterFilteredBlockEvent()
 		if err != nil {
@@ -96,7 +97,7 @@ func (c *Listener) Start() error {
 			defer c.client.Unregister(registration)
 			receiveFilteredBlockEvent(blkChan, c.handler, c.stopchan)
 		}()
-	} else if c.eventType == EventChaincode {
+	case EventChaincode:
 		// register and wait for one chaincode event
 		registration, ccChan, err := c.client.RegisterChaincodeEvent(c.chaincodeID, c.eventFilter)
 		if err != nil {
@@ -111,6 +112,8 @@ func (c *Listener) Start() error {
 			defer c.client.Unregister(registration)
 			receiveChaincodeEvent(ccChan, c.handler, c.stopchan)
 		}()
+	default:
+		logger.Infof("event type '%s' is not supported", c.eventType)
 	}
 	return nil
 }

@@ -12,6 +12,10 @@ CLIENT_FILE   := equinix_client.json
 CLIENT_PATH   := /tmp/equinix_client
 CLIENT_NAME   := equinix_client
 
+GQL_FILE   := equinix_gql.json
+GQL_PATH   := /tmp/equinix_gql
+GQL_NAME   := equinix_gql
+
 .PHONY: all
 all: create build
 
@@ -72,7 +76,7 @@ package:
 	cp -R $(BUILD_PATH)/$(APP_NAME)/src $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	fabric-tools package -n $(APP_NAME) -p $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
-	fabric-tools metadata -f $(APP_FILE) -o $(SRC_PATH)/contract-metadata/metadata.json
+	fabric-tools metadata -f $(APP_FILE) -m $(SRC_PATH)/contract-metadata/metadata.json -g $(SRC_PATH)/contract-metadata/metadata.gql -o (SRC_PATH)/contract-metadata/override.json
 
 .PHONY: clean-client
 clean-client:
@@ -102,3 +106,32 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 .PHONY: run
 run:
 	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9898 CCNAME=equinix_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
+
+.PHONY: clean-gql
+clean-gql:
+	rm -Rf $(GQL_PATH)
+
+.PHONY: create-gql
+create-gql: $(GQL_FILE) clean-gql
+	mkdir -p $(GQL_PATH) && \
+	cp $(GQL_FILE) $(GQL_PATH)
+	cd $(GQL_PATH) && \
+	flogo create -f $(GQL_FILE) $(GQL_NAME)
+	cp $(SHIM_PATH)/clientappimports.go $(GQL_PATH)/$(GQL_NAME)/src
+	cd $(GQL_PATH)/$(GQL_NAME)/src && \
+	echo "" >> go.mod && \
+	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(GOPATH)/src/github.com/TIBCOSoftware/dovetail-contrib" >> go.mod
+
+.PHONY: build-gql
+build-gql: $(GQL_PATH)/$(GQL_NAME)
+	cd $(GQL_PATH)/$(GQL_NAME)/src && \
+	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
+	go get -u -d github.com/go-kit/kit@v0.8.0 && \
+	go get -u -d github.com/cloudflare/cfssl@1.3.2
+	cd $(GQL_PATH)/$(GQL_NAME) && \
+	flogo install github.com/project-flogo/contrib/function/string && \
+	flogo build -e
+
+.PHONY: run-gql
+run-gql:
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9898 CCNAME=equinix_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(GQL_PATH)/$(GQL_NAME)/bin/$(GQL_NAME)

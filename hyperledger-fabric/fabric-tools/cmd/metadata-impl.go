@@ -3,18 +3,39 @@
 // This file is subject to the license terms contained
 // in the license file that is distributed with this file.
 
+// example for generating metadata and graphql files:
+// go install
+// cd ../samples/equinix/contract-metadata
+// fabric-tools metadata -f ../equinix.json -o ./override.json
+
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/pkg/errors"
 )
 
 // TODO: change this to http://tibcosoftware.github.io/dovetail/schemas/contract-schema.json
 const metaSchema = "http://json-schema.org/draft-07/schema#"
+
+var schemaOverride map[string]string
+
+func setSchemaOverride(overridefile string) {
+	schemaOverride = make(map[string]string)
+	override, err := ioutil.ReadFile(overridefile)
+	if err != nil {
+		return
+	}
+	if err := json.Unmarshal(override, &schemaOverride); err != nil {
+		fmt.Printf("failed to parse schema override file %s: %+v\n", overridefile, err)
+	}
+}
 
 // Transaction describes data schemas in metadata of a transaction
 type Transaction struct {
@@ -230,10 +251,16 @@ func setSharedSchemaRef(appname string) {
 		sv := schemaCache[k]
 		if sv.Type == "array" {
 			sv.Ref = fmt.Sprintf("%s_array%d", appname, arraySeq)
+			if oref, ok := schemaOverride[sv.Ref]; ok {
+				sv.Ref = oref
+			}
 			arraySeq++
 		} else {
 			if n, err := objectPropertyCount(sv.Properties); err == nil && n > 2 {
 				sv.Ref = fmt.Sprintf("%s_%d", appname, objectSeq)
+				if oref, ok := schemaOverride[sv.Ref]; ok {
+					sv.Ref = oref
+				}
 				objectSeq++
 			} else {
 				delete(sharedSchema, k)
@@ -285,4 +312,278 @@ func collectFlowActivities(appconfig []byte) (map[string]bool, error) {
 		result[name] = readOnly
 	}
 	return result, nil
+}
+
+// cache for all object types
+var objectTypes map[string]*objectDef
+var transTypes []*transactionDef
+var objectSeq int
+
+// generate contract graphql file from metadata
+func generateGqlfile(metafile, gqlfile string) error {
+	metabytes, err := ioutil.ReadFile(metafile)
+	if err != nil {
+		return err
+	}
+	var meta Metadata
+	if err := json.Unmarshal(metabytes, &meta); err != nil {
+		return err
+	}
+
+	// extract shared object types
+	objectTypes = make(map[string]*objectDef)
+	for k, v := range meta.Components {
+		if v.Type == "object" {
+			var props map[string]interface{}
+			if err := json.Unmarshal(v.Properties, &props); err != nil {
+				fmt.Printf("failed to unmarshal component schema %s: %+v\n", k, err)
+				continue
+			}
+			getDefForObject(k, props)
+		} else {
+			fmt.Println("component should not be type of", v.Type)
+		}
+	}
+
+	// collect transaction as graphQL operations
+	transTypes = []*transactionDef{}
+	for k, v := range meta.Contract.Transactions {
+		var obj map[string]interface{}
+		if err := json.Unmarshal(v.Parameters, &obj); err != nil {
+			fmt.Printf("failed to unmarshal parameter-def of transaction %s: %+v\n", k, err)
+			continue
+		}
+		transDef := transactionDef{
+			name:      k,
+			operation: v.Operation,
+		}
+		transDef.parameters = getAttributeDefs(obj["properties"].(map[string]interface{}))
+
+		if err := json.Unmarshal(v.Returns, &obj); err != nil {
+			fmt.Printf("failed to unmarshal return-def of transaction %s: %+v\n", k, err)
+			continue
+		}
+		transDef.returns = getObjectDef(k+"Return", obj)
+		transTypes = append(transTypes, &transDef)
+	}
+
+	// write graphQL file
+	writeGQL(gqlfile)
+	return nil
+}
+
+func writeGQL(gqlfile string) error {
+	fmt.Println("write metadata to", gqlfile)
+	p := Subst(gqlfile)
+	d := filepath.Dir(p)
+	if err := os.MkdirAll(d, 0755); err != nil {
+		return err
+	}
+	f, err := os.OpenFile(gqlfile, os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	printGQLSchemaDef(f)
+	printGQLOperations(f, "query")
+	printGQLOperations(f, "invoke")
+	for _, v := range objectTypes {
+		f.WriteString(objectGQL(v))
+		f.WriteString("\n")
+	}
+	return nil
+}
+
+func printGQLSchemaDef(file *os.File) {
+	file.WriteString(`schema {
+	query: Query
+	mutation: Mutation
+}
+`)
+}
+
+func printGQLOperations(file *os.File, op string) {
+	if op == "query" {
+		file.WriteString("type Query {\n")
+	} else {
+		file.WriteString("type Mutation {\n")
+	}
+	for _, tx := range transTypes {
+		if tx.operation == op {
+			file.WriteString("\t")
+			file.WriteString(transactionGQL(tx))
+			file.WriteString("\n")
+		}
+	}
+	file.WriteString("}\n")
+}
+
+func transactionGQL(def *transactionDef) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s(", def.name)
+	for i, p := range def.parameters {
+		if i > 0 {
+			fmt.Fprint(&b, ", ")
+		}
+		if p.isArray {
+			fmt.Fprintf(&b, "%s: [%s]", p.name, p.typeID)
+		} else {
+			fmt.Fprintf(&b, "%s: %s", p.name, p.typeID)
+		}
+	}
+	fmt.Fprintf(&b, "): %s", def.returns.typeID)
+	return b.String()
+}
+
+func objectGQL(def *objectDef) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "type %s {\n", def.typeID)
+	for _, attr := range def.attributes {
+		if attr.isArray {
+			fmt.Fprintf(&b, "\t%s: [%s]\n", attr.name, attr.typeID)
+		} else {
+			fmt.Fprintf(&b, "\t%s: %s\n", attr.name, attr.typeID)
+		}
+	}
+	fmt.Fprintln(&b, "}")
+	return b.String()
+}
+
+type transactionDef struct {
+	name       string
+	operation  string
+	parameters []*attributeDef
+	returns    *objectDef
+}
+
+type attributeDef struct {
+	name    string
+	typeID  string
+	isArray bool
+}
+
+type objectDef struct {
+	typeID     string
+	attributes []*attributeDef
+}
+
+func refTypeID(ref string) string {
+	// ref should be in format '#/components/typeID'
+	slash := strings.LastIndex(ref, "/")
+	if slash >= 0 {
+		t := ref[slash+1:]
+		if ot, ok := schemaOverride[t]; ok {
+			t = ot
+		}
+		return t
+	}
+	return ref
+}
+
+func getAttributeDefs(props map[string]interface{}) []*attributeDef {
+	attrs := []*attributeDef{}
+	for k, v := range props {
+		def := v.(map[string]interface{})
+		isArray := false
+		if ref, ok := def["$ref"]; ok {
+			attrs = append(attrs, &attributeDef{
+				name:    k,
+				typeID:  refTypeID(ref.(string)),
+				isArray: isArray,
+			})
+			continue
+		}
+		t := def["type"]
+		if t.(string) == "array" {
+			def = def["items"].(map[string]interface{})
+			isArray = true
+		}
+		odef := getObjectDef(k, def)
+		if odef != nil {
+			attrs = append(attrs, &attributeDef{
+				name:    k,
+				typeID:  odef.typeID,
+				isArray: isArray,
+			})
+		}
+	}
+	return attrs
+}
+
+func getDefForObject(name string, props map[string]interface{}) *objectDef {
+	objectSeq++
+	attrs := getAttributeDefs(props)
+	t := name
+	cached, t, isDup := getCachedDef(t, attrs)
+	if cached != nil {
+		return cached
+	}
+	if isDup {
+		// use a different object type if not identical
+		t = fmt.Sprintf("%s%d", name, objectSeq)
+		cached, t, isDup = getCachedDef(t, attrs)
+		if cached != nil {
+			return cached
+		}
+		if isDup {
+			t = fmt.Sprintf("%s%d", name, objectSeq)
+			fmt.Println("Ignore bad override of type", t)
+		}
+	}
+	odef := objectDef{typeID: t, attributes: attrs}
+	objectTypes[odef.typeID] = &odef
+	return &odef
+}
+
+func getObjectDef(name string, def map[string]interface{}) *objectDef {
+	if ref, ok := def["$ref"]; ok {
+		return &objectDef{typeID: refTypeID(ref.(string))}
+	}
+	t := def["type"]
+	switch t.(string) {
+	case "string":
+		return &objectDef{typeID: "String"}
+	case "integer":
+		return &objectDef{typeID: "Int"}
+	case "number":
+		return &objectDef{typeID: "Float"}
+	case "boolean":
+		return &objectDef{typeID: "Boolean"}
+	case "array":
+		idef := def["items"].(map[string]interface{})
+		item := getObjectDef(name, idef)
+		return &objectDef{typeID: "[" + item.typeID + "]"}
+	case "object":
+		nm := strings.Title(name + "Type")
+		return getDefForObject(nm, def["properties"].(map[string]interface{}))
+	default:
+		fmt.Println("Unknown property type:", t)
+	}
+	return nil
+}
+
+func getCachedDef(typeID string, attrs []*attributeDef) (*objectDef, string, bool) {
+	t := typeID
+	if ot, ok := schemaOverride[typeID]; ok {
+		t = ot
+	}
+	if cached, ok := objectTypes[t]; ok {
+		// check for repeated object type
+		if isDuplicateDef(cached, attrs) {
+			// same object already cached
+			return cached, t, false
+		}
+		// same type ID exist in cache but different from new object
+		return nil, t, true
+	}
+	// new object does not exist in cache
+	return nil, t, false
+}
+
+func isDuplicateDef(def *objectDef, attrs []*attributeDef) bool {
+	for i, v := range attrs {
+		if len(def.attributes) <= i || def.attributes[i].name != v.name {
+			return false
+		}
+	}
+	return true
 }

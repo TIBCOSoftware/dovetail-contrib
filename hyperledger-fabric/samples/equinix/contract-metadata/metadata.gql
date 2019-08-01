@@ -1,0 +1,39 @@
+schema {
+	query: Query
+	mutation: Mutation
+}
+type Query {
+	queryAsset(assetUniqueId: String): FixedAsset
+}
+type Mutation {
+	receiveAsset(assetUniqueId: String, description: String, manufacturer: String, model: String, orgId: String, acquisitionDate: String, location: String, vendor: String, serialNum: String): FixedAsset
+	receiveInvoice(assetUniqueId: String, description: String, location: String, invoiceDate: String, orgId: String, invoicePrice: Float, vendor: String): FixedAsset
+	submitPO(purchasePrice: Float, location: String, vendor: String, orgId: String, assetUniqueId: String, description: String): FixedAsset
+	faUpdate(installDate: String, invoiceDate: String, netBookValue: Float, serialNum: String, location: String, model: String, orgId: String, assetUniqueId: String, description: String, purchasePrice: Float): FixedAsset
+	installAsset(vendor: String, description: String, location: String, manufacturer: String, model: String, serialNum: String, orgId: String, installDate: String, assetUniqueId: String, acquisitionDate: String): FixedAsset
+}
+type FixedAsset {
+	purchasePrice: Float
+	invoicePrice: Float
+	value: Float
+	location: String
+	invoiceDate: [String]
+	description: String
+	assetNum: String
+	netBookValue: Float
+	owner: String
+	status: String
+	statusDate: String
+	assetTag: String
+	orgId: String
+	model: String
+	manufacturer: String
+	acquisitionDate: String
+	retireDate: String
+	assetUniqueId: String
+	serialNum: String
+	vendor: String
+	installDate: String
+	siteId: String
+}
+

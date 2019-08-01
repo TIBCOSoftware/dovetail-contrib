@@ -47,7 +47,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/equinix_0"
+                    "$ref": "#/components/FixedAsset"
                 }
             },
             "installAsset": {
@@ -90,7 +90,23 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/equinix_0"
+                    "$ref": "#/components/FixedAsset"
+                }
+            },
+            "queryAsset": {
+                "name": "queryAsset",
+                "description": "retrieve FixedAsset by ID",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "assetUniqueId": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/FixedAsset"
                 }
             },
             "receiveAsset": {
@@ -130,7 +146,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/equinix_0"
+                    "$ref": "#/components/FixedAsset"
                 }
             },
             "receiveInvoice": {
@@ -164,7 +180,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/equinix_0"
+                    "$ref": "#/components/FixedAsset"
                 }
             },
             "submitPO": {
@@ -195,14 +211,14 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/equinix_0"
+                    "$ref": "#/components/FixedAsset"
                 }
             }
         }
     },
     "components": {
-        "equinix_0": {
-            "$id": "equinix_0",
+        "FixedAsset": {
+            "$id": "FixedAsset",
             "type": "object",
             "properties": {
                 "assetUniqueId": {
