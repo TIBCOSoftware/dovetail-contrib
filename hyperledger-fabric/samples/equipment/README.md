@@ -1,8 +1,8 @@
 # equipment
-This example demonstrates the use of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) to trace the equipment purchasing and installation process.  It uses the project Dovetail to implement and deploy the following 2 components:
+This example demonstrates the use of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) for tracking equipment purchasing and installations.  It uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to implement and deploy following 2 components:
 - Chaincode for Hyperledger Fabric that implements the business logic for tracking equipment assets on blockchain;
-- Client services that end-users can call to submit transactions, i.e., chaincode invocations for equipment tracking.  Two equivalent service implementations are provided for demonstration. One exposes REST APIs, and the other exposes GraphQL APIs.
-Both components are implemented using Flogo® models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail)
+- Client services that end-users can call to submit transactions, i.e., chaincode invocations for equipment tracking.  Two equivalent service implementations are provided for demonstration. One service implements REST APIs, and the other implements equivalent GraphQL APIs.
+Both components are implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail)
 
 This sample also demonstrates the use of Hyperledger Fabric events.
 
