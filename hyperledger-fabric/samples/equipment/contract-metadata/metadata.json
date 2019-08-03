@@ -1,55 +1,12 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "info": {
-        "title": "equinix",
+        "title": "equipment",
         "version": "1.1.0"
     },
     "contract": {
-        "name": "equinix",
+        "name": "equipment",
         "transactions": {
-            "faUpdate": {
-                "name": "faUpdate",
-                "description": "Update Value of Asset",
-                "operation": "invoke",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "assetUniqueId": {
-                            "type": "string"
-                        },
-                        "description": {
-                            "type": "string"
-                        },
-                        "purchasePrice": {
-                            "type": "number"
-                        },
-                        "location": {
-                            "type": "string"
-                        },
-                        "model": {
-                            "type": "string"
-                        },
-                        "orgId": {
-                            "type": "string"
-                        },
-                        "installDate": {
-                            "type": "string"
-                        },
-                        "invoiceDate": {
-                            "type": "string"
-                        },
-                        "netBookValue": {
-                            "type": "number"
-                        },
-                        "serialNum": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "returns": {
-                    "$ref": "#/components/FixedAsset"
-                }
-            },
             "installAsset": {
                 "name": "installAsset",
                 "description": "Data entry and validation when asset is installed",
@@ -206,6 +163,49 @@
                             "type": "string"
                         },
                         "orgId": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/FixedAsset"
+                }
+            },
+            "updateAsset": {
+                "name": "updateAsset",
+                "description": "Update Value of Asset",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "assetUniqueId": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "purchasePrice": {
+                            "type": "number"
+                        },
+                        "location": {
+                            "type": "string"
+                        },
+                        "model": {
+                            "type": "string"
+                        },
+                        "orgId": {
+                            "type": "string"
+                        },
+                        "installDate": {
+                            "type": "string"
+                        },
+                        "invoiceDate": {
+                            "type": "string"
+                        },
+                        "netBookValue": {
+                            "type": "number"
+                        },
+                        "serialNum": {
                             "type": "string"
                         }
                     }

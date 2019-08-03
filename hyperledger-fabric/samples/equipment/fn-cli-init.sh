@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# install and instantiate equinix chaincode in the Fabric sample first-network
+# install and instantiate equipment chaincode in the Fabric sample first-network
 # execute this script from the scripts folder of the cli docker container
 
 . ./utils.sh
-CCNAME=${1:-"equinix_cc"}
+CCNAME=${1:-"equipment_cc"}
 
 echo "install ${CCNAME} chaincode on peer0 org1"
 peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}

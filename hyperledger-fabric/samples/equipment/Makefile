@@ -1,20 +1,20 @@
 MAKEFILE_THIS := $(lastword $(MAKEFILE_LIST))
 SRC_PATH      := $(patsubst %/,%,$(dir $(abspath $(MAKEFILE_THIS))))
-APP_FILE      := equinix.json
-APP_NAME      := equinix_cc
-BUILD_PATH    := /tmp/equinix
+APP_FILE      := equipment.json
+APP_NAME      := equipment_cc
+BUILD_PATH    := /tmp/equipment
 FAB_PATH      := $(GOPATH)/src/github.com/hyperledger/fabric-samples
 CC_DEPLOY     := $(FAB_PATH)/chaincode
 SHIM_PATH     := $(SRC_PATH)/../../shim
 PATCH_PATH    := $(SRC_PATH)/../../flogo-patch
 
-CLIENT_FILE   := equinix_client.json
-CLIENT_PATH   := /tmp/equinix_client
-CLIENT_NAME   := equinix_client
+CLIENT_FILE   := equipment_client.json
+CLIENT_PATH   := /tmp/equipment_client
+CLIENT_NAME   := equipment_client
 
-GQL_FILE   := equinix_gql.json
-GQL_PATH   := /tmp/equinix_gql
-GQL_NAME   := equinix_gql
+GQL_FILE   := equipment_gql.json
+GQL_PATH   := /tmp/equipment_gql
+GQL_NAME   := equipment_gql
 
 .PHONY: all
 all: create build
@@ -76,7 +76,7 @@ package:
 	cp -R $(BUILD_PATH)/$(APP_NAME)/src $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	fabric-tools package -n $(APP_NAME) -p $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
-	fabric-tools metadata -f $(APP_FILE) -m $(SRC_PATH)/contract-metadata/metadata.json -g $(SRC_PATH)/contract-metadata/metadata.gql -o (SRC_PATH)/contract-metadata/override.json
+	fabric-tools metadata -f $(APP_FILE) -m $(SRC_PATH)/contract-metadata/metadata.json -g $(SRC_PATH)/contract-metadata/metadata.gql -o $(SRC_PATH)/contract-metadata/override.json
 
 .PHONY: clean-client
 clean-client:
@@ -105,7 +105,7 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 
 .PHONY: run
 run:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9898 CCNAME=equinix_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9898 CCNAME=equipment_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
 
 .PHONY: clean-gql
 clean-gql:
@@ -134,4 +134,4 @@ build-gql: $(GQL_PATH)/$(GQL_NAME)
 
 .PHONY: run-gql
 run-gql:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9898 CCNAME=equinix_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(GQL_PATH)/$(GQL_NAME)/bin/$(GQL_NAME)
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9797 CCNAME=equipment_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(GQL_PATH)/$(GQL_NAME)/bin/$(GQL_NAME)

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# equinix tests executed from cli docker container of the Fabric sample first-network
+# equipment tests executed from cli docker container of the Fabric sample first-network
 
 . ./utils.sh
-CCNAME=${1:-"equinix_cc"}
+CCNAME=${1:-"equipment_cc"}
 ORDERER_ARGS="-o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 ORG1_ARGS="--peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 ORG2_ARGS="--peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
@@ -52,13 +52,13 @@ sleep 5
 # 2. Description
 # 3. Location
 # 4. Invoice Date
-# 5. Vendor (cc impl: Org ID)
+# 5. Org ID
 # 6. Invoice Price
-# 7. Org ID (cc impl: Vendor)
+# 7. Vendor
 peer chaincode invoke $ORDERER_ARGS -C mychannel -n ${CCNAME} $ORG1_ARGS $ORG2_ARGS -c '{"Args":["receiveInvoice","asset1","receiveInvoice1","loc1","2019-07-21","org1","10000","vendor1"]}'
 sleep 5
 
-# faUpdate
+# updateAsset
 # 1. Asset Unique Identifier
 # 2. Description
 # 3. Purchase Price
@@ -69,4 +69,4 @@ sleep 5
 # 8. Invoice Date
 # 9. Net Book Value
 # 10. Serial Number
-peer chaincode invoke $ORDERER_ARGS -C mychannel -n ${CCNAME} $ORG1_ARGS $ORG2_ARGS -c '{"Args":["faUpdate","asset1","faUpdate1","10000","loc1","model1","org1","2019-07-11","2019-07-21","15000","sn1"]}'
+peer chaincode invoke $ORDERER_ARGS -C mychannel -n ${CCNAME} $ORG1_ARGS $ORG2_ARGS -c '{"Args":["updateAsset","asset1","updateAsset1","10000","loc1","model1","org1","2019-07-11","2019-07-21","15000","sn1"]}'

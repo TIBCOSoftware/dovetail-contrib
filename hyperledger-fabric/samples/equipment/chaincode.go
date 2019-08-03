@@ -70,8 +70,8 @@ func (t *smartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
 		return t.installAsset(stub, args)
 	} else if fn == "receiveInvoice" {
 		return t.receiveInvoice(stub, args)
-	} else if fn == "faUpdate" {
-		return t.faUpdate(stub, args)
+	} else if fn == "updateAsset" {
+		return t.updateAsset(stub, args)
 	} else if fn == "submitPO" {
 		return t.submitPO(stub, args)
 	}
@@ -289,7 +289,7 @@ Args List:
 9. Net Book Value
 10. Serial Number
 */
-func (t *smartContract) faUpdate(stub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (t *smartContract) updateAsset(stub shim.ChaincodeStubInterface, args []string) sc.Response {
 	value, _ := stub.GetState(args[0])
 
 	//If asset is already present, peform validation and insert additional attributes. If not present throw error.
@@ -437,6 +437,6 @@ func validate(fa fixedAsset, values []string, installIncluded bool) (string, boo
 func main() {
 	err := shim.Start(new(smartContract))
 	if err != nil {
-		fmt.Printf("Error starting equinix chaincode: %s", err)
+		fmt.Printf("Error starting equipment chaincode: %s", err)
 	}
 }
