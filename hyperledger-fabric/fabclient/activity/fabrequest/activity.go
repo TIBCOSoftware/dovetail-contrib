@@ -29,7 +29,7 @@ func init() {
 	_ = activity.Register(&Activity{}, New)
 }
 
-// Activity is a stub for executing Hyperledger Fabric get operations
+// Activity fabric request activity struct
 type Activity struct {
 }
 

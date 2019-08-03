@@ -1,16 +1,20 @@
 MAKEFILE_THIS := $(lastword $(MAKEFILE_LIST))
 SRC_PATH      := $(patsubst %/,%,$(dir $(abspath $(MAKEFILE_THIS))))
-APP_FILE      := abac_app.json
-APP_NAME      := abac_cc
-BUILD_PATH    := /tmp/abac
+APP_FILE      := equipment.json
+APP_NAME      := equipment_cc
+BUILD_PATH    := /tmp/equipment
 FAB_PATH      := $(GOPATH)/src/github.com/hyperledger/fabric-samples
 CC_DEPLOY     := $(FAB_PATH)/chaincode
 SHIM_PATH     := $(SRC_PATH)/../../shim
 PATCH_PATH    := $(SRC_PATH)/../../flogo-patch
 
-CLIENT_FILE   := abac_client.json
-CLIENT_PATH   := /tmp/abac_client
-CLIENT_NAME   := abac_client
+CLIENT_FILE   := equipment_client.json
+CLIENT_PATH   := /tmp/equipment_client
+CLIENT_NAME   := equipment_client
+
+GQL_FILE   := equipment_gql.json
+GQL_PATH   := /tmp/equipment_gql
+GQL_NAME   := equipment_gql
 
 .PHONY: all
 all: create build
@@ -36,6 +40,7 @@ create: $(APP_FILE) clean
 build: $(BUILD_PATH)/$(APP_NAME)
 	cd $(BUILD_PATH)/$(APP_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
+	flogo install github.com/project-flogo/contrib/function/array && \
 	flogo build -e
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	env GOOS=linux GOARCH=amd64 go build -o $(APP_NAME) && \
@@ -49,24 +54,20 @@ deploy: build
 	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
 	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts
 
-.PHONY: start-fn
-start-fn:
-	./start-fn.sh
-	./gen-user.sh Alice 1
-	./gen-user.sh Bob 2
+.PHONY: deploy-go
+deploy-go:
+	-mkdir -p $(CC_DEPLOY)/$(APP_NAME)
+	cp chaincode.go $(CC_DEPLOY)/$(APP_NAME)
+	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
+	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts
 
 .PHONY: cli-init
 cli-init:
-	docker exec cli bash -c 'cd scripts; ./fn-cli-init.sh'
+	docker exec cli bash -c 'cd scripts; ./fn-cli-init.sh $(APP_NAME)'
 
 .PHONY: cli-test
 cli-test:
-	docker exec cli bash -c 'cd scripts; ./fn-cli-test.sh'
-
-.PHONY: package-old
-package-old: 
-	docker exec cli peer chaincode package -n $(APP_NAME) -v 1.0 -p github.com/chaincode/$(APP_NAME) ../../../chaincode/$(APP_NAME).cds
-	mv $(CC_DEPLOY)/$(APP_NAME).cds $(SRC_PATH)
+	docker exec cli bash -c 'cd scripts; ./fn-cli-test.sh $(APP_NAME)'
 
 .PHONY: package
 package:
@@ -75,7 +76,7 @@ package:
 	cp -R $(BUILD_PATH)/$(APP_NAME)/src $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	fabric-tools package -n $(APP_NAME) -p $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
-	fabric-tools metadata -f $(APP_FILE) -o $(SRC_PATH)/contract-metadata/metadata.json
+	fabric-tools metadata -f $(APP_FILE) -m $(SRC_PATH)/contract-metadata/metadata.json -g $(SRC_PATH)/contract-metadata/metadata.gql -o $(SRC_PATH)/contract-metadata/override.json
 
 .PHONY: clean-client
 clean-client:
@@ -104,4 +105,33 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 
 .PHONY: run
 run:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9898 CCNAME=equipment_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
+
+.PHONY: clean-gql
+clean-gql:
+	rm -Rf $(GQL_PATH)
+
+.PHONY: create-gql
+create-gql: $(GQL_FILE) clean-gql
+	mkdir -p $(GQL_PATH) && \
+	cp $(GQL_FILE) $(GQL_PATH)
+	cd $(GQL_PATH) && \
+	flogo create -f $(GQL_FILE) $(GQL_NAME)
+	cp $(SHIM_PATH)/clientappimports.go $(GQL_PATH)/$(GQL_NAME)/src
+	cd $(GQL_PATH)/$(GQL_NAME)/src && \
+	echo "" >> go.mod && \
+	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(GOPATH)/src/github.com/TIBCOSoftware/dovetail-contrib" >> go.mod
+
+.PHONY: build-gql
+build-gql: $(GQL_PATH)/$(GQL_NAME)
+	cd $(GQL_PATH)/$(GQL_NAME)/src && \
+	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
+	go get -u -d github.com/go-kit/kit@v0.8.0 && \
+	go get -u -d github.com/cloudflare/cfssl@1.3.2
+	cd $(GQL_PATH)/$(GQL_NAME) && \
+	flogo install github.com/project-flogo/contrib/function/string && \
+	flogo build -e
+
+.PHONY: run-gql
+run-gql:
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9797 CCNAME=equipment_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(GQL_PATH)/$(GQL_NAME)/bin/$(GQL_NAME)

@@ -139,6 +139,14 @@
     ],
     "reply": [
         {
+            "name": "status",
+            "type": "number"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
             "name": "returnsDataType",
             "type": "string",
             "display":{

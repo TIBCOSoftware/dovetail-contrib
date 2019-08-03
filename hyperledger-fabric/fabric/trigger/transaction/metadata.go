@@ -25,6 +25,8 @@ type Output struct {
 
 // Reply from the trigger
 type Reply struct {
+	Status  int         `md:"status"`
+	Message string      `md:"message"`
 	Returns interface{} `md:"returns"`
 }
 
@@ -64,6 +66,12 @@ func (o *Output) ToMap() map[string]interface{} {
 // FromMap sets trigger reply values from a map
 func (r *Reply) FromMap(values map[string]interface{}) error {
 	var err error
+	if r.Status, err = coerce.ToInt(values["status"]); err != nil {
+		return err
+	}
+	if r.Message, err = coerce.ToString(values["message"]); err != nil {
+		return err
+	}
 	if r.Returns, err = coerce.ToAny(values["returns"]); err != nil {
 		return err
 	}
@@ -73,6 +81,8 @@ func (r *Reply) FromMap(values map[string]interface{}) error {
 // ToMap converts trigger reply to a map
 func (r *Reply) ToMap() map[string]interface{} {
 	return map[string]interface{}{
+		"status":  r.Status,
+		"message": r.Message,
 		"returns": r.Returns,
 	}
 }

@@ -9,6 +9,7 @@ import (
 	trigger "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/project-flogo/core/app"
 	_ "github.com/project-flogo/core/data/expression/script"
 	"github.com/project-flogo/core/data/schema"
@@ -41,11 +42,17 @@ func (t *Contract) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	if !ok {
 		return shim.Error(fmt.Sprintf("function %s is not implemented", fn))
 	}
-	result, err := trig.Invoke(stub, fn, args)
+	status, result, err := trig.Invoke(stub, fn, args)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to execute transaction: %s, error: %+v", fn, err))
+	} else if status == shim.OK {
+		return shim.Success([]byte(result))
+	} else {
+		return pb.Response{
+			Status:  int32(status),
+			Payload: []byte(result),
+		}
 	}
-	return shim.Success([]byte(result))
 }
 
 var (
