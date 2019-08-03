@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.container.corda.CordaUtil;
+import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.corda.json.LinearIdDeserializer;
 import com.tibco.dovetail.corda.json.MoneyAmtDeserializer;
 import com.tibco.dovetail.core.model.composer.HLCAttribute;
@@ -22,8 +23,8 @@ public class subflow implements IActivity {
 			
 			HLCResource flowInputMetadata = (HLCResource) context.getInput("input_metadata");
 			
-			LinkedHashMap<String, Object> reply = new LinkedHashMap<String, Object>();
-			reply.put("FlowName", context.getInput("flowName"));
+			LinkedHashMap<String, Object> task = new LinkedHashMap<String, Object>();
+			task.put("FlowName", context.getInput("flowName"));
 			
 			LinkedHashMap<String, Object> flowparams = new LinkedHashMap<String, Object>();
 			for(int i=0; i<flowInputMetadata.getAttributes().size(); i++) {
@@ -49,8 +50,9 @@ public class subflow implements IActivity {
 					flowparams.put(attr.getName(),  inputvalues.get(attr.getName()));
 				}
 			}
-			reply.put("Arguments", flowparams);
-			context.getReplyHandler().setReply("SUCCESS", reply);
+			task.put("Arguments", flowparams);
+		
+			context.getContainerService().addContainerAsyncTask(AppContainer.TASK_SUBFLOW, task);
 
 		} else {
 			throw new IllegalArgumentException("input is required for subflow activity");

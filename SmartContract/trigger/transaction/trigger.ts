@@ -150,58 +150,13 @@ export class SmartContractTriggerHandler extends WiServiceHandlerContribution {
     }
 
     validate = (fieldName: string, context: ITriggerContribution): Observable<IValidationResult> | IValidationResult => {
-        if(context.getMode() === MODE.WIZARD) {
-            switch(fieldName){
-                case "transaction":
-                    let createAll = context.getField("createAll").value;
-                    return Observable.create(observer => {
-                        let vresult: IValidationResult = ValidationResult.newValidationResult();
-                        vresult.setVisible(!createAll);
-                        if(!createAll && Boolean(context.getField("transaction").value) == false)
-                            vresult.setValid(false).setError("REQUIRED_VALUE_NOT_SET", "Please select a transaction");
-
-                        observer.next(vresult);
-                    });
-                
-                default:
-                    return Observable.create(observer => {
-                        let vresult: IValidationResult = ValidationResult.newValidationResult();
-                        observer.next(vresult);
-                    });
-            }
-        } else {
-            switch(fieldName){
-                case "createAll":
-                case "assets":
-                case "transactions":
-                case "schemas":
-                case "concepts":
-                    return Observable.create(observer => {
-                        let vresult: IValidationResult = ValidationResult.newValidationResult();
-                        vresult.setVisible(false);
-                        observer.next(vresult);
-                    });
-                default:
-                    return Observable.create(observer => {
-                        let vresult: IValidationResult = ValidationResult.newValidationResult();
-                        let conId = context.getField("model").value;
-                        
-                        if(Boolean(conId)){
-                            vresult.setReadOnly(true);
-                        } else {
-                            vresult.setReadOnly(false);
-                        }
-                        observer.next(vresult);
-                    });
-            }
-        }
+        return null;
     }
 
     action = (actionId: string, context: ICreateFlowActionContext): Observable<IActionResult> | IActionResult => {
        
         let result = CreateFlowActionResult.newActionResult();
         let conId = context.getField("model").value;
-        let createAll = context.getField("createAll").value;
         let flows = []
         return Observable.create(observer => {
                 WiContributionUtils.getConnection(this.http, conId)
@@ -218,14 +173,8 @@ export class SmartContractTriggerHandler extends WiServiceHandlerContribution {
                                 }
                              
                                 if (context.handler && context.handler.settings) {
-                                    if(createAll){
-                                        for(let i=0; i<txns.length; i++) {
-                                            flows.push(this.createFlow(context, conId, txns[i], schemas, result));
-                                        }
-                                    } else {
-                                        let txn = context.getField("transaction").value
-                                        flows.push(this.createFlow(context, conId, txn, schemas, result));                                    
-                                    }
+                                    let txn = context.getField("transaction").value
+                                    flows.push(this.createFlow(context, conId, txn, schemas, result));                                    
                                 }
         
                                 let actionResult = ActionResult.newActionResult().setSuccess(true).setResult(result);
@@ -262,9 +211,6 @@ export class SmartContractTriggerHandler extends WiServiceHandlerContribution {
         }
 
         let flowName = context.getFlowName();
-        if(context.getField("createAll").value)
-            flowName = flowName + "_" + txn;
-
         let flowModel = modelService.createFlow(flowName, context.getFlowDescription());
         let reply = modelService.createFlowElement("General/txnreply");
         let flow = flowModel.addFlowElement(reply);

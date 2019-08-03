@@ -3,7 +3,7 @@
 * This file is subject to the license terms contained
 * in the license file that is distributed with this file.
  */
-package com.tibco.cp;
+package com.example.iou;
 
 import static org.junit.Assert.*;
 
@@ -15,9 +15,11 @@ import com.tibco.dovetail.container.corda.CordaDataService;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.core.model.composer.HLCResource;
 import com.tibco.dovetail.core.model.flow.FlowAppConfig;
+import com.tibco.dovetail.core.runtime.compilers.App;
+import com.tibco.dovetail.core.runtime.compilers.AppCompiler;
 import com.tibco.dovetail.core.runtime.compilers.FlowCompiler;
 import com.tibco.dovetail.core.runtime.engine.ContextImpl;
-import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
+import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.flow.TransactionFlow;
 import com.tibco.dovetail.core.runtime.flow.TransactionFlows;
 import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
@@ -36,7 +38,6 @@ import net.corda.core.contracts.PartyAndReference;
 import net.corda.finance.contracts.asset.Cash;
 import net.corda.finance.contracts.asset.Cash.State;
 import net.corda.testing.core.TestIdentity;
-import smartcontract.trigger.transaction.ModelSchemaCompiler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,41 +47,26 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.print.Doc;
-
 import static net.corda.finance.Currencies.DOLLARS;
 import static net.corda.finance.Currencies.POUNDS;
-import static net.corda.finance.Currencies.issuedBy;
 //import static net.corda.testing.NodeTestUtils.ledger;
 
 
 public class TestCordaFlowContract {
-	com.tibco.cp.IOU3 iou;
-	com.tibco.cp.IOU3Contract contract;
+	IOU iou;
+	IOUContractContract contract;
 
 	CordaContainer ctnr;
 	ContextImpl context;
 	ITrigger trigger;
 	
-	static Party getMEGA_CORP() {
-		TestIdentity mega = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
-		return mega.getParty();
-	}
-	
-	static Party getBOB() {
-		TestIdentity mega = new TestIdentity(new CordaX500Name("bob", "New York", "GB"));
-		return mega.getParty();
-	}
-	
-	static Party getCHARLIE() {
-		TestIdentity mega = new TestIdentity(new CordaX500Name("charlie", "New York", "GB"));
-		return mega.getParty();
-	}
-	
-	static Party getALICE() {
-		TestIdentity mega = new TestIdentity(new CordaX500Name("alice", "New York", "GB"));
-		return mega.getParty();
-	}
+	Party bank = (new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"))).getParty();
+		
+	Party bob = (new TestIdentity(new CordaX500Name("bob", "New York", "GB"))).getParty();
+		
+	Party charlie = (new TestIdentity(new CordaX500Name("charlie", "New York", "GB"))).getParty();
+
+	Party alice = (new TestIdentity(new CordaX500Name("alice", "New York", "GB"))).getParty();
 	
 	class MockIssueTxn implements ITransactionService {
 
@@ -92,6 +78,7 @@ public class TestCordaFlowContract {
 		    doc.put("$", "transactionId", "issue");
 		    doc.put("$", "timestamp", "abc");
 		    context.put("transactionInput", doc);
+		    context.put("containerServiceStub", ctnr);
 		    return context;
 		}
 
@@ -104,7 +91,7 @@ public class TestCordaFlowContract {
 		@Override
 		public String getTransactionName() {
 			// TODO Auto-generated method stub
-			return "com.tibco.cp.IssueIOU";
+			return "com.example.iou.IssueIOU";
 		}
 
 		@Override
@@ -126,10 +113,14 @@ public class TestCordaFlowContract {
 		@Override
 		public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
 			Map<String, Object> context = new LinkedHashMap<String, Object>();
-		    context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
-			context.put("newLender",CordaUtil.serialize(getCHARLIE()));
-		    context.put("transactionId", "transfer");
-		    context.put("timestamp", "abc");
+			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
+		    doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
+			doc.put("$", "newOwner",CordaUtil.partyToString(charlie));
+		    doc.put("$", "transactionId", "transfer");
+		    doc.put("$", "timestamp", "abc");
+		    System.out.println(doc.jsonString());
+		    context.put("transactionInput", doc);
+		    context.put("containerServiceStub", ctnr);
 		    return context;
 		}
 
@@ -142,7 +133,7 @@ public class TestCordaFlowContract {
 		@Override
 		public String getTransactionName() {
 			// TODO Auto-generated method stub
-			return "com.tibco.cp.TransferIOU";
+			return "com.example.iou.TransferIOU";
 		}
 
 		@Override
@@ -167,44 +158,52 @@ public class TestCordaFlowContract {
 		@Override
 		public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
 			Map<String, Object> context = new LinkedHashMap<String, Object>();
-		    context.put("transactionId", this.settleType);
-		    context.put("timestamp", "abc");
+			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
+		    doc.put("$", "transactionId", this.settleType);
+		    doc.put("$", "timestamp", "abc");
+		    doc.put("$", "sendChangeTo", CordaUtil.partyToString(alice));
+		    doc.put("$", "sendPaymentTo", CordaUtil.partyToString(bob));
 		    
 		    if(settleType.equals("single")) {
-			    PartyAndReference issuer = new PartyAndReference(getMEGA_CORP(), OpaqueBytes.of("123".getBytes()));
-	    			Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), getBOB());
+			    PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
+	    			Cash.State payment1 = new Cash.State(issuer, DOLLARS(100), bob);
 	    			DocumentContext paymentdoc = CordaUtil.toJsonObject(Arrays.asList(payment1));
-	    			 context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
-				context.put("payments", paymentdoc);
-			    return context;
+	    			doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
+				doc.put("$", "funds", paymentdoc.json());
+				doc.put("$", "payAmt", CordaUtil.toJsonObject(DOLLARS(100)).json());
+			    
 		    } else if(settleType.equals("multiple")) {
-			    	PartyAndReference issuer = new PartyAndReference(getMEGA_CORP(), OpaqueBytes.of("123".getBytes()));
-	        		Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), getBOB());
-	        		Cash.State payment2 = new Cash.State(issuer, DOLLARS(50), getBOB());
+			    	PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
+	        		Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), bob);
+	        		Cash.State payment2 = new Cash.State(issuer, DOLLARS(50), bob);
 	        		
 	        		iou.setPaid(DOLLARS(10));
-	        		context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
-	    			context.put("payments", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)));
-	    			System.out.println("expected Cash=" + CordaUtil.serialize(payment1));
+	        		doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
+	    			doc.put("$", "funds", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)).json());
+	    			doc.put("$", "payAmt", CordaUtil.toJsonObject(DOLLARS(60)).json());
+	    			
 		    } else if(settleType.equals("change")) {
-			    	PartyAndReference issuer = new PartyAndReference(getMEGA_CORP(), OpaqueBytes.of("123".getBytes()));
-	        		Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), getBOB());
-	        		Cash.State payment2 = new Cash.State(issuer, DOLLARS(50), getBOB());
+			    	PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
+	        		Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), bob);
+	        		Cash.State payment2 = new Cash.State(issuer, DOLLARS(50), bob);
 	        		
 	        		iou.setPaid(DOLLARS(45));
-	        		context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
-	    			context.put("payments", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)));
-		    } else if(settleType.equals("mixed")) {
-			    	PartyAndReference issuer = new PartyAndReference(getMEGA_CORP(), OpaqueBytes.of("123".getBytes()));
-	        		Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), getBOB());
-	        		Cash.State payment2 = new Cash.State(issuer, POUNDS(50), getBOB());
+	        		doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
+	    			doc.put("$", "funds", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)).json());
+	    			doc.put("$", "payAmt", CordaUtil.toJsonObject(DOLLARS(55)).json());
+		    } else if(settleType.equals("err")) {
+			    	PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
+	        		Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), bob);
+	        		Cash.State payment2 = new Cash.State(issuer, DOLLARS(50), bob);
 	        		
 	        		iou.setPaid(DOLLARS(45));
-	        		context.put("iou", CordaUtil.toJsonObject((ContractState)iou));
-	    			context.put("payments", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)));
-	    			System.out.println("expected Cash=" + CordaUtil.serialize(payment1));
+	        		doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
+	    			doc.put("$", "funds", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)).json());
+	    			doc.put("$", "payAmt", CordaUtil.toJsonObject(DOLLARS(60)).json());
+	    			
 		    }
-		    
+		    context.put("transactionInput", doc);
+		    context.put("containerServiceStub", ctnr);
 		    return context;
 		}
 		
@@ -217,7 +216,7 @@ public class TestCordaFlowContract {
 		@Override
 		public String getTransactionName() {
 			// TODO Auto-generated method stub
-			return "com.tibco.cp.SettleIOU";
+			return "com.example.iou.SettleIOU";
 		}
 
 		@Override
@@ -237,23 +236,19 @@ public class TestCordaFlowContract {
 	public void createIOU() {
 		
 		
-		iou = new IOU3(getALICE(), getBOB(), DOLLARS(100), DOLLARS(0), new UniqueIdentifier());
-		contract = new IOU3Contract();
+		iou = new IOU(alice, bob, DOLLARS(100), DOLLARS(0), new UniqueIdentifier());
+		contract = new IOUContractContract();
 		
 		List<ContractState> inputs = new ArrayList<ContractState>();
 		inputs.add(iou);
 		ctnr = new CordaContainer(inputs, "testlogger");
 	
 	    
-	    InputStream txJson = contract.getTransactionJson();
+	    InputStream txJson = this.getClass().getResourceAsStream("transactions.json");
 
 		try {
-			FlowAppConfig app = FlowAppConfig.parseModel(txJson);
-    	 		DovetailEngine engine = new DovetailEngine(app);
-    	 		trigger = engine.getTrigger("IssueIOU");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			App app = AppCompiler.compileApp(txJson);
+    	 		trigger = app.getTriggers().get("com.example.iou.IssueIOU");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -265,7 +260,7 @@ public class TestCordaFlowContract {
 	public void testIssue() {
         	System.out.println("\ntestIssue...");
         try {
-			trigger.invoke(ctnr, new MockIssueTxn());
+			ReplyData reply = trigger.invoke(ctnr, new MockIssueTxn());
              
             List<DocumentContext> out = ((CordaDataService)ctnr.getDataService()).getModifiedStates();
             
@@ -273,6 +268,7 @@ public class TestCordaFlowContract {
             expecteddocs.add(CordaUtil.toJsonObject(iou));
             
             CordaUtil.compare(expecteddocs, out);
+            System.out.println(reply.getData());
             
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -286,13 +282,14 @@ public class TestCordaFlowContract {
 		System.out.println("\ntestTransfer...");
         
         try {
-        		
+        		System.out.println("owner="+ CordaUtil.partyToString(iou.getOwner()));
         		trigger.invoke(ctnr, new MockTransferTxn());
             
             List<DocumentContext> out = ((CordaDataService)ctnr.getDataService()).getModifiedStates();
             
     			List<DocumentContext> expecteddocs = new ArrayList<DocumentContext>();
-    			iou.setLender(getCHARLIE());
+    			iou.setOwner(charlie);
+    			System.out.println("new owner="+ CordaUtil.partyToString(iou.getOwner()));
             expecteddocs.add(CordaUtil.toJsonObject(iou));
                 
             CordaUtil.compare(expecteddocs, out);
@@ -304,10 +301,10 @@ public class TestCordaFlowContract {
         System.out.println("\ntestTransfer...done");
 	}
 	
-//	@Test
+	@Test
 	public void testSettleSinglePayment() {
 		System.out.println("\ntestSettleSinglePayment....");
-		context.addInput("transactionId", "settle");
+	
         try {
         		
         		trigger.invoke(ctnr, new MockSettleTxn("single"));
@@ -316,13 +313,13 @@ public class TestCordaFlowContract {
             
             List<DocumentContext> expecteddocs = new ArrayList<DocumentContext>();
             
-            iou.setPaid(DOLLARS(10));
+            iou.setPaid(DOLLARS(100));
             DocumentContext expecteddoc = CordaUtil.toJsonObject((ContractState)iou); 
             expecteddocs.add(expecteddoc);
             
-            PartyAndReference issuer = new PartyAndReference(getMEGA_CORP(), OpaqueBytes.of("123".getBytes()));
-            Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), getBOB());
-            payment1 = (State) payment1.withNewOwner(getALICE()).getOwnableState();
+            PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
+            Cash.State payment1 = new Cash.State(issuer, DOLLARS(100), bob);
+           
             expecteddocs.add(CordaUtil.toJsonObject(payment1));
             
             CordaUtil.compare(expecteddocs, out);
@@ -333,7 +330,7 @@ public class TestCordaFlowContract {
 		}
 	}
 	
-//	@Test
+	@Test
 	public void testSettleMultiplePayments() {
 		System.out.println("\ntestSettleMultiplePayments....");
         try {
@@ -351,9 +348,9 @@ public class TestCordaFlowContract {
 	    			System.out.println(doc.jsonString());
             });
             
-        		PartyAndReference issuer = new PartyAndReference(getMEGA_CORP(), OpaqueBytes.of("123".getBytes()));
+        		PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
             List<DocumentContext> expecteddocs = new ArrayList<DocumentContext>();
-            Cash.State payment11 = new Cash.State(issuer, DOLLARS(60), getALICE());
+            Cash.State payment11 = new Cash.State(issuer, DOLLARS(60), bob);
             expecteddocs.add(CordaUtil.toJsonObject(payment11));
             
             iou.setPaid(DOLLARS(70));
@@ -368,7 +365,7 @@ public class TestCordaFlowContract {
 		}
 	}
 
-//	@Test
+//	Test
 	public void testSettleWithChange() {
 		System.out.println("\ntestSettleWithChange....");
         try {
@@ -384,9 +381,9 @@ public class TestCordaFlowContract {
             });
             
             List<DocumentContext> expecteddocs = new ArrayList<DocumentContext>();
-            PartyAndReference issuer = new PartyAndReference(getMEGA_CORP(), OpaqueBytes.of("123".getBytes()));
-            Cash.State payment11 = new Cash.State(issuer, DOLLARS(55), getALICE());
-            Cash.State payment22 = new Cash.State(issuer, DOLLARS(5), getBOB());
+            PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
+            Cash.State payment11 = new Cash.State(issuer, DOLLARS(55), alice);
+            Cash.State payment22 = new Cash.State(issuer, DOLLARS(5), bob);
             expecteddocs.add(CordaUtil.toJsonObject(payment11));
             expecteddocs.add(CordaUtil.toJsonObject(payment22));
             
@@ -400,24 +397,17 @@ public class TestCordaFlowContract {
 		}
 	}
 	
-//	@Test
-	public void testSettleMixedCurrency() {
-		System.out.println("\ntestSettleMixedCurrency...");
+	@Test
+	public void testSettleWithErr() {
+		System.out.println("\ntestSettleWithErr...");
+
         try {
-        		trigger.invoke(ctnr, new MockSettleTxn("mixed"));
-            DocumentContext expecteddoc = CordaUtil.toJsonObject((ContractState)iou);
-            String expected = CordaUtil.toJsonObject((ContractState)iou).jsonString();
-            System.out.println("expected IOU=" + expected);
-        
-            List<DocumentContext> out = ((CordaDataService)ctnr.getDataService()).getModifiedStates();
-            System.out.println("settle output state counts: " + out.size());
-            out.forEach(doc -> {
-	    			String actual = doc.jsonString();
-	    			System.out.println(doc.jsonString());
-            });
+        		ReplyData reply = trigger.invoke(ctnr, new MockSettleTxn("err"));
+            System.out.println("status=" + reply.getData());
             
 		} catch (Exception e) {
-			assertTrue(e.getMessage().equals("payments must have the same currecy as IOU"));
+			 
+			assertTrue(e.getMessage().equals("incorrect payment"));
 		}
 	}
 	

@@ -1,651 +1,451 @@
 {
+  "imports": [
+      "github.com/project-flogo/flow",
+      "github.com/TIBCOSoftware/dovetail-contrib/General/activity/empty",
+      "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/txnbuilder",
+      "github.com/TIBCOSoftware/dovetail-contrib/General/activity/error",
+      "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/simplevaultquery",
+      "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/wallet",
+      "github.com/TIBCOSoftware/dovetail-contrib/General/activity/mapper",
+      "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowinitiator",
+      "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowreceiver"
+  ],
   "name": "charlie_iou",
   "description": " ",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "flogo:app",
-  "appModel": "1.0.0",
-  "resources": [
-   {
-    "id": "flow:TransferIOUResponder",
-    "data": {
-     "name": "TransferIOUResponder",
-     "description": null,
-     "tasks": [],
-     "links": [],
-     "metadata": {
-      "input": [],
-      "output": []
-     }
-    }
-   },
-   {
-    "id": "flow:autopayment",
-    "data": {
-     "name": "autopayment",
-     "description": "",
-     "tasks": [
-      {
-       "id": "Logger1",
-       "name": "Logger1",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/logger",
-        "input": {
-         "logLevel": "INFO"
-        },
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['message']",
-           "type": "literal",
-           "value": "flow autopayment is started"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "InvokeanInitiatingFlow",
-       "name": "InvokeanInitiatingFlow",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/subflow",
-        "input": {
-         "flowName": "SettleIOUInitiator",
-         "schemaSelection": "be00cea0-a735-11e9-9ed9-ddd8a2ac128b",
-         "input": {
-          "metadata": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"linearId\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"linearId\\\",\\\"type\\\":\\\"net.corda.core.contracts.UniqueIdentifier\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"}",
-          "value": ""
-         }
-        },
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['input']['linearId']",
-           "type": "assign",
-           "value": "$flow.transactionInput.linearId"
-          },
-          {
-           "mapTo": "$INPUT['input']['amt']['currency']",
-           "type": "assign",
-           "value": "$flow.transactionInput.amt.currency"
-          },
-          {
-           "mapTo": "$INPUT['input']['amt']['quantity']",
-           "type": "literal",
-           "value": 1000
-          },
-          {
-           "mapTo": "$INPUT['input']['regulator']",
-           "type": "literal",
-           "value": "O=regulator,L=New York,C=US"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "Logger3",
-       "name": "Logger3",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/logger",
-        "input": {
-         "logLevel": "INFO"
-        },
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['message']",
-           "type": "literal",
-           "value": "autopayment is completed"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "Logger2",
-       "name": "Logger2",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/logger",
-        "input": {
-         "logLevel": "INFO"
-        },
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['message']",
-           "type": "literal",
-           "value": "less than $10, did not invoke settleiou"
-          }
-         ]
-        }
-       }
-      }
-     ],
-     "links": [
-      {
-       "id": 1,
-       "from": "Logger1",
-       "to": "InvokeanInitiatingFlow",
-       "type": "expression",
-       "value": "math.subtractLong($flow.transactionInput.amt.quantity, $flow.transactionInput.paid.quantity) >= 10"
-      },
-      {
-       "id": 2,
-       "from": "InvokeanInitiatingFlow",
-       "to": "Logger3",
-       "type": "default"
-      },
-      {
-       "id": 3,
-       "from": "Logger1",
-       "to": "Logger2",
-       "type": "expression",
-       "value": "math.subtractLong($flow.transactionInput.amt.quantity, $flow.transactionInput.paid.quantity) < 10"
-      }
-     ],
-     "metadata": {
-      "input": [],
-      "output": []
-     }
-    }
-   },
-   {
-    "id": "flow:IssueIOUInitiator",
-    "data": {
-     "name": "IssueIOUInitiator",
-     "description": "",
-     "tasks": [
-      {
-       "id": "BuildTransactionProposal",
-       "name": "BuildTransactionProposal",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/txnbuilder",
-        "input": {
-         "contract": "9ae09eb0-565d-11e9-9fa5-53566968a608",
-         "contractClass": "com.example.iou.IOUContractContract",
-         "command": "com.example.iou.IssueIOU",
-         "input": {
-          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IssueIOU\",\"type\":\"object\",\"properties\":{\"iou\":{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"paid\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}},\"required\":[\"issuer\",\"owner\",\"amt\",\"paid\",\"linearId\"]},\"transactionId\":{\"type\":\"string\"},\"timestamp\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"iou\",\"transactionId\",\"timestamp\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\",\\\"parent\\\":\\\"org.hyperledger.composer.system.Transaction\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"transactionId\\\",\\\"decorators\\\":[{\\\"name\\\":\\\"InitiatedBy\\\",\\\"args\\\":[\\\"$tx.iou.issuer\\\"]}]},\\\"attributes\\\":[{\\\"name\\\":\\\"iou\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.example.iou.IOU\\\"},{\\\"name\\\":\\\"transactionId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"},{\\\"name\\\":\\\"timestamp\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"DateTime\\\"}]}\"}",
-          "value": ""
-         },
-         "inputSchema": "[{\"name\":\"iou\",\"isOptional\":false,\"type\":\"com.example.iou.IOU\",\"isAsset\":true},{\"name\":\"transactionId\",\"isOptional\":false,\"type\":\"String\"},{\"name\":\"timestamp\",\"isOptional\":false,\"type\":\"DateTime\"}]"
-        },
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['input']['iou']['issuer']",
-           "type": "assign",
-           "value": "$flow.ourIdentity"
-          },
-          {
-           "mapTo": "$INPUT['input']['iou']['owner']",
-           "type": "assign",
-           "value": "$flow.transactionInput.owner"
-          },
-          {
-           "mapTo": "$INPUT['input']['iou']['amt']",
-           "type": "assign",
-           "value": "$flow.transactionInput.amt"
-          },
-          {
-           "mapTo": "$INPUT['input']['iou']['paid']['currency']",
-           "type": "assign",
-           "value": "$flow.transactionInput.amt.currency"
-          },
-          {
-           "mapTo": "$INPUT['input']['iou']['paid']['quantity']",
-           "type": "literal",
-           "value": 0
-          },
-          {
-           "mapTo": "$INPUT['input']['iou']['linearId']",
-           "type": "expression",
-           "value": "cordapp.createLinearIdFromExternalId($flow.transactionInput.extId)"
-          }
-         ]
-        }
-       }
-      }
-     ],
-     "links": [],
-     "metadata": {
-      "input": [],
-      "output": []
-     }
-    }
-   },
-   {
-    "id": "flow:SettleIOUInitiator",
-    "data": {
-     "name": "SettleIOUInitiator",
-     "description": "",
-     "tasks": [
-      {
-       "id": "Logger",
-       "name": "Logger",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract/activity/logger",
-        "input": {
-         "logLevel": "INFO"
-        },
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['message']",
-           "type": "literal",
-           "value": "flow SettleIOU startred"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "getIOU",
-       "name": "getIOU",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/simplevaultquery",
-        "input": {
-         "model": "9ae09eb0-565d-11e9-9fa5-53566968a608",
-         "assetName": "com.example.iou.IOU",
-         "status": "UNCONSUMED",
-         "assetType": "LinearState",
-         "input": {
-          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"linearId\":{\"type\":\"string\"}}}",
-          "value": ""
-         }
-        },
-        "output": {
-         "output": {
-          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IOU\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"data\":{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"paid\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}}},\"ref\":{\"type\":\"string\"}}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Asset\\\",\\\"parent\\\":\\\"com.tibco.dovetail.system.LinearState\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"linearId\\\",\\\"decorators\\\":[]},\\\"attributes\\\":[{\\\"name\\\":\\\"issuer\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"amt\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"paid\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"linearId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"}]}\"}",
-          "value": ""
-         }
-        },
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['input']['linearId']",
-           "type": "assign",
-           "value": "$flow.transactionInput.linearId"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "unpaid",
-       "name": "unpaid",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/General/activity/mapper",
-        "input": {
-         "dataType": "Long",
-         "inputArrayType": "Object Array",
-         "outputArrayType": "Object Array",
-         "rounding": "HALF_EVEN",
-         "format": "yyyy-MM-dd HH:mm:ss ZZZ",
-         "input": {
-          "metadata": "{\"type\":\"object\",\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"required\":[\"field\"],\"properties\":{\"field\":{\"type\":\"number\"}}}",
-          "value": ""
-         }
-        },
-        "output": {
-         "output": {
-          "metadata": "{\"type\":\"object\",\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"required\":[\"field\"],\"properties\":{\"field\":{\"type\":\"number\"}}}",
-          "value": ""
-         }
-        },
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['input']['field']",
-           "type": "expression",
-           "value": "math.subtractLong($activity[getIOU].output[0].data.amt.quantity, $activity[getIOU].output[0].data.paid.quantity)"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "getfunds",
-       "name": "getfunds",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/wallet",
-        "input": {
-         "operation": "Retrieve Funds",
-         "input": {
-          "metadata": "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"object\", \"required\": [\"amt\"],\"properties\": {\"amt\":{\"type\": \"object\", \"properties\":{\"currency\": {\"type\": \"string\"},\"quantity\":{\"type\":\"number\"}}},\"issuer\": {\"type\": \"array\",\"items\": {\"type\": \"string\"}}}}",
-          "value": ""
-         }
-        },
-        "output": {
-         "output": {
-          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\"},\"data\":{\"type\":\"object\", \"properties\": {\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\"}}},\"issuer\":{\"type\":\"string\"},\"issuerRef\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}, \"assetId\":{\"type\":\"string\"}}}}}}",
-          "value": ""
-         }
-        },
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['input']['amt']",
-           "type": "assign",
-           "value": "$flow.transactionInput.amt"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "Mapper1",
-       "name": "Mapper1",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/General/activity/mapper",
-        "input": {
-         "dataType": "String",
-         "isArray": true,
-         "inputArrayType": "Object Array",
-         "outputArrayType": "Primitive Array",
-         "rounding": "HALF_EVEN",
-         "format": "yyyy-MM-dd HH:mm:ss ZZZ",
-         "input": {
-          "metadata": "{\"type\":\"array\",\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"items\":{\"type\":\"object\",\"properties\":{\"field\":{\"type\":\"string\"}}}}",
-          "value": ""
-         }
-        },
-        "output": {
-         "output": {
-          "metadata": "{\"type\":\"array\",\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"items\":{\"type\":\"string\"}}",
-          "value": ""
-         }
-        },
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['input']",
-           "type": "array",
-           "value": "{\"to\":\"$INPUT['input']\",\"from\":\"$activity[getfunds].output\",\"type\":\"foreach\",\"fields\":[{\"to\":\"$INPUT.$$['field']\",\"from\":\"$.ref\",\"type\":\"assign\"}]}"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "BuildTransactionProposal",
-       "name": "BuildTransactionProposal",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/txnbuilder",
-        "input": {
-         "contract": "9ae09eb0-565d-11e9-9fa5-53566968a608",
-         "contractClass": "com.example.iou.IOUContractContract",
-         "command": "com.example.iou.SettleIOU",
-         "input": {
-          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"SettleIOU\",\"type\":\"object\",\"properties\":{\"iou\":{\"type\":\"string\"},\"funds\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"payAmt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"sendChangeTo\":{\"type\":\"string\"},\"sendPaymentTo\":{\"type\":\"string\"},\"transactionId\":{\"type\":\"string\"},\"timestamp\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"iou\",\"funds\",\"payAmt\",\"sendChangeTo\",\"sendPaymentTo\",\"transactionId\",\"timestamp\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\",\\\"parent\\\":\\\"org.hyperledger.composer.system.Transaction\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"transactionId\\\",\\\"decorators\\\":[{\\\"name\\\":\\\"InitiatedBy\\\",\\\"args\\\":[\\\"$tx.iou.owner\\\"]}]},\\\"attributes\\\":[{\\\"name\\\":\\\"iou\\\",\\\"type\\\":\\\"com.example.iou.IOU\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"funds\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Cash\\\",\\\"isRef\\\":true,\\\"isArray\\\":true},{\\\"name\\\":\\\"payAmt\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"sendChangeTo\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"sendPaymentTo\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"transactionId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"},{\\\"name\\\":\\\"timestamp\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"DateTime\\\"}]}\"}",
-          "value": ""
-         },
-         "inputSchema": "[{\"name\":\"iou\",\"type\":\"com.example.iou.IOU\",\"isRef\":true,\"isAsset\":true},{\"name\":\"funds\",\"type\":\"com.tibco.dovetail.system.Cash\",\"isRef\":true,\"isArray\":true,\"isAsset\":true},{\"name\":\"payAmt\",\"isOptional\":false,\"type\":\"com.tibco.dovetail.system.Amount\"},{\"name\":\"sendChangeTo\",\"type\":\"com.tibco.dovetail.system.Party\",\"isRef\":true,\"isParty\":true},{\"name\":\"sendPaymentTo\",\"type\":\"com.tibco.dovetail.system.Party\",\"isRef\":true,\"isParty\":true},{\"name\":\"transactionId\",\"isOptional\":false,\"type\":\"String\"},{\"name\":\"timestamp\",\"isOptional\":false,\"type\":\"DateTime\"}]"
-        },
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['input']['iou']",
-           "type": "assign",
-           "value": "$activity[getIOU].output[0].ref"
-          },
-          {
-           "mapTo": "$INPUT['input']['funds']",
-           "type": "assign",
-           "value": "$activity[Mapper1].output"
-          },
-          {
-           "mapTo": "$INPUT['input']['payAmt']",
-           "type": "assign",
-           "value": "$flow.transactionInput.amt"
-          },
-          {
-           "mapTo": "$INPUT['input']['sendChangeTo']",
-           "type": "assign",
-           "value": "$flow.ourIdentity"
-          },
-          {
-           "mapTo": "$INPUT['input']['sendPaymentTo']",
-           "type": "assign",
-           "value": "$activity[getIOU].output[0].data.owner"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "inputErr",
-       "name": "inputErr",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/General/activity/error",
-        "input": {},
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['message']",
-           "type": "literal",
-           "value": "remain balance must be greater than 0 and requested payment amount"
-          }
-         ]
-        }
-       }
-      },
-      {
-       "id": "notFound",
-       "name": "notFound",
-       "activity": {
-        "ref": "github.com/TIBCOSoftware/dovetail-contrib/General/activity/error",
-        "input": {},
-        "output": {},
-        "mappings": {
-         "input": [
-          {
-           "mapTo": "$INPUT['message']",
-           "type": "literal",
-           "value": "iou not found"
-          }
-         ]
-        }
-       }
-      }
-     ],
-     "links": [
-      {
-       "id": 1,
-       "from": "Logger",
-       "to": "getIOU",
-       "type": "default"
-      },
-      {
-       "id": 2,
-       "from": "getIOU",
-       "to": "unpaid",
-       "type": "expression",
-       "value": "$activity[getIOU].size == 1"
-      },
-      {
-       "id": 3,
-       "from": "unpaid",
-       "to": "getfunds",
-       "type": "expression",
-       "value": "$activity[unpaid].output.field > 0 && $activity[unpaid].output.field >= $flow.transactionInput.amt.quantity"
-      },
-      {
-       "id": 4,
-       "from": "getfunds",
-       "to": "Mapper1",
-       "type": "default"
-      },
-      {
-       "id": 5,
-       "from": "Mapper1",
-       "to": "BuildTransactionProposal",
-       "type": "default"
-      },
-      {
-       "id": 6,
-       "from": "unpaid",
-       "to": "inputErr",
-       "type": "expression",
-       "value": "$activity[unpaid].output.field < $flow.transactionInput.amt.quantity"
-      },
-      {
-       "id": 7,
-       "from": "getIOU",
-       "to": "notFound",
-       "type": "expression",
-       "value": "$activity[getIOU].size == 0"
-      }
-     ],
-     "metadata": {
-      "input": [],
-      "output": []
-     }
-    }
-   }
-  ],
+  "appModel": "1.1.0",
+  "feVersion": "2.7.0",
   "triggers": [
-   {
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowreceiver",
-    "name": "CorDAppFlowReceiver",
-    "description": null,
-    "settings": {
-     "flowType": "receiver"
-    },
-    "id": "CorDAppFlowReceiver",
-    "handlers": [
-     {
-      "description": null,
-      "settings": {
-       "useAnonymousIdentity": true,
-       "initiatorFlow": "com.alice.iou.flows.TransferIOUInitiator"
+      {
+          "ref": "#flowinitiator",
+          "name": "CorDAppFlowInitiator",
+          "description": "",
+          "settings": {
+              "flowType": "initiator"
+          },
+          "id": "CorDAppFlowInitiator",
+          "handlers": [
+              {
+                  "description": "",
+                  "settings": {
+                      "useAnonymousIdentity": true,
+                      "hasObservers": true,
+                      "observerManual": true,
+                      "schemaSelection": "user",
+                      "inputParams": {
+                          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"parameterName\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"repeating\":{\"type\":\"string\"},\"required\":{\"type\":\"string\"},\"isEditable\":{\"type\":\"boolean\"},\"partyType\":{\"type\":\"string\"}},\"required\":[\"parameterName\",\"type\",\"repeating\",\"required\",\"isEditable\",\"partyType\"]}}",
+                          "value": "",
+                          "fe_metadata": "[{\"parameterName\":\"extId\",\"type\":\"String\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"partyType\":\"\"},{\"parameterName\":\"owner\",\"type\":\"Party\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"partyType\":\"Participant\"},{\"parameterName\":\"amt\",\"type\":\"Amount<Currency>\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"partyType\":\"\"},{\"parameterName\":\"regulator\",\"type\":\"Party\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"partyType\":\"Observer\"}]"
+                      }
+                  },
+                  "action": {
+                      "ref": "github.com/project-flogo/flow",
+                      "settings": {
+                          "flowURI": "res://flow:IssueIOUInitiator"
+                      },
+                      "input": {
+                          "transactionInput": "=$.transactionInput",
+                          "ourIdentity": "=$.ourIdentity"
+                      }
+                  },
+                  "schemas": {
+                      "output": {
+                          "transactionInput": {
+                              "type": "json",
+                              "value": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"extId\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"extId\\\",\\\"type\\\":\\\"String\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Participant\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"}",
+                              "fe_metadata": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"extId\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"extId\\\",\\\"type\\\":\\\"String\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Participant\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"}"
+                          }
+                      }
+                  }
+              },
+              {
+                  "description": "",
+                  "settings": {
+                      "useAnonymousIdentity": true,
+                      "hasObservers": true,
+                      "observerManual": true,
+                      "schemaSelection": "d6e62620-b54c-11e9-a1f0-3f3e37c79450",
+                      "inputParams": {
+                          "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"parameterName\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"repeating\":{\"type\":\"string\"},\"required\":{\"type\":\"string\"},\"isEditable\":{\"type\":\"boolean\"},\"partyType\":{\"type\":\"string\"}},\"required\":[\"parameterName\",\"type\",\"repeating\",\"required\",\"isEditable\",\"partyType\"]}}",
+                          "value": "",
+                          "fe_metadata": "[{\"parameterName\":\"extId\",\"type\":\"String\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"partyType\":\"\"},{\"parameterName\":\"owner\",\"type\":\"Party\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"partyType\":\"Participant\"},{\"parameterName\":\"amt\",\"type\":\"Amount<Currency>\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"partyType\":\"\"},{\"parameterName\":\"regulator\",\"type\":\"Party\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"partyType\":\"Observer\"}]"
+                      }
+                  },
+                  "action": {
+                      "ref": "github.com/project-flogo/flow",
+                      "settings": {
+                          "flowURI": "res://flow:SettleIOUInitiator"
+                      },
+                      "input": {
+                          "transactionInput": "=$.transactionInput",
+                          "ourIdentity": "=$.ourIdentity"
+                      }
+                  },
+                  "schemas": {
+                      "output": {
+                          "transactionInput": {
+                              "type": "json",
+                              "value": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"linearId\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"linearId\\\",\\\"type\\\":\\\"net.corda.core.contracts.UniqueIdentifier\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"}",
+                              "fe_metadata": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"linearId\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"linearId\\\",\\\"type\\\":\\\"net.corda.core.contracts.UniqueIdentifier\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"}"
+                          }
+                      }
+                  }
+              }
+          ]
       },
-      "outputs": {},
-      "action": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-       "data": {
-        "flowURI": "res://flow:TransferIOUResponder"
-       },
-       "mappings": {
-        "input": [],
-        "output": []
-       }
+      {
+          "ref": "#flowreceiver",
+          "name": "CorDAppFlowReceiver",
+          "description": "",
+          "settings": {
+              "flowType": "receiver"
+          },
+          "id": "CorDAppFlowReceiver",
+          "handlers": [
+              {
+                  "description": "",
+                  "settings": {
+                      "useAnonymousIdentity": true,
+                      "initiatorFlow": "com.alice.iou.flows.TransferIOUInitiator"
+                  },
+                  "action": {
+                      "ref": "github.com/project-flogo/flow",
+                      "settings": {
+                          "flowURI": "res://flow:TransferIOUResponder"
+                      },
+                      "input": {
+                          "ledgerTxn": "=$.ledgerTxn"
+                      }
+                  }
+              }
+          ]
       }
-     }
-    ]
-   },
-   {
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/schedulable",
-    "name": "CorDAppSchedulableFlow",
-    "description": "",
-    "settings": {
-     "flowType": "schedulable"
-    },
-    "id": "CorDAppSchedulableFlow",
-    "handlers": [
-     {
-      "description": "",
-      "settings": {
-       "model": "9ae09eb0-565d-11e9-9fa5-53566968a608",
-       "asset": "com.example.iou.IOU"
+  ],
+  "resources": [
+      {
+          "id": "flow:IssueIOUInitiator",
+          "data": {
+              "name": "IssueIOUInitiator",
+              "description": "",
+              "links": [
+                  {
+                      "id": 1,
+                      "from": "NULLactivity",
+                      "to": "BuildTransactionProposal",
+                      "type": "expression",
+                      "value": "$flow.transactionInput.amt.quantity >0"
+                  },
+                  {
+                      "id": 2,
+                      "from": "NULLactivity",
+                      "to": "ThrowException",
+                      "type": "expression",
+                      "value": "$flow.transactionInput.amt.quantity <=0"
+                  }
+              ],
+              "tasks": [
+                  {
+                      "id": "NULLactivity",
+                      "name": "NULLactivity",
+                      "activity": {
+                          "ref": "#empty"
+                      }
+                  },
+                  {
+                      "id": "BuildTransactionProposal",
+                      "name": "BuildTransactionProposal",
+                      "activity": {
+                          "ref": "#txnbuilder",
+                          "input": {
+                              "contract": "30d4b7d0-ae29-11e9-b687-0b26cc9b18a0",
+                              "contractClass": "com.example.iou.IOUContractContract",
+                              "command": "com.example.iou.IssueIOU",
+                              "inputSchema": "[{\"name\":\"iou\",\"isOptional\":false,\"type\":\"com.example.iou.IOU\",\"isAsset\":true},{\"name\":\"transactionId\",\"isOptional\":false,\"type\":\"String\"},{\"name\":\"timestamp\",\"isOptional\":false,\"type\":\"DateTime\"}]",
+                              "input": {
+                                  "mapping": {
+                                      "iou": {
+                                          "issuer": "=$flow.ourIdentity",
+                                          "owner": "=$flow.transactionInput.owner",
+                                          "amt": "=$flow.transactionInput.amt",
+                                          "linearId": "=cordapp.createLinearIdFromExternalId($flow.transactionInput.extId)",
+                                          "paid": {
+                                              "currency": "=$flow.transactionInput.amt.currency",
+                                              "quantity": 0
+                                          }
+                                      }
+                                  }
+                              }
+                          },
+                          "schemas": {
+                              "input": {
+                                  "input": {
+                                      "type": "json",
+                                      "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IssueIOU\",\"type\":\"object\",\"properties\":{\"iou\":{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"paid\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}},\"required\":[\"issuer\",\"owner\",\"amt\",\"paid\",\"linearId\"]}},\"required\":[\"iou\",\"transactionId\",\"timestamp\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\",\\\"parent\\\":\\\"org.hyperledger.composer.system.Transaction\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"transactionId\\\",\\\"decorators\\\":[{\\\"name\\\":\\\"InitiatedBy\\\",\\\"args\\\":[\\\"$tx.iou.issuer\\\"]}]},\\\"attributes\\\":[{\\\"name\\\":\\\"iou\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.example.iou.IOU\\\"},{\\\"name\\\":\\\"transactionId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"},{\\\"name\\\":\\\"timestamp\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"DateTime\\\"}]}\"}",
+                                      "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IssueIOU\",\"type\":\"object\",\"properties\":{\"iou\":{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"paid\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}},\"required\":[\"issuer\",\"owner\",\"amt\",\"paid\",\"linearId\"]}},\"required\":[\"iou\",\"transactionId\",\"timestamp\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\",\\\"parent\\\":\\\"org.hyperledger.composer.system.Transaction\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"transactionId\\\",\\\"decorators\\\":[{\\\"name\\\":\\\"InitiatedBy\\\",\\\"args\\\":[\\\"$tx.iou.issuer\\\"]}]},\\\"attributes\\\":[{\\\"name\\\":\\\"iou\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.example.iou.IOU\\\"},{\\\"name\\\":\\\"transactionId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"},{\\\"name\\\":\\\"timestamp\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"DateTime\\\"}]}\"}"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "id": "ThrowException",
+                      "name": "ThrowException",
+                      "activity": {
+                          "ref": "#error",
+                          "input": {
+                              "message": "iou amount must be greater than 0"
+                          }
+                      }
+                  }
+              ],
+              "metadata": {
+                  "input": [
+                      {
+                          "name": "transactionInput",
+                          "type": "object",
+                          "schema": {
+                              "type": "json",
+                              "value": "{\"extId\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}}"
+                          }
+                      },
+                      {
+                          "name": "ourIdentity",
+                          "type": "string"
+                      }
+                  ],
+                  "output": [],
+                  "fe_metadata": {
+                      "input": "{\"type\":\"object\",\"title\":\"CorDAppFlowInitiator\",\"properties\":{\"transactionInput\":{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"extId\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"extId\\\",\\\"type\\\":\\\"String\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Participant\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"},\"ourIdentity\":{\"type\":\"string\",\"required\":false}}}"
+                  }
+              }
+          }
       },
-      "outputs": {
-       "transactionInput": {
-        "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IOU\",\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"paid\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}},\"required\":[\"issuer\",\"owner\",\"amt\",\"paid\",\"linearId\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Asset\\\",\\\"parent\\\":\\\"com.tibco.dovetail.system.LinearState\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"linearId\\\",\\\"decorators\\\":[]},\\\"attributes\\\":[{\\\"name\\\":\\\"issuer\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"amt\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"paid\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"linearId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"}]}\"}",
-        "value": ""
-       },
-       "ourIdentity": ""
+      {
+          "id": "flow:TransferIOUResponder",
+          "data": {
+              "name": "TransferIOUResponder",
+              "description": "",
+              "links": [],
+              "tasks": [],
+              "metadata": {
+                  "input": [
+                      {
+                          "name": "ledgerTxn",
+                          "type": "any"
+                      }
+                  ],
+                  "output": [],
+                  "fe_metadata": {
+                      "input": "{\"type\":\"object\",\"title\":\"CorDAppFlowReceiver\",\"properties\":{\"ledgerTxn\":{\"type\":\"any\",\"required\":false}}}"
+                  }
+              }
+          }
       },
-      "action": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-       "data": {
-        "flowURI": "res://flow:autopayment"
-       },
-       "mappings": {
-        "input": [],
-        "output": []
-       }
+      {
+          "id": "flow:SettleIOUInitiator",
+          "data": {
+              "name": "SettleIOUInitiator",
+              "description": "",
+              "links": [
+                  {
+                      "id": 1,
+                      "from": "getiou",
+                      "to": "CashWallet",
+                      "type": "expression",
+                      "value": "$activity[getiou].size == 1"
+                  },
+                  {
+                      "id": 2,
+                      "from": "CashWallet",
+                      "to": "Mapper",
+                      "type": "default"
+                  },
+                  {
+                      "id": 3,
+                      "from": "Mapper",
+                      "to": "BuildTransactionProposal",
+                      "type": "default"
+                  },
+                  {
+                      "id": 4,
+                      "from": "getiou",
+                      "to": "ThrowException",
+                      "type": "expression",
+                      "value": "$activity[getiou].size != 1"
+                  }
+              ],
+              "tasks": [
+                  {
+                      "id": "getiou",
+                      "name": "getiou",
+                      "activity": {
+                          "ref": "#simplevaultquery",
+                          "input": {
+                              "model": "30d4b7d0-ae29-11e9-b687-0b26cc9b18a0",
+                              "assetName": "com.example.iou.IOU",
+                              "status": "UNCONSUMED",
+                              "assetType": "LinearState",
+                              "input": {
+                                  "mapping": {
+                                      "linearId": "=$flow.transactionInput.linearId"
+                                  }
+                              }
+                          },
+                          "schemas": {
+                              "input": {
+                                  "input": {
+                                      "type": "json",
+                                      "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"linearId\":{\"type\":\"string\"}}}",
+                                      "fe_metadata": "{\"linearId\": \"\"}"
+                                  }
+                              },
+                              "output": {
+                                  "output": {
+                                      "type": "json",
+                                      "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IOU\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"data\":{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"paid\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}}},\"ref\":{\"type\":\"string\"}}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Asset\\\",\\\"parent\\\":\\\"com.tibco.dovetail.system.LinearState\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"linearId\\\",\\\"decorators\\\":[]},\\\"attributes\\\":[{\\\"name\\\":\\\"issuer\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"amt\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"paid\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"linearId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"}]}\"}",
+                                      "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"IOU\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"data\":{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"paid\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"linearId\":{\"type\":\"string\"}}},\"ref\":{\"type\":\"string\"}}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Asset\\\",\\\"parent\\\":\\\"com.tibco.dovetail.system.LinearState\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"linearId\\\",\\\"decorators\\\":[]},\\\"attributes\\\":[{\\\"name\\\":\\\"issuer\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"amt\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"paid\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"linearId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"}]}\"}"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "id": "CashWallet",
+                      "name": "CashWallet",
+                      "activity": {
+                          "ref": "#wallet",
+                          "input": {
+                              "operation": "Retrieve Funds",
+                              "input": {
+                                  "mapping": {
+                                      "amt": "=$flow.transactionInput.amt"
+                                  }
+                              }
+                          },
+                          "schemas": {
+                              "input": {
+                                  "input": {
+                                      "type": "json",
+                                      "value": "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"object\", \"required\": [\"amt\"],\"properties\": {\"amt\":{\"type\": \"object\", \"properties\":{\"currency\": {\"type\": \"string\"},\"quantity\":{\"type\":\"number\"}}},\"issuer\": {\"type\": \"array\",\"items\": {\"type\": \"string\"}}}}",
+                                      "fe_metadata": "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"object\", \"required\": [\"amt\"],\"properties\": {\"amt\":{\"type\": \"object\", \"properties\":{\"currency\": {\"type\": \"string\"},\"quantity\":{\"type\":\"number\"}}},\"issuer\": {\"type\": \"array\",\"items\": {\"type\": \"string\"}}}}"
+                                  }
+                              },
+                              "output": {
+                                  "output": {
+                                      "type": "json",
+                                      "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\"},\"data\":{\"type\":\"object\", \"properties\": {\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\"}}},\"issuer\":{\"type\":\"string\"},\"issuerRef\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}, \"assetId\":{\"type\":\"string\"}}}}}}",
+                                      "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"ref\":{\"type\":\"string\"},\"data\":{\"type\":\"object\", \"properties\": {\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\"}}},\"issuer\":{\"type\":\"string\"},\"issuerRef\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}, \"assetId\":{\"type\":\"string\"}}}}}}"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "id": "Mapper",
+                      "name": "Mapper",
+                      "activity": {
+                          "ref": "#mapper",
+                          "input": {
+                              "model": "",
+                              "dataType": "String",
+                              "isArray": true,
+                              "inputArrayType": "Object Array",
+                              "outputArrayType": "Primitive Array",
+                              "rounding": "HALF_EVEN",
+                              "format": "yyyy-MM-dd HH:mm:ss ZZZ",
+                              "input": {
+                                  "mapping": {
+                                      "@foreach($activity[CashWallet].output)": {
+                                          "field": "=$.ref"
+                                      }
+                                  }
+                              }
+                          },
+                          "schemas": {
+                              "input": {
+                                  "input": {
+                                      "type": "json",
+                                      "value": "{\"type\":\"array\",\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"items\":{\"type\":\"object\",\"properties\":{\"field\":{\"type\":\"string\"}}}}",
+                                      "fe_metadata": "{\"type\":\"array\",\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"items\":{\"type\":\"object\",\"properties\":{\"field\":{\"type\":\"string\"}}}}"
+                                  }
+                              },
+                              "output": {
+                                  "output": {
+                                      "type": "json",
+                                      "value": "{\"type\":\"array\",\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"items\":{\"type\":\"string\"}}",
+                                      "fe_metadata": "{\"type\":\"array\",\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"items\":{\"type\":\"string\"}}"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "id": "BuildTransactionProposal",
+                      "name": "BuildTransactionProposal",
+                      "activity": {
+                          "ref": "#txnbuilder",
+                          "input": {
+                              "contract": "30d4b7d0-ae29-11e9-b687-0b26cc9b18a0",
+                              "contractClass": "com.example.iou.IOUContractContract",
+                              "command": "com.example.iou.SettleIOU",
+                              "inputSchema": "[{\"name\":\"iou\",\"type\":\"com.example.iou.IOU\",\"isRef\":true,\"isAsset\":true},{\"name\":\"funds\",\"type\":\"com.tibco.dovetail.system.Cash\",\"isRef\":true,\"isArray\":true,\"isAsset\":true},{\"name\":\"payAmt\",\"isOptional\":false,\"type\":\"com.tibco.dovetail.system.Amount\"},{\"name\":\"sendChangeTo\",\"type\":\"com.tibco.dovetail.system.Party\",\"isRef\":true,\"isParty\":true},{\"name\":\"sendPaymentTo\",\"type\":\"com.tibco.dovetail.system.Party\",\"isRef\":true,\"isParty\":true},{\"name\":\"transactionId\",\"isOptional\":false,\"type\":\"String\"},{\"name\":\"timestamp\",\"isOptional\":false,\"type\":\"DateTime\"}]",
+                              "input": {
+                                  "mapping": {
+                                      "iou": "=$activity[getiou].output[0].ref",
+                                      "funds": "=$activity[Mapper].output",
+                                      "payAmt": "=$flow.transactionInput.amt",
+                                      "sendChangeTo": "=$flow.ourIdentity",
+                                      "sendPaymentTo": "=$activity[getiou].output[0].data.owner"
+                                  }
+                              }
+                          },
+                          "schemas": {
+                              "input": {
+                                  "input": {
+                                      "type": "json",
+                                      "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"SettleIOU\",\"type\":\"object\",\"properties\":{\"iou\":{\"type\":\"string\"},\"funds\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"payAmt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"sendChangeTo\":{\"type\":\"string\"},\"sendPaymentTo\":{\"type\":\"string\"}},\"required\":[\"iou\",\"funds\",\"payAmt\",\"sendChangeTo\",\"sendPaymentTo\",\"transactionId\",\"timestamp\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\",\\\"parent\\\":\\\"org.hyperledger.composer.system.Transaction\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"transactionId\\\",\\\"decorators\\\":[{\\\"name\\\":\\\"InitiatedBy\\\",\\\"args\\\":[\\\"$tx.iou.owner\\\"]}]},\\\"attributes\\\":[{\\\"name\\\":\\\"iou\\\",\\\"type\\\":\\\"com.example.iou.IOU\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"funds\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Cash\\\",\\\"isRef\\\":true,\\\"isArray\\\":true},{\\\"name\\\":\\\"payAmt\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"sendChangeTo\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"sendPaymentTo\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"transactionId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"},{\\\"name\\\":\\\"timestamp\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"DateTime\\\"}]}\"}",
+                                      "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"SettleIOU\",\"type\":\"object\",\"properties\":{\"iou\":{\"type\":\"string\"},\"funds\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"payAmt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"integer\",\"default\":\"0\"}},\"required\":[\"currency\",\"quantity\"]},\"sendChangeTo\":{\"type\":\"string\"},\"sendPaymentTo\":{\"type\":\"string\"}},\"required\":[\"iou\",\"funds\",\"payAmt\",\"sendChangeTo\",\"sendPaymentTo\",\"transactionId\",\"timestamp\"],\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\",\\\"parent\\\":\\\"org.hyperledger.composer.system.Transaction\\\",\\\"isAbstract\\\":false,\\\"identifiedBy\\\":\\\"transactionId\\\",\\\"decorators\\\":[{\\\"name\\\":\\\"InitiatedBy\\\",\\\"args\\\":[\\\"$tx.iou.owner\\\"]}]},\\\"attributes\\\":[{\\\"name\\\":\\\"iou\\\",\\\"type\\\":\\\"com.example.iou.IOU\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"funds\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Cash\\\",\\\"isRef\\\":true,\\\"isArray\\\":true},{\\\"name\\\":\\\"payAmt\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"com.tibco.dovetail.system.Amount\\\"},{\\\"name\\\":\\\"sendChangeTo\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"sendPaymentTo\\\",\\\"type\\\":\\\"com.tibco.dovetail.system.Party\\\",\\\"isRef\\\":true},{\\\"name\\\":\\\"transactionId\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"String\\\"},{\\\"name\\\":\\\"timestamp\\\",\\\"isOptional\\\":false,\\\"type\\\":\\\"DateTime\\\"}]}\"}"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "id": "ThrowException",
+                      "name": "ThrowException",
+                      "activity": {
+                          "ref": "#error",
+                          "input": {
+                              "message": "iou is not found or more than one iou is found for the same linearId"
+                          }
+                      }
+                  }
+              ],
+              "metadata": {
+                  "input": [
+                      {
+                          "name": "transactionInput",
+                          "type": "object",
+                          "schema": {
+                              "type": "json",
+                              "value": "{\"linearId\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}}"
+                          }
+                      },
+                      {
+                          "name": "ourIdentity",
+                          "type": "string"
+                      }
+                  ],
+                  "output": [],
+                  "fe_metadata": {
+                      "input": "{\"type\":\"object\",\"title\":\"CorDAppFlowInitiator1\",\"properties\":{\"transactionInput\":{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"linearId\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"linearId\\\",\\\"type\\\":\\\"net.corda.core.contracts.UniqueIdentifier\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"},\"ourIdentity\":{\"type\":\"string\",\"required\":false}}}"
+                  }
+              }
+          }
       }
-     }
-    ]
-   },
-   {
-    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowinitiator",
-    "name": "CorDAppFlowInitiator",
-    "description": "",
-    "settings": {
-     "flowType": "initiator"
-    },
-    "id": "CorDAppFlowInitiator",
-    "handlers": [
-     {
-      "description": "",
-      "settings": {
-       "useAnonymousIdentity": true,
-       "hasObservers": true,
-       "observerManual": true,
-       "schemaSelection": "user",
-       "inputParams": {
-        "metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"parameterName\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"repeating\":{\"type\":\"string\"},\"required\":{\"type\":\"string\"},\"isEditable\":{\"type\":\"boolean\"},\"partyType\":{\"type\":\"string\"}},\"required\":[\"parameterName\",\"type\",\"repeating\",\"required\",\"isEditable\",\"partyType\"]}}",
-        "value": ""
-       }
-      },
-      "outputs": {
-       "transactionInput": {
-        "metadata": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"extId\":{\"type\":\"string\"},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"owner\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Participant\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"extId\\\",\\\"type\\\":\\\"String\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"}",
-        "value": ""
-       },
-       "ourIdentity": ""
-      },
-      "action": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-       "data": {
-        "flowURI": "res://flow:IssueIOUInitiator"
-       },
-       "mappings": {
-        "input": [],
-        "output": []
-       }
-      }
-     },
-     {
-      "description": "",
-      "settings": {
-       "useAnonymousIdentity": true,
-       "hasObservers": true,
-       "observerManual": true,
-       "schemaSelection": "be00cea0-a735-11e9-9ed9-ddd8a2ac128b"
-      },
-      "outputs": {
-       "transactionInput": {
-        "metadata": "{\"schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"linearId\":{\"type\":\"string\"},\"amt\":{\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"}}},\"regulator\":{\"type\":\"string\"}},\"description\":\"{\\\"metadata\\\":{\\\"type\\\":\\\"Transaction\\\"},\\\"attributes\\\":[{\\\"name\\\":\\\"linearId\\\",\\\"type\\\":\\\"net.corda.core.contracts.UniqueIdentifier\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"amt\\\",\\\"type\\\":\\\"net.corda.core.contracts.Amount<Currency>\\\",\\\"isRef\\\":false,\\\"isArray\\\":false,\\\"partyType\\\":\\\"\\\"},{\\\"name\\\":\\\"regulator\\\",\\\"type\\\":\\\"net.corda.core.identity.Party\\\",\\\"isRef\\\":true,\\\"isArray\\\":false,\\\"partyType\\\":\\\"Observer\\\"}]}\"}",
-        "value": ""
-       },
-       "ourIdentity": ""
-      },
-      "action": {
-       "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-       "data": {
-        "flowURI": "res://flow:SettleIOUInitiator"
-       },
-       "mappings": {
-        "input": [],
-        "output": []
-       }
-      }
-     }
-    ]
-   }
   ],
   "properties": [],
-  "ui": "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",
-  "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvQ29yREFwcCIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9Db3JEQXBwIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9TbWFydENvbnRyYWN0IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L1NtYXJ0Q29udHJhY3QifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9kb3ZldGFpbC1jb250cmliL0dlbmVyYWwiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vR2VuZXJhbCJ9XQ=="
- }
+  "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvQ29yREFwcCIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9Db3JEQXBwIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9HZW5lcmFsIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0dlbmVyYWwifV0=",
+  "fe_metadata": "UEsDBAoAAAAIADijAk+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAA4owJPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+}

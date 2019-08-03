@@ -17,11 +17,12 @@ import net.corda.core.serialization.CordaSerializable;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tibco.dovetail.container.corda.CordaCommandDataWithData;
 import com.tibco.dovetail.container.corda.CordaContainer;
 import com.tibco.dovetail.container.corda.CordaTransactionService;
-import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
+import com.tibco.dovetail.container.cordapp.AppContainer;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -80,13 +81,15 @@ public class IOU implements  net.corda.core.contracts.LinearState, SchedulableSt
 
             CordaTransactionService txnSvc = new CordaTransactionService(null, command);
                              
-            ReplyData reply = trig.invoke(ctnr, txnSvc);
-            if(reply == null || reply.getObjectData() == null){
-                return null;
+            trig.invoke(ctnr, txnSvc);
+            List<Object> tasks = ctnr.getContainerAsyncTasks(CordaContainer.TASK_SCHEDULEDACTIVITY);
+            if(tasks == null || tasks.isEmpty()) {
+            		return null;
             } else {
-            		ScheduledActivity sa = (ScheduledActivity)reply.getObjectData();
+            		ScheduledActivity sa = (ScheduledActivity)tasks.get(0);
                 return sa;
             }
+   
         }
 
     }
@@ -135,6 +138,7 @@ public class IOU implements  net.corda.core.contracts.LinearState, SchedulableSt
 
     @NotNull
     @Override
+    @JsonIgnore
     public List<AbstractParty> getParticipants() {
         List<AbstractParty> participants = new ArrayList<AbstractParty>();
         participants.add(issuer);

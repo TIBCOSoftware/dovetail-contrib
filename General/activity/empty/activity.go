@@ -6,7 +6,7 @@
 package transition
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/null"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/empty"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

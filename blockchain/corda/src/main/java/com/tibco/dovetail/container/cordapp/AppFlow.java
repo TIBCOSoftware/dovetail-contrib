@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import com.tibco.dovetail.container.cordapp.flows.IdentitySyncFlowInitiator;
 import com.tibco.dovetail.container.cordapp.flows.ObserverFlowInitiator;
-import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
 import co.paralleluniverse.fibers.Suspendable;
@@ -106,16 +105,16 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	}
 	
 	@Suspendable
-	protected ReplyData runFlow(String flowName, ITrigger trigger, LinkedHashMap<String, Object> args) throws FlowException {
+	protected AppContainer runFlow(String flowName, ITrigger trigger, LinkedHashMap<String, Object> args) throws FlowException {
        try {
              System.out.println("****** run flow " + flowName + "... ******");
              AppContainer ctnr = new AppContainer(this);
              AppTransactionService txnSvc = new AppTransactionService(args, flowName, selfIdentity==null?getOurIdentity():selfIdentity);
             
-             ReplyData reply = trigger.invoke(ctnr, txnSvc);
+             trigger.invoke(ctnr, txnSvc);
              
              System.out.println("****** flow " + flowName + " done ********");
-             return reply;
+             return ctnr;
          }catch (Exception e){
              throw new FlowException(e);
          }

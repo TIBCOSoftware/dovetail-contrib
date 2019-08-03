@@ -17,9 +17,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
-import com.tibco.cp.TestRuntime.MockDataService;
-import com.tibco.cp.TestRuntime.MockEventService;
-import com.tibco.cp.TestRuntime.MockLogService;
+
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.container.cordapp.AppDataService;
@@ -31,7 +29,8 @@ import com.tibco.dovetail.core.model.flow.Resources;
 import com.tibco.dovetail.core.model.flow.TriggerConfig;
 import com.tibco.dovetail.core.runtime.compilers.AppCompiler;
 import com.tibco.dovetail.core.runtime.compilers.FlowCompiler;
-import com.tibco.dovetail.core.runtime.engine.DovetailEngine;
+import com.tibco.dovetail.core.runtime.flow.ActivityTask;
+import com.tibco.dovetail.core.runtime.flow.AttributeMapping;
 import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.flow.TransactionFlow;
 import com.tibco.dovetail.core.runtime.services.IContainerService;
@@ -62,8 +61,8 @@ public class TestTrigger {
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream in = this.getClass().getResourceAsStream("iouapp.json");
 		
-		LinkedHashMap<String, ITrigger> contractTriggers = AppCompiler.compileApp(in);
-	 	assertEquals(4, contractTriggers.size());
+		LinkedHashMap<String, ITrigger> contractTriggers = AppCompiler.compileApp(in).getTriggers();
+	 	assertEquals(3, contractTriggers.size());
 	 	
 	 	assertNotNull(contractTriggers.get("IssueIOUInitiator"));
 	 	
@@ -79,7 +78,7 @@ public class TestTrigger {
 	 	args.put("regulator", reg.getParty());
 	 	
 	 	AppTransactionService txn = new AppTransactionService(args, "IssueIOUInitiator", self.getParty());
-	 	Map<String, Object> triggerData = txn.resolveTransactionInput(trigger.getHandler("IssueIOUInitiator").getFlowInputs());
+	 	Map<String, Object> triggerData = txn.resolveTransactionInput(trigger.getHandler("IssueIOUInitiator").getTxnInputs());
 	 	triggerData.forEach((k,v) -> {
 	 		if (v instanceof DocumentContext)
 	 			System.out.println(k + "=" + ((DocumentContext)v).jsonString());
@@ -87,18 +86,25 @@ public class TestTrigger {
 	 			System.out.println(k + "=" + v);
 	 	});
 	 	
+	 	ITrigger s = contractTriggers.get("SettleIOUInitiator");
+	 	TransactionFlow f = s.getHandler("SettleIOUInitiator");
+	 	ActivityTask t= f.getTask("Mapper");
+	 	
+	 	t.getInputs().forEach((k,m) -> System.out.println("key=" + k + ", type=" + m.getMappingType()));
+	 	List<AttributeMapping> m = (List<AttributeMapping>)t.getInput("input").getMappingValue();
+	 	m.forEach(a -> System.out.println("input attr mapping=" + a.getName() + "="+ a.getMappingType()));
 	 	
 	// 	AppContainer ctnr = new AppContainer(mock, new MockFlow(false));
 	// 	contractTriggers.get("IssueIOUInitiator").invoke(ctnr, txn);
 	}
 	
-	@Test
+	//@Test
 	public void testschedulable () throws Exception {
 		CordaUtil.setServiceHub(mock);
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream in = this.getClass().getResourceAsStream("iouapp.json");
 		
-		LinkedHashMap<String, ITrigger> contractTriggers = AppCompiler.compileApp(in);
+		LinkedHashMap<String, ITrigger> contractTriggers = AppCompiler.compileApp(in).getTriggers();
 	 	assertNotNull(contractTriggers.get("autopayment"));
 	 	
 	 	ITrigger trigger = contractTriggers.get("autopayment");
@@ -111,7 +117,7 @@ public class TestTrigger {
 	 	
 	 	
 	 	AppTransactionService txn = new AppTransactionService(args, "autopayment", self.getParty());
-	 	Map<String, Object> triggerData = txn.resolveTransactionInput(trigger.getHandler("autopayment").getFlowInputs());
+	 	Map<String, Object> triggerData = txn.resolveTransactionInput(trigger.getHandler("autopayment").getTxnInputs());
 	 	triggerData.forEach((k,v) -> {
 	 		if (v instanceof DocumentContext)
 	 			System.out.println(k + "=" + ((DocumentContext)v).jsonString());
@@ -122,7 +128,7 @@ public class TestTrigger {
 	 	
 	 	AppContainer ctnr = new AppContainer(mock, new MockFlow(false));
 	 	ReplyData reply = trigger.invoke(ctnr, txn);
-	 	System.out.println("rely=" + reply.getObjectData());
+	 	System.out.println("rely=" + reply.getData());
 	}
 	
 	class MockFlow extends AppFlow {
@@ -157,7 +163,7 @@ public class TestTrigger {
 			return new MockLogService();
 		}
 
-		@Override
+	
 		public void addContainerProperty(String name, Object v) {
 			// TODO Auto-generated method stub
 			
@@ -167,6 +173,12 @@ public class TestTrigger {
 		public Object getContainerProperty(String name) {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		public void addContainerAsyncTask(String name, Object v) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}

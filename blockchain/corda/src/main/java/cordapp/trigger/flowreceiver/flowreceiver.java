@@ -1,25 +1,20 @@
 package cordapp.trigger.flowreceiver;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.tibco.dovetail.core.model.flow.HandlerConfig;
-import com.tibco.dovetail.core.model.flow.Resources;
-import com.tibco.dovetail.core.model.flow.TriggerConfig;
-import com.tibco.dovetail.core.runtime.compilers.FlowCompiler;
-import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.flow.TransactionFlow;
-import com.tibco.dovetail.core.runtime.services.IContainerService;
-import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
-import com.tibco.dovetail.core.runtime.trigger.ITrigger;
+import com.tibco.dovetail.core.runtime.trigger.DefaultTriggerImpl;
 
 
-public class flowreceiver implements ITrigger {
+public class flowreceiver extends DefaultTriggerImpl {
+	/*
 	private Map<String, TransactionFlow> handlers = new LinkedHashMap<String, TransactionFlow>();
+	List<AppProperty> properties;
 	
 	@Override
-	public Map<String, ITrigger> Initialize(TriggerConfig triggerConfig) {
+	public Map<String, ITrigger> Initialize(TriggerConfig triggerConfig, List<AppProperty> pp) {
 		try {
+			this.properties = pp;
+			
 			HandlerConfig[] handlerConfigs = triggerConfig.getHandlers();
 			if(handlerConfigs == null || handlerConfigs.length == 0)
 				throw new RuntimeException("No handlers defined for trigger " + triggerConfig.getName());
@@ -27,8 +22,7 @@ public class flowreceiver implements ITrigger {
 			Map<String, ITrigger> lookup = new LinkedHashMap<String, ITrigger>();
 			
 			for(int j=0; j<handlerConfigs.length; j++) {
-				Resources r = handlerConfigs[j].getFlow();
-				TransactionFlow flow = FlowCompiler.compile(r);
+				TransactionFlow flow = FlowCompiler.compile(handlerConfigs[j]);
 	
 	            //flow properties
 				Map<String, Object> properties = handlerConfigs[j].getSettings();
@@ -43,20 +37,11 @@ public class flowreceiver implements ITrigger {
 			throw new RuntimeException(e);
 		}
 	}
-
+*/
 	@Override
-	public ReplyData invoke(IContainerService stub, ITransactionService txn) {
-		TransactionFlow handler = handlers.get(txn.getTransactionName());
-		if(handler == null)
-			throw new RuntimeException("Transaction flow " + txn.getTransactionName() + " is not found");
+	protected void processTxnInput(TransactionFlow flow, HandlerConfig cfg) throws Exception {
+		return;
 		
-		Map<String, Object> triggerData = txn.resolveTransactionInput(handler.getFlowInputs());
-		
-		return handler.handle(stub, triggerData);
 	}
 
-	@Override
-	public TransactionFlow getHandler(String name) {
-		return handlers.get(name);
-	}
 }

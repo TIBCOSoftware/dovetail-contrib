@@ -92,7 +92,10 @@ export class TxnBuilderActivityContributionHandler extends WiServiceHandlerContr
                 return Observable.create(observer => {
                     this.getSchemas(conId).subscribe( schemas => {
                         
-                        let schema = JSON.parse(schemas[cmd])
+                        let schema = JSON.parse(schemas[cmd]);
+                        delete schema.properties["transactionId"]; //remove last two elements (transactionId, timestamp)
+                        delete schema.properties["timestamp"];
+                        
                         let metadata = JSON.parse(schema.description);
 
                         for (let attr of metadata.attributes) {

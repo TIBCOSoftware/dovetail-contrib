@@ -17,7 +17,6 @@ import com.tibco.dovetail.core.model.composer.HLCResource;
 import com.tibco.dovetail.core.model.composer.MetadataParser;
 import com.tibco.dovetail.core.model.composer.HLCMetadata.ResourceType;
 import com.tibco.dovetail.core.model.flow.HandlerConfig;
-import com.tibco.dovetail.core.model.flow.Resources;
 import com.tibco.dovetail.core.model.flow.TriggerConfig;
 import com.tibco.dovetail.core.runtime.compilers.FlowCompiler;
 import com.tibco.dovetail.core.runtime.flow.ReplyData;
@@ -26,16 +25,17 @@ import com.tibco.dovetail.core.runtime.services.IContainerService;
 import com.tibco.dovetail.core.runtime.transaction.TxnInputAttribute;
 import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
 import com.tibco.dovetail.core.runtime.transaction.TxnACL;
+import com.tibco.dovetail.core.runtime.trigger.DefaultTriggerImpl;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
+import com.tibco.dovetail.core.model.flow.AppProperty;
 
-import co.paralleluniverse.fibers.Suspendable;
+public class transaction extends DefaultTriggerImpl{
 
-public class transaction implements ITrigger{
-	private Map<String, TransactionFlow> handlers = new LinkedHashMap<String, TransactionFlow>();
-	
 	@Override
-	public Map<String, ITrigger> Initialize(TriggerConfig triggerConfig)  {
+	public Map<String, ITrigger> Initialize(TriggerConfig triggerConfig, List<AppProperty> pp)  {
 		try {
+			 this.properties = pp;
+			 
 			 String schema = triggerConfig.getSetting("schemas");
 	         Map<String, HLCResource> metadatas = MetadataParser.parse(schema);
 	            
@@ -47,11 +47,11 @@ public class transaction implements ITrigger{
 			
 			for(int j=0; j<handlerConfigs.length; j++) {
 				String txnName = handlerConfigs[j].getSetting("transaction").toString();
-				Resources r = handlerConfigs[j].getFlow();
+			//	Resources r = handlerConfigs[j].getFlow();
 	
-	             TransactionFlow flow = FlowCompiler.compile(r);
+	             TransactionFlow flow = FlowCompiler.compile(handlerConfigs[j]);
 	
-	            //flow inputs/outputs
+	            //trigger inputs/outputs
 	            HLCResource txnResource =  metadatas.get(txnName);
 	            HLCMetadata metadata = txnResource.getMetadata();
 	            txnResource.getAttributes().forEach(a -> {
@@ -74,12 +74,9 @@ public class transaction implements ITrigger{
 	            			txnAttr.setParticipant(false);
 	            		}
 	            		
-	            		flow.addFlowInput(txnAttr);
+	            		flow.addTxnInput(txnAttr);
 	            });
 	            
-	            if(r.getData().getMetadata() != null) {
-	                flow.setFlowOutputs(r.getData().getMetadata().getOutput());
-	            }
 	
 	            //set ACL InitiatedBy decorator
 	            //first argument is comma delimited list of authorized parties in the format of $tx.path.to attribute, use * for any
@@ -115,10 +112,10 @@ public class transaction implements ITrigger{
 	            String txnNoNS = txnName.substring(txnName.lastIndexOf('.'));
 	            handlers.put(txnName, flow);
 	            handlers.put(txnNoNS, flow);
-	            handlers.put(handlerConfigs[j].getFlowName(), flow);
+	          //  handlers.put(handlerConfigs[j].getFlowName(), flow); //will not work with multiple triggers for the same flow
 	            
 	            lookup.put(txnName, this);
-	            lookup.put(handlerConfigs[j].getFlowName(), this);
+	          //  lookup.put(handlerConfigs[j].getFlowName(), this);
 			}
 			
 			 return lookup;
@@ -129,11 +126,11 @@ public class transaction implements ITrigger{
 
 	@Override
 	public ReplyData invoke(IContainerService stub, ITransactionService txn) throws RuntimeException{
-		TransactionFlow handler = handlers.get(txn.getTransactionName());
+		TransactionFlow handler = handlers.get(txn.getTransactionName()); 
 		if(handler == null)
 			throw new RuntimeException("Transaction flow " + txn.getTransactionName() + " is not found");
-		
-		Map<String, Object> triggerData = txn.resolveTransactionInput(handler.getFlowInputs());
+		 
+		Map<String, Object> triggerData = txn.resolveTransactionInput(handler.getTxnInputs());
 		triggerData.put("containerServiceStub",stub);
 		
 		if(txn.isTransactionSecuritySupported() && handler.getAcl() != null) {
@@ -165,7 +162,7 @@ public class transaction implements ITrigger{
 				throw new RuntimeException("Security violation, " + txn.getTransactionInitiator() + " is not authorized for transaction " + txn.getTransactionName());
 		}
 		
-		return handler.handle(stub, triggerData);
+		return handler.handle(stub, triggerData, this.properties);
 	}
 	
 	private boolean isAuthorized(ITransactionService txn, TxnACL acl) {
@@ -199,9 +196,10 @@ public class transaction implements ITrigger{
 	    }
 	}
 	
+
 	@Override
-	public TransactionFlow getHandler(String name) {
-		return handlers.get(name);
+	protected void processTxnInput(TransactionFlow flow, HandlerConfig cfg) throws Exception {
+		
 	}
 }
 

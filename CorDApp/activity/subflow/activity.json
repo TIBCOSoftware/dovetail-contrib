@@ -1,6 +1,6 @@
 {
     "name": "subflow",
-    "title": "Invoke an Initiating Flow",
+    "title": "Start an Initiating Flow",
     "version": "1.0.0",
     "type": "flogo:activity",
     "author": "TIBCO Software Inc.",
@@ -8,7 +8,7 @@
        "category": "CorDApp",
        "visible": true,
        "smallIcon": "sub.png",
-       "description": "invoke an initiating flow as a subflow"
+       "description": "start an initiating flow as a subflow"
     },
  
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/subflow",

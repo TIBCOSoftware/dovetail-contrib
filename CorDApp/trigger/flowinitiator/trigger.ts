@@ -30,18 +30,22 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
         switch(fieldName) {
             case "transactionInput":
                 let schemaSelection = context.getField("schemaSelection").value;
-                if (schemaSelection === "user"){
-                    if(Boolean(context.getField("inputParams").value))
-                        return commonjs.createFlowInputSchema(context.getField("inputParams").value.value)
-                    else
-                        return null;
-                       
-                } else {
-                    return Observable.create(observer => {
-                        this.getSchemas(schemaSelection).subscribe( schema => {
-                            observer.next(schema);
-                        });
-                    });  
+                if(Boolean(schemaSelection)){
+                    if (schemaSelection === "user"){
+                        if(Boolean(context.getField("inputParams").value))
+                            return commonjs.createFlowInputSchema(context.getField("inputParams").value.value)
+                        else
+                            return null;
+                        
+                    } else {
+                        return Observable.create(observer => {
+                            this.getSchemas(schemaSelection).subscribe( schema => {
+                                observer.next(schema);
+                            });
+                        });  
+                    }
+                }else {
+                    return null;
                 }
             case "schemaSelection":
                 
@@ -124,10 +128,12 @@ export class R3FlowInitiatorTriggerHandler extends WiServiceHandlerContribution 
                     initrigger.handler.settings[s].value = context.getField("schemaSelection").value;
                 } else {
                     let inputp = context.getField("inputParams");
-                    initrigger.handler.settings[s].value = {
-                        "metadata": "",
-                        "value": context.getField("inputParams").value
-                    };
+                    if(Boolean(inputp.value)){
+                        initrigger.handler.settings[s].value = {
+                            "metadata": "",
+                            "value": context.getField("inputParams").value.value
+                        };
+                    }
                 }
             }
             /*
