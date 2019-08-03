@@ -1,7 +1,7 @@
 # equipment
 This example demonstrates the use of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) to trace the equipment purchasing and installation process.  It uses the project Dovetail to implement and deploy the following 2 components:
-- Chaincode for Hyperledger Fabric that implements the business logic for tracking equipment on blockchain;
-- Client services that end users can call to submit transactions, i.e., chaincode invocations for equipment tracking.  Two equivalent service implementations are provided for demonstration. One exposes REST APIs, and the other exposes GraphQL APIs.
+- Chaincode for Hyperledger Fabric that implements the business logic for tracking equipment assets on blockchain;
+- Client services that end-users can call to submit transactions, i.e., chaincode invocations for equipment tracking.  Two equivalent service implementations are provided for demonstration. One exposes REST APIs, and the other exposes GraphQL APIs.
 Both components are implemented using Flogo® models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail)
 
 This sample also demonstrates the use of Hyperledger Fabric events.
@@ -21,7 +21,7 @@ go get -u github.com/hyperledger/fabric-samples
 go get -u github.com/project-flogo/cli/...
 go get -u github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric
 ```
-Note that the latest versioon of the Flogo extension for Hyperledger Fabric is in the [`fabric-extension` branch of the `dovetail-contrib`](https://github.com/TIBCOSoftware/dovetail-contrib/tree/issue-36/fabric-extension), which is required by this sample.
+Note that the latest version of the Flogo extension for Hyperledger Fabric is required by this sample, and it is in the [`fabric-extension` branch of the `dovetail-contrib`](https://github.com/TIBCOSoftware/dovetail-contrib/tree/issue-36/fabric-extension).
 
 Bootstrap fabric-samples
 ```
@@ -40,7 +40,7 @@ Skip to the next section if you do not plan to modify the included chaincode mod
 
 ## Build and deploy chaincode to Hyperledger Fabric
 - In this `equipment` sample folder, execute `make create` to generate the chaincode source code from the flogo model [`equipment.json`](equipment.json).
-- Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder.  Note: you may need to edit the [`Makefile`](Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
+- Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder.  Note that you may need to edit the [`Makefile`](Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
 - Execute `make package` to generate `cds` package for cloud deployment, and `metadata` for client apps.
 
 The detailed commands of the above steps are as follows:
@@ -68,23 +68,23 @@ Optionally, test the chaincode from `cli` docker container, i.e.,
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/equipment
 make cli-test
 ```
-You may skip this test, and follow the steps in the next section to build the client app, and then use the client app to execute the tests. If you run the `cli` tests, however, it should print out 5 successful tests with status code `200` if the `equipment` chaincode is installed and instantiated successfully on the Fabric network.  
+You may skip this test, and follow the steps in the next section to build client apps, and then use the client app to execute the tests. If you run the `cli` tests, however, it should print out 5 successful tests with status code `200` if the `equipment` chaincode is installed and instantiated successfully on the Fabric network.  
 
-Note that developers can also use Fabric dev-mode to test th chaincode (refer [dev](../marblle/dev.md) for more details).  For issues regarding how to work with the Fabric network, please refer the [Hyperledger Fabric docs](https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html).
+Note that developers can also use Fabric dev-mode to test the chaincode (refer [dev](../marble/dev.md) for more details).  For issues regarding how to work with the Fabric network, please refer the [Hyperledger Fabric docs](https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html).
 
 ## Edit equipment REST service (optional)
-The marble-client is a REST service that invokes the `marble` chaincode.  The sample Flogo model, [`equipment_client.json`](equipment_client.json) is a REST service that invokes the `equipment` chaincode.  It also includes an event listener for Fabric block events.  Skip to the next section if you do not plan to modify the sample model.
+The sample Flogo model, [`equipment_client.json`](equipment_client.json) is a REST service that invokes the `equipment` chaincode.  It also includes an event listener for Fabric block events.  Skip to the next section if you do not plan to modify the sample model.
 
-The client app requires the metadata of the chaincode implemented by the `equipment`. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
+The client app requires the metadata of the `equipment` chaincode. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/equipment
 make package
 ```
-
+Following are steps to edit or view the REST service models.
 - Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.6.1/doc/pdf/TIB_flogo_2.6_users_guide.pdf?id=2)
 - Upload [`fabclientExtension.zip`](../../fabclientExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can recreate this `zip` by using the script [`zip-fabclient.sh`](../../zip-fabclient.sh)
 - Create new Flogo App of name `equipment_client` and choose `Import app` to import the model [`equipment_client.json`](equipment_client.json)
-- You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
+- You can then add or update the service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.
 - Open `Connections` tab, find and edit the `equipment client` connector. Set the `Smart coontract metadata file` to the [`metadata.json`](contract-metadata/metadata.json), which is generated in the previous step.  Set the `Network configuration file` and `entity matcher file` to the corresponding files in [`testdata`](../../testdata).
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`equipment_client.json`](equipment_client.json) to this `equipment` sample folder.
 
@@ -119,13 +119,13 @@ make run-gql
 ```
 Test the GraphQL service by using the postman test file [graphql.postman_collection.json](graphql.postman_collection.json).
 
-You can also easilly create the GraphQL service from scratch with a few clicks. In `TIBCO Flogo® Enterprise`, create a new app, e.g., `my_equipment_gql`, choose creating `From GraphQL Schema`, and `browse and upload` the file [`metadata.gql`](contract-metadata/metadata.gql).
+With a few clicks, you can also easily create the GraphQL service from scratch. In `TIBCO Flogo® Enterprise`, create a new app, e.g., `my_equipment_gql`, choose creating `From GraphQL Schema`, and `browse and upload` the file [`metadata.gql`](contract-metadata/metadata.gql), which is generated previously by `make package`.
 
-This should create 6 Flogo flows based on the chaincode transactions defined in the `metadata`.  You can then edit each flow by adding an activity `fabclient/Fabric Request`, and configure it to call the corresponding `equipment` transactions, and map the result to the `Return` activity.
+This should create 6 Flogo flows based on the chaincode transactions defined in the `metadata`.  You can then edit each flow by adding an activity `fabclient/Fabric Request`, and configure it to call the corresponding `equipment` transactions, and map the chaincode response to the `Return` activity.
 
-Once you complete the same model as that in the sample `equipment_gql.json`, you can export, build and test it similarly.  Note that the default service port is `7879`, although you can make it configurable by defining an `app property` for it.
+Once you complete the same model as that in the sample `equipment_gql.json`, you can export, build and test it as described in the previous section.  Note that the default service port is `7879`, although you can make it configurable by defining an `app property` for it.
 
-## Cleanup the marble-app fabric network
+## Cleanup the sample fabric network
 After you are done testing, you can stop and cleanup the Fabric sample `first-network` as follows:
 ```
 cd $GOPATH//src/github.com/hyperledger/fabric-samples/first-network
@@ -135,7 +135,7 @@ docker rmi $(docker images | grep dev-peer | awk '{print $3}')
 ```
 
 ## Deploy to IBM Cloud
-To deploy the `equipment` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The following script creates [`equipment.cds`](equipment.cds), which you can deploy to IBM Blockchain Platform.
+To deploy the `equipment` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The following script creates [`equipment_cc.cds`](equipment_cc.cds), which you can deploy to IBM Blockchain Platform.
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/equipment
 make package
