@@ -75,7 +75,7 @@ package:
 	cp -R $(BUILD_PATH)/$(APP_NAME)/src $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	fabric-tools package -n $(APP_NAME) -p $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
-	fabric-tools metadata -f $(APP_FILE) -o $(SRC_PATH)/contract-metadata/metadata.json
+	fabric-tools metadata -f $(APP_FILE) -m $(SRC_PATH)/contract-metadata/metadata.json -g $(SRC_PATH)/contract-metadata/metadata.gql -o $(SRC_PATH)/contract-metadata/override.json
 
 .PHONY: clean-client
 clean-client:

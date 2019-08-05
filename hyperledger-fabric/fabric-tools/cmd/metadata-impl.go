@@ -360,29 +360,42 @@ func generateGqlfile(metafile, gqlfile string) error {
 	// collect transaction as graphQL operations
 	transTypes = []*transactionDef{}
 	for k, v := range meta.Contract.Transactions {
-		var obj map[string]interface{}
-		if err := json.Unmarshal(v.Parameters, &obj); err != nil {
-			fmt.Printf("failed to unmarshal parameter-def of transaction %s: %+v\n", k, err)
-			continue
-		}
 		transDef := transactionDef{
-			name:      k,
-			operation: v.Operation,
+			name:       k,
+			operation:  v.Operation,
+			parameters: []*attributeDef{},
 		}
-		odef := getObjectDef(k, obj)
-		transDef.parameters = odef.attributes
-
-		if err := json.Unmarshal(v.Returns, &obj); err != nil {
-			fmt.Printf("failed to unmarshal return-def of transaction %s: %+v\n", k, err)
-			continue
+		if v.Parameters != nil {
+			if odef, err := extractObjectDef(k, v.Parameters); err == nil {
+				transDef.parameters = append(transDef.parameters, odef.attributes...)
+			}
 		}
-		transDef.returns = getObjectDef(k+"Return", obj)
+		if v.Transient != nil {
+			if odef, err := extractObjectDef(k+"_t", v.Transient); err == nil {
+				transDef.parameters = append(transDef.parameters, odef.attributes...)
+			}
+		}
+		if v.Returns != nil {
+			if odef, err := extractObjectDef(k+"Return", v.Returns); err == nil {
+				transDef.returns = odef
+			}
+		}
 		transTypes = append(transTypes, &transDef)
 	}
 
 	// write graphQL file
 	writeGQL(gqlfile)
 	return nil
+}
+
+func extractObjectDef(name string, data []byte) (*objectDef, error) {
+	var obj map[string]interface{}
+	if err := json.Unmarshal(data, &obj); err != nil {
+		fmt.Printf("failed to unmarshal object def %s: %+v\n", name, err)
+		return nil, err
+	}
+	odef := getObjectDef(name, obj)
+	return odef, nil
 }
 
 func writeGQL(gqlfile string) error {

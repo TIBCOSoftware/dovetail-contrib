@@ -25,7 +25,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_private_0"
+                    "$ref": "#/components/Marble"
                 }
             },
             "getMarblesByRange": {
@@ -44,7 +44,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_private_array0"
+                    "$ref": "#/components/MarbleList"
                 }
             },
             "initMarble": {
@@ -77,7 +77,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_private_0"
+                    "$ref": "#/components/Marble"
                 }
             },
             "queryMarblesByOwner": {
@@ -93,7 +93,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_private_array0"
+                    "$ref": "#/components/MarbleList"
                 }
             },
             "readMarble": {
@@ -109,7 +109,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_private_0"
+                    "$ref": "#/components/Marble"
                 }
             },
             "readMarblePrivateDetails": {
@@ -160,14 +160,14 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_private_0"
+                    "$ref": "#/components/Marble"
                 }
             }
         }
     },
     "components": {
-        "marble_private_0": {
-            "$id": "marble_private_0",
+        "Marble": {
+            "$id": "Marble",
             "type": "object",
             "properties": {
                 "docType": {
@@ -187,8 +187,8 @@
                 }
             }
         },
-        "marble_private_array0": {
-            "$id": "marble_private_array0",
+        "MarbleList": {
+            "$id": "MarbleList",
             "type": "array",
             "items": {
                 "type": "object",
