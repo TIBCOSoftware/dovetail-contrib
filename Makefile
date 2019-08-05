@@ -4,8 +4,12 @@ SCRIPTS_PATH      := scripts
 all: functions
 
 .PHONY: release
-all: functions
+release: hyperledger-fabric
 
 .PHONY: functions
 functions: 
 	$(SCRIPTS_PATH)/functions.sh ${IMAGE_NAME} ${IMAGE_TAG} ${IMAGE_URL}
+
+.PHONY: hyperledger-fabric
+hyperledger-fabric: 
+	$(SCRIPTS_PATH)/hyperledger-fabric.sh
