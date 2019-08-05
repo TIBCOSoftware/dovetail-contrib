@@ -1,11 +1,11 @@
 # Flogo extension for Hyperledger Fabric client
 
-This Flogo extension is designed to allow developers to use the Flogo visual programming environment to design and implement apps or services that interact with a Hyperledger Fabric networks.  This extension supports the following release versions:
+This Flogo extension is designed to allow developers to use the Flogo visual programming environment to design and implement apps or services that interact with a Hyperledger Fabric network.  This extension supports the following release versions:
 - [TIBCO Flogo® Enterprise 2.6](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1)
 - [Hyperledger Fabric 1.4](https://www.hyperledger.org/projects/fabric)
 - [Hyperledger Fabric Go SDK v1.0.0-alpha5](https://github.com/hyperledger/fabric-sdk-go)
 
-The [Fabric Connector](connector/fabconnector) allows you to configure the target Hyperledger Fabric network.
+The [Fabric Connector](connector/fabconnector) allows you to configure connections of the target Hyperledger Fabric network.
 
 The [Fabric Event Listener Trigger](trigger/eventlistener) allows you to implement blockchain apps that listens to Hyperledger Fabric events, including block events, filtered block events, and chaincode events.
 
