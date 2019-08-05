@@ -1,0 +1,199 @@
+{
+	"info": {
+		"_postman_id": "41a01f7d-3528-4110-833c-a9067f9bbcd1",
+		"name": "equipment-rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "submitPO",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"assetUniqueId\": \"asset2\",\n    \"description\": \"submit2\",\n    \"purchasePrice\": \"20000\",\n    \"location\": \"loc2\",\n    \"vendor\": \"vendor2\",\n    \"orgId\": \"org2\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9898/equipment/submitPO",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9898",
+					"path": [
+						"equipment",
+						"submitPO"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "receiveAsset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assetUniqueId\": \"asset2\",\n  \"description\": \"receiveAsset2\",\n  \"acquisitionDate\": \"2019-07-02\",\n  \"location\": \"loc2\",\n  \"manufacturer\": \"make2\",\n  \"vendor\": \"vendor2\",\n  \"model\": \"model2\",\n  \"serialNum\": \"sn2\",\n  \"orgId\": \"org2\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9898/equipment/receiveAsset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9898",
+					"path": [
+						"equipment",
+						"receiveAsset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "installAsset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assetUniqueId\": \"asset2\",\n  \"description\": \"installAsset2\",\n  \"acquisitionDate\": \"2019-07-02\",\n  \"location\": \"loc2\",\n  \"manufacturer\": \"make2\",\n  \"vendor\": \"vendor2\",\n  \"model\": \"model2\",\n  \"serialNum\": \"sn2\",\n  \"orgId\": \"org2\",\n  \"installDate\": \"2019-07-12\"\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:9898/equipment/installAsset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9898",
+					"path": [
+						"equipment",
+						"installAsset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "receiveInvoice",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assetUniqueId\": \"asset2\",\n  \"description\": \"receiveInvoice2\",\n  \"location\": \"loc2\",\n  \"invoiceDate\": \"2019-07-22\",\n  \"orgId\": \"org2\",\n  \"invoicePrice\": \"20000\",\n  \"vendor\": \"vendor2\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9898/equipment/receiveInvoice",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9898",
+					"path": [
+						"equipment",
+						"receiveInvoice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateAsset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assetUniqueId\": \"asset2\",\n  \"description\": \"updateAsset2\",\n  \"purchasePrice\": \"20000\",\n  \"location\": \"loc2\",\n  \"model\": \"model2\",\n  \"orgId\": \"org2\",\n  \"installDate\": \"2019-07-12\",\n  \"invoiceDate\": \"2019-07-22\",\n  \"netBookValue\": \"27000\",\n  \"serialNum\": \"sn2\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9898/equipment/updateAsset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9898",
+					"path": [
+						"equipment",
+						"updateAsset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "queryAsset",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"assetUniqueId\": \"asset2\",\n  \"description\": \"updateAsset2\",\n  \"purchasePrice\": \"20000\",\n  \"location\": \"loc2\",\n  \"model\": \"model2\",\n  \"orgId\": \"org2\",\n  \"installDate\": \"2019-07-12\",\n  \"invoiceDate\": \"2019-07-22\",\n  \"netBookValue\": \"27000\",\n  \"serialNum\": \"sn2\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9898/equipment/query/asset2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9898",
+					"path": [
+						"equipment",
+						"query",
+						"asset2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

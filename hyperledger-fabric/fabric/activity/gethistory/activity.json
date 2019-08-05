@@ -1,0 +1,71 @@
+
+{
+    "name": "fabric-gethistory",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Get History",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "visible": true,
+        "smallIcon": "ic-history.png",
+        "description": "This activity fetches history of a key from fabric ledger"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/gethistory",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/gethistory",
+    "inputs": [
+        {
+            "name": "key",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "commonData",
+            "type": "object",
+            "display": {
+                "name": "Common data definition",
+                "description": "Select common data collection",
+                "type": "connection",
+                "visible": true
+            },
+            "allowed":[]
+        },
+        {
+            "name": "dataType",
+            "type": "string",
+            "display":{
+                "name": "Data object type",
+                "description": "Select output data schema",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        }
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "key",
+            "type": "string"
+        },
+        {
+            "name": "result",
+            "type": "complex_object",
+            "display": {
+                "name": "Result array definition",
+                "description": "Schema definition of the resulting array of history records, e.g.,\r\n[{\r\n  \"txID\": \"string\",\r\n  \"txTime\": \"\",\r\n  \"isDeleted\": false,\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",
+                "type": "texteditor",
+                "syntax": "json",
+                "readonly": false
+            }
+        }
+    ]
+}
