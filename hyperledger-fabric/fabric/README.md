@@ -1,6 +1,6 @@
 # Flogo extension for Hyperledger Fabric chaincode
 
-This Flogo extension is designed to allow developers to design and implement Hyperledger Fabric chaincode in the zero-code visual programming environment of the TIBCO Flogo® Enterprise.  This extension supports the following release versions:
+This Flogo extension is designed to allow developers to design and implement Hyperledger Fabric chaincode in the Flogo visual programming environment.  This extension supports the following release versions:
 - [TIBCO Flogo® Enterprise 2.6](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1)
 - [Hyperledger Fabric 1.4](https://www.hyperledger.org/projects/fabric)
 
@@ -20,6 +20,6 @@ It supports the following activities for storing and querying data on the distri
 - [Invoke Chaincode](activity/invokechaincode): Invoke a local chaincode, and returns response data from the called transaction.
 - [Cid](activity/cid): It inspects the client identification and returns the client's name, MSP, and attributes that can be used for ABAC(Attribute Based Access Control).
 
-With these extensions, Hyperledger Fabric chaincode can be designed and implemented with zero code. Refer to samples [`marble-app`](../samples/marble-app) and [`marble-private`](../samples/marble-private) for more details of the chaincode models implemented by using the `TIBCO Flogo® Enterprise`.
+With these extensions, Hyperledger Fabric chaincode can be designed and implemented with zero code. Refer to samples [`marble-app`](../samples/marble-app) and [`marble-private`](../samples/marble-private) for more details about implementing chaincode for Hyperledger Fabric.
 
-This extension is packaged as [`fabricExtension.zip`](../fabricExtension.zip), which can be re-created from source by using the script [`zip-fabric.sh`](../zip-fabric.sh).  You can upload the zip-file to the `TIBCO Flogo® Enterprise` as an extension, and so they are available for modeling fabric chaincode.
+This extension is packaged as [`fabricExtension.zip`](../fabricExtension.zip), which can be re-created from source by using the script [`zip-fabric.sh`](../zip-fabric.sh).  You can upload the zip-file to the `TIBCO Flogo® Enterprise 2.6` or `Dovetail v0.2.0` as an extension, and so they are available for modeling chaincode.

@@ -1,17 +1,16 @@
 # Flogo extension for Hyperledger Fabric client
 
-This Flogo extension is designed to allow developers to use the zero-code visual programming environment of the TIBCO Flogo® Enterprise to design and implement apps or services that interact with Hyperledger Fabric networks.  This extension supports the following release versions:
+This Flogo extension is designed to allow developers to use the Flogo visual programming environment to design and implement apps or services that interact with a Hyperledger Fabric networks.  This extension supports the following release versions:
 - [TIBCO Flogo® Enterprise 2.6](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1)
 - [Hyperledger Fabric 1.4](https://www.hyperledger.org/projects/fabric)
 - [Hyperledger Fabric Go SDK v1.0.0-alpha5](https://github.com/hyperledger/fabric-sdk-go)
 
-The [Fabric Connector](connector/fabconnector) allows you to configure the target fabric network used by the app.
+The [Fabric Connector](connector/fabconnector) allows you to configure the target Hyperledger Fabric network.
 
-It supports the following activity for submitting an `invoke` or `query` request to a Hyperledger Fabric network.
-- [Fabric Request](activity/fabrequest): It sends a fabric `invoke` request to execute a specified chaincode that inserts or updates states in the distributed ledger or private collections.  It sends a fabric `query` request to execute a specified chaincode that queries the states in the distributed ledger or private collections without changing any state.
+The [Fabric Event Listener Trigger](trigger/eventlistener) allows you to implement blockchain apps that listens to Hyperledger Fabric events, including block events, filtered block events, and chaincode events.
 
-More activities can be added to integrate with blockchain events.
+The [Fabric Request Activity](activity/fabrequest) allows you to implement client apps that interacts with Hyperledger Fabric network by submitting `query` or `invoke` requests.  A Fabric `invoke` request can execute a specified chaincode to create or update states in distributed ledger or private collections.  A Fabric `query` request can execute a specified chaincode to query current states or history in distributed ledger or private collections without changing any state.
 
-With these extensions, Hyperledger Fabric client apps can be designed and implemented with zero code. Refer to the sample [`marble`](../samples/marble) for more details of a REST service implemented by using `TIBCO Flogo® Enterprise` that updates and retrieves data on a distributed ledger of Hyperledger Fabric.
+With these extensions, Hyperledger Fabric client apps can be designed and implemented with zero code. Refer to the sample [`equipment`](../samples/equipment) for more details about implementing REST or GraphQL service that interacts with a Hyperledger Fabric network.
 
-This extension is packaged as [`fabclientExtension.zip`](../fabclientExtension.zip), which can be re-created from source by using the script [`zip-fabclient.sh`](../zip-fabclient.sh).  You can upload the zip-file to the `TIBCO Flogo® Enterprise` as an extension, and so they are available for modeling client apps for Hyperledger Fabric.
+This extension is packaged as [`fabclientExtension.zip`](../fabclientExtension.zip), which can be re-created from source by using the script [`zip-fabclient.sh`](../zip-fabclient.sh).  You can upload the zip-file to the `TIBCO Flogo® Enterprise 2.6` or `Dovetail v0.2.0` as an extension, and so they are available for modeling client apps and services for Hyperledger Fabric.
