@@ -1,13 +1,13 @@
 # equipment
-This example demonstrates the use of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) for tracking equipment purchasing and installations.  It uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to implement and deploy following 2 components:
+This example demonstrates the use of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) for tracking equipment purchasing and installations.  This sample demonstrates the use of Hyperledger Fabric events, and client services using REST or GraphQL APIs.  It uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to implement and deploy following 2 components:
 - Chaincode for Hyperledger Fabric that implements the business logic for tracking equipment assets on blockchain;
 - Client services that end-users can call to submit transactions, i.e., chaincode invocations for equipment tracking.  Two equivalent service implementations are provided for demonstration. One service implements REST APIs, and the other implements equivalent GraphQL APIs.
-Both components are implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail)
+Both components are implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
 
 This sample also demonstrates the use of Hyperledger Fabric events.
 
 ## Prerequisite
-- Download [TIBCO Flogo® Enterprise 2.6](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html) or Download Dovetail when v0.2.0 is released.  This sample uses `TIBCO Flogo® Enterprise`, but all models can be imported and edited by using Dovetail v0.2.0.
+- Download [TIBCO Flogo® Enterprise 2.6](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html).  If you do not have access to `Flogo Enterprise`, you may sign up a trial on [TIBCO CLOUD Integration (TCI)](https://cloud.tibco.com/), or download Dovetail v0.2.0 when it is released.  This sample uses `TIBCO Flogo® Enterprise`, but all models can be imported and edited by using Dovetail v0.2.0 and above.
 - [Install Go](https://golang.org/doc/install)
 - Clone [Hyperledger Fabric](https://github.com/hyperledger/fabric)
 - Clone [Hyperledger Fabric Samples](https://github.com/hyperledger/fabric-samples)

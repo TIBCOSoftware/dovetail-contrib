@@ -1,0 +1,10 @@
+{
+    "marble_private_0": "Marble",
+    "marble_private_2": "MarbleList",
+    "ReadMarblePrivateDetailsReturnType": "MarblePrivate",
+    "ValueType": "Marble",
+    "MarbleListType": "MarbleKeyValue",
+    "MarbleType": "MarbleCreate",
+    "Marble_ownerType": "MarbleTransfer",
+    "Marble_deleteType": "MarbleDelete"
+}
