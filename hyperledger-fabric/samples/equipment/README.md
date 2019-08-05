@@ -85,7 +85,7 @@ Following are steps to edit or view the REST service models.
 - Upload [`fabclientExtension.zip`](../../fabclientExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can recreate this `zip` by using the script [`zip-fabclient.sh`](../../zip-fabclient.sh)
 - Create new Flogo App of name `equipment_client` and choose `Import app` to import the model [`equipment_client.json`](equipment_client.json)
 - You can then add or update the service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.
-- Open `Connections` tab, find and edit the `equipment client` connector. Set the `Smart coontract metadata file` to the [`metadata.json`](contract-metadata/metadata.json), which is generated in the previous step.  Set the `Network configuration file` and `entity matcher file` to the corresponding files in [`testdata`](../../testdata).
+- Open `Connections` tab, find and edit the `equipment client` connector. Set the `Smart contract metadata file` to the [`metadata.json`](contract-metadata/metadata.json), which is generated in the previous step.  Set the `Network configuration file` and `entity matcher file` to the corresponding files in [`testdata`](../../testdata).
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`equipment_client.json`](equipment_client.json) to this `equipment` sample folder.
 
 ## Build and start the equipment REST service

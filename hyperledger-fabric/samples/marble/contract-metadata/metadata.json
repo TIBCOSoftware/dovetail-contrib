@@ -20,7 +20,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_1"
+                    "$ref": "#/components/Marble"
                 }
             },
             "getHistoryForMarble": {
@@ -86,7 +86,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_array0"
+                    "$ref": "#/components/MarbleList"
                 }
             },
             "getMarblesByRangeWithPagination": {
@@ -111,7 +111,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_0"
+                    "$ref": "#/components/MarbleQueryResult"
                 }
             },
             "initMarble": {
@@ -119,10 +119,10 @@
                 "description": "create a new marble, store into chaincode state",
                 "operation": "invoke",
                 "parameters": {
-                    "$ref": "#/components/marble_app_1"
+                    "$ref": "#/components/Marble"
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_1"
+                    "$ref": "#/components/Marble"
                 }
             },
             "queryMarbles": {
@@ -138,7 +138,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_array0"
+                    "$ref": "#/components/MarbleList"
                 }
             },
             "queryMarblesByOwner": {
@@ -154,7 +154,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_array0"
+                    "$ref": "#/components/MarbleList"
                 }
             },
             "queryMarblesWithPagination": {
@@ -176,7 +176,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_0"
+                    "$ref": "#/components/MarbleQueryResult"
                 }
             },
             "readMarble": {
@@ -192,7 +192,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_1"
+                    "$ref": "#/components/Marble"
                 }
             },
             "transferMarble": {
@@ -211,7 +211,7 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_1"
+                    "$ref": "#/components/Marble"
                 }
             },
             "transferMarblesBasedOnColor": {
@@ -230,14 +230,61 @@
                     }
                 },
                 "returns": {
-                    "$ref": "#/components/marble_app_array0"
+                    "$ref": "#/components/MarbleList"
                 }
             }
         }
     },
     "components": {
-        "marble_app_0": {
-            "$id": "marble_app_0",
+        "Marble": {
+            "$id": "Marble",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "number"
+                },
+                "owner": {
+                    "type": "string"
+                }
+            }
+        },
+        "MarbleList": {
+            "$id": "MarbleList",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "color": {
+                                "type": "string"
+                            },
+                            "size": {
+                                "type": "number"
+                            },
+                            "owner": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "MarbleQueryResult": {
+            "$id": "MarbleQueryResult",
             "type": "object",
             "properties": {
                 "count": {
@@ -270,53 +317,6 @@
                                         "type": "string"
                                     }
                                 }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "marble_app_1": {
-            "$id": "marble_app_1",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "color": {
-                    "type": "string"
-                },
-                "size": {
-                    "type": "number"
-                },
-                "owner": {
-                    "type": "string"
-                }
-            }
-        },
-        "marble_app_array0": {
-            "$id": "marble_app_array0",
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "color": {
-                                "type": "string"
-                            },
-                            "size": {
-                                "type": "number"
-                            },
-                            "owner": {
-                                "type": "string"
                             }
                         }
                     }
