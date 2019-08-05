@@ -76,11 +76,12 @@ type Metadata struct {
 }
 
 var schemaCache map[string]*SchemaValue
-var sharedSchema map[string]string
+var sharedSchema map[string]int
+var schemaSeq int
 
 func init() {
 	schemaCache = make(map[string]*SchemaValue)
-	sharedSchema = make(map[string]string)
+	sharedSchema = make(map[string]int)
 }
 
 // generate contract metadata from flogo model
@@ -90,7 +91,7 @@ func generateMetadata(appfile, outpath string) error {
 		return err
 	}
 
-	// collect flow activity info
+	// collect flow activity info for determinng query vs invoke transactions
 	activityData, err := collectFlowActivities(appconfig)
 	if err != nil {
 		return err
@@ -226,15 +227,19 @@ func extractTransactionSchema(schemas map[string]json.RawMessage) Transaction {
 func addSchemaToCache(value string) []byte {
 	var sv SchemaValue
 	if err := json.Unmarshal([]byte(value), &sv); err != nil {
-		fmt.Printf("failed to unmarshal transient value: %+v\n", err)
+		fmt.Printf("failed to unmarshal schema value: %+v\n", err)
 	} else {
 		if svbytes, err := json.Marshal(sv); err != nil {
-			fmt.Printf("failed to marshal transient schema: %+v\n", err)
+			fmt.Printf("failed to marshal schema value: %+v\n", err)
 		} else {
 			skey := string(svbytes)
 			// add to cache
 			if _, ok := schemaCache[skey]; ok {
-				sharedSchema[skey] = sv.Type
+				// found a reused data schema, record it as shared if it is not already known
+				if _, ok := sharedSchema[skey]; !ok {
+					sharedSchema[skey] = schemaSeq
+					schemaSeq++
+				}
 			} else {
 				schemaCache[skey] = &sv
 			}
@@ -245,27 +250,23 @@ func addSchemaToCache(value string) []byte {
 }
 
 func setSharedSchemaRef(appname string) {
-	arraySeq := 0
-	objectSeq := 0
-	for k := range sharedSchema {
+	for k, v := range sharedSchema {
 		sv := schemaCache[k]
 		if sv.Type == "array" {
-			sv.Ref = fmt.Sprintf("%s_array%d", appname, arraySeq)
+			sv.Ref = fmt.Sprintf("%s_%d", appname, v)
 			if oref, ok := schemaOverride[sv.Ref]; ok {
 				sv.Ref = oref
 			}
-			arraySeq++
 		} else {
 			if n, err := objectPropertyCount(sv.Properties); err == nil && n > 2 {
-				sv.Ref = fmt.Sprintf("%s_%d", appname, objectSeq)
+				sv.Ref = fmt.Sprintf("%s_%d", appname, v)
 				if oref, ok := schemaOverride[sv.Ref]; ok {
 					sv.Ref = oref
 				}
-				objectSeq++
 			} else {
 				delete(sharedSchema, k)
 				if err != nil {
-					fmt.Printf("remove shared schema %s due to error: %+v\n", k, err)
+					fmt.Printf("error when removing shared schema %s: %+v\n", k, err)
 				}
 			}
 		}
@@ -317,6 +318,7 @@ func collectFlowActivities(appconfig []byte) (map[string]bool, error) {
 // cache for all object types
 var objectTypes map[string]*objectDef
 var transTypes []*transactionDef
+var componentNames map[string]string
 var objectSeq int
 
 // generate contract graphql file from metadata
@@ -332,6 +334,7 @@ func generateGqlfile(metafile, gqlfile string) error {
 
 	// extract shared object types
 	objectTypes = make(map[string]*objectDef)
+	componentNames = make(map[string]string)
 	for k, v := range meta.Components {
 		if v.Type == "object" {
 			var props map[string]interface{}
@@ -339,7 +342,16 @@ func generateGqlfile(metafile, gqlfile string) error {
 				fmt.Printf("failed to unmarshal component schema %s: %+v\n", k, err)
 				continue
 			}
-			getDefForObject(k, props)
+			cdef := getDefForObject(k, props)
+			componentNames[k] = cdef.typeID
+		} else if v.Type == "array" {
+			var items map[string]interface{}
+			if err := json.Unmarshal(v.Items, &items); err != nil {
+				fmt.Printf("failed to unmarshal component array %s: %+v\n", k, err)
+				continue
+			}
+			cdef := getDefForArray(k, items)
+			componentNames[k] = cdef.typeID
 		} else {
 			fmt.Println("component should not be type of", v.Type)
 		}
@@ -357,7 +369,8 @@ func generateGqlfile(metafile, gqlfile string) error {
 			name:      k,
 			operation: v.Operation,
 		}
-		transDef.parameters = getAttributeDefs(obj["properties"].(map[string]interface{}))
+		odef := getObjectDef(k, obj)
+		transDef.parameters = odef.attributes
 
 		if err := json.Unmarshal(v.Returns, &obj); err != nil {
 			fmt.Printf("failed to unmarshal return-def of transaction %s: %+v\n", k, err)
@@ -379,18 +392,54 @@ func writeGQL(gqlfile string) error {
 	if err := os.MkdirAll(d, 0755); err != nil {
 		return err
 	}
+	os.Remove(gqlfile)
 	f, err := os.OpenFile(gqlfile, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
+	defer f.Close()
+
 	printGQLSchemaDef(f)
 	printGQLOperations(f, "query")
 	printGQLOperations(f, "invoke")
-	for _, v := range objectTypes {
-		f.WriteString(objectGQL(v))
-		f.WriteString("\n")
+
+	// collect object types used by transactions
+	otypes := make(map[string]interface{})
+	for _, trans := range transTypes {
+		for _, p := range trans.parameters {
+			otypes[p.typeID] = nil
+		}
+		r := strings.Replace(trans.returns.typeID, "[", "", -1)
+		r = strings.Replace(r, "]", "", -1)
+		otypes[r] = nil
 	}
+	// collect attribute types of the collected objects
+	for collectReferencedTypes(otypes) {
+		fmt.Printf("collected %d types\n", len(otypes))
+	}
+	// print types referenced by transactions
+	for _, v := range objectTypes {
+		if _, ok := otypes[v.typeID]; ok {
+			f.WriteString(objectGQL(v))
+			f.WriteString("\n")
+		}
+	}
+	f.Sync()
 	return nil
+}
+
+func collectReferencedTypes(types map[string]interface{}) bool {
+	size := len(types)
+	for t := range types {
+		if def, ok := objectTypes[t]; ok {
+			for _, p := range def.attributes {
+				r := strings.Replace(p.typeID, "[", "", -1)
+				r = strings.Replace(r, "]", "", -1)
+				types[r] = nil
+			}
+		}
+	}
+	return len(types) > size
 }
 
 func printGQLSchemaDef(file *os.File) {
@@ -471,7 +520,7 @@ func refTypeID(ref string) string {
 	slash := strings.LastIndex(ref, "/")
 	if slash >= 0 {
 		t := ref[slash+1:]
-		if ot, ok := schemaOverride[t]; ok {
+		if ot, ok := componentNames[t]; ok {
 			t = ot
 		}
 		return t
@@ -534,6 +583,11 @@ func getDefForObject(name string, props map[string]interface{}) *objectDef {
 	return &odef
 }
 
+func getDefForArray(name string, items map[string]interface{}) *objectDef {
+	item := getObjectDef(name, items)
+	return &objectDef{typeID: "[" + item.typeID + "]"}
+}
+
 func getObjectDef(name string, def map[string]interface{}) *objectDef {
 	if ref, ok := def["$ref"]; ok {
 		return &objectDef{typeID: refTypeID(ref.(string))}
@@ -549,9 +603,7 @@ func getObjectDef(name string, def map[string]interface{}) *objectDef {
 	case "boolean":
 		return &objectDef{typeID: "Boolean"}
 	case "array":
-		idef := def["items"].(map[string]interface{})
-		item := getObjectDef(name, idef)
-		return &objectDef{typeID: "[" + item.typeID + "]"}
+		return getDefForArray(name, def["items"].(map[string]interface{}))
 	case "object":
 		nm := strings.Title(name + "Type")
 		return getDefForObject(nm, def["properties"].(map[string]interface{}))
@@ -580,8 +632,15 @@ func getCachedDef(typeID string, attrs []*attributeDef) (*objectDef, string, boo
 }
 
 func isDuplicateDef(def *objectDef, attrs []*attributeDef) bool {
-	for i, v := range attrs {
-		if len(def.attributes) <= i || def.attributes[i].name != v.name {
+	if len(def.attributes) != len(attrs) {
+		return false
+	}
+	names := make(map[string]string)
+	for _, v := range def.attributes {
+		names[v.name] = v.typeID
+	}
+	for _, v := range attrs {
+		if t, ok := names[v.name]; !ok || t != v.typeID {
 			return false
 		}
 	}

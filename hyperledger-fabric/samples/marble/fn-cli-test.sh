@@ -19,17 +19,17 @@ peer chaincode invoke $ORDERER_ARGS -C mychannel -n marble_cc $ORG1_ARGS $ORG2_A
 # transfer marble ownership
 setGlobals 0 1
 echo "test transfer marbles ..."
-sleep 10
+sleep 5
 peer chaincode query -C mychannel -n marble_cc -c '{"Args":["readMarble","marble2"]}'
 peer chaincode invoke $ORDERER_ARGS -C mychannel -n marble_cc $ORG1_ARGS $ORG2_ARGS -c '{"Args":["transferMarble","marble2","jerry"]}'
 peer chaincode invoke $ORDERER_ARGS -C mychannel -n marble_cc $ORG1_ARGS $ORG2_ARGS -c '{"Args":["transferMarblesBasedOnColor","blue","jerry"]}'
-sleep 10
+sleep 5
 peer chaincode query -C mychannel -n marble_cc -c '{"Args":["getMarblesByRange","marble1","marble5"]}'
 
 # delete marble state, not history
 echo "test delete and history"
 peer chaincode invoke $ORDERER_ARGS -C mychannel -n marble_cc $ORG1_ARGS $ORG2_ARGS -c '{"Args":["delete","marble1"]}'
-sleep 10
+sleep 5
 peer chaincode query -C mychannel -n marble_cc -c '{"Args":["getHistoryForMarble","marble1"]}'
 
 # rich query
