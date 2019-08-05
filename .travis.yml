@@ -15,5 +15,3 @@ deploy:
   api_key: "$GITHUB_TOKEN"
   file: "hyperledger-fabric/fabricExtension.zip"
   skip_cleanup: true
-  on:
-    tags: true
