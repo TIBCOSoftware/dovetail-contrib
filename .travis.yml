@@ -15,3 +15,8 @@ deploy:
   api_key: "$GITHUB_TOKEN"
   file: "hyperledger-fabric/fabricExtension.zip"
   skip_cleanup: true
+  on:
+    branch:
+    - master
+    - develop
+    - issue-59/add-functions
