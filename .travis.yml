@@ -19,7 +19,7 @@ deploy:
   file: ".target/hyperledger-fabric/*"
   skip_cleanup: true
   prerelease: $PRERELEASE
-  body: "My body here"
+  body: "${RELEASE_NOTES}"
   on:
     branch:
     - master
