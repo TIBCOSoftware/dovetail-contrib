@@ -3,8 +3,6 @@ branches:
   - master
   - develop
   - issue-59/add-functions
-script:
-- make release
 before_deploy:
     - git config --local user.name "torresashjian"
     - git config --local user.email "migueltorreslopez@gmail.com"
