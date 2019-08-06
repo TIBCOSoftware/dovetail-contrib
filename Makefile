@@ -10,10 +10,6 @@ release: hyperledger-fabric
 tag: 
 	$(SCRIPTS_PATH)/tag.sh
 
-.PHONY: release_notes
-release_notes: 
-	$(SCRIPTS_PATH)/release_notes.sh
-
 .PHONY: functions
 functions: 
 	$(SCRIPTS_PATH)/functions.sh ${IMAGE_NAME} ${IMAGE_TAG} ${IMAGE_URL}
