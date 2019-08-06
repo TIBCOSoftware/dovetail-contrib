@@ -1,5 +1,6 @@
 #!/bin/bash
 echo "Building fabric extension"
+ls -a
 build_tag=$1
 if [ -d .target/hyperledger-fabric ]; then
   rm -rf .target/hyperledger-fabric
