@@ -5,4 +5,4 @@ if [ ! $branch == "master" ]
 then
     prerelease=true
 fi
-echo${prerelease}
+echo ${prerelease}
