@@ -9,15 +9,16 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
 
+import com.example.iou.IOU;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
-
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.container.cordapp.AppDataService;
@@ -39,6 +40,8 @@ import com.tibco.dovetail.core.runtime.services.IEventService;
 import com.tibco.dovetail.core.runtime.services.ILogService;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
+import net.corda.core.contracts.ContractState;
+import net.corda.core.contracts.StateRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.FlowException;
 import net.corda.core.identity.CordaX500Name;
@@ -113,7 +116,7 @@ public class TestTrigger {
 	 	TestIdentity issuer = new TestIdentity(new CordaX500Name("Issuer", "New York", "GB"));
 	 	TestIdentity owner = new TestIdentity(new CordaX500Name("Owner", "New York", "GB"));
 	 	
-	 	args.put("transactionInput", new com.example.iou.IOU(issuer.getParty(), owner.getParty(), DOLLARS(100), DOLLARS(0), new UniqueIdentifier()));
+	 	args.put("transactionInput", new IOU(issuer.getParty(), owner.getParty(), DOLLARS(100), DOLLARS(0), new UniqueIdentifier()));
 	 	
 	 	
 	 	AppTransactionService txn = new AppTransactionService(args, "autopayment", self.getParty());
@@ -183,37 +186,8 @@ public class TestTrigger {
 		
 	}
 	
-	public class MockDataService implements IDataService {
+	public class MockDataService implements IDataService<ContractState, StateRef> {
 
-		@Override
-		public DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
-			// TODO Auto-generated method stub
-			return assetValue;
-		}
-
-		@Override
-		public DocumentContext getState(String assetName, String assetKey, DocumentContext keyValue) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public DocumentContext deleteState(String assetName, String assetKey, DocumentContext keyValue) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<DocumentContext> lookupState(String assetName, String assetKey, DocumentContext keyValue) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<DocumentContext> getHistory(String assetName, String assetKey, DocumentContext keyValue) {
-			// TODO Auto-generated method stub
-			return null;
-		}
 
 		@Override
 		public List<DocumentContext> queryState(Object query) {
@@ -225,6 +199,42 @@ public class TestTrigger {
 		public boolean processPayment(DocumentContext assetValue) {
 			// TODO Auto-generated method stub
 			return true;
+		}
+
+		@Override
+		public StateRef getState(String assetName, String assetKey, ContractState keyValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<StateRef> getStates(String assetName, String assetKey, Set<ContractState> keyValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public StateRef putState(String assetName, String assetKey, StateRef assetValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public StateRef deleteState(String assetName, String assetKey, ContractState keyValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<StateRef> lookupState(String assetName, String assetKey, ContractState keyValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<StateRef> getHistory(String assetName, String assetKey, ContractState keyValue) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 	

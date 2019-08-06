@@ -4,7 +4,7 @@ weight: 4603
 ---
 
 # Scheduler
-
+If a flow defined with this trigger exists, the asset (ContractState) will be annotated with @SchedulableState
 
 ## Settings
 | Setting     | Required | Description |

@@ -1,10 +1,10 @@
 ---
-title: payment
+title: schedule event
 weight: 4603
 ---
 
-# Payment Processor
-This activity takes a collection of Cash as input states to generate a Cash output state with sendPaymentTo as the new owner and a Cash output state with sendChangeTo as the change owner if there are any changes.
+# Schedule Event
+This activity schedules a flow to be run at a specified time, the scheduled flow is defined using CorDApp/schedulable flow trigger
 
 ## Settings
 | Setting       | Required | Description                                                                       |

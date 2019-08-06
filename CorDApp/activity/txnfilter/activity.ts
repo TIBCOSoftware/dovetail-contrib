@@ -116,12 +116,6 @@ export class TxnFilterActivityContributionHandler extends WiServiceHandlerContri
                         "$schema":"http://json-schema.org/draft-07/schema#",
                         "type": "object",
                         "properties": {
-                            "requiredSigningKeys": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
                             "command": {
                                 "type": "string"
                             }
@@ -156,8 +150,7 @@ export class TxnFilterActivityContributionHandler extends WiServiceHandlerContri
                                 "format": "date-time"
                             },
                             "duration": {
-                                "type": "integer",
-                                "format": "int64"
+                                "type": "string"
                             }
                         }
                     };
@@ -173,21 +166,6 @@ export class TxnFilterActivityContributionHandler extends WiServiceHandlerContri
                         }
                     };
                     return JSON.stringify(notary);
-
-                case "Required Signing Keys":
-                    let keys = {
-                        "$schema":"http://json-schema.org/draft-07/schema#",
-                        "type": "object",
-                        "properties": {
-                            "signingKey": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    };
-                    return JSON.stringify(keys);
             }
         }
         return null;

@@ -15,6 +15,8 @@ import kotlin.jvm.functions.Function0;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.StateRef;
+import net.corda.core.contracts.TransactionResolutionException;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.core.node.ServiceHub;
@@ -37,7 +39,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class AppDataService implements IDataService {
+public class AppDataService implements IDataService<StateRef,ContractState> {
 	private ServiceHub serviceHub;
 	private TransactionBuilder builder;
 	private UUID flowRunId;
@@ -50,31 +52,67 @@ public class AppDataService implements IDataService {
 	}
 
 	@Override
-	public DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
+	public ContractState putState(String assetName, String assetKey, ContractState assetValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DocumentContext getState(String assetName, String assetKey, DocumentContext keyValue) {
+	public ContractState getState(String assetName, String assetKey, StateRef keyValue) {
+		String name = getCordaAssetName(assetName);
+		try {
+			ContractState s =  serviceHub.toStateAndRef(keyValue).getState().getData();
+			if(s != null && name != null) {
+				if(s.getClass().getName().equals(name))
+					return s;
+				else
+					return null;
+			}
+			
+			return s;
+		}catch(Exception e) {
+			throw new RuntimeException("AppDataService::getState", e);
+		}
+	}
+	
+	@Override
+	public List<ContractState> getStates(String assetName, String assetKey, Set<StateRef> keyValue) {
+		List<ContractState> states = new ArrayList<ContractState>();
+		String name = getCordaAssetName(assetName);
+		try {
+			serviceHub.loadStates(keyValue).forEach(s -> {
+				if(s != null && name != null) {
+					if(s.getClass().getName().equals(name))
+						states.add(s.getState().getData());
+				}
+			});
+			
+			return states;
+		}catch(Exception e) {
+			throw new RuntimeException("AppDataService::getState", e);
+		}
+	}
+
+	private String getCordaAssetName(String asset) {
+		if(asset.equals("com.tibco.dovetail.system.Cash"))
+			return "import net.corda.finance.contracts.asset.Cash$State";
+		else 
+			return asset;
+	}
+	@Override
+	public ContractState deleteState(String assetName, String assetKey, StateRef keyValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DocumentContext deleteState(String assetName, String assetKey, DocumentContext keyValue) {
+	public List<ContractState> lookupState(String assetName, String assetKey, StateRef keyValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<DocumentContext> lookupState(String assetName, String assetKey, DocumentContext keyValue) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<DocumentContext> getHistory(String assetName, String assetKey, DocumentContext keyValue) {
+	public List<ContractState> getHistory(String assetName, String assetKey, StateRef keyValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}

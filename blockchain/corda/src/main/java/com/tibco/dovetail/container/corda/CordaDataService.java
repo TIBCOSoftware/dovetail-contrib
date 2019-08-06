@@ -15,10 +15,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class CordaDataService implements IDataService {
+public class CordaDataService implements IDataService<DocumentContext, DocumentContext> {
 	 private List<DocumentContext> outputStates = new ArrayList< DocumentContext>();
 	 private List<DocumentContext> inputStates = new ArrayList<DocumentContext>();
 	 private List<String> inputStatesClassName = new ArrayList<String>();
@@ -46,9 +47,9 @@ public class CordaDataService implements IDataService {
     }
 
 	@Override
-	public DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
+	public  DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
 			
-		outputStates.add(assetValue);
+		outputStates.add((com.jayway.jsonpath.DocumentContext) assetValue);
 		cmdOutput.addOutputState(assetName, assetValue, null);
 		return assetValue;
 	}
@@ -182,7 +183,12 @@ public class CordaDataService implements IDataService {
 		
 		return true;
 	}
-	
-	
+
+	@Override
+	public List<DocumentContext> getStates(String assetName, String assetKey, Set<DocumentContext> keyValue) {
+		List<DocumentContext> states = new ArrayList<DocumentContext>();
+		keyValue.forEach(k -> states.add(getState(assetName, assetKey, k)));
+		return states;
+	}
 	
 }

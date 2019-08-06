@@ -35,15 +35,18 @@ public class AppTransactionService implements ITransactionService {
 			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
 			txnInputs.forEach ( in -> {
 				String attr = in.getName();
-				
-				Object value = flowInputs.get(attr);
-				
-				if(value != null) {
-					doc.put("$", attr, CordaUtil.toJsonObject(value).json());
+				if(in.getType().equals("any")) {
+					values.put(in.getName(), flowInputs.get(in.getName())); //ledgerTxn
 				} else {
-					doc.put("$", attr, CordaUtil.toJsonObject(in.getValue()).json());
+					Object value = flowInputs.get(attr);
+					
+					if(value != null) {
+						doc.put("$", attr, CordaUtil.toJsonObject(value).json());
+					} else {
+						doc.put("$", attr, CordaUtil.toJsonObject(in.getValue()).json());
+					}
+					values.put("transactionInput", doc);
 				}
-				values.put("transactionInput", doc);
 				
 			});
 		}

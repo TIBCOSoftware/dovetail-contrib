@@ -105,7 +105,7 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	}
 	
 	@Suspendable
-	protected AppContainer runFlow(String flowName, ITrigger trigger, LinkedHashMap<String, Object> args) throws FlowException {
+	public AppContainer runFlow(String flowName, ITrigger trigger, LinkedHashMap<String, Object> args) throws FlowException {
        try {
              System.out.println("****** run flow " + flowName + "... ******");
              AppContainer ctnr = new AppContainer(this);
