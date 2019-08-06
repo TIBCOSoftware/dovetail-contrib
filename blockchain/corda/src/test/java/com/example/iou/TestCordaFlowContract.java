@@ -277,7 +277,7 @@ public class TestCordaFlowContract {
      	System.out.println("\ntestIssue done");
 	}
 	
-	@Test
+	//@Test
 	public void testTransfer() {
 		System.out.println("\ntestTransfer...");
         
