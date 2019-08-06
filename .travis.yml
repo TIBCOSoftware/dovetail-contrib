@@ -3,7 +3,8 @@ branches:
   - master
   - develop
   - issue-59/add-functions
-
+script:
+- echo "Starting build..."
 before_deploy:
     - git config --local user.name "torresashjian"
     - git config --local user.email "migueltorreslopez@gmail.com"
@@ -13,7 +14,6 @@ before_deploy:
     - export TRAVIS_TAG=${TRAVIS_TAG:-$(${VERSION_TAG})}
     - make hyperledger-fabric-artifacts BUILD_TAG=${TRAVIS_TAG}
     - git tag $TRAVIS_TAG
-    
 deploy:
   provider: releases
   api_key: "$GITHUB_TOKEN"
