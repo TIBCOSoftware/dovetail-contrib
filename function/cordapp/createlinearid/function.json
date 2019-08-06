@@ -2,7 +2,7 @@
     "name": "createLinearId",
     "args": [],
     "return": {"type": "string"},
-    "help": {
+    "help": { 
         "description":"Returns the Corda UniqueIdentifier, external Id is null, UUID will be randomly generated.",
         "usage":"string.createLinearId(<< extid >>, <<uuid>>)\nReturn Type\nstring",
         "example":"string.createLinearId()\nReturns\nnull#d395b7ac-56eb-11e9-8647-d663bd873d93"
