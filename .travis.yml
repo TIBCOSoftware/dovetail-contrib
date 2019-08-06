@@ -10,9 +10,8 @@ before_deploy:
     - git config --local user.email "migueltorreslopez@gmail.com"
     - export VERSION_TAG=$(make tag)
     - export RELEASE_NOTES=$(make release_notes)
-    - export TRAVIS_TAG=${TRAVIS_TAG:-$(${VERSION_TAG})-$(git log --format=%h -1)}
-    - echo $TRAVIS_TAG
-    - git tag $TRAVIS_TAG
+    - export TRAVIS_TAG=${TRAVIS_TAG:-$(${VERSION_TAG})}
+    - git tag $TRAVIS_TAG -m"${RELEASE_NOTES}"
 deploy:
   provider: releases
   api_key: "$GITHUB_TOKEN"

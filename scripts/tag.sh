@@ -2,6 +2,6 @@
 version=$(<version.txt)
 if [ ! $TRAVIS_BRANCH == "master" ]
 then
-    version=${version}+$TRAVIS_BRANCH
+    version=${version}_$TRAVIS_BRANCH
 fi
 echo "${version}"
