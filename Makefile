@@ -12,7 +12,7 @@ tag:
 
 .PHONY: is-prerelease
 is-prerelease: 
-	$(SCRIPTS_PATH)/prerelease.sh ${BUILD_BRANCH}
+	@echo $(SCRIPTS_PATH)/prerelease.sh ${BUILD_BRANCH}
 
 .PHONY: release-notes
 release-notes: 
