@@ -9,6 +9,7 @@ before_deploy:
     - git config --local user.name "torresashjian"
     - git config --local user.email "migueltorreslopez@gmail.com"
     - export PRERELEASE=$(make is-prerelease BUILD_BRANCH=${TRAVIS_BRANCH})
+    - echo ${PRERELEASE}
     - export RELEASE_NOTES=$(make release-notes)
     - export VERSION_TAG=$(make tag BUILD_BRANCH=${TRAVIS_BRANCH} BUILD_NUM=${TRAVIS_BUILD_NUMBER})
     - export TRAVIS_TAG=${TRAVIS_TAG:-$(${VERSION_TAG})}
