@@ -1,12 +1,11 @@
 #!/bin/bash
 echo "Building fabric extension"
-ls -a
 build_tag=$1
 if [ -d .target/hyperledger-fabric ]; then
   rm -rf .target/hyperledger-fabric
 fi
 mkdir -p .target/hyperledger-fabric
-zip -r .target/hyperledger-fabric/fabric-extension-${build_tag}.zip hyperledger-fabric/fabric
+zip -r .target/hyperledger-fabric/fabric-extension-${build_tag////-}.zip hyperledger-fabric/fabric
 
 echo "Building fabric client extension"
-zip -r .target/hyperledger-fabric/fabric-client-extension-${build_tag}.zip hyperledger-fabric/fabclient
+zip -r .target/hyperledger-fabric/fabric-client-extension-${build_tag////-}.zip hyperledger-fabric/fabclient
