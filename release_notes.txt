@@ -1,1 +1,3 @@
-Release notes: - Feature 1 - Feature 2
+Release notes: 
+    - Feature 1 
+    - Feature 2
