@@ -8,7 +8,7 @@ release: hyperledger-fabric
 
 .PHONY: tag
 tag: 
-	$(SCRIPTS_PATH)/tag.sh
+	$(SCRIPTS_PATH)/tag.sh ${BUILD_BRANCH} ${BUILD_NUM}
 
 .PHONY: functions
 functions: 

@@ -8,7 +8,7 @@ script:
 before_deploy:
     - git config --local user.name "torresashjian"
     - git config --local user.email "migueltorreslopez@gmail.com"
-    - export VERSION_TAG=$(make tag)
+    - export VERSION_TAG=$(make tag BUILD_BRANCH=${TRAVIS_BRANCH} BUILD_NUM=${TRAVIS_BUILD_NUMBER})
     - export TRAVIS_TAG=${TRAVIS_TAG:-$(${VERSION_TAG})}
     - export PRERELEASE=true
     - git tag $TRAVIS_TAG
@@ -18,7 +18,7 @@ deploy:
   api_key: "$GITHUB_TOKEN"
   file: ".target/hyperledger-fabric/*"
   skip_cleanup: true
-  prerelease: $PRERELEASE
+  prerelease: ${PRERELEASE}
   on:
     branch:
     - master

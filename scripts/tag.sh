@@ -1,7 +1,9 @@
 #!/bin/bash
 version=$(<version.txt)
-if [ ! $TRAVIS_BRANCH == "master" ]
+branch=$1
+num=$2
+if [ ! $branch == "master" ]
 then
-    version=${version}-${TRAVIS_BRANCH}.${TRAVIS_BUILD_NUMBER}
+    version=${version}-${branch}.${num}
 fi
 echo "${version}"
