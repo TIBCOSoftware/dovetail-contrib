@@ -1,0 +1,185 @@
+{
+    "name": "fabric-transaction",
+    "version": "1.0.0",
+    "type": "flogo:trigger",
+    "title": "Fabric Transaction",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "description": "This trigger executes a Hyperledger Fabric transaction",
+        "visible": true,
+        "smallIcon": "icons/ic-fabric.png",
+        "largeIcon": "icons/ic-fabric@2x.png",
+        "wizard": ["Step 1", "Step 2", "Step 3"]
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction",
+    "settings": [],
+    "handler": {
+        "settings": [{
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Transaction name",
+                "description": "Name of the transaction for Hyperledger Fabric contract",
+                "appPropertySupport": true
+            },
+            "wizard": {
+                "name": "Transaction name",
+                "type": "string",
+                "step": "Step 1"
+            }
+        },
+        {
+            "name": "commonData",
+            "type": "object",
+            "display": {
+                "name": "Common data definition",
+                "description": "Select common data collection",
+                "visible": true
+            },
+            "wizard": {
+                "type": "connection",
+                "step": "Step 1"
+            },
+            "allowed":[]
+        },
+        {
+            "name": "validation",
+            "type": "boolean",
+            "required": false,
+            "display": {
+                "name": "Output validation",
+                "description": "Selection for output validation, default false",
+                "appPropertySupport": true
+            },
+            "value": false
+        }]
+    },
+    "outputs": [
+        {
+            "name": "parametersDataType",
+            "type": "string",
+            "display":{
+                "name": "Parameter data type",
+                "description": "Select input parameter schema",
+                "visible": false
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Step 1"
+            },
+            "allowed": []
+        },
+        {
+            "name": "parameters",
+            "type": "complex_object",
+            "display": {
+                "name": "Parameter names and schema",
+                "description": "e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json"
+            },
+            "wizard": {
+                "name": "Parameter names and schema",
+                "type": "texteditor",
+                "syntax": "json",
+                "step": "Step 1"
+            }
+        },
+        {
+            "name": "transientDataType",
+            "type": "string",
+            "display":{
+                "name": "Transient data type",
+                "description": "Select transient data schema",
+                "visible": false
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Step 2"
+            },
+            "allowed": []
+        },
+        {
+            "name": "transient",
+            "type": "complex_object",
+            "display": {
+                "name": "Transient attributes and schema",
+                "description": "e.g.,\r\n{\r\n  \"trans1\": \"string\",\r\n  \"trans2\": {\"item1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json"
+            },
+            "wizard": {
+                "name": "Transient attributes and schema",
+                "type": "texteditor",
+                "syntax": "json",
+                "step": "Step 2"
+            }
+        },
+        {
+            "name": "txID",
+            "type": "string"
+        },
+        {
+            "name": "txTime",
+            "type": "string"
+        },
+        {
+            "name": "_chaincode_stub",
+            "type": "any",
+            "display": {
+                "description": "Internal use to cache chaincode stub",
+                "visible": false
+            }
+        }
+    ],
+    "reply": [
+        {
+            "name": "status",
+            "type": "number"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "returnsDataType",
+            "type": "string",
+            "display":{
+                "name": "Result data type",
+                "description": "Select result data schema",
+                "visible": false
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Step 3"
+            },
+            "allowed": []
+        },
+        {
+            "name": "returns",
+            "type": "complex_object",
+            "display": {
+                "name": "Returned attributes and schema",
+                "description": "e.g.,\r\n{\r\n  \"attr1\": \"string\",\r\n  \"attr2\": {\"elem1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "mappable": true
+            },
+            "wizard": {
+                "name": "Returned attributes and schema",
+                "type": "texteditor",
+                "syntax": "json",
+                "step": "Step 3"
+            }
+        }
+    ],
+    "actions": [{
+        "name": "Finish"
+    }]
+}
