@@ -6,6 +6,10 @@ all: functions
 .PHONY: release
 release: hyperledger-fabric
 
+.PHONY: tag
+tag: 
+	$(SCRIPTS_PATH)/tag.sh
+
 .PHONY: functions
 functions: 
 	$(SCRIPTS_PATH)/functions.sh ${IMAGE_NAME} ${IMAGE_TAG} ${IMAGE_URL}
