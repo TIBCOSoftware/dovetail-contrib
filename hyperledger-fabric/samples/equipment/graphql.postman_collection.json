@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "a256ee96-4038-45ff-8487-2c511c488ddc",
+		"name": "equipment-graphql",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "submitPO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    submitPO(assetUniqueId: \"asset3\", description: \"submit3\", purchasePrice: 30000, location: \"loc3\", vendor: \"vendor3\", orgId: \"org3\") {\n        assetUniqueId\n        description\n        purchasePrice\n        location\n        vendor\n        orgId\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "receiveAsset",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    receiveAsset(assetUniqueId: \"asset3\", description: \"receiveAsset3\", acquisitionDate: \"2019-07-03\", location: \"loc3\", manufacturer: \"make3\", vendor: \"vendor3\", model: \"model3\", serialNum: \"sn3\", orgId: \"org3\") {\n        assetUniqueId\n        description\n        acquisitionDate\n        purchasePrice\n        location\n        manufacturer\n        vendor\n        model\n        serialNum\n        orgId\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "installAsset",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    installAsset(assetUniqueId: \"asset3\", description: \"installAsset3\", acquisitionDate: \"2019-07-03\", location: \"loc3\", manufacturer: \"make3\", vendor: \"vendor3\", model: \"model3\", serialNum: \"sn3\", orgId: \"org3\", installDate: \"2019-07-13\") {\n        assetUniqueId\n        description\n        acquisitionDate\n        purchasePrice\n        location\n        manufacturer\n        vendor\n        model\n        serialNum\n        orgId\n        installDate\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "receiveInvoice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    receiveInvoice(assetUniqueId: \"asset3\", description: \"receiveInvoice3\", location: \"loc3\", invoiceDate: \"2019-07-23\", orgId: \"org3\", invoicePrice: 30000, vendor: \"vendor3\") {\n        assetUniqueId\n        description\n        acquisitionDate\n        purchasePrice\n        location\n        manufacturer\n        vendor\n        model\n        serialNum\n        orgId\n        installDate\n        invoiceDate\n        invoicePrice\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateAsset",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    updateAsset(assetUniqueId: \"asset3\", description: \"updateAsset3\", purchasePrice: 30000, location: \"loc3\", model: \"model3\", orgId: \"org3\", installDate: \"2019-07-13\", invoiceDate: \"2019-07-23\", netBookValue: 35000, serialNum: \"sn3\") {\n        assetUniqueId\n        description\n        acquisitionDate\n        purchasePrice\n        location\n        manufacturer\n        vendor\n        model\n        serialNum\n        orgId\n        installDate\n        invoiceDate\n        invoicePrice\n        netBookValue\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "queryAsset",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n    queryAsset(assetUniqueId: \"asset3\") {\n        assetUniqueId\n        description\n        acquisitionDate\n        purchasePrice\n        location\n        manufacturer\n        vendor\n        model\n        serialNum\n        orgId\n        installDate\n        invoiceDate\n        invoicePrice\n        netBookValue\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

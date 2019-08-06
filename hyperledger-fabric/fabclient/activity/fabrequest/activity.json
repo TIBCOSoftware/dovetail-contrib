@@ -1,0 +1,116 @@
+
+{
+    "name": "fabclient-request",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Fabric Request",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabclient",
+        "visible": true,
+        "description": "Send Fabric request",
+        "smallIcon": "ic-fabrequest@2x.png",
+        "largeIcon": "ic-fabrequest@3x.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/activity/fabrequest",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/activity/fabrequest",
+    "inputs": [
+        {
+            "name": "connectionName",
+            "required": true,
+            "type": "object",
+            "display": {
+                "name": "Fabric Connection Name",
+                "description": "Select a Fabric connection",
+                "type": "connection",
+                "visible": true
+            },
+            "allowed": []
+        },
+        {
+            "name": "transactionName",
+            "required": true,
+            "type": "string",
+            "display": {
+                "name": "Transaction Name",
+                "description": "Select name of the transaction",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": true
+            },
+            "allowed": []
+        },
+        {
+            "name": "requestType",
+            "required": true,
+            "type": "string",
+            "display": {
+                "name": "Request Type",
+                "description": "Select type of Fabric request",
+                "type": "dropdown",
+                "selection": "single",
+                "readonly": true
+            },
+            "allowed": ["invoke", "query"]
+        },
+        {
+            "name": "orgName",
+            "type": "string"
+        },
+        {
+            "name": "userName",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "name": "chaincodeID",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "name": "parameters",
+            "type": "complex_object",
+            "display": {
+                "name": "Parameters",
+                "description": "An example JSON data that defines input parameters of the transaction, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "mappable": true,
+                "readonly": false
+            }
+        },
+        {
+            "name": "transient",
+            "type": "complex_object",
+            "display": {
+                "name": "Transient attributes",
+                "description": "An example JSON data that defines transient input attributes of the transaction, e.g.,\r\n{\r\n  \"trans1\": \"string\",\r\n  \"trans2\": {\"field1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "mappable": true,
+                "readonly": false
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "result",
+            "type": "complex_object",
+            "display": {
+                "name": "Deleted object definition",
+                "description": "Schema definition of the transaction result, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "readonly": false
+            }
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+schema {
+	query: Query
+	mutation: Mutation
+}
+type Query {
+	check_abac(name: String): ABACResult
+}
+type Mutation {
+}
+type ABACResult {
+	value: String
+	cid: String
+	mspid: String
+	name: String
+}
+

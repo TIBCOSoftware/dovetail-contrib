@@ -1,0 +1,41 @@
+name: mychannel
+description: Network on IBP v2
+version: 1.0.0
+client:
+  organization: org1msp
+  cryptoconfig:
+    path: ${CRYPTO_PATH}
+channels:
+  mychannel:
+    peers:
+      173.193.100.113:30662:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+organizations:
+  org1msp:
+    mspid: org1msp
+    cryptoPath: organizations/org1msp/users/{username}/msp
+    peers:
+    - 173.193.100.113:30662
+    certificateAuthorities:
+    - 173.193.100.113:32727
+orderers:
+  173.193.100.113:32273:
+    url: grpcs://173.193.100.113:32273
+    tlsCACerts:
+      path: ${CRYPTO_PATH}/orderers/173.193.100.113:32273/tlsca.pem
+peers:
+  173.193.100.113:30662:
+    url: grpcs://173.193.100.113:30662
+    tlsCACerts:
+      path: ${CRYPTO_PATH}/peers/173.193.100.113:30662/tlsca.pem
+    grpcOptions:
+      ssl-target-name-override: 173.193.100.113
+certificateAuthorities:
+  173.193.100.113:32727:
+    url: https://173.193.100.113:32727
+    caName: ca
+    tlsCACerts:
+      path: ${CRYPTO_PATH}/certificateAuthorities/173.193.100.113:32727/tlsca.pem
