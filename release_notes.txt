@@ -1,2 +1,1 @@
-Release notes: - Feature 1 - Feature 2 - Feature 3
-- Feature 4
+Release notes: \n- Feature 1 \n- Feature 2 \n- Feature 3 \n- Feature 4
