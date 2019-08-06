@@ -11,13 +11,8 @@ tag:
 	$(SCRIPTS_PATH)/tag.sh ${BUILD_BRANCH} ${BUILD_NUM}
 
 .PHONY: is-prerelease
-is-prerelease:
-	prerelease=false
-	if [ ! ${BUILD_BRANCH} == "master" ]
-	then
-		prerelease=true
-	fi
-	echo ${prerelease}
+is-prerelease: 
+	$(SCRIPTS_PATH)/prerelease.sh ${BUILD_BRANCH}
 
 .PHONY: release-notes
 release-notes: 
