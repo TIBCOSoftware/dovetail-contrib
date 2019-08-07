@@ -2,7 +2,6 @@ branches:
   only:
   - master
   - develop
-  - issue-59/add-functions
 script:
 - echo "Starting build..."
 before_deploy:
@@ -26,4 +25,3 @@ deploy:
     branch:
     - master
     - develop
-    - issue-59/add-functions
