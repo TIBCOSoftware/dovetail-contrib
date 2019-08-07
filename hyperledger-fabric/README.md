@@ -14,4 +14,4 @@ Start by looking at the following end-to-end samples:
 
 By comparing other implementations of chaincode and client apps, you can see that hundreds of lines of boilerplate code are replaced by a single JSON model file exported from the TIBCO Flogo® Enterprise or Dovetail.  Besides, by using the Flogo visual programming environment, you do not have to learn much of the blockchain APIs nor special programming language for the smart contract.  You can implement chaincode and client apps for Hyperledger Fabric by simple drag-drop-mapping in Flogo.
 
-![](import-app.mp4)
+![](import-app.gif)
