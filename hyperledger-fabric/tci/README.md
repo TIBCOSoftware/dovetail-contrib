@@ -30,9 +30,11 @@ After these extensions are uploaded, the following activity and triggers should 
 ![OSS Flogo Extensions](oss-flogo-ext.png)
 
 ## Import Apps
+
 You can then select and import an application model from the sample folders.  For example, the following video shows the steps to import the sample app `equipment_gql.json` in [samples/equipment](../samples/equipment):
 ![Import App](import-app.gif)
 
 ## Create Apps
+
 You can create the same app, `equipment_gql` from scratch as shown in the following video:
 ![Create App](build-gql-client.gif)
