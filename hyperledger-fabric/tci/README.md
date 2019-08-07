@@ -5,6 +5,7 @@ If you are a subscriber of [TIBCO Cloud Integration](https://cloud.tibco.com/), 
 ## Upload Flogo Extensions
 
 The following video illustrates how to upload Flogo extensions to your TCI account:
+
 ![Upload Extension](upload-extension.gif)
 
 The samples in this project use the following extensions:
