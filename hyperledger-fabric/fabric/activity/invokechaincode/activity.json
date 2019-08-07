@@ -1,0 +1,63 @@
+
+{
+    "name": "fabric-invokechaincode",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Invoke Chaincode",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "visible": true,
+        "smallIcon": "ic-invoke.png",
+        "description": "This activity invokes a chaincode function on a fabric channel"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/invokechaincode",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/invokechaincode",
+    "inputs": [
+        {
+            "name": "chaincodeName",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "channelID",
+            "type": "string"
+        },
+        {
+            "name": "transactionName",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "parameters",
+            "type": "complex_object",
+            "display": {
+                "name": "Parameter names and schema",
+                "description": "Schema definition of transaction parameters, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "mappable": true
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "result",
+            "type": "complex_object",
+            "display": {
+                "name": "Result array or object definition",
+                "description": "Schema definition of the resulting array or object, e.g.,\r\n[{\r\n  \"key\": \"string\",\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",
+                "type": "texteditor",
+                "syntax": "json"
+            }
+        }
+    ]
+}
