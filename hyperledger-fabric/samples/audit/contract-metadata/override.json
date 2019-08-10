@@ -1,0 +1,7 @@
+{
+    "audit_0": "AuditList",
+    "audit_1": "AuditRecord",
+    "ValueType": "AuditRecord",
+    "RecordsType": "AuditLog",
+    "AuditListType": "AuditKeyValue"
+}

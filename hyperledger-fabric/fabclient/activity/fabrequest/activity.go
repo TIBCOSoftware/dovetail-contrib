@@ -207,8 +207,16 @@ func getParameters(ctx activity.Context, input *Input) ([][]byte, error) {
 		// should change all places to use []byte for best portability
 		param := ""
 		if v, ok := paramValue[p.Name]; ok && v != nil {
-			param = fmt.Sprintf("%v", v)
-			logger.Debugf("add chaincode parameter: %s=%s", p.Name, param)
+			if param, ok = v.(string); !ok {
+				pbytes, err := json.Marshal(v)
+				if err != nil {
+					logger.Errorf("failed to marshal input: %+v", err)
+					param = fmt.Sprintf("%v", v)
+				} else {
+					param = string(pbytes)
+				}
+			}
+			logger.Infof("add chaincode parameter: %s=%s", p.Name, param)
 		}
 		result = append(result, []byte(param))
 	}
