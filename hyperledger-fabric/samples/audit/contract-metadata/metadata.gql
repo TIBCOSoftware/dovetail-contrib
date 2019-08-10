@@ -1,0 +1,41 @@
+schema {
+	query: Query
+	mutation: Mutation
+}
+type Query {
+	queryTimeRange(owner: String, startTime: String, endTime: String, domain: String): [AuditKeyValue]
+	getRecord(key: String): AuditRecord
+	getRecordsByID(recID: String): [AuditKeyValue]
+	getRecordsByTxID(txID: String): [AuditKeyValue]
+	getRecordsByTxTime(txTime: String): [AuditKeyValue]
+}
+type Mutation {
+	createAudit(records: [AuditLog]): [AuditKeyValue]
+	deleteRecord(key: String): AuditRecord
+	deleteTransaction(txID: String): [AuditKeyValue]
+}
+type AuditKeyValue {
+	value: AuditRecord
+	key: String
+}
+
+type AuditRecord {
+	recID: String
+	domain: String
+	owner: String
+	data: String
+	hashType: String
+	hashValue: String
+	txID: String
+	txTime: String
+}
+
+input AuditLog {
+	data: String
+	hashType: String
+	hashValue: String
+	recID: String
+	domain: String
+	owner: String
+}
+

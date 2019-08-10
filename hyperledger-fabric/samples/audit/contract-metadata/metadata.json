@@ -1,0 +1,245 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "info": {
+        "title": "audit",
+        "version": "1.1.0"
+    },
+    "contract": {
+        "name": "audit",
+        "transactions": {
+            "createAudit": {
+                "name": "createAudit",
+                "description": "store audit log records on chain",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "records": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "recID": {
+                                        "type": "string"
+                                    },
+                                    "domain": {
+                                        "type": "string"
+                                    },
+                                    "owner": {
+                                        "type": "string"
+                                    },
+                                    "data": {
+                                        "type": "string"
+                                    },
+                                    "hashType": {
+                                        "type": "string"
+                                    },
+                                    "hashValue": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/AuditList"
+                }
+            },
+            "deleteRecord": {
+                "name": "deleteRecord",
+                "description": "delete current state of an audit record of specified state key",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/AuditRecord"
+                }
+            },
+            "deleteTransaction": {
+                "name": "deleteTransaction",
+                "description": "delete all audit states created by a specified transaction id",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "txID": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/AuditList"
+                }
+            },
+            "getRecord": {
+                "name": "getRecord",
+                "description": "retrieve an audit record by its state key",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/AuditRecord"
+                }
+            },
+            "getRecordsByID": {
+                "name": "getRecordsByID",
+                "description": "retrieve records by recID",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "recID": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/AuditList"
+                }
+            },
+            "getRecordsByTxID": {
+                "name": "getRecordsByTxID",
+                "description": "retrieve audit records by the txID of the record creation",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "txID": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/AuditList"
+                }
+            },
+            "getRecordsByTxTime": {
+                "name": "getRecordsByTxTime",
+                "description": "retrieve audit records created at the specified time",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "txTime": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/AuditList"
+                }
+            },
+            "queryTimeRange": {
+                "name": "queryTimeRange",
+                "description": "retrieve audit records of specified domain and owner in a time range",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "domain": {
+                            "type": "string"
+                        },
+                        "owner": {
+                            "type": "string"
+                        },
+                        "startTime": {
+                            "type": "string"
+                        },
+                        "endTime": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/AuditList"
+                }
+            }
+        }
+    },
+    "components": {
+        "AuditList": {
+            "$id": "AuditList",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "object",
+                        "properties": {
+                            "txID": {
+                                "type": "string"
+                            },
+                            "txTime": {
+                                "type": "string"
+                            },
+                            "recID": {
+                                "type": "string"
+                            },
+                            "domain": {
+                                "type": "string"
+                            },
+                            "owner": {
+                                "type": "string"
+                            },
+                            "data": {
+                                "type": "string"
+                            },
+                            "hashType": {
+                                "type": "string"
+                            },
+                            "hashValue": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "AuditRecord": {
+            "$id": "AuditRecord",
+            "type": "object",
+            "properties": {
+                "txID": {
+                    "type": "string"
+                },
+                "txTime": {
+                    "type": "string"
+                },
+                "recID": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "hashType": {
+                    "type": "string"
+                },
+                "hashValue": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
