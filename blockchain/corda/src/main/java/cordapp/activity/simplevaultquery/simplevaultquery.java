@@ -7,7 +7,7 @@ import java.util.List;
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.VaultQuery;
-import com.tibco.dovetail.corda.json.LinearIdDeserializer;
+import com.tibco.dovetail.corda.json.deserializer.LinearIdDeserializer;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.engine.Context;
 import com.tibco.dovetail.core.runtime.services.IDataService;

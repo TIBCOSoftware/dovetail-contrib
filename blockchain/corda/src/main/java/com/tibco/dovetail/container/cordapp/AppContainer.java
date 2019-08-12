@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.core.runtime.services.IContainerService;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 import com.tibco.dovetail.core.runtime.services.IEventService;
@@ -23,7 +22,7 @@ public class AppContainer implements IContainerService {
     
     
 	public AppContainer(AppFlow flow) {
-		CordaUtil.setServiceHub(flow.getServiceHub());
+		AppUtil.setServiceHub(flow.getServiceHub());
 		
 		this.properties.put("ServiceHub", flow.getServiceHub());
 		this.properties.put("FlowService", flow);

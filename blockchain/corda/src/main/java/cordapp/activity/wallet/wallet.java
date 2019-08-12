@@ -9,6 +9,7 @@ import java.util.Set;
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppDataService;
+import com.tibco.dovetail.container.cordapp.AppUtil;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.engine.Context;
 
@@ -32,16 +33,16 @@ public class wallet implements IActivity{
 			case "Account Balance":
 				Object currency = val.get("currency");
 				Amount<Currency> bal = dataservice.getAccountBalance(Currency.getInstance(currency.toString()));
-				ctx.setOutput("output", CordaUtil.toJsonObject(bal));
+				ctx.setOutput("output", CordaUtil.getInstance().toJsonObject(bal));
 				break;
 			case "Retrieve Funds":
 				Set<AbstractParty> pIssuers = new HashSet<AbstractParty>();
 				if(issuers != null) {
-					((List)issuers).forEach(i -> pIssuers.add(CordaUtil.partyFromString(i.toString())));
+					((List)issuers).forEach(i -> pIssuers.add(AppUtil.partyFromString(i.toString())));
 				}
 				
 				List<StateAndRef<Cash.State>> funds = dataservice.getFunds(pIssuers, getRetriveAmt(val));
-				ctx.setOutput("output", CordaUtil.toJsonObject(funds));
+				ctx.setOutput("output", CordaUtil.getInstance().toJsonObject(funds));
 		}
 	}
 	

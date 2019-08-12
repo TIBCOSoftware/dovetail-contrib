@@ -1,4 +1,4 @@
-package com.tibco.dovetail.corda.json;
+package com.tibco.dovetail.corda.json.serializer;
 
 import java.io.IOException;
 import java.security.PublicKey;

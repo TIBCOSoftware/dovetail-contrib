@@ -24,6 +24,7 @@ import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.container.cordapp.AppDataService;
 import com.tibco.dovetail.container.cordapp.AppFlow;
 import com.tibco.dovetail.container.cordapp.AppTransactionService;
+import com.tibco.dovetail.container.cordapp.AppUtil;
 import com.tibco.dovetail.core.model.flow.FlowAppConfig;
 import com.tibco.dovetail.core.model.flow.HandlerConfig;
 import com.tibco.dovetail.core.model.flow.Resources;
@@ -60,7 +61,7 @@ public class TestTrigger {
 	}
 	@Test
 	public void testInitiator () throws Exception {
-		CordaUtil.setServiceHub(mock);
+		AppUtil.setServiceHub(mock);
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream in = this.getClass().getResourceAsStream("iouapp.json");
 		
@@ -103,7 +104,7 @@ public class TestTrigger {
 	
 	//@Test
 	public void testschedulable () throws Exception {
-		CordaUtil.setServiceHub(mock);
+		AppUtil.setServiceHub(mock);
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream in = this.getClass().getResourceAsStream("iouapp.json");
 		

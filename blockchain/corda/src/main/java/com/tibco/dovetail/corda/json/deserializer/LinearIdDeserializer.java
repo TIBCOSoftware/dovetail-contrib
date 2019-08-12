@@ -1,4 +1,4 @@
-package com.tibco.dovetail.corda.json;
+package com.tibco.dovetail.corda.json.deserializer;
 
 import java.io.IOException;
 import java.util.UUID;

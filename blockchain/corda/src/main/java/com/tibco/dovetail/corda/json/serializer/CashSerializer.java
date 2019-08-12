@@ -1,4 +1,4 @@
-package com.tibco.dovetail.corda.json;
+package com.tibco.dovetail.corda.json.serializer;
 
 import java.io.IOException;
 
@@ -29,8 +29,8 @@ public class CashSerializer extends StdSerializer<State> {
 	public void serialize(State value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 		
 		gen.writeStartObject();
-		gen.writeStringField("owner",CordaUtil.partyToString(value.getOwner()));
-		gen.writeStringField("issuer", CordaUtil.partyToString(value.getAmount().getToken().getIssuer().getParty()));
+		gen.writeStringField("owner",CordaUtil.getInstance().partyToString(value.getOwner()));
+		gen.writeStringField("issuer", CordaUtil.getInstance().partyToString(value.getAmount().getToken().getIssuer().getParty()));
 		gen.writeStringField("issuerRef", DatatypeConverter.printBase64Binary(value.getAmount().getToken().getIssuer().getReference().getBytes()));
 		gen.writeObjectFieldStart("amt");
 		gen.writeNumberField("quantity", value.getAmount().getQuantity());

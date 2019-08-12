@@ -8,6 +8,7 @@ package com.tibco.dovetail.container.corda;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.jayway.jsonpath.DocumentContext;
+import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.core.runtime.trigger.ITrigger;
 
 import net.corda.core.contracts.*;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 
 @CordaSerializable
 public abstract class CordaFlowContract {
- //   private static LinkedHashMap<String, ITrigger> contractTriggers = null;
 
     protected abstract String getResourceHash();
     protected abstract InputStream getTransactionJson();
@@ -50,11 +50,9 @@ public abstract class CordaFlowContract {
         });
 
         ContractsDSL.requireThat(check -> {
-            check.using("signatures for all state participants must exist: cmd keys=" + CordaUtil.serialize(allCmdKeys) + ", state keys=" + CordaUtil.serialize(allStateKeys), allCmdKeys.containsAll(allStateKeys));
+            check.using("signatures for all state participants must exist: cmd keys=" + CordaUtil.getInstance().serialize(allCmdKeys) + ", state keys=" + CordaUtil.getInstance().serialize(allStateKeys), allCmdKeys.containsAll(allStateKeys));
             return null;
         });
-
-      // compileAndCacheTrigger();
 
         tx.getCommands().stream().filter(c -> c.getValue() instanceof CordaCommandDataWithData)
                                  .forEach(c -> {
@@ -82,29 +80,14 @@ public abstract class CordaFlowContract {
     }
 
     private void validateOutputs(LedgerTransaction tx, List<DocumentContext> outputs) throws JsonParseException, JsonMappingException, IOException {
-        List<DocumentContext> txOuts = tx.getOutputStates().stream().map(it -> CordaUtil.toJsonObject(it)).collect(Collectors.toList());
-        CordaUtil.compare(txOuts, outputs);
+        List<DocumentContext> txOuts = tx.getOutputStates().stream().map(it -> CordaUtil.getInstance().toJsonObject(it)).collect(Collectors.toList());
+        CordaUtil.getInstance().compare(txOuts, outputs);
     }
     
-  /*  private synchronized void compileAndCacheTrigger() {
-    	 try {
- 	        //compile flow app and cache the trigger object
-    		   InputStream txJson = getTransactionJson();
- 	        if(contractTriggers == null) {
- 	        	 	
- 	        	 	FlowAppConfig app = FlowAppConfig.parseModel(txJson);
- 	        	 	DovetailEngine engine = new DovetailEngine(app);
- 	        	 	contractTriggers = engine.getTriggers();
- 	        }
-         }catch(Exception e) {
-         		throw new IllegalArgumentException(e);
-         }
-    }
-    */
+
     public ContractCommandOutput runCommand(CordaCommandDataWithData command, List<ContractState> inputStates) {
     		try {
-    		//	 compileAndCacheTrigger();
-    	
+    		
              String txName = (String)command.getData("command");
             
              System.out.println("****** run " + txName + " ... ******");

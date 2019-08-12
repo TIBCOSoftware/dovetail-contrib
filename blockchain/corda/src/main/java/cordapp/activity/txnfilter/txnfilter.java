@@ -35,17 +35,17 @@ public class txnfilter implements IActivity {
 		switch(filter) {
 		case "Input State":
 			List<ContractState> inputs = dataService.getStates(asset.toString(), null, Sets.newHashSet(txn.getInputs()));
-			doc = CordaUtil.toJsonObject(inputs);
+			doc = CordaUtil.getInstance().toJsonObject(inputs);
 			size = inputs.size();
 			break;
 		case "Reference State":
 			List<ContractState> refs = dataService.getStates(asset.toString(), null, Sets.newHashSet(txn.getReferences()));
-			doc = CordaUtil.toJsonObject(refs);
+			doc = CordaUtil.getInstance().toJsonObject(refs);
 			size = refs.size();
 			break;
 		case "Output State":
 			List<ContractState> outs = txn.getTx().getOutputStates().stream().filter(new StateFilter(asset.toString())).collect(Collectors.toList());
-			doc = CordaUtil.toJsonObject(outs);
+			doc = CordaUtil.getInstance().toJsonObject(outs);
 			size = outs.size();
 			break;
 		case "Command":

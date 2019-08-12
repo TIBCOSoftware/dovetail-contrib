@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.jayway.jsonpath.DocumentContext;
+import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
 import com.tibco.dovetail.core.runtime.transaction.TxnInputAttribute;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;
@@ -45,14 +46,14 @@ public class CordaTransactionService implements ITransactionService {
 	            if(value == null)
 	            		continue;
 	            
-	            DocumentContext valdoc = CordaUtil.toJsonObject(value);
+	            DocumentContext valdoc = CordaUtil.getInstance().toJsonObject(value);
 	            doc.put("$", attr, valdoc.json());
 
 	            if(k.isAssetRef()) {
 	            		if (value instanceof List) {
 	            			List<?> objs = (List<?>)value;
 	    	                 objs.forEach(o -> {
-	    	                	 	DocumentContext val = CordaUtil.toJsonObject(o);
+	    	                	 	DocumentContext val = CordaUtil.getInstance().toJsonObject(o);
 	    	                	 	inputStates.add(val);
 	    	                 }); 
 	            		} else {
@@ -69,9 +70,9 @@ public class CordaTransactionService implements ITransactionService {
 	        ContractsDSL.requireThat(check -> {
 	            List<ContractState> txIn = tx.getInputStates();
 	            List<DocumentContext> txInDocs = new ArrayList<DocumentContext>();
-	            txIn.forEach(in -> txInDocs.add(CordaUtil.toJsonObject(in)));
+	            txIn.forEach(in -> txInDocs.add(CordaUtil.getInstance().toJsonObject(in)));
 	            
-	            CordaUtil.compare(txInDocs, inputStates);
+	            CordaUtil.getInstance().compare(txInDocs, inputStates);
 	            
 	            return null;
 	        });
