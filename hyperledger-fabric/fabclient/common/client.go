@@ -49,6 +49,8 @@ type ConnectorSpec struct {
 func NewFabricClient(config ConnectorSpec) (*FabricClient, error) {
 	clientKey := fmt.Sprintf("%s.%s.%s", config.Name, config.UserName, config.OrgName)
 	if fbClient, ok := clientMap[clientKey]; ok && fbClient != nil {
+		fbClient.timeoutMillis = config.TimeoutMillis
+		fbClient.endpoints = config.Endpoints
 		return fbClient, nil
 	}
 	sdk, err := fabsdk.New(networkConfigProvider(config.NetworkConfig, config.EntityMatchers))
@@ -111,11 +113,11 @@ func (c *FabricClient) Close() {
 func (c *FabricClient) QueryChaincode(ccID, fcn string, args [][]byte, transient map[string][]byte) ([]byte, error) {
 	opts := []channel.RequestOption{channel.WithRetry(retry.DefaultChannelOpts)}
 	if c.timeoutMillis > 0 {
-		fmt.Printf("set request timeout: %d ms\n", c.timeoutMillis)
+		//		fmt.Printf("set request timeout: %d ms\n", c.timeoutMillis)
 		opts = append(opts, channel.WithTimeout(fab.Query, time.Duration(c.timeoutMillis)*time.Millisecond))
 	}
 	if c.endpoints != nil && len(c.endpoints) > 0 {
-		fmt.Printf("set target endpoints: %s\n", strings.Join(c.endpoints, ", "))
+		//		fmt.Printf("set target endpoints: %s\n", strings.Join(c.endpoints, ", "))
 		opts = append(opts, channel.WithTargetEndpoints(c.endpoints...))
 	}
 	response, err := c.client.Query(channel.Request{ChaincodeID: ccID, Fcn: fcn, Args: args, TransientMap: transient}, opts...)
@@ -129,11 +131,11 @@ func (c *FabricClient) QueryChaincode(ccID, fcn string, args [][]byte, transient
 func (c *FabricClient) ExecuteChaincode(ccID, fcn string, args [][]byte, transient map[string][]byte) ([]byte, error) {
 	opts := []channel.RequestOption{channel.WithRetry(retry.DefaultChannelOpts)}
 	if c.timeoutMillis > 0 {
-		fmt.Printf("set request timeout: %d ms\n", c.timeoutMillis)
+		//		fmt.Printf("set request timeout: %d ms\n", c.timeoutMillis)
 		opts = append(opts, channel.WithTimeout(fab.Execute, time.Duration(c.timeoutMillis)*time.Millisecond))
 	}
 	if c.endpoints != nil && len(c.endpoints) > 0 {
-		fmt.Printf("set target endpoints: %s\n", strings.Join(c.endpoints, ", "))
+		//		fmt.Printf("set target endpoints: %s\n", strings.Join(c.endpoints, ", "))
 		opts = append(opts, channel.WithTargetEndpoints(c.endpoints...))
 	}
 	response, err := c.client.Execute(channel.Request{ChaincodeID: ccID, Fcn: fcn, Args: args, TransientMap: transient}, opts...)

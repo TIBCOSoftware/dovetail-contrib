@@ -66,7 +66,7 @@ make cli-test
 ```
 You may skip this test, and follow the steps in the next section to build client apps, and then use the client app to execute the tests. If you run the `cli` tests, however, it should print out all successful tests with status code `200` if the `marble_private_cc` chaincode is installed and instantiated successfully on the Fabric network, except for 2 expected failure tests.
 
-You may see the private-data query or deletion failed with message `creator does not hae read access permission on privatedata`, which is due to the fact that the detailed price data can be read or deleted by `org1` only in this sample, and thus operation will fail if the request is routed to a peer of `org2`.  Such failure can be controlled by endpoint override, which is not yet supported by the current version of the Dovetail extension.
+You may see timeout error for the private-details query, which is expected on the first execution when it waits for a new peer to start.  The request timeout can be configured in the app model.
 
 Another failure message `Failed to get marble private details for: marble1` is expected by design. It demonstrates that the private detail data is automatically deleted from the private collection after 3 new blocks, which is configured in the private collection definition file `$GOPATH/src/github.com/hyperledger/fabric-samples/chaincode/marbles02_private/collections_config.json`.
 

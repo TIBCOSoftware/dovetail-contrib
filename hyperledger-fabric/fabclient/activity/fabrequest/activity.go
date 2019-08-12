@@ -96,7 +96,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		logger.Debugf("execute chaincode %s transaction %s", input.ChaincodeID, input.TransactionName)
 		response, err = client.ExecuteChaincode(input.ChaincodeID, input.TransactionName, params, transientMap)
 	} else {
-		logger.Debugf("query chaincode %s transaction %s", input.ChaincodeID, input.TransactionName)
+		logger.Debugf("query chaincode %s transaction %s timeout %d endpoints %s", input.ChaincodeID, input.TransactionName, input.TimeoutMillis, input.Endpoints)
 		response, err = client.QueryChaincode(input.ChaincodeID, input.TransactionName, params, transientMap)
 	}
 
@@ -158,6 +158,7 @@ func getFabricClient(input *Input) (*client.FabricClient, error) {
 			endpoints[i] = strings.TrimSpace(s)
 		}
 	}
+	logger.Debugf("request option: timeout %d ms, endpoints: %s", input.TimeoutMillis, strings.Join(endpoints, ", "))
 	return client.NewFabricClient(client.ConnectorSpec{
 		Name:           configs[conName].(string),
 		NetworkConfig:  networkConfig,
