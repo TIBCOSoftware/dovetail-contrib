@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/core"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 )
@@ -24,9 +26,11 @@ var clientMap = map[string]*FabricClient{}
 
 // FabricClient holds fabric client pointers for chaincode invocations.
 type FabricClient struct {
-	name   string
-	sdk    *fabsdk.FabricSDK
-	client *channel.Client
+	name          string
+	sdk           *fabsdk.FabricSDK
+	client        *channel.Client
+	timeoutMillis int
+	endpoints     []string
 }
 
 // ConnectorSpec contains configuration parameters of a Fabric connector
@@ -37,11 +41,13 @@ type ConnectorSpec struct {
 	OrgName        string
 	UserName       string
 	ChannelID      string
+	TimeoutMillis  int
+	Endpoints      []string
 }
 
 // NewFabricClient returns a new or cached fabric client
 func NewFabricClient(config ConnectorSpec) (*FabricClient, error) {
-	clientKey := fmt.Sprint("%s.%s.%s", config.Name, config.UserName, config.OrgName)
+	clientKey := fmt.Sprintf("%s.%s.%s", config.Name, config.UserName, config.OrgName)
 	if fbClient, ok := clientMap[clientKey]; ok && fbClient != nil {
 		return fbClient, nil
 	}
@@ -59,9 +65,11 @@ func NewFabricClient(config ConnectorSpec) (*FabricClient, error) {
 		return nil, errors.Wrapf(err, "Failed to create new client of channel %s", config.ChannelID)
 	}
 	fbClient := &FabricClient{
-		name:   config.Name,
-		sdk:    sdk,
-		client: client,
+		name:          config.Name,
+		sdk:           sdk,
+		client:        client,
+		timeoutMillis: config.TimeoutMillis,
+		endpoints:     config.Endpoints,
 	}
 	clientMap[clientKey] = fbClient
 
@@ -101,9 +109,16 @@ func (c *FabricClient) Close() {
 
 // QueryChaincode sends query request to Fabric network
 func (c *FabricClient) QueryChaincode(ccID, fcn string, args [][]byte, transient map[string][]byte) ([]byte, error) {
-	response, err := c.client.Query(channel.Request{ChaincodeID: ccID, Fcn: fcn, Args: args, TransientMap: transient},
-		channel.WithRetry(retry.DefaultChannelOpts),
-	)
+	opts := []channel.RequestOption{channel.WithRetry(retry.DefaultChannelOpts)}
+	if c.timeoutMillis > 0 {
+		fmt.Printf("set request timeout: %d ms\n", c.timeoutMillis)
+		opts = append(opts, channel.WithTimeout(fab.Query, time.Duration(c.timeoutMillis)*time.Millisecond))
+	}
+	if c.endpoints != nil && len(c.endpoints) > 0 {
+		fmt.Printf("set target endpoints: %s\n", strings.Join(c.endpoints, ", "))
+		opts = append(opts, channel.WithTargetEndpoints(c.endpoints...))
+	}
+	response, err := c.client.Query(channel.Request{ChaincodeID: ccID, Fcn: fcn, Args: args, TransientMap: transient}, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,9 +127,16 @@ func (c *FabricClient) QueryChaincode(ccID, fcn string, args [][]byte, transient
 
 // ExecuteChaincode sends invocation request to Fabric network
 func (c *FabricClient) ExecuteChaincode(ccID, fcn string, args [][]byte, transient map[string][]byte) ([]byte, error) {
-	response, err := c.client.Execute(channel.Request{ChaincodeID: ccID, Fcn: fcn, Args: args, TransientMap: transient},
-		channel.WithRetry(retry.DefaultChannelOpts),
-	)
+	opts := []channel.RequestOption{channel.WithRetry(retry.DefaultChannelOpts)}
+	if c.timeoutMillis > 0 {
+		fmt.Printf("set request timeout: %d ms\n", c.timeoutMillis)
+		opts = append(opts, channel.WithTimeout(fab.Execute, time.Duration(c.timeoutMillis)*time.Millisecond))
+	}
+	if c.endpoints != nil && len(c.endpoints) > 0 {
+		fmt.Printf("set target endpoints: %s\n", strings.Join(c.endpoints, ", "))
+		opts = append(opts, channel.WithTargetEndpoints(c.endpoints...))
+	}
+	response, err := c.client.Execute(channel.Request{ChaincodeID: ccID, Fcn: fcn, Args: args, TransientMap: transient}, opts...)
 	if err != nil {
 		return nil, err
 	}

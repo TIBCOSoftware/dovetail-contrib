@@ -3,6 +3,7 @@ package fabrequest
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	client "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/common"
 	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
@@ -150,6 +151,13 @@ func getFabricClient(input *Input) (*client.FabricClient, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "invalid entity-matchers-override")
 	}
+	endpoints := []string{}
+	if len(input.Endpoints) > 0 {
+		endpoints = strings.Split(input.Endpoints, ",")
+		for i, s := range endpoints {
+			endpoints[i] = strings.TrimSpace(s)
+		}
+	}
 	return client.NewFabricClient(client.ConnectorSpec{
 		Name:           configs[conName].(string),
 		NetworkConfig:  networkConfig,
@@ -157,6 +165,8 @@ func getFabricClient(input *Input) (*client.FabricClient, error) {
 		OrgName:        input.OrgName,
 		UserName:       input.UserName,
 		ChannelID:      configs[conChannel].(string),
+		TimeoutMillis:  input.TimeoutMillis,
+		Endpoints:      endpoints,
 	})
 }
 
