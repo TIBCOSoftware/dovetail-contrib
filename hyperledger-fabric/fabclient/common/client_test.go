@@ -42,18 +42,18 @@ func TestClient(t *testing.T) {
 	fmt.Printf("created fabric client %+v\n", fbClient)
 
 	// query original
-	result, err := fbClient.QueryChaincode(ccID, "query", [][]byte{[]byte("a")})
+	result, err := fbClient.QueryChaincode(ccID, "query", [][]byte{[]byte("a")}, nil)
 	require.NoError(t, err, "failed to query %s", ccID)
 	fmt.Printf("Query result: %s\n", string(result))
 	origValue := result
 
 	// update
-	result, err = fbClient.ExecuteChaincode(ccID, "invoke", [][]byte{[]byte("a"), []byte("b"), []byte("10")})
+	result, err = fbClient.ExecuteChaincode(ccID, "invoke", [][]byte{[]byte("a"), []byte("b"), []byte("10")}, nil)
 	require.NoError(t, err, "failed to invoke %s", ccID)
 	fmt.Printf("Invoke result: %s\n", string(result))
 
 	// query after update
-	result, err = fbClient.QueryChaincode(ccID, "query", [][]byte{[]byte("a")})
+	result, err = fbClient.QueryChaincode(ccID, "query", [][]byte{[]byte("a")}, nil)
 	require.NoError(t, err, "failed to query %s", ccID)
 	fmt.Printf("Query result: %s\n", string(result))
 	assert.NotEqual(t, origValue, result, "original %s should different from %s", string(origValue), string(result))

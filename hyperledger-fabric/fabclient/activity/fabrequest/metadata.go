@@ -18,6 +18,8 @@ type Input struct {
 	TransactionName string                 `md:"transactionName,required"`
 	Parameters      map[string]interface{} `md:"parameters"`
 	Transient       map[string]interface{} `md:"transient"`
+	TimeoutMillis   int                    `md:"timeoutMillis"`
+	Endpoints       string                 `md:"endpoints"`
 }
 
 // Output of the activity
@@ -38,6 +40,8 @@ func (i *Input) ToMap() map[string]interface{} {
 		"transactionName": i.TransactionName,
 		"parameters":      i.Parameters,
 		"transient":       i.Transient,
+		"timeoutMillis":   i.TimeoutMillis,
+		"endpoints":       i.Endpoints,
 	}
 }
 
@@ -67,6 +71,12 @@ func (i *Input) FromMap(values map[string]interface{}) error {
 		return err
 	}
 	if i.Transient, err = coerce.ToObject(values["transient"]); err != nil {
+		return err
+	}
+	if i.TimeoutMillis, err = coerce.ToInt(values["timeoutMillis"]); err != nil {
+		return err
+	}
+	if i.Endpoints, err = coerce.ToString(values["endpoints"]); err != nil {
 		return err
 	}
 

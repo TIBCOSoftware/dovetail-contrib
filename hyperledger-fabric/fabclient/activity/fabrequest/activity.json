@@ -68,6 +68,14 @@
             "type": "string"
         },
         {
+            "name": "timeoutMillis",
+            "type": "integer"
+        },
+        {
+            "name": "endpoints",
+            "type": "string"
+        },
+        {
             "name": "parameters",
             "type": "complex_object",
             "display": {
