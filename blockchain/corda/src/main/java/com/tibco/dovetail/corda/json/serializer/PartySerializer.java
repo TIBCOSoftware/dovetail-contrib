@@ -1,4 +1,4 @@
-package com.tibco.dovetail.corda.json;
+package com.tibco.dovetail.corda.json.serializer;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ public class PartySerializer extends StdSerializer<Party>{
 
 	@Override
 	public void serialize(Party value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-		gen.writeString(CordaUtil.partyToString(value));
+		gen.writeString(CordaUtil.getInstance().partyToString(value));
 		
 	}
 

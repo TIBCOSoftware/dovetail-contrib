@@ -13,8 +13,8 @@ public class TestCordUtil {
 	@Test
 	public void testDeserializeAttrs() {
 		String json = "[{\"name\":\"iou\",\"isOptional\":false,\"type\":\"com.example.iou.IOU\",\"isAsset\":true},{\"name\":\"transactionId\",\"isOptional\":false,\"type\":\"String\"},{\"name\":\"timestamp\",\"isOptional\":false,\"type\":\"DateTime\"}]";
-		List<BuilderSchemaAttribute> attrs = (List<BuilderSchemaAttribute>) CordaUtil.deserialize(json, new TypeReference<List<BuilderSchemaAttribute>>() {});
+		List<BuilderSchemaAttribute> attrs = (List<BuilderSchemaAttribute>) CordaUtil.getInstance().deserialize(json, new TypeReference<List<BuilderSchemaAttribute>>() {});
 		
-		System.out.println(CordaUtil.serialize(attrs));
+		System.out.println(CordaUtil.getInstance().serialize(attrs));
 	}
 }

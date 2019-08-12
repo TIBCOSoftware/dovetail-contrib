@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.container.cordapp.AppFlow;
+import com.tibco.dovetail.container.cordapp.AppUtil;
 
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -34,7 +35,7 @@ public class TestSerializer {
 		bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
 		mock = new MockServices(bob);
 		//CordaUtil.initWithCordaRuntime(mock);
-		CordaUtil.setServiceHub(mock);
+		AppUtil.setServiceHub(mock);
 		
 }
 	@Test
@@ -45,10 +46,10 @@ public class TestSerializer {
 		try {
 			System.out.println(amt.toString());
 			
-			String json = CordaUtil.serialize(amt);
+			String json = CordaUtil.getInstance().serialize(amt);
 			System.out.println(json); 
 			
-			Amount amt2 = (Amount) CordaUtil.deserialize( json, Amount.class);
+			Amount amt2 = (Amount) AppUtil.deserialize( json, Amount.class);
 			
 			System.out.println(amt2.toString());
 		} catch (Exception e) {
@@ -68,11 +69,11 @@ public class TestSerializer {
 		
 		try {
 			
-			String json = CordaUtil.serialize(cash);
+			String json = CordaUtil.getInstance().serialize(cash);
 			System.out.println(json); 
 			
-			Cash.State cash2 = (State) CordaUtil.deserialize(json, Cash.State.class);
-			String json2 = CordaUtil.serialize(cash);
+			Cash.State cash2 = (State) AppUtil.deserialize(json, Cash.State.class);
+			String json2 = CordaUtil.getInstance().serialize(cash);
 			System.out.println(json); 
 			
 		} catch (Exception e) {
@@ -90,10 +91,10 @@ public class TestSerializer {
 		try {
 			System.out.println("bob=" + pbob.toString());
 			
-			String json = CordaUtil.partyToString( pbob);
+			String json = CordaUtil.getInstance().partyToString( pbob);
 			System.out.println("json=" + json); 
 			
-			Party amt2 = (Party) CordaUtil.partyFromString(json);
+			Party amt2 = (Party) AppUtil.partyFromString(json);
 			
 			System.out.println("bob2="+ amt2.toString());
 		} catch (Exception e) {
@@ -109,12 +110,12 @@ public class TestSerializer {
 			
 		try {
 			
-			String json = CordaUtil.serialize(new TestSerializer.PartyAmount());
+			String json = CordaUtil.getInstance().serialize(new TestSerializer.PartyAmount());
 			System.out.println("json=" + json); 
 			
-			TestSerializer.PartyAmount amt2 = (TestSerializer.PartyAmount) CordaUtil.deserialize(json, TestSerializer.PartyAmount.class);
+			TestSerializer.PartyAmount amt2 = (TestSerializer.PartyAmount) AppUtil.deserialize(json, TestSerializer.PartyAmount.class);
 			
-			System.out.println("bob2="+ CordaUtil.serialize( amt2));
+			System.out.println("bob2="+ CordaUtil.getInstance().serialize( amt2));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -128,11 +129,11 @@ public class TestSerializer {
 			
 		try {
 			UniqueIdentifier id1 = new UniqueIdentifier("test", UUID.fromString("bb09aeb4-c053-4295-8718-964f348a4ebf"));
-			String json = CordaUtil.serialize(id1);
+			String json = CordaUtil.getInstance().serialize(id1);
 			System.out.println("json=" + json); 
 			
-			UniqueIdentifier id2 = (UniqueIdentifier) CordaUtil.deserialize(json, UniqueIdentifier.class);
-			String json2 = CordaUtil.serialize( id2);
+			UniqueIdentifier id2 = (UniqueIdentifier) AppUtil.deserialize(json, UniqueIdentifier.class);
+			String json2 = CordaUtil.getInstance().serialize( id2);
 			System.out.println("id2="+ json2);
 			
 			Assert.assertEquals(json, json2);

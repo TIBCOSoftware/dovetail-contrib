@@ -6,6 +6,7 @@
 package com.tibco.dovetail.container.corda;
 
 import com.jayway.jsonpath.DocumentContext;
+import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 
 import net.corda.core.contracts.CommandData;
@@ -27,7 +28,7 @@ public class CordaDataService implements IDataService<DocumentContext, DocumentC
 	 
 	public CordaDataService(List<ContractState> inputs) {
 		inputs.forEach(state -> {
-			inputStates.add(CordaUtil.toJsonObject(state));
+			inputStates.add(CordaUtil.getInstance().toJsonObject(state));
 			
 			inputStatesClassName.add(state.getClass().getName());
 		});
@@ -159,7 +160,7 @@ public class CordaDataService implements IDataService<DocumentContext, DocumentC
 		
 		payoutputs.forEach((k,v) -> {
 			if(v > 0) {
-				DocumentContext doc = CordaUtil.toJsonObject(groupbyIssuer.get(k).get(0));
+				DocumentContext doc = CordaUtil.getInstance().toJsonObject(groupbyIssuer.get(k).get(0));
 				doc.put("$", "owner", payTo);
 				doc.put("$.amt", "quantity", v);
 				outputStates.add(doc);
@@ -171,7 +172,7 @@ public class CordaDataService implements IDataService<DocumentContext, DocumentC
 		
 		changeoutputs.forEach((k,v) -> {
 			if(v > 0) {
-				DocumentContext doc = CordaUtil.toJsonObject(groupbyIssuer.get(k).get(0));
+				DocumentContext doc = CordaUtil.getInstance().toJsonObject(groupbyIssuer.get(k).get(0));
 				doc.put("$", "owner", changeTo);
 				doc.put("$.amt", "quantity", v);
 				outputStates.add(doc);

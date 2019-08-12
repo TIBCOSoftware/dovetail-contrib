@@ -7,7 +7,7 @@ package com.tibco.dovetail.container.cordapp;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.container.corda.CordaUtil;
-import com.tibco.dovetail.corda.json.StateAndRefSerializer;
+import com.tibco.dovetail.corda.json.serializer.StateAndRefSerializer;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 
 import co.paralleluniverse.fibers.Suspendable;
@@ -126,7 +126,7 @@ public class AppDataService implements IDataService<StateRef,ContractState> {
 			List<DocumentContext> docs = new ArrayList<DocumentContext>();
 			results.getStates().forEach(s -> {
 				states.put(StateAndRefSerializer.getRef(s), s);
-				docs.add(CordaUtil.toJsonObject(s));
+				docs.add(CordaUtil.getInstance().toJsonObject(s));
 			});
 			return docs;
 		} catch(Exception e) {

@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.tibco.dovetail.container.corda.CordaUtil;
 
 @CordaSerializable
 public class CordaCommandDataWithData implements CommandData {
@@ -38,11 +39,11 @@ public class CordaCommandDataWithData implements CommandData {
     }
     
     public void serialize() {
-    		this.serializedData = CordaUtil.serialize(data);
+    		this.serializedData = CordaUtil.getInstance().serialize(data);
     }
     
     public void deserialize() {
-    		data = (Map<String, Object>) CordaUtil.deserialize(serializedData, new TypeReference<Map<String, Object>>(){});
+    		data = (Map<String, Object>) CordaUtil.getInstance().deserialize(serializedData, new TypeReference<Map<String, Object>>(){});
     }
     
     public String getCommand() {

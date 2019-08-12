@@ -19,6 +19,7 @@ import com.tibco.dovetail.container.corda.CordaContainer;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
 import com.tibco.dovetail.container.cordapp.AppFlow;
+import com.tibco.dovetail.container.cordapp.AppUtil;
 import com.tibco.dovetail.core.runtime.engine.ContextImpl;
 import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
@@ -88,11 +89,11 @@ public class TestActivity {
 		
 		bob = new TestIdentity(new CordaX500Name("BigCorp", "New York", "GB"));
 		mock = new MockServices(bob);
-		CordaUtil.setServiceHub(mock);
+		AppUtil.setServiceHub(mock);
 		AppContainer ctnr = new AppContainer(mock, new MockFlow(true));
 		context.setContainerService(ctnr);
 		
-		DocumentContext doc = JsonUtil.getJsonParser().parse("{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuers\":[\"" + CordaUtil.partyToString(bob.getParty()) + "\"]}");
+		DocumentContext doc = JsonUtil.getJsonParser().parse("{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuers\":[\"" + CordaUtil.getInstance().partyToString(bob.getParty()) + "\"]}");
 		
 		
 		
@@ -117,7 +118,7 @@ public class TestActivity {
 			TestIdentity john = new TestIdentity(new CordaX500Name("alice", "New York", "GB"));
 			mock = new MockServices(bob);
 			
-			String json = "{\"funds\":[{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.partyToString(bob.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.partyToString(charlie.getParty()) + "\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.partyToString(bob.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.partyToString(charlie.getParty()) + "\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.partyToString(alice.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.partyToString(charlie.getParty()) + "\"}], \"sendPaymentTo\":\"" + CordaUtil.partyToString(john.getParty()) + "\", \"sendChangeTo\":\""+ CordaUtil.partyToString(charlie.getParty()) + "\", \"paymentAmt\":{\"currency\":\"USD\", \"quantity\":250}}";
+			String json = "{\"funds\":[{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.getInstance().partyToString(bob.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.getInstance().partyToString(charlie.getParty()) + "\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.getInstance().partyToString(bob.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.getInstance().partyToString(charlie.getParty()) + "\"},{\"amt\":{\"currency\":\"USD\", quantity:100}, \"issuer\":\"" + CordaUtil.getInstance().partyToString(alice.getParty()) + "\",\"issuerRef\":\"100\",\"owner\":\"" + CordaUtil.getInstance().partyToString(charlie.getParty()) + "\"}], \"sendPaymentTo\":\"" + CordaUtil.getInstance().partyToString(john.getParty()) + "\", \"sendChangeTo\":\""+ CordaUtil.getInstance().partyToString(charlie.getParty()) + "\", \"paymentAmt\":{\"currency\":\"USD\", \"quantity\":250}}";
 			DocumentContext doc = JsonUtil.getJsonParser().parse(json);
 			
 			

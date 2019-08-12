@@ -16,8 +16,9 @@ import com.tibco.dovetail.container.corda.CordaFlowContract;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppDataService;
 import com.tibco.dovetail.container.cordapp.AppFlow;
-import com.tibco.dovetail.corda.json.LinearIdDeserializer;
-import com.tibco.dovetail.corda.json.LinearIdSerializer;
+import com.tibco.dovetail.container.cordapp.AppUtil;
+import com.tibco.dovetail.corda.json.deserializer.LinearIdDeserializer;
+import com.tibco.dovetail.corda.json.serializer.LinearIdSerializer;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
 import com.tibco.dovetail.core.runtime.engine.Context;
 
@@ -41,7 +42,7 @@ public class txnbuilder implements IActivity{
 			AppDataService dataservice = (AppDataService) context.getContainerService().getDataService();
 			
 			LinkedHashMap<String, Object> inputs = (LinkedHashMap<String, Object>)input.json();
-			List<BuilderSchemaAttribute> attrs = (List<BuilderSchemaAttribute>) CordaUtil.deserialize(schema, new TypeReference<List<BuilderSchemaAttribute>>() {});
+			List<BuilderSchemaAttribute> attrs = (List<BuilderSchemaAttribute>) CordaUtil.getInstance().deserialize(schema, new TypeReference<List<BuilderSchemaAttribute>>() {});
 			
 			CordaCommandDataWithData cordacmd = new CordaCommandDataWithData();
 			
@@ -70,7 +71,7 @@ public class txnbuilder implements IActivity{
 			ContractCommandOutput outputs = contract.runCommand(cordacmd, Lists.newArrayList());
 			outputs.getOutputStates().forEach(o -> {
 				try {
-					ContractState s = (ContractState) CordaUtil.deserialize(o.getSecond().jsonString(), Class.forName(o.getFirst()));
+					ContractState s = (ContractState) AppUtil.deserialize(o.getSecond().jsonString(), Class.forName(o.getFirst()));
 					txservice.addOutputState(s);
 					
 					//if the output state is created as part of another command, add signing keys to the executing command
@@ -88,11 +89,11 @@ public class txnbuilder implements IActivity{
 				if(c instanceof CordaCommandDataWithData)
 					((CordaCommandDataWithData)c).serialize();
 				
-				txservice.getLogger().info("txbuilder::build commands, cmd=" + c.getClass().getSimpleName() + ", keys=" + CordaUtil.serialize(keys) );
+				txservice.getLogger().info("txbuilder::build commands, cmd=" + c.getClass().getSimpleName() + ", keys=" + CordaUtil.getInstance().serialize(keys) );
 				txservice.addCommand(c, keys);
 			});
 			
-			txservice.getLogger().info("txbuilder::build commands, cmd=" + cordacmd.getCommand() + ", keys=" + CordaUtil.serialize(signingkeys) );
+			txservice.getLogger().info("txbuilder::build commands, cmd=" + cordacmd.getCommand() + ", keys=" + CordaUtil.getInstance().serialize(signingkeys) );
 			txservice.addCommand(cordacmd, signingkeys);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);

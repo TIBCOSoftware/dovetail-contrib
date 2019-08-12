@@ -74,7 +74,7 @@ public class TestCordaFlowContract {
 		public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
 			Map<String, Object> context = new LinkedHashMap<String, Object>();
 			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
-			doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
+			doc.put("$", "iou", CordaUtil.getInstance().toJsonObject((ContractState)iou).json());
 		    doc.put("$", "transactionId", "issue");
 		    doc.put("$", "timestamp", "abc");
 		    context.put("transactionInput", doc);
@@ -114,8 +114,8 @@ public class TestCordaFlowContract {
 		public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
 			Map<String, Object> context = new LinkedHashMap<String, Object>();
 			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
-		    doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
-			doc.put("$", "newOwner",CordaUtil.partyToString(charlie));
+		    doc.put("$", "iou", CordaUtil.getInstance().toJsonObject((ContractState)iou).json());
+			doc.put("$", "newOwner",CordaUtil.getInstance().partyToString(charlie));
 		    doc.put("$", "transactionId", "transfer");
 		    doc.put("$", "timestamp", "abc");
 		    System.out.println(doc.jsonString());
@@ -161,16 +161,16 @@ public class TestCordaFlowContract {
 			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
 		    doc.put("$", "transactionId", this.settleType);
 		    doc.put("$", "timestamp", "abc");
-		    doc.put("$", "sendChangeTo", CordaUtil.partyToString(alice));
-		    doc.put("$", "sendPaymentTo", CordaUtil.partyToString(bob));
+		    doc.put("$", "sendChangeTo", CordaUtil.getInstance().partyToString(alice));
+		    doc.put("$", "sendPaymentTo", CordaUtil.getInstance().partyToString(bob));
 		    
 		    if(settleType.equals("single")) {
 			    PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
 	    			Cash.State payment1 = new Cash.State(issuer, DOLLARS(100), bob);
-	    			DocumentContext paymentdoc = CordaUtil.toJsonObject(Arrays.asList(payment1));
-	    			doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
+	    			DocumentContext paymentdoc = CordaUtil.getInstance().toJsonObject(Arrays.asList(payment1));
+	    			doc.put("$", "iou", CordaUtil.getInstance().toJsonObject((ContractState)iou).json());
 				doc.put("$", "funds", paymentdoc.json());
-				doc.put("$", "payAmt", CordaUtil.toJsonObject(DOLLARS(100)).json());
+				doc.put("$", "payAmt", CordaUtil.getInstance().toJsonObject(DOLLARS(100)).json());
 			    
 		    } else if(settleType.equals("multiple")) {
 			    	PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
@@ -178,9 +178,9 @@ public class TestCordaFlowContract {
 	        		Cash.State payment2 = new Cash.State(issuer, DOLLARS(50), bob);
 	        		
 	        		iou.setPaid(DOLLARS(10));
-	        		doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
-	    			doc.put("$", "funds", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)).json());
-	    			doc.put("$", "payAmt", CordaUtil.toJsonObject(DOLLARS(60)).json());
+	        		doc.put("$", "iou", CordaUtil.getInstance().toJsonObject((ContractState)iou).json());
+	    			doc.put("$", "funds", CordaUtil.getInstance().toJsonObject(Arrays.asList(payment1, payment2)).json());
+	    			doc.put("$", "payAmt", CordaUtil.getInstance().toJsonObject(DOLLARS(60)).json());
 	    			
 		    } else if(settleType.equals("change")) {
 			    	PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
@@ -188,18 +188,18 @@ public class TestCordaFlowContract {
 	        		Cash.State payment2 = new Cash.State(issuer, DOLLARS(50), bob);
 	        		
 	        		iou.setPaid(DOLLARS(45));
-	        		doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
-	    			doc.put("$", "funds", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)).json());
-	    			doc.put("$", "payAmt", CordaUtil.toJsonObject(DOLLARS(55)).json());
+	        		doc.put("$", "iou", CordaUtil.getInstance().toJsonObject((ContractState)iou).json());
+	    			doc.put("$", "funds", CordaUtil.getInstance().toJsonObject(Arrays.asList(payment1, payment2)).json());
+	    			doc.put("$", "payAmt", CordaUtil.getInstance().toJsonObject(DOLLARS(55)).json());
 		    } else if(settleType.equals("err")) {
 			    	PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
 	        		Cash.State payment1 = new Cash.State(issuer, DOLLARS(10), bob);
 	        		Cash.State payment2 = new Cash.State(issuer, DOLLARS(50), bob);
 	        		
 	        		iou.setPaid(DOLLARS(45));
-	        		doc.put("$", "iou", CordaUtil.toJsonObject((ContractState)iou).json());
-	    			doc.put("$", "funds", CordaUtil.toJsonObject(Arrays.asList(payment1, payment2)).json());
-	    			doc.put("$", "payAmt", CordaUtil.toJsonObject(DOLLARS(60)).json());
+	        		doc.put("$", "iou", CordaUtil.getInstance().toJsonObject((ContractState)iou).json());
+	    			doc.put("$", "funds", CordaUtil.getInstance().toJsonObject(Arrays.asList(payment1, payment2)).json());
+	    			doc.put("$", "payAmt", CordaUtil.getInstance().toJsonObject(DOLLARS(60)).json());
 	    			
 		    }
 		    context.put("transactionInput", doc);
@@ -265,9 +265,9 @@ public class TestCordaFlowContract {
             List<DocumentContext> out = ((CordaDataService)ctnr.getDataService()).getModifiedStates();
             
     			List<DocumentContext> expecteddocs = new ArrayList<DocumentContext>();
-            expecteddocs.add(CordaUtil.toJsonObject(iou));
+            expecteddocs.add(CordaUtil.getInstance().toJsonObject(iou));
             
-            CordaUtil.compare(expecteddocs, out);
+            CordaUtil.getInstance().compare(expecteddocs, out);
             System.out.println(reply.getData());
             
 		} catch (Exception e) {
@@ -282,17 +282,17 @@ public class TestCordaFlowContract {
 		System.out.println("\ntestTransfer...");
         
         try {
-        		System.out.println("owner="+ CordaUtil.partyToString(iou.getOwner()));
+        		System.out.println("owner="+ CordaUtil.getInstance().partyToString(iou.getOwner()));
         		trigger.invoke(ctnr, new MockTransferTxn());
             
             List<DocumentContext> out = ((CordaDataService)ctnr.getDataService()).getModifiedStates();
             
     			List<DocumentContext> expecteddocs = new ArrayList<DocumentContext>();
     			iou.setOwner(charlie);
-    			System.out.println("new owner="+ CordaUtil.partyToString(iou.getOwner()));
-            expecteddocs.add(CordaUtil.toJsonObject(iou));
+    			System.out.println("new owner="+ CordaUtil.getInstance().partyToString(iou.getOwner()));
+            expecteddocs.add(CordaUtil.getInstance().toJsonObject(iou));
                 
-            CordaUtil.compare(expecteddocs, out);
+            CordaUtil.getInstance().compare(expecteddocs, out);
             
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -314,15 +314,15 @@ public class TestCordaFlowContract {
             List<DocumentContext> expecteddocs = new ArrayList<DocumentContext>();
             
             iou.setPaid(DOLLARS(100));
-            DocumentContext expecteddoc = CordaUtil.toJsonObject((ContractState)iou); 
+            DocumentContext expecteddoc = CordaUtil.getInstance().toJsonObject((ContractState)iou); 
             expecteddocs.add(expecteddoc);
             
             PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
             Cash.State payment1 = new Cash.State(issuer, DOLLARS(100), bob);
            
-            expecteddocs.add(CordaUtil.toJsonObject(payment1));
+            expecteddocs.add(CordaUtil.getInstance().toJsonObject(payment1));
             
-            CordaUtil.compare(expecteddocs, out);
+            CordaUtil.getInstance().compare(expecteddocs, out);
             
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -337,8 +337,8 @@ public class TestCordaFlowContract {
         		
 			trigger.invoke(ctnr, new MockSettleTxn("multiple"));
            
-            DocumentContext expecteddoc = CordaUtil.toJsonObject((ContractState)iou);
-            String expected = CordaUtil.toJsonObject((ContractState)iou).jsonString();
+            DocumentContext expecteddoc = CordaUtil.getInstance().toJsonObject((ContractState)iou);
+            String expected = CordaUtil.getInstance().toJsonObject((ContractState)iou).jsonString();
             System.out.println("expected IOU=" + expected);
         
             List<DocumentContext> out = ((CordaDataService)ctnr.getDataService()).getModifiedStates();
@@ -351,12 +351,12 @@ public class TestCordaFlowContract {
         		PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
             List<DocumentContext> expecteddocs = new ArrayList<DocumentContext>();
             Cash.State payment11 = new Cash.State(issuer, DOLLARS(60), bob);
-            expecteddocs.add(CordaUtil.toJsonObject(payment11));
+            expecteddocs.add(CordaUtil.getInstance().toJsonObject(payment11));
             
             iou.setPaid(DOLLARS(70));
-            expecteddocs.add(CordaUtil.toJsonObject(iou));
+            expecteddocs.add(CordaUtil.getInstance().toJsonObject(iou));
             
-            CordaUtil.compare(expecteddocs, out);
+            CordaUtil.getInstance().compare(expecteddocs, out);
           
             
 		} catch (Exception e) {
@@ -370,8 +370,8 @@ public class TestCordaFlowContract {
 		System.out.println("\ntestSettleWithChange....");
         try {
         		trigger.invoke(ctnr, new MockSettleTxn("change"));
-            DocumentContext expecteddoc = CordaUtil.toJsonObject((ContractState)iou);
-            String expected = CordaUtil.toJsonObject((ContractState)iou).jsonString();
+            DocumentContext expecteddoc = CordaUtil.getInstance().toJsonObject((ContractState)iou);
+            String expected = CordaUtil.getInstance().toJsonObject((ContractState)iou).jsonString();
         
             List<DocumentContext> out = ((CordaDataService)ctnr.getDataService()).getModifiedStates();
             System.out.println("settle output state counts: " + out.size());
@@ -384,13 +384,13 @@ public class TestCordaFlowContract {
             PartyAndReference issuer = new PartyAndReference(bank, OpaqueBytes.of("123".getBytes()));
             Cash.State payment11 = new Cash.State(issuer, DOLLARS(55), alice);
             Cash.State payment22 = new Cash.State(issuer, DOLLARS(5), bob);
-            expecteddocs.add(CordaUtil.toJsonObject(payment11));
-            expecteddocs.add(CordaUtil.toJsonObject(payment22));
+            expecteddocs.add(CordaUtil.getInstance().toJsonObject(payment11));
+            expecteddocs.add(CordaUtil.getInstance().toJsonObject(payment22));
             
             iou.setPaid(DOLLARS(100));
-            expecteddocs.add(CordaUtil.toJsonObject(iou));
+            expecteddocs.add(CordaUtil.getInstance().toJsonObject(iou));
             
-            CordaUtil.compare(expecteddocs, out);
+            CordaUtil.getInstance().compare(expecteddocs, out);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

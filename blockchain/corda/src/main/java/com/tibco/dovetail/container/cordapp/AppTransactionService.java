@@ -20,7 +20,7 @@ public class AppTransactionService implements ITransactionService {
 	
 	public AppTransactionService( LinkedHashMap<String, Object> flowInputs,  String flowName, AbstractParty selfIdentity) {
 		this.flowInputs = flowInputs;
-		this.ourIdentity = CordaUtil.partyToString(selfIdentity);
+		this.ourIdentity = CordaUtil.getInstance().partyToString(selfIdentity);
 		this.transactionName = flowName;
 	}
 	
@@ -30,7 +30,7 @@ public class AppTransactionService implements ITransactionService {
 		values.put("ourIdentity", this.ourIdentity);
 	
 		if (txnInputs.size() == 1 && txnInputs.get(0).getName() == "transactionInput") {
-			values.put("transactionInput", CordaUtil.toJsonObject(flowInputs.get("transactionInput")));
+			values.put("transactionInput", CordaUtil.getInstance().toJsonObject(flowInputs.get("transactionInput")));
 		} else {
 			DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
 			txnInputs.forEach ( in -> {
@@ -41,9 +41,9 @@ public class AppTransactionService implements ITransactionService {
 					Object value = flowInputs.get(attr);
 					
 					if(value != null) {
-						doc.put("$", attr, CordaUtil.toJsonObject(value).json());
+						doc.put("$", attr, CordaUtil.getInstance().toJsonObject(value).json());
 					} else {
-						doc.put("$", attr, CordaUtil.toJsonObject(in.getValue()).json());
+						doc.put("$", attr, CordaUtil.getInstance().toJsonObject(in.getValue()).json());
 					}
 					values.put("transactionInput", doc);
 				}

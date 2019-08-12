@@ -5,8 +5,9 @@ import java.util.LinkedHashMap;
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.container.cordapp.AppContainer;
-import com.tibco.dovetail.corda.json.LinearIdDeserializer;
-import com.tibco.dovetail.corda.json.MoneyAmtDeserializer;
+import com.tibco.dovetail.container.cordapp.AppUtil;
+import com.tibco.dovetail.corda.json.deserializer.LinearIdDeserializer;
+import com.tibco.dovetail.corda.json.deserializer.MoneyAmtDeserializer;
 import com.tibco.dovetail.core.model.composer.HLCAttribute;
 import com.tibco.dovetail.core.model.composer.HLCResource;
 import com.tibco.dovetail.core.runtime.activity.IActivity;
@@ -32,10 +33,10 @@ public class subflow implements IActivity {
 				switch(attr.getType()) {
 				case "net.corda.core.identity.Party":
 					//flowparams.put(attr.getName(), CordaUtil.partyFromString(inputvalues.get(attr.getName()).toString()));
-					flowparams.put(attr.getName(), CordaUtil.partyFromCommonName(inputvalues.get(attr.getName()).toString()));
+					flowparams.put(attr.getName(), AppUtil.partyFromCommonName(inputvalues.get(attr.getName()).toString()));
 					break;
 				case "net.corda.core.contracts.Amount<Currency>":
-					flowparams.put(attr.getName(), MoneyAmtDeserializer.parseAmount(CordaUtil.toJsonNode(inputvalues.get(attr.getName()))));
+					flowparams.put(attr.getName(), MoneyAmtDeserializer.parseAmount(CordaUtil.getInstance().toJsonNode(inputvalues.get(attr.getName()))));
 					break;
 				case "net.corda.core.contracts.UniqueIdentifier":
 					flowparams.put(attr.getName(), LinearIdDeserializer.fromString(inputvalues.get(attr.getName()).toString()));
