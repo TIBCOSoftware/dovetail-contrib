@@ -12,10 +12,14 @@ is-prerelease:
 release-notes: 
 	@ $(SCRIPTS_PATH)/release-notes.sh
 
+.PHONY: multichain-artifacts
+multichain-artifacts: 
+	$(SCRIPTS_PATH)/multichain-artifacts.sh ${BUILD_TAG}
+
 .PHONY: hyperledger-fabric-artifacts
 hyperledger-fabric-artifacts: 
 	$(SCRIPTS_PATH)/hyperledger-fabric-artifacts.sh ${BUILD_TAG}
 
-.PHONY: functions
-functions: 
-	$(SCRIPTS_PATH)/functions.sh ${IMAGE_NAME} ${IMAGE_TAG} ${IMAGE_URL}
+.PHONY: corda-artifacts
+corda-artifacts: 
+	$(SCRIPTS_PATH)/corda-artifacts.sh ${BUILD_TAG}
