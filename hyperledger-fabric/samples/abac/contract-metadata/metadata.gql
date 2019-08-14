@@ -8,9 +8,9 @@ type Query {
 type Mutation {
 }
 type ABACResult {
-	value: String
 	cid: String
 	mspid: String
 	name: String
+	value: String
 }
 

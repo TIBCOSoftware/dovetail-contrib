@@ -3,39 +3,39 @@ schema {
 	mutation: Mutation
 }
 type Query {
-	queryTimeRange(owner: String, startTime: String, endTime: String, domain: String): [AuditKeyValue]
 	getRecord(key: String): AuditRecord
 	getRecordsByID(recID: String): [AuditKeyValue]
 	getRecordsByTxID(txID: String): [AuditKeyValue]
 	getRecordsByTxTime(txTime: String): [AuditKeyValue]
+	queryTimeRange(domain: String, owner: String, startTime: String, endTime: String): [AuditKeyValue]
 }
 type Mutation {
+	deleteTransaction(txID: String): [AuditKeyValue]
 	createAudit(records: [AuditLog]): [AuditKeyValue]
 	deleteRecord(key: String): AuditRecord
-	deleteTransaction(txID: String): [AuditKeyValue]
 }
-type AuditKeyValue {
-	value: AuditRecord
-	key: String
-}
-
-type AuditRecord {
+input AuditLog {
 	recID: String
 	domain: String
 	owner: String
+	data: String
+	hashType: String
+	hashValue: String
+}
+
+type AuditRecord {
 	data: String
 	hashType: String
 	hashValue: String
 	txID: String
 	txTime: String
-}
-
-input AuditLog {
-	data: String
-	hashType: String
-	hashValue: String
 	recID: String
 	domain: String
 	owner: String
+}
+
+type AuditKeyValue {
+	key: String
+	value: AuditRecord
 }
 
