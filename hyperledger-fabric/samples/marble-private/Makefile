@@ -34,13 +34,13 @@ create: $(APP_FILE) clean
 
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
-	cd $(BUILD_PATH)/$(APP_NAME) && \
+	-cd $(BUILD_PATH)/$(APP_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
 	flogo build -e
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
-	env GOOS=linux GOARCH=amd64 go build -o $(APP_NAME) && \
-	go mod vendor
-	cp $(PATCH_PATH)/ref.go $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo/core/support
+	go mod vendor && \
+	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
+	env GOOS=linux GOARCH=amd64 go build -mod vendor -o $(APP_NAME)
 
 .PHONY: deploy
 deploy: build
