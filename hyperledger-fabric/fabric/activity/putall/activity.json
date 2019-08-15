@@ -49,24 +49,9 @@
             }
         },
         {
-            "name": "isPrivate",
-            "type": "boolean",
-            "required": true,
-            "display": {
-                "name": "Data is private",
-                "description": "Put data in private collection"
-            },
-            "value": false
-        },
-        {
-            "name": "collection",
+            "name": "privateCollection",
             "type": "string",
-            "display": {
-                "name": "Private collection name",
-                "description": "Name of the private collection",
-                "appPropertySupport": true,
-                "visible": false
-            }
+            "required": false
         },
         {
             "name": "keyType",

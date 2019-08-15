@@ -15,8 +15,7 @@ type Input struct {
 	UsePagination     bool   `md:"usePagination"`
 	PageSize          int32  `md:"pageSize"`
 	Start             string `md:"start"`
-	IsPrivate         bool   `md:"isPrivate,required"`
-	PrivateCollection string `md:"collection"`
+	PrivateCollection string `md:"privateCollection"`
 }
 
 // Output of the activity
@@ -31,13 +30,12 @@ type Output struct {
 // ToMap converts activity input to a map
 func (i *Input) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"startKey":      i.StartKey,
-		"endKey":        i.EndKey,
-		"usePagination": i.UsePagination,
-		"pageSize":      i.PageSize,
-		"start":         i.Start,
-		"isPrivate":     i.IsPrivate,
-		"collection":    i.PrivateCollection,
+		"startKey":          i.StartKey,
+		"endKey":            i.EndKey,
+		"usePagination":     i.UsePagination,
+		"pageSize":          i.PageSize,
+		"start":             i.Start,
+		"privateCollection": i.PrivateCollection,
 	}
 }
 
@@ -60,10 +58,7 @@ func (i *Input) FromMap(values map[string]interface{}) error {
 	if i.Start, err = coerce.ToString(values["start"]); err != nil {
 		return err
 	}
-	if i.IsPrivate, err = coerce.ToBool(values["isPrivate"]); err != nil {
-		return err
-	}
-	if i.PrivateCollection, err = coerce.ToString(values["collection"]); err != nil {
+	if i.PrivateCollection, err = coerce.ToString(values["privateCollection"]); err != nil {
 		return err
 	}
 
