@@ -111,7 +111,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		return false, err
 	}
 
-	if input.IsPrivate {
+	if input.PrivateCollection != "" {
 		// retrieve data by composite key from a private collection
 		return retrievePrivateDataByCompositeKey(ctx, stub, input, compValues)
 	}

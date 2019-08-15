@@ -11,8 +11,7 @@ type Settings struct {
 // Input of the activity
 type Input struct {
 	StateKey          string `md:"key,required"`
-	IsPrivate         bool   `md:"isPrivate,required"`
-	PrivateCollection string `md:"collection"`
+	PrivateCollection string `md:"privateCollection"`
 	KeysOnly          bool   `md:"keysOnly"`
 	CompositeKeys     string `md:"compositeKeys"`
 }
@@ -28,11 +27,10 @@ type Output struct {
 // ToMap converts activity input to a map
 func (i *Input) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"key":           i.StateKey,
-		"isPrivate":     i.IsPrivate,
-		"collection":    i.PrivateCollection,
-		"keysOnly":      i.KeysOnly,
-		"compositeKeys": i.CompositeKeys,
+		"key":               i.StateKey,
+		"privateCollection": i.PrivateCollection,
+		"keysOnly":          i.KeysOnly,
+		"compositeKeys":     i.CompositeKeys,
 	}
 }
 
@@ -43,10 +41,7 @@ func (i *Input) FromMap(values map[string]interface{}) error {
 	if i.StateKey, err = coerce.ToString(values["key"]); err != nil {
 		return err
 	}
-	if i.IsPrivate, err = coerce.ToBool(values["isPrivate"]); err != nil {
-		return err
-	}
-	if i.PrivateCollection, err = coerce.ToString(values["collection"]); err != nil {
+	if i.PrivateCollection, err = coerce.ToString(values["privateCollection"]); err != nil {
 		return err
 	}
 	if i.KeysOnly, err = coerce.ToBool(values["keysOnly"]); err != nil {

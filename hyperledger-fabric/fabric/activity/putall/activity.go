@@ -65,15 +65,8 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	var successCount, errorCount int
 	var errorKeys []string
 	var resultValue []interface{}
-	if input.IsPrivate {
+	if input.PrivateCollection != "" {
 		// store data on a private collection
-		if input.PrivateCollection == "" {
-			log.Error("private collection is not specified\n")
-			output := &Output{Code: 400, Message: "private collection is not specified"}
-			ctx.SetOutputObject(output)
-			return false, errors.New(output.Message)
-		}
-
 		for _, v := range input.StateData {
 			vmap := v.(map[string]interface{})
 			vkey := vmap[common.KeyField].(string)
