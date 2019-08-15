@@ -58,7 +58,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		return false, err
 	}
 
-	if input.IsPrivate {
+	if input.PrivateCollection != "" {
 		// delete data from a private collection
 		return deletePrivateData(ctx, stub, input)
 	}
@@ -68,14 +68,6 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 }
 
 func deletePrivateData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, input *Input) (bool, error) {
-	// delete data on a private collection
-	if input.PrivateCollection == "" {
-		log.Error("private collection is not specified\n")
-		output := &Output{Code: 400, Message: "private collection is not specified"}
-		ctx.SetOutputObject(output)
-		return false, errors.New(output.Message)
-	}
-
 	// retrieves data for managing composite keys and map to output
 	jsonBytes, err := ccshim.GetPrivateData(input.PrivateCollection, input.StateKey)
 	if err != nil {

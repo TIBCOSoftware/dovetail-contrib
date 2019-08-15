@@ -138,19 +138,7 @@ export class putHandler extends WiServiceHandlerContribution {
     }
 
     validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
-        if (fieldName === "collection") {
-            let vresult: IValidationResult = ValidationResult.newValidationResult();
-            let isPrivateField: IFieldDefinition = context.getField("isPrivate");
-            let collectionField: IFieldDefinition = context.getField("collection");
-            if (isPrivateField.value && isPrivateField.value === true) {
-                if (collectionField.display && collectionField.display.visible == false) {
-                    vresult.setVisible(true);
-                }
-            } else {
-                vresult.setVisible(false);
-            }
-            return vresult;
-        } else if (fieldName === "dataType" || fieldName === "keyType") {
+        if (fieldName === "dataType" || fieldName === "keyType") {
             let vresult: IValidationResult = ValidationResult.newValidationResult();
             let commonDataField: IFieldDefinition = context.getField("commonData");
             if (commonDataField.value) {
