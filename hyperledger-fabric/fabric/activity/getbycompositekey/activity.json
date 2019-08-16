@@ -77,24 +77,9 @@
             "allowed": []
         },
         {
-            "name": "isPrivate",
-            "type": "boolean",
-            "required": true,
-            "display": {
-                "name": "Data is private",
-                "description": "Get data from private collection"
-            },
-            "value": false
-        },
-        {
-            "name": "collection",
+            "name": "privateCollection",
             "type": "string",
-            "display": {
-                "name": "Private collection name",
-                "description": "Name of the private collection",
-                "appPropertySupport": true,
-                "visible": false
-            }
+            "required": false
         }
     ],
     "outputs": [

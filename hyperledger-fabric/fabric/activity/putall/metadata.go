@@ -11,8 +11,7 @@ type Settings struct {
 // Input of the activity
 type Input struct {
 	StateData         []interface{} `md:"data,required"`
-	IsPrivate         bool          `md:"isPrivate,required"`
-	PrivateCollection string        `md:"collection"`
+	PrivateCollection string        `md:"privateCollection"`
 	CompositeKeys     string        `md:"compositeKeys"`
 }
 
@@ -28,10 +27,9 @@ type Output struct {
 // ToMap converts activity input to a map
 func (i *Input) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"data":          i.StateData,
-		"isPrivate":     i.IsPrivate,
-		"collection":    i.PrivateCollection,
-		"compositeKeys": i.CompositeKeys,
+		"data":              i.StateData,
+		"privateCollection": i.PrivateCollection,
+		"compositeKeys":     i.CompositeKeys,
 	}
 }
 
@@ -42,10 +40,7 @@ func (i *Input) FromMap(values map[string]interface{}) error {
 	if i.StateData, err = coerce.ToArray(values["data"]); err != nil {
 		return err
 	}
-	if i.IsPrivate, err = coerce.ToBool(values["isPrivate"]); err != nil {
-		return err
-	}
-	if i.PrivateCollection, err = coerce.ToString(values["collection"]); err != nil {
+	if i.PrivateCollection, err = coerce.ToString(values["privateCollection"]); err != nil {
 		return err
 	}
 	if i.CompositeKeys, err = coerce.ToString(values["compositeKeys"]); err != nil {

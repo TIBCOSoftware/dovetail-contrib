@@ -18,18 +18,19 @@ import {
 @WiContrib({})
 @Injectable()
 export class fabrequestHandler extends WiServiceHandlerContribution {
-    metadata: object
+    metadataMap: Map<string, object>
 
     constructor(private injector: Injector, private http: Http) {
         super(injector, http);
+        this.metadataMap = new Map<string, object>()
     }
 
     value = (fieldName: string, context: IActivityContribution): Observable<any> | any => {
         if (fieldName === "connectionName") {
             // return list of connector refs
             return Observable.create(observer => {
-                let connectionRefs = [];
                 WiContributionUtils.getConnections(this.http, "fabclient").subscribe((data: IConnectorContribution[]) => {
+                    let connectionRefs = [];
                     data.forEach(connection => {
                         if ((<any>connection).isValid) {
                             for (let i = 0; i < connection.settings.length; i++) {
@@ -52,10 +53,11 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
                 return Observable.create(observer => {
                     WiContributionUtils.getConnection(this.http, connectorId).map(data => data)
                     .subscribe(data => {
-                        this.setMetadata(data)
-                        if (this.metadata) {
+                        this.setMetadata(connectorId, data)
+                        let md = this.getMetadata(connectorId)
+                        if (md) {
                             let txn = [""];
-                            let con = this.metadata["contract"]
+                            let con = md["contract"]
                             Object.keys(con["transactions"]).forEach( (t) => {
                                 txn.push(t);
                             });
@@ -65,9 +67,11 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
                 });
             }
         } else if (fieldName === "requestType" ) {
+            let connectorId = context.getField("connectionName").value;
+            let md = this.getMetadata(connectorId)
             let txnName = context.getField("transactionName").value;
-            if (txnName && this.metadata) {
-                let con = this.metadata["contract"];
+            if (txnName && md) {
+                let con = md["contract"];
                 let txn = con["transactions"][txnName];
                 return txn["operation"];
             }
@@ -78,13 +82,13 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
                 return Observable.create(observer => {
                     WiContributionUtils.getConnection(this.http, connectorId).map(data => data)
                     .subscribe(data => {
-                        this.setMetadata(data)
-                        if (this.metadata) {
+                        this.setMetadata(connectorId, data)
+                        if (this.getMetadata(connectorId)) {
                             let attr = fieldName;
                             if (fieldName === "result") {
                                 attr = "returns";
                             }
-                            let schema = this.getDataSchema(txnName, attr)
+                            let schema = this.getDataSchema(connectorId, txnName, attr)
 //                            console.log("schema of " + fieldName + ": " + schema)
                             observer.next(schema);
                         }
@@ -114,8 +118,9 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
         return null;
     }
 
-    getDataSchema = (txnName: string, attr: string): string => {
-        let con = this.metadata["contract"];
+    getDataSchema = (connectorId: string, txnName: string, attr: string): string => {
+        let md = this.getMetadata(connectorId)
+        let con = md["contract"];
         let txn = con["transactions"][txnName];
         let schema = txn[attr];
         if (!schema) {
@@ -123,24 +128,28 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
         }
         let ref = schema["$ref"];
         if (ref) {
-            let shared = this.metadata["components"][ref.substring(13)];
+            let shared = md["components"][ref.substring(13)];
             return JSON.stringify(shared, null, 2);
         }
         return JSON.stringify(schema, null, 2);;
     }
 
-    setMetadata = (connector: any) => {
-        if (this.metadata) {
-            console.log("metadata already set");
+    setMetadata = (name: string, connector: any) => {
+        if (this.getMetadata(name)) {
+            console.log("metadata is already set");
             return;
         }
         for (let setting of connector.settings) {
             if (setting.name === "contract" && setting.value) {
                 let content = this.extractFileContent(setting.value);
                 console.log(content);
-                this.metadata = JSON.parse(content);
+                this.metadataMap.set(name, JSON.parse(content));
             }
         }
+    }
+
+    getMetadata = (name: string): object => {
+        return this.metadataMap.get(name)
     }
 
     extractFileContent = (selector: object): string => {

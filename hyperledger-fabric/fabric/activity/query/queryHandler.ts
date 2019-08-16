@@ -96,19 +96,7 @@ export class queryHandler extends WiServiceHandlerContribution {
     }
 
     validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
-        if (fieldName === "collection") {
-            let vresult: IValidationResult = ValidationResult.newValidationResult();
-            let isPrivateField: IFieldDefinition = context.getField("isPrivate");
-            let collectionField: IFieldDefinition = context.getField("collection");
-            if (isPrivateField.value && isPrivateField.value === true) {
-                if (collectionField.display && collectionField.display.visible == false) {
-                    vresult.setVisible(true);
-                }
-            } else {
-                vresult.setVisible(false);
-            }
-            return vresult;
-        } else if (fieldName === "queryParams") {
+        if (fieldName === "queryParams") {
             let vresult = ValidationResult.newValidationResult();
             let queryParamsField: IFieldDefinition = context.getField(fieldName);
             let arrParamNamesTmp: any[] = [];
