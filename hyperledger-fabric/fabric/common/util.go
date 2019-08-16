@@ -14,6 +14,7 @@ import (
 	"github.com/project-flogo/core/data/expression"
 	"github.com/project-flogo/core/data/resolve"
 	"github.com/project-flogo/core/data/schema"
+	"github.com/project-flogo/flow/instance"
 	jschema "github.com/xeipuuv/gojsonschema"
 )
 
@@ -73,18 +74,28 @@ func GetActivityOutputSchema(ctx activity.Context, name string) (string, error) 
 // GetChaincodeStub returns Fabric chaincode stub from the activity context
 func GetChaincodeStub(ctx activity.Context) (shim.ChaincodeStubInterface, error) {
 	// get chaincode stub
-	stub, ok := ctx.ActivityHost().Scope().GetValue(FabricStub)
-	if !ok {
-		log.Error("failed to retrieve fabric stub")
-		return nil, errors.New("failed to retrieve fabric stub")
+	if taskInst, ok := ctx.(*instance.TaskInst); ok {
+		for {
+			// log.Debugf("flow scope: %+v", taskInst.ActivityHost().Scope())
+			// loop to search the flow calling hierarchy for chaincode stub
+			if stub, exists := taskInst.ActivityHost().Scope().GetValue(FabricStub); exists && stub != nil {
+				ccshim, found := stub.(shim.ChaincodeStubInterface)
+				if !found {
+					log.Errorf("stub type %T is not a ChaincodeStubInterface\n", stub)
+					return nil, errors.Errorf("stub type %T is not a ChaincodeStubInterface", stub)
+				}
+				return ccshim, nil
+			}
+			// search parent flow
+			if taskInst = taskInst.Host(); taskInst == nil {
+				// at root flow
+				log.Error("no stub found in root flow")
+				return nil, errors.New("no stub found in root flow")
+			}
+		}
 	}
-
-	ccshim, ok := stub.(shim.ChaincodeStubInterface)
-	if !ok {
-		log.Errorf("stub type %T is not a ChaincodeStubInterface\n", stub)
-		return nil, errors.Errorf("stub type %T is not a ChaincodeStubInterface", stub)
-	}
-	return ccshim, nil
+	log.Errorf("ctx is not a TaskInst: %+v", ctx)
+	return nil, errors.Errorf("ctx is not a TaskInst: %+v", ctx)
 }
 
 // ResolveFlowData resolves and returns data from the flow's context, unmarshals JSON string to map[string]interface{}.

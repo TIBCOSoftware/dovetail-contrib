@@ -1,0 +1,177 @@
+{
+    "name": "array",
+    "type": "flogo:function",
+    "version": "0.0.1",
+    "title": "arrayFunctions",
+    "description": "arrayFunctions",
+    "functions": [
+        {
+            "args": [
+                {
+                    "array": true,
+                    "name": "items",
+                    "type": "any"
+                },
+                {
+                    "name": "item",
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "Append item to exist array",
+                "example": "array.append($activity[xxx].array, \"new Item\")\nReturns\n [$activity.array, \"new Item\"]",
+                "usage": "array.create(\u003c\u003citems\u003e\u003e, \u003c\u003citem\u003e\u003e)\nReturn Type\n \u003c\u003cnewitems\u003e\u003e"
+            },
+            "name": "append",
+            "return": {
+                "array": true,
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "array": true,
+                    "name": "array",
+                    "type": "any"
+                },
+                {
+                    "name": "item",
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "Returns true if the item is found in the given array else returns false. The item type must match with the array type.",
+                "example": "array.contains(array.create(\"A\",\"B\",\"C\"), \"B\")\nReturns\ntrue",
+                "usage": "array.contains(\u003c\u003c array \u003e\u003e, \u003c\u003c item \u003e\u003e)\nReturn Type\nbool"
+            },
+            "name": "contains",
+            "return": {
+                "type": "boolean"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "array": true,
+                    "name": "items",
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "Count the length of an array",
+                "example": "array.count($activity.array)\nReturns\n 2",
+                "usage": "array.create(\u003c\u003carray\u003e\u003e)\nReturn Type\n integer"
+            },
+            "name": "count",
+            "return": {
+                "type": "integer"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "item",
+                    "type": "any",
+                    "variable": true
+                }
+            ],
+            "help": {
+                "description": "Create an array of *primitive types* from the given items. All items must be same primitive types e.g. string, integer etc and must match with the field type where this function is used.",
+                "example": "array.create(\"A\",\"B\",\"C\")\nReturns\n[\"A\",\"B\",\"C\"]",
+                "usage": "array.create(\u003c\u003c item1 \u003e\u003e, \u003c\u003c item2 \u003e\u003e, \u003c\u003c item3 \u003e\u003e, ...)\nReturn Type\n [\"\u003c\u003citem1\u003e\u003e\",\"\u003c\u003citem2\u003e\u003e\",\"\u003c\u003citem3\u003e\u003e\"]"
+            },
+            "name": "create",
+            "return": {
+                "array": true,
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "array": true,
+                    "name": "items",
+                    "type": "any"
+                },
+                {
+                    "name": "index",
+                    "type": "integer"
+                }
+            ],
+            "help": {
+                "description": "Delete the specific index of item in an array",
+                "example": "array.delete(array.create(\"item1\",\"item2\"), 1)\nReturns\n [item1]",
+                "usage": "array.delete(\u003c\u003carray\u003e\u003e, \u003c\u003cindex\u003e\u003e)\nReturn Type\n newarray"
+            },
+            "name": "delete",
+            "return": {
+                "array": true,
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "array": true,
+                    "name": "input",
+                    "required": false,
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "Specify a source array argument to iterate through the array, or provide no argument to create a single-item array.",
+                "example": "array.forEach($TriggerData.parameters.headers)\nReturns\nvoid\narray.forEach()\nReturns\nvoid",
+                "usage": "array.forEach(\u003c\u003c source array \u003e\u003e) or array.forEach()\nReturn Type\nvoid"
+            },
+            "name": "forEach",
+            "return": {
+                "array": true,
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "array": true,
+                    "name": "items",
+                    "type": "any"
+                },
+                {
+                    "name": "index",
+                    "type": "integer"
+                }
+            ],
+            "help": {
+                "description": "Get the specify index of item in an array",
+                "example": "array.get(array.create(\"item1\",\"item2\"), 1)\nReturns\n item2",
+                "usage": "array.get(\u003c\u003carray\u003e\u003e, \u003c\u003cindex\u003e\u003e)\nReturn Type\n array[index]"
+            },
+            "name": "get",
+            "return": {
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        }
+    ]
+}

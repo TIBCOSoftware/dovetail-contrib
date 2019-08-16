@@ -65,7 +65,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		return false, err
 	}
 
-	if input.IsPrivate {
+	if input.PrivateCollection != "" {
 		// retrieve data range from a private collection
 		return retrievePrivateRange(ctx, stub, input)
 	}
@@ -81,14 +81,6 @@ func retrievePrivateRange(ctx activity.Context, ccshim shim.ChaincodeStubInterfa
 	if input.UsePagination {
 		pageSize = input.PageSize
 		bookmark = input.Start
-	}
-
-	// retrieve data from a private collection
-	if input.PrivateCollection == "" {
-		log.Error("private collection is not specified\n")
-		output := &Output{Code: 400, Message: "private collection is not specified"}
-		ctx.SetOutputObject(output)
-		return false, errors.New(output.Message)
 	}
 
 	// retrieve private data range [startKey, endKey)

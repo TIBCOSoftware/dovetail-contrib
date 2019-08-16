@@ -38,14 +38,14 @@ create: $(APP_FILE) clean
 
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
-	cd $(BUILD_PATH)/$(APP_NAME) && \
+	-cd $(BUILD_PATH)/$(APP_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
 	flogo install github.com/project-flogo/contrib/function/array && \
 	flogo build -e
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
-	env GOOS=linux GOARCH=amd64 go build -o $(APP_NAME) && \
-	go mod vendor
-	cp $(PATCH_PATH)/ref.go $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo/core/support
+	go mod vendor && \
+	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
+	env GOOS=linux GOARCH=amd64 go build -mod vendor -o $(APP_NAME)
 
 .PHONY: deploy
 deploy: build
@@ -99,13 +99,17 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
 	go get -u -d github.com/go-kit/kit@v0.8.0 && \
 	go get -u -d github.com/cloudflare/cfssl@1.3.2
-	cd $(CLIENT_PATH)/$(CLIENT_NAME) && \
+	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
 	flogo build -e
+	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
+	go mod vendor && \
+	cp -R $(PATCH_PATH)/* $(CLIENT_PATH)/$(CLIENT_NAME)/src/vendor/github.com/project-flogo && \
+	go build -mod vendor -o $(CLIENT_NAME)
 
 .PHONY: run
 run:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9898 CCNAME=equipment_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9898 CCNAME=equipment_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/src/$(CLIENT_NAME)
 
 .PHONY: clean-gql
 clean-gql:
@@ -128,10 +132,14 @@ build-gql: $(GQL_PATH)/$(GQL_NAME)
 	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
 	go get -u -d github.com/go-kit/kit@v0.8.0 && \
 	go get -u -d github.com/cloudflare/cfssl@1.3.2
-	cd $(GQL_PATH)/$(GQL_NAME) && \
+	-cd $(GQL_PATH)/$(GQL_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
 	flogo build -e
+	cd $(GQL_PATH)/$(GQL_NAME)/src && \
+	go mod vendor && \
+	cp -R $(PATCH_PATH)/* $(GQL_PATH)/$(GQL_NAME)/src/vendor/github.com/project-flogo && \
+	go build -mod vendor -o $(GQL_NAME)
 
 .PHONY: run-gql
 run-gql:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9797 CCNAME=equipment_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(GQL_PATH)/$(GQL_NAME)/bin/$(GQL_NAME)
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=9797 CCNAME=equipment_cc FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(GQL_PATH)/$(GQL_NAME)/src/$(GQL_NAME)

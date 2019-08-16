@@ -1,6 +1,7 @@
 package common
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -132,7 +133,9 @@ var connectionObject = `
 }`
 
 func TestConnectorSettings(t *testing.T) {
-	configs, err := GetSettings(connectionObject)
+	var connector map[string]interface{}
+	json.Unmarshal([]byte(connectionObject), &connector)
+	configs, err := GetSettings(connector)
 	require.NoError(t, err, "failed to extract settings")
 	assert.NotEmpty(t, configs, "config should not be empty")
 	for k, v := range configs {

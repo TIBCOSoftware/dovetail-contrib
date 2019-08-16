@@ -66,7 +66,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		return false, err
 	}
 
-	if input.IsPrivate {
+	if input.PrivateCollection != "" {
 		// store data on a private collection
 		return storePrivateData(ctx, stub, input)
 	}
@@ -84,12 +84,6 @@ func storePrivateData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, 
 		return false, errors.Wrapf(err, output.Message)
 	}
 	// store data on a private collection
-	if input.PrivateCollection == "" {
-		log.Error("private collection is not specified\n")
-		output := &Output{Code: 400, Message: "private collection is not specified"}
-		ctx.SetOutputObject(output)
-		return false, errors.New(output.Message)
-	}
 	if err := ccshim.PutPrivateData(input.PrivateCollection, input.StateKey, jsonBytes); err != nil {
 		log.Errorf("failed to store data in private collection %s: %+v\n", input.PrivateCollection, err)
 		output := &Output{Code: 500, Message: fmt.Sprintf("failed to store data in private collection %s", input.PrivateCollection)}

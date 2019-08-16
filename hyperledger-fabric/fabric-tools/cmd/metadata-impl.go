@@ -290,7 +290,10 @@ func collectFlowActivities(appconfig []byte) (map[string]bool, error) {
 				Tasks []struct {
 					Name     string `json:"name"`
 					Activity struct {
-						Ref string `json:"ref"`
+						Ref      string `json:"ref"`
+						Settings struct {
+							FlowURI string `json:"flowURI"`
+						} `json:"settings"`
 					} `json:"activity"`
 				} `json:"tasks"`
 			} `json:"data"`
@@ -299,7 +302,12 @@ func collectFlowActivities(appconfig []byte) (map[string]bool, error) {
 	if err := json.Unmarshal(appconfig, &flowData); err != nil {
 		return nil, errors.Wrap(err, "failed to extract activity data from flogo config")
 	}
+
+	// map flow-name => true if it calls #put, #putall or #delete
 	result := make(map[string]bool)
+	// map sub-flow-name => list of flows that calls the subflow
+	subflowRef := make(map[string][]string)
+
 	for _, resource := range flowData.Resources {
 		name := resource.Data.Name
 		readOnly := true
@@ -308,9 +316,39 @@ func collectFlowActivities(appconfig []byte) (map[string]bool, error) {
 			if ref == "#put" || ref == "#putall" || ref == "#delete" {
 				readOnly = false
 				break
+			} else if ref == "#subflow" {
+				// check subflow URI: "res://flow:name"
+				flowURI := task.Activity.Settings.FlowURI
+				colon := strings.LastIndex(flowURI, ":")
+				flowName := flowURI[colon+1:]
+				flowRefs, ok := subflowRef[flowName]
+				if !ok {
+					flowRefs = []string{}
+				}
+				fmt.Printf("add subflow ref %s -> %s\n", name, flowName)
+				subflowRef[flowName] = append(flowRefs, name)
 			}
 		}
 		result[name] = readOnly
+	}
+
+	// override caller result if subflow is not read-only
+	for {
+		updated := false
+		for k, v := range subflowRef {
+			if ro, ok := result[k]; ok && !ro {
+				for _, n := range v {
+					if r, ok := result[n]; !ok || r {
+						fmt.Printf("set %s not read-only\n", n)
+						updated = true
+						result[n] = false
+					}
+				}
+			}
+		}
+		if !updated {
+			break
+		}
 	}
 	return result, nil
 }
@@ -417,14 +455,14 @@ func writeGQL(gqlfile string) error {
 	printGQLOperations(f, "invoke")
 
 	// collect object types used by transactions
-	otypes := make(map[string]interface{})
+	otypes := make(map[string]bool)
 	for _, trans := range transTypes {
 		for _, p := range trans.parameters {
-			otypes[p.typeID] = nil
+			otypes[p.typeID] = true
 		}
 		r := strings.Replace(trans.returns.typeID, "[", "", -1)
 		r = strings.Replace(r, "]", "", -1)
-		otypes[r] = nil
+		otypes[r] = false
 	}
 	// collect attribute types of the collected objects
 	for collectReferencedTypes(otypes) {
@@ -432,8 +470,8 @@ func writeGQL(gqlfile string) error {
 	}
 	// print types referenced by transactions
 	for _, v := range objectTypes {
-		if _, ok := otypes[v.typeID]; ok {
-			f.WriteString(objectGQL(v))
+		if input, ok := otypes[v.typeID]; ok {
+			f.WriteString(objectGQL(v, input))
 			f.WriteString("\n")
 		}
 	}
@@ -441,14 +479,14 @@ func writeGQL(gqlfile string) error {
 	return nil
 }
 
-func collectReferencedTypes(types map[string]interface{}) bool {
+func collectReferencedTypes(types map[string]bool) bool {
 	size := len(types)
-	for t := range types {
+	for t, input := range types {
 		if def, ok := objectTypes[t]; ok {
 			for _, p := range def.attributes {
 				r := strings.Replace(p.typeID, "[", "", -1)
 				r = strings.Replace(r, "]", "", -1)
-				types[r] = nil
+				types[r] = input
 			}
 		}
 	}
@@ -496,9 +534,13 @@ func transactionGQL(def *transactionDef) string {
 	return b.String()
 }
 
-func objectGQL(def *objectDef) string {
+func objectGQL(def *objectDef, input bool) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "type %s {\n", def.typeID)
+	if input {
+		fmt.Fprintf(&b, "input %s {\n", def.typeID)
+	} else {
+		fmt.Fprintf(&b, "type %s {\n", def.typeID)
+	}
 	for _, attr := range def.attributes {
 		if attr.isArray {
 			fmt.Fprintf(&b, "\t%s: [%s]\n", attr.name, attr.typeID)
