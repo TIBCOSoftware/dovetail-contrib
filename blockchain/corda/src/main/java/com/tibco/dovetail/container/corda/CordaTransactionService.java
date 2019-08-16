@@ -9,14 +9,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.core.runtime.transaction.ITransactionService;
 import com.tibco.dovetail.core.runtime.transaction.TxnInputAttribute;
+import com.tibco.dovetail.core.runtime.util.JsonUtil;
 
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.ContractsDSL;
-import net.corda.core.identity.AbstractParty;
 import net.corda.core.transactions.LedgerTransaction;
 
 public class CordaTransactionService implements ITransactionService {
@@ -31,61 +32,51 @@ public class CordaTransactionService implements ITransactionService {
 	
 	@Override
 	public Map<String, Object> resolveTransactionInput(List<TxnInputAttribute> txnInputs) {
-        List<ContractState> inputStates = new ArrayList<ContractState>();
+		List<DocumentContext> inputStates = new ArrayList<DocumentContext>();
         Map<String, Object> flowInputs = new LinkedHashMap<String, Object>();
+        DocumentContext doc = JsonUtil.getJsonParser().parse("{}");
+        
+        try {
+	        for(TxnInputAttribute k : txnInputs){
+	        		String attr = k.getName();
+	            Object value = cmd.getData(attr);
+	            if(value == null && !attr.equalsIgnoreCase("transactionId") && !attr.equalsIgnoreCase("timestamp"))
+	                throw new IllegalArgumentException("flow input " + attr + " is not found in command " + cmd.getClass().getName());
 
-        for(TxnInputAttribute k : txnInputs){
-        		String attr = k.getName();
-            Object value = cmd.getData(attr);
-            if(value == null)
-                throw new IllegalArgumentException("flow input " + k.getName() + " is not found in command " + cmd.getClass().getName());
+	            if(value == null)
+	            		continue;
+	            
+	            DocumentContext valdoc = CordaUtil.getInstance().toJsonObject(value);
+	            doc.put("$", attr, valdoc.json());
 
-        		if(value instanceof AbstractParty) {
-        			flowInputs.put(attr, CordaUtil.toString(value));
-        		}
-        		else if(value instanceof ContractState){
-        			flowInputs.put(attr, CordaUtil.toJsonObject((ContractState)value));
-        			if(k.isAssetRef()) {
-        				inputStates.add((ContractState)value);
-        			}
-    			} else if(value instanceof List){
-                List<Object> objs = (List<Object>)value;
-                if(objs.size() > 0) {
-	                if(objs.get(0) instanceof ContractState) {
-	                	    List<ContractState> states = (List<ContractState>)value;
-	                	    flowInputs.put(attr, CordaUtil.toJsonObject(states));
-		                if(k.isAssetRef()) {
-		                    inputStates.addAll(states);
-		                }
-	                } else if(objs.get(0) instanceof AbstractParty) {
-	                		List<String> parties = objs.stream().map(p -> CordaUtil.toString(p)).collect(Collectors.toList());
-	                		flowInputs.put(attr, parties);
-	                } else if (objs.get(0) instanceof String || objs.get(0)  instanceof Long || objs.get(0)  instanceof Integer || objs.get(0)  instanceof Boolean || objs.get(0)  instanceof Double) {
-	                		flowInputs.put(attr, objs);
-	                } else {
-	                		flowInputs.put(attr, CordaUtil.toJsonObject(objs));
-	                }
-                }
-            } else if (value instanceof String || value instanceof Long || value instanceof Integer || value instanceof Boolean || value instanceof Double) {
-            		flowInputs.put(attr, value);
-            } else {
-            		flowInputs.put(attr, CordaUtil.toJsonObject(value));
-            }
+	            if(k.isAssetRef()) {
+	            		if (value instanceof List) {
+	            			List<?> objs = (List<?>)value;
+	    	                 objs.forEach(o -> {
+	    	                	 	DocumentContext val = CordaUtil.getInstance().toJsonObject(o);
+	    	                	 	inputStates.add(val);
+	    	                 }); 
+	            		} else {
+	            			inputStates.add(valdoc);
+	            		}
+	            }
+	        }
+	        flowInputs.put("transactionInput", doc);
+        }catch(Exception e) {
+        		throw new RuntimeException(e);
         }
-
-        ContractsDSL.requireThat(check -> {
-            List<ContractState> txIn = tx.getInputStates();
-            String exp = "";
-            String act = "";
-            boolean success = inputStates.size() == txIn.size() && inputStates.containsAll(txIn);
-            if(!success) {
-            		exp = txIn.stream().map(s -> s.toString()).collect(Collectors.joining(","));
-            		act = inputStates.stream().map(s -> s.toString()).collect(Collectors.joining(","));
-            }
-           
-            check.using("inputs in command data must match transaction inputs, actural="+act + ", exp=" + exp, inputStates.size() == txIn.size() && inputStates.containsAll(txIn));
-            return null;
-        });
+        
+        if(tx != null) {
+	        ContractsDSL.requireThat(check -> {
+	            List<ContractState> txIn = tx.getInputStates();
+	            List<DocumentContext> txInDocs = new ArrayList<DocumentContext>();
+	            txIn.forEach(in -> txInDocs.add(CordaUtil.getInstance().toJsonObject(in)));
+	            
+	            CordaUtil.getInstance().compare(txInDocs, inputStates);
+	            
+	            return null;
+	        });
+        }
 
         return flowInputs;
 

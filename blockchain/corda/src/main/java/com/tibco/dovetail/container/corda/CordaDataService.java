@@ -6,29 +6,31 @@
 package com.tibco.dovetail.container.corda;
 
 import com.jayway.jsonpath.DocumentContext;
+import com.tibco.dovetail.container.corda.CordaUtil;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 
+import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
-import net.corda.finance.contracts.asset.Cash;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.persistence.criteria.CriteriaBuilder.In;
 
-public class CordaDataService implements IDataService {
-	 private List<DocumentContext> outputStates = new ArrayList<DocumentContext>();
+public class CordaDataService implements IDataService<DocumentContext, DocumentContext> {
+	 private List<DocumentContext> outputStates = new ArrayList< DocumentContext>();
 	 private List<DocumentContext> inputStates = new ArrayList<DocumentContext>();
 	 private List<String> inputStatesClassName = new ArrayList<String>();
+	 private ContractCommandOutput cmdOutput = new ContractCommandOutput();
 	 
 	public CordaDataService(List<ContractState> inputs) {
 		inputs.forEach(state -> {
-			inputStates.add(CordaUtil.toJsonObject(state));
-			if(state instanceof Cash.State)
-				inputStatesClassName.add("com.tibco.dovetail.system.Cash");
-			else
-				inputStatesClassName.add(state.getClass().getName());
+			inputStates.add(CordaUtil.getInstance().toJsonObject(state));
+			
+			inputStatesClassName.add(state.getClass().getName());
 		});
 	}
     
@@ -40,16 +42,16 @@ public class CordaDataService implements IDataService {
     public List<DocumentContext> getModifiedStates() {
         return outputStates;
     }
+    
+    public ContractCommandOutput getContractCommandOutput() {
+        return this.cmdOutput;
+    }
 
 	@Override
-	public DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
-		String key = assetValue.read("$." + assetKey).toString();
-		if(assetName.equals("com.tibco.dovetail.system.Cash")) {
-			LinkedHashMap<String, Object> mapV = assetValue.json();
-			mapV.remove(assetKey);
-		}
-		
-		outputStates.add(assetValue);
+	public  DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
+			
+		outputStates.add((com.jayway.jsonpath.DocumentContext) assetValue);
+		cmdOutput.addOutputState(assetName, assetValue, null);
 		return assetValue;
 	}
 
@@ -106,8 +108,88 @@ public class CordaDataService implements IDataService {
 				}
 			}
 		}
-		
+	
 		return result;
+	}
+
+	@Override
+	public boolean processPayment(DocumentContext assetValue) {
+		LinkedHashMap inputval = assetValue.json();
+		
+		String payTo = inputval.get("sendPaymentTo").toString();
+		String changeTo = inputval.get("sendChangeTo").toString();
+		LinkedHashMap payAmt =(LinkedHashMap)inputval.get("paymentAmt");
+		List<LinkedHashMap> funds = (List<LinkedHashMap>) inputval.get("funds");
+		
+		long remaining = Long.valueOf(payAmt.get("quantity").toString());
+
+		LinkedHashMap<String, Long> payoutputs = new LinkedHashMap<String, Long>();
+		LinkedHashMap<String, Long> changeoutputs = new LinkedHashMap<String, Long>();
+		net.corda.finance.contracts.asset.Cash c = new net.corda.finance.contracts.asset.Cash();
+		CommandData move = c.generateMoveCommand();
+		
+		Map<String, List<LinkedHashMap>> groupbyIssuer = funds.stream().collect(Collectors.groupingBy(f -> f.get("issuer").toString()));
+		for(String issuer : groupbyIssuer.keySet()) {
+			List<LinkedHashMap> v = groupbyIssuer.get(issuer);
+			long payByIssuer = payoutputs.get(issuer) == null? 0 :  payoutputs.get(issuer) ;
+			long chgByIssuer = changeoutputs.get(issuer) == null? 0 :  changeoutputs.get(issuer) ;
+			
+			for(LinkedHashMap m : v) {
+				this.cmdOutput.addCommand(move, CordaUtil.decodeKey(m.get("owner").toString()));
+				long amt = Long.valueOf(((LinkedHashMap)m.get("amt")).get("quantity").toString());
+				if (remaining > 0) {
+					if (amt >= remaining) {
+						chgByIssuer += amt - remaining;
+						payByIssuer += remaining;
+						remaining = 0;
+					} else {
+						remaining = remaining - amt;
+						payByIssuer += amt;
+					}
+				} else {
+					chgByIssuer += amt;
+				}
+			}
+			
+			payoutputs.put(issuer, payByIssuer);
+			changeoutputs.put(issuer, chgByIssuer);
+		}
+		
+		if (remaining > 0)
+			throw new RuntimeException("payment::not enough funds");	
+		
+		payoutputs.forEach((k,v) -> {
+			if(v > 0) {
+				DocumentContext doc = CordaUtil.getInstance().toJsonObject(groupbyIssuer.get(k).get(0));
+				doc.put("$", "owner", payTo);
+				doc.put("$.amt", "quantity", v);
+				outputStates.add(doc);
+				this.cmdOutput.addOutputState("net.corda.finance.contracts.asset.Cash$State", doc, move);
+				this.cmdOutput.addCommand(move, CordaUtil.decodeKey(payTo));
+			}
+			
+		});
+		
+		changeoutputs.forEach((k,v) -> {
+			if(v > 0) {
+				DocumentContext doc = CordaUtil.getInstance().toJsonObject(groupbyIssuer.get(k).get(0));
+				doc.put("$", "owner", changeTo);
+				doc.put("$.amt", "quantity", v);
+				outputStates.add(doc);
+				this.cmdOutput.addOutputState("net.corda.finance.contracts.asset.Cash$State", doc, move);
+				this.cmdOutput.addCommand(move, CordaUtil.decodeKey(changeTo));
+			}
+			
+		});
+		
+		return true;
+	}
+
+	@Override
+	public List<DocumentContext> getStates(String assetName, String assetKey, Set<DocumentContext> keyValue) {
+		List<DocumentContext> states = new ArrayList<DocumentContext>();
+		keyValue.forEach(k -> states.add(getState(assetName, assetKey, k)));
+		return states;
 	}
 	
 }

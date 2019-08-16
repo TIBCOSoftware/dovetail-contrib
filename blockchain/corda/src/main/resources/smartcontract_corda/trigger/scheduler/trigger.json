@@ -1,0 +1,69 @@
+{
+    "name": "SchedulerTrigger",
+    "author": "TIBCO Software Inc.",
+    "type": "flogo:trigger",
+    "version": "1.0.0",
+    "title": "SmartContract Corda Scheduler",
+
+    "display": {
+       "description": "schedule smart contract transaction",
+       "uid": "smartcontract-schdeduler-trigger",
+       "category": "SmartContract-Corda",
+       "visible": true,
+       "wizard": ["Choose Asset To Schedule Activity"],
+       "smallIcon": "trigger.png",
+       "largeIcon": "trigger.png"
+    },
+    "useReplyHandler": false,
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract-Corda/trigger/scheduler",
+         
+    "settings": [
+        {
+            "name": "model",
+            "type": "object",
+            "required": true,
+            "display": {
+                "name": "Model",
+                "visible": true
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Choose Asset To Schedule Activity"
+            },
+            "allowed": []
+        }
+    ],
+ 
+    "handler": {
+      "settings": [
+        {
+            "name": "asset",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Asset",
+                "visible":true
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Choose Asset To Schedule Activity"
+            },
+            "allowed": []
+          }
+     ]
+    },
+     
+    "outputs": [
+        {
+            "name": "transactionInput",
+            "type": "complex_object"
+        }
+    ],
+    "actions": [
+          {
+            "name": "Finish"
+          }
+    ]
+}

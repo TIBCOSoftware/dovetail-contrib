@@ -71,14 +71,14 @@ public class ledger implements IActivity {
     			DocumentContext doc = JsonUtil.getJsonParser().parse("[]");
 			((JSONArray)data.json()).forEach( v -> {
 				DocumentContext value = JsonUtil.getJsonParser().parse(v);
-				DocumentContext obj = service.deleteState(assetName, identifier , value);
+				DocumentContext obj = (DocumentContext) service.deleteState(assetName, identifier , value);
 				if (obj != null) {
 					doc.add("$", obj.json());
 				}
 			});
 			return doc;
 		} else {
-			return service.deleteState(assetName, identifier , data);
+			return (DocumentContext) service.deleteState(assetName, identifier , data);
 		}
     }
     
@@ -88,14 +88,14 @@ public class ledger implements IActivity {
     			DocumentContext doc = JsonUtil.getJsonParser().parse("[]");
 			((JSONArray)data.json()).forEach( v -> {
 				DocumentContext value = JsonUtil.getJsonParser().parse(v);
-				DocumentContext obj = service.getState(assetName, identifier , value);
+				DocumentContext obj = (DocumentContext) service.getState(assetName, identifier , value);
 				if (obj != null) {
 					doc.add("$", obj.json());
 				}
 			});
 			return doc;
 		} else {
-			return service.getState(assetName, identifier , data);
+			return (DocumentContext) service.getState(assetName, identifier , data);
 		}
     }
     

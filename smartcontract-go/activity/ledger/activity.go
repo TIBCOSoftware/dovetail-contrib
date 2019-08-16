@@ -158,77 +158,6 @@ func (a *LedgerActivity) Eval(context activity.Context) (done bool, err error) {
 	return true, nil
 }
 
-/*
-func storeCompositeKeyRefs(assetName string, primaryKey string, primaryKeyRef string, compositeKeys string, record map[string]interface{}, stub shim.ChaincodeStubInterface) error {
-	compkeys, err := createSecondaryCompositeKeys(assetName, compositeKeys, record, stub)
-	if err != nil {
-		return err
-	}
-
-	refs, err := stub.GetState(primaryKeyRef)
-	if err != nil {
-		return err
-	}
-
-	encodedcomkeys := &bytes.Buffer{}
-	gob.NewEncoder(encodedcomkeys).Encode(compkeys)
-	if refs != nil {
-		if bytes.Compare(refs, encodedcomkeys.Bytes()) != 0 {
-
-			err = delCompositeKeyRefs(primaryKeyRef, refs, stub)
-			if err != nil {
-				return err
-			}
-
-			return writeCompositeKeysToDB(stub, compkeys, encodedcomkeys.Bytes(), primaryKey, primaryKeyRef)
-		}
-	} else {
-		return writeCompositeKeysToDB(stub, compkeys, encodedcomkeys.Bytes(), primaryKey, primaryKeyRef)
-	}
-
-	return nil
-}
-
-func writeCompositeKeysToDB(stub shim.ChaincodeStubInterface, keys []string, encodedKeys []byte, primaryKey string, primaryKeyRef string) error {
-	for _, k := range keys {
-		err := stub.PutState(k, []byte(primaryKey))
-		if err != nil {
-			return err
-		}
-	}
-
-	err := stub.PutState(primaryKeyRef, encodedKeys)
-	return err
-}
-
-func delCompositeKeyRefs(primaryKeyRef string, refs []byte, stub shim.ChaincodeStubInterface) error {
-	comkeys := []string{}
-	gob.NewDecoder(bytes.NewReader(refs)).Decode(&comkeys)
-	for _, k := range comkeys {
-		err := stub.DelState(k)
-		if err != nil {
-			return err
-		}
-	}
-	return stub.DelState(primaryKeyRef)
-}
-
-func createSecondaryCompositeKeys(assetName string, keys string, record map[string]interface{}, stub shim.ChaincodeStubInterface) ([]string, error) {
-
-	keyarray := strings.Split(keys, "|")
-	compkeys := make([]string, 0)
-	for _, key := range keyarray {
-		compkey, _, err := hlfutils.CreateCompositeKey(record, hlfutils.GetSecondaryCompositeNS(assetName), key, stub)
-		if err != nil {
-			return nil, err
-		}
-
-		compkeys = append(compkeys, compkey)
-	}
-
-	return compkeys, nil
-}
-*/
 func parseRecord(record []byte) (map[string]interface{}, error) {
 	m := map[string]interface{}{}
 	err := json.Unmarshal(record, &m)
@@ -242,113 +171,17 @@ func parseRecord(record []byte) (map[string]interface{}, error) {
 func deleteRecord(assetName string, identifier string, input map[string]interface{}, compositeKeys interface{}, stub dtsvc.ContainerService) ([]byte, error) {
 	datasvc := stub.GetDataService()
 	return datasvc.DeleteState(assetName, identifier, input, compositeKeys)
-	/*
-		key, keyref, err := hlfutils.CreateCompositeKey(input, assetName, identifier, stub)
-		if err != nil {
-			return nil, err
-		}
-		rawvalue, err := stub.GetState(key)
-
-		if err != nil {
-			return nil, err
-		}
-
-		if rawvalue != nil && len(rawvalue) > 0 {
-			err = stub.DelState(key)
-			if err != nil {
-				return nil, err
-			}
-
-			if compositeKeys != nil && compositeKeys.(string) != "" {
-				refs, err := stub.GetState(keyref)
-				if err != nil {
-					return nil, err
-				}
-				err = delCompositeKeyRefs(keyref, refs, stub)
-				if err != nil {
-					return nil, err
-				}
-			}
-			return rawvalue, nil
-		}
-		return nil, nil
-	*/
 }
 
 func putRecord(assetName string, identifier string, input map[string]interface{}, compositeKeys interface{}, stub dtsvc.ContainerService) error {
 
 	datasvc := stub.GetDataService()
 	return datasvc.PutState(assetName, identifier, input, compositeKeys)
-	/*
-		bv, err := json.Marshal(input)
-		if err != nil {
-			return fmt.Errorf("error martial value to json for %s with attribute %s, err: %v", assetName, identifier, err)
-		}
-
-		key, keyref, err := hlfutils.CreateCompositeKey(input, assetName, identifier, stub)
-		if err != nil {
-			return err
-		}
-
-		if compositeKeys != nil && compositeKeys.(string) != "" {
-			err = storeCompositeKeyRefs(assetName, key, keyref, compositeKeys.(string), input, stub)
-
-			if err != nil {
-				return err
-			}
-		}
-		err = stub.PutState(key, bv)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	*/
 }
 
 func lookupRecords(assetName string, identifier string, lookupKey string, input map[string]interface{}, stub dtsvc.ContainerService) ([][]byte, error) {
 	datasvc := stub.GetDataService()
 	return datasvc.LookupState(assetName, identifier, lookupKey, input)
-	/*result := make([][]byte, 0)
-	keyvalues, err := hlfutils.CreatePartialCompositeKey(input, lookupKey.(string), stub)
-	if err != nil {
-		return nil, err
-	}
-
-	var sameAsIdentifier = true
-	namespace := assetName
-	if identifier != lookupKey.(string) {
-		sameAsIdentifier = false
-		namespace = hlfutils.GetSecondaryCompositeNS(assetName)
-	}
-
-	iterator, err := stub.GetStateByPartialCompositeKey(namespace, keyvalues)
-	if err != nil {
-		return nil, fmt.Errorf("error GetStateByPartialCompositeKey with key %s from ledger", lookupKey.(string))
-	}
-	defer iterator.Close()
-
-	for iterator.HasNext() {
-		kv, err := iterator.Next()
-		if err != nil {
-			return nil, fmt.Errorf("error iterating results from GetStateByPartialCompositeKey with key %s from ledger", lookupKey.(string))
-		}
-
-		if sameAsIdentifier {
-			result = append(result, kv.GetValue())
-		} else {
-			primary := string(kv.GetValue())
-			v, err := stub.GetState(primary)
-			if err != nil {
-				return nil, err
-			}
-
-			result = append(result, v)
-		}
-	}
-
-	return result, nil
-	*/
 }
 
 func getRecord(assetName string, identifier string, input map[string]interface{}, stub dtsvc.ContainerService) ([]byte, error) {

@@ -34,21 +34,6 @@
             "allowed": []
         },
         {
-            "name": "createAll",
-            "type": "boolean",
-            "required": true,
-            "display": {
-                "name": "Create flows for all transactions",
-                "visible": true,
-                "type": "choice"
-            },
-            "wizard": {
-                "type": "boolean",
-                "step": "Choose Common Data Model"
-            },
-            "value": false
-        },
-        {
             "name": "assets",
             "type": "string",
             "required":false,
@@ -87,10 +72,10 @@
         {
             "name": "transaction",
             "type": "string",
-            "required": false,
+            "required": true,
             "display": {
                 "name": "Transaction",
-                "visible":false
+                "visible":true
             },
             "wizard": {
                 "type": "dropdown",
@@ -122,21 +107,10 @@
     ],
     "reply": [
         {
-            "name": "status",
-            "type": "string",
-            "allowed": ["Success", "Success with Data", "Error with Message"],
-            "required": true
-        },
-        {
-            "name": "message",
-            "type": "string",
-            "required": false
-        },
-        {
             "name": "data",
-            "type": "complex_object",
+            "type": "string",
             "required": false
-        }  
+        }
     ],    
     "actions": [
           {
