@@ -1,0 +1,109 @@
+
+{
+    "name": "fabric-delete",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "title": "Delete",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "category": "fabric",
+        "visible": true,
+        "smallIcon": "ic-delete.png",
+        "description": "This activity deletes data from fabric world state"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/delete",
+    "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/delete",
+    "inputs": [
+        {
+            "name": "key",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "commonData",
+            "type": "object",
+            "display": {
+                "name": "Common data definition",
+                "description": "Select common data collection",
+                "type": "connection",
+                "visible": true
+            },
+            "allowed":[]
+        },
+        {
+            "name": "dataType",
+            "type": "string",
+            "display":{
+                "name": "Data object type",
+                "description": "Select input data schema",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        },
+        {
+            "name": "privateCollection",
+            "type": "string",
+            "required": false
+        },
+        {
+            "name": "keysOnly",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Delete composite keys only",
+                "description": "Delete specified composite keys only, not the record."
+            },
+            "value": false
+        },
+        {
+            "name": "keyType",
+            "type": "string",
+            "display":{
+                "name": "Composite key type",
+                "description": "Select composite key definition",
+                "type": "dropdown",
+                "selection": "single",
+                "visible": false
+            },
+            "allowed": []
+        },
+        {
+            "name": "compositeKeys",
+            "type": "string",
+            "display": {
+                "name": "Delete Composite keys",
+                "description": "Define composite key name and attributes (Note: the state key will be appended if it is not included here), e.g. {\r\n    \"index-color\": [\"color\", \"name\"],\r\n    \"index-owner\": [\"owner\", \"name\"]\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "readonly": false
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "name": "code",
+            "type": "integer"
+        },
+        {
+            "name": "message",
+            "type": "string"
+        },
+        {
+            "name": "key",
+            "type": "string"
+        },
+        {
+            "name": "result",
+            "type": "complex_object",
+            "display": {
+                "name": "Deleted object definition",
+                "description": "Schema definition of the deleted object, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
+                "type": "texteditor",
+                "syntax": "json",
+                "readonly": false
+            }
+        }
+    ]
+}

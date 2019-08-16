@@ -1,0 +1,453 @@
+{
+	"info": {
+		"_postman_id": "262f0c22-59d8-4731-b77a-18b41d83c9c7",
+		"name": "marble-private",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01-create marble 1",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble11\",\n  \"color\": \"blue\",\n  \"size\": 35,\n  \"owner\": \"tom\",\n  \"price\": 99\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02-get marble 1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble11\",\n  \"color\": \"blue\",\n  \"size\": 35,\n  \"owner\": \"tom\",\n  \"price\": 99\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/key/marble11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"key",
+						"marble11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03-get marble 1 price",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble11\",\n  \"color\": \"blue\",\n  \"size\": 35,\n  \"owner\": \"tom\",\n  \"price\": 99\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/price/marble11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"price",
+						"marble11"
+					]
+				},
+				"description": "need to try a few times to get successful result from org1 peers"
+			},
+			"response": []
+		},
+		{
+			"name": "04-create marble 2",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble12\",\n  \"color\": \"red\",\n  \"size\": 50,\n  \"owner\": \"tom\",\n  \"price\": 199\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05-create marble 3",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble13\",\n  \"color\": \"blue\",\n  \"size\": 70,\n  \"owner\": \"tom\",\n  \"price\": 299\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06-transfer marble 2",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble12\",\n  \"owner\": \"jerry\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07-get marble 1 price",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble12\",\n  \"owner\": \"jerry\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/price/marble11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"price",
+						"marble11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08-transfer marble 3",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble13\",\n  \"owner\": \"jerry\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09-get marble 1 price",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble13\",\n  \"owner\": \"jerry\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/price/marble11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"price",
+						"marble11"
+					]
+				},
+				"description": "this should fail because that private data is deleted after 3 blocks"
+			},
+			"response": []
+		},
+		{
+			"name": "10-get marbles of jerry",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble13\",\n  \"owner\": \"jerry\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/owner/jerry",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"owner",
+						"jerry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11-get marbles by range",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble13\",\n  \"owner\": \"jerry\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/range?startKey=marble11&endKey=marble14",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"range"
+					],
+					"query": [
+						{
+							"key": "startKey",
+							"value": "marble11"
+						},
+						{
+							"key": "endKey",
+							"value": "marble14"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12-delete marble 2",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble13\",\n  \"owner\": \"jerry\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/delete/marble12",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"delete",
+						"marble12"
+					]
+				},
+				"description": "it succeeds on org1 only, so retry if failed on org2 peer"
+			},
+			"response": []
+		},
+		{
+			"name": "13-get marbles of jerry",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"marble13\",\n  \"owner\": \"jerry\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8989/marbleprivate/owner/jerry",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"marbleprivate",
+						"owner",
+						"jerry"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

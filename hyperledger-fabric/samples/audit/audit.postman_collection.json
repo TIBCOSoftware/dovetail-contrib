@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "7dc064a5-c293-4419-8e23-c3afe166c7b3",
+		"name": "audit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createAudit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    createAudit(records: [{\n        recID:\"audit11\",\n        domain:\"tibco.oocto.dovetail.test\",\n        owner:\"oocto@tibco.com\",\n        data:\"test11\",\n        hashType:\"\",\n        hashValue:\"\"\n    },\n    {\n        recID:\"audit12\",\n        domain:\"tibco.oocto.dovetail.test\",\n        owner:\"oocto@tibco.com\",\n        data:\"test12\",\n        hashType:\"\",\n        hashValue:\"\"\n    }]) {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createAudit 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    createAudit(records: [{\n        recID:\"audit13\",\n        domain:\"tibco.oocto.dovetail.test\",\n        owner:\"oocto@tibco.com\",\n        data:\"test13\",\n        hashType:\"\",\n        hashValue:\"\"\n    },\n    {\n        recID:\"audit12\",\n        domain:\"tibco.oocto.dovetail.test\",\n        owner:\"oocto@tibco.com\",\n        data:\"test12 again\",\n        hashType:\"\",\n        hashValue:\"\"\n    }]) {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRecordsByRecID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n    getRecordsByID(recID: \"audit12\") {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "queryByTimeRange",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n    queryTimeRange(domain: \"tibco.oocto.dovetail.test\", owner: \"oocto@tibco.com\", startTime: \"2019-08-01\", endTime: \"2020-08-01\") {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteTransaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    deleteTransaction(txID: \"603ac2b138dfee985f54080713d78dd61169c05e9f9aebea026eee186c3b3a1f\") {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9797/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9797",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
