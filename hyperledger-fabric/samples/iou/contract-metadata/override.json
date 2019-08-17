@@ -1,0 +1,9 @@
+{
+    "iou_0": "IOU",
+    "iou_1": "Account",
+    "GetAccountTransactionsReturnType": "TransactionKV",
+    "GetIOUHistoryReturnType": "IOUHistory",
+    "GetBankAccountsReturnType": "AccountKV",
+    "QueryIOUByAmountReturnType": "IOUKV",
+    "ValueType": "Transaction"
+}

@@ -43,12 +43,14 @@
                             "flowURI": "res://flow:all_activities"
                         },
                         "input": {
-                            "parameters": "=$.parameters"
+                            "parameters": "=$.parameters",
+                            "txID": "=$.txID",
+                            "txTime": "=$.txTime"
                         },
                         "output": {
-                            "returns": "=$.returns",
                             "status": "=$.status",
-                            "message": "=$.message"
+                            "message": "=$.message",
+                            "returns": "=$.returns"
                         }
                     },
                     "reply": {
@@ -59,15 +61,15 @@
                         "reply": {
                             "returns": {
                                 "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"owner\": \"\"\n}"
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
                             }
                         },
                         "output": {
                             "parameters": {
                                 "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"owner\": \"\"\n}"
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
                             }
                         }
                     }
@@ -199,7 +201,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
                                         },
                                         {
                                             "name": "dataList",
@@ -213,7 +215,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"owner~id\",\"value\":\"[\\\"owner\\\",\\\"id\\\"]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
                                         },
                                         {
                                             "name": "schema",
@@ -229,7 +231,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
                                             }
                                         },
                                         {
@@ -246,7 +248,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"compositekey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"owner~id\": [\n      \"owner\",\n      \"id\"\n    ]\n  }\n}"
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
                                             }
                                         }
                                     ],
@@ -274,7 +276,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1565033676480,
+                                    "lastUpdatedTime": 1566002378062,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -283,15 +285,15 @@
                                 "isPrivate": false,
                                 "collection": "",
                                 "keysOnly": false,
-                                "keyType": "compositekey",
-                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"owner~id\": [\n    \"owner\",\n    \"id\"\n  ]\n}"
+                                "keyType": "iouKey",
+                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"issueDate~id\": [\n    \"issueDate\",\n    \"id\"\n  ]\n}"
                             },
                             "schemas": {
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"owner\": \"\"\n}"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
                                     }
                                 }
                             }
@@ -356,7 +358,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
                                         },
                                         {
                                             "name": "dataList",
@@ -370,7 +372,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"owner~id\",\"value\":\"[\\\"owner\\\",\\\"id\\\"]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
                                         },
                                         {
                                             "name": "schema",
@@ -386,7 +388,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
                                             }
                                         },
                                         {
@@ -403,7 +405,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"compositekey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"owner~id\": [\n      \"owner\",\n      \"id\"\n    ]\n  }\n}"
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
                                             }
                                         }
                                     ],
@@ -431,7 +433,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1565033676480,
+                                    "lastUpdatedTime": 1566002378062,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -444,8 +446,8 @@
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"owner\": \"\"\n}"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
                                     }
                                 }
                             }
@@ -496,7 +498,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
                                         },
                                         {
                                             "name": "dataList",
@@ -510,7 +512,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"owner~id\",\"value\":\"[\\\"owner\\\",\\\"id\\\"]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
                                         },
                                         {
                                             "name": "schema",
@@ -526,7 +528,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
                                             }
                                         },
                                         {
@@ -543,7 +545,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"compositekey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"owner~id\": [\n      \"owner\",\n      \"id\"\n    ]\n  }\n}"
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
                                             }
                                         }
                                     ],
@@ -571,7 +573,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1565033676480,
+                                    "lastUpdatedTime": 1566002378062,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -596,8 +598,8 @@
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
                                     }
                                 }
                             }
@@ -646,7 +648,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
                                         },
                                         {
                                             "name": "dataList",
@@ -660,7 +662,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"owner~id\",\"value\":\"[\\\"owner\\\",\\\"id\\\"]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
                                         },
                                         {
                                             "name": "schema",
@@ -676,7 +678,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
                                             }
                                         },
                                         {
@@ -693,7 +695,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"compositekey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"owner~id\": [\n      \"owner\",\n      \"id\"\n    ]\n  }\n}"
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
                                             }
                                         }
                                     ],
@@ -721,7 +723,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1565033676480,
+                                    "lastUpdatedTime": 1566002378062,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -732,8 +734,8 @@
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"txID\": \"\",\n    \"txTime\": \"\",\n    \"isDeleted\": false,\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "[\n  {\n    \"txID\": \"\",\n    \"txTime\": \"\",\n    \"isDeleted\": false,\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
                                     }
                                 }
                             }
@@ -785,7 +787,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
                                         },
                                         {
                                             "name": "dataList",
@@ -799,7 +801,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"owner~id\",\"value\":\"[\\\"owner\\\",\\\"id\\\"]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
                                         },
                                         {
                                             "name": "schema",
@@ -815,7 +817,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
                                             }
                                         },
                                         {
@@ -832,7 +834,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"compositekey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"owner~id\": [\n      \"owner\",\n      \"id\"\n    ]\n  }\n}"
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
                                             }
                                         }
                                     ],
@@ -860,7 +862,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1565033676480,
+                                    "lastUpdatedTime": 1566002378062,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -873,8 +875,8 @@
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
                                     }
                                 }
                             }
@@ -888,7 +890,7 @@
                             "input": {
                                 "chaincodeName": "iou_cc",
                                 "channelID": "mychannel",
-                                "transactionName": "issueIOU",
+                                "transactionName": "issue",
                                 "parameters": {
                                     "mapping": {
                                         "id": "=$flow.parameters.id"
@@ -949,7 +951,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
                                         },
                                         {
                                             "name": "dataList",
@@ -963,7 +965,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"owner~id\",\"value\":\"[\\\"owner\\\",\\\"id\\\"]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
                                         },
                                         {
                                             "name": "schema",
@@ -979,7 +981,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
                                             }
                                         },
                                         {
@@ -996,7 +998,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"compositekey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"owner~id\": [\n      \"owner\",\n      \"id\"\n    ]\n  }\n}"
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
                                             }
                                         }
                                     ],
@@ -1024,7 +1026,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1565033676480,
+                                    "lastUpdatedTime": 1566002378062,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -1032,23 +1034,23 @@
                                 "dataType": "iou.IOU",
                                 "isPrivate": false,
                                 "collection": "",
-                                "keyType": "compositekey",
-                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"owner~id\": [\n    \"owner\",\n    \"id\"\n  ]\n}",
+                                "keyType": "iouKey",
+                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"issueDate~id\": [\n    \"issueDate\",\n    \"id\"\n  ]\n}",
                                 "data": "=$flow.parameters"
                             },
                             "schemas": {
                                 "input": {
                                     "data": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"owner\": \"\"\n}"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"owner\": \"\"\n}"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
+                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
                                     }
                                 }
                             }
@@ -1096,7 +1098,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
                                         },
                                         {
                                             "name": "dataList",
@@ -1110,7 +1112,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"owner~id\",\"value\":\"[\\\"owner\\\",\\\"id\\\"]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
                                         },
                                         {
                                             "name": "schema",
@@ -1126,7 +1128,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
                                             }
                                         },
                                         {
@@ -1143,7 +1145,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"compositekey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"owner~id\": [\n      \"owner\",\n      \"id\"\n    ]\n  }\n}"
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
                                             }
                                         }
                                     ],
@@ -1171,7 +1173,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1565033676480,
+                                    "lastUpdatedTime": 1566002378062,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -1179,8 +1181,8 @@
                                 "dataType": "iou.IOU",
                                 "isPrivate": false,
                                 "collection": "",
-                                "keyType": "compositekey",
-                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"owner~id\": [\n    \"owner\",\n    \"id\"\n  ]\n}",
+                                "keyType": "iouKey",
+                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"issueDate~id\": [\n    \"issueDate\",\n    \"id\"\n  ]\n}",
                                 "data": {
                                     "mapping": [
                                         {
@@ -1194,15 +1196,15 @@
                                 "input": {
                                     "data": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
                                     }
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
                                     }
                                 }
                             }
@@ -1253,7 +1255,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
                                         },
                                         {
                                             "name": "dataList",
@@ -1267,7 +1269,7 @@
                                                 "valid": false,
                                                 "visible": true
                                             },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositekey\",\"name\":\"owner~id\",\"value\":\"[\\\"owner\\\",\\\"id\\\"]\"}]"
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
                                         },
                                         {
                                             "name": "schema",
@@ -1283,7 +1285,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
                                             }
                                         },
                                         {
@@ -1300,7 +1302,7 @@
                                             },
                                             "value": {
                                                 "metadata": "",
-                                                "value": "{\n  \"compositekey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"owner~id\": [\n      \"owner\",\n      \"id\"\n    ]\n  }\n}"
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
                                             }
                                         }
                                     ],
@@ -1328,7 +1330,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1565033676480,
+                                    "lastUpdatedTime": 1566002378062,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -1354,8 +1356,8 @@
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
                                     }
                                 }
                             }
@@ -1367,7 +1369,12 @@
                         "activity": {
                             "ref": "#setevent",
                             "input": {
-                                "name": "IOUAlert"
+                                "name": "IOUAlert",
+                                "payload": {
+                                    "mapping": {
+                                        "alert": "test"
+                                    }
+                                }
                             },
                             "schemas": {
                                 "input": {
@@ -1425,7 +1432,7 @@
                             "type": "object",
                             "schema": {
                                 "type": "json",
-                                "value": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                                "value": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
                             }
                         },
                         {
@@ -1451,13 +1458,13 @@
                             "type": "object",
                             "schema": {
                                 "type": "json",
-                                "value": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                                "value": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
                             }
                         }
                     ],
                     "fe_metadata": {
-                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
-                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
                     }
                 }
             }
@@ -1465,5 +1472,5 @@
     ],
     "properties": [],
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifV0=",
-    "fe_metadata": "UEsDBAoAAAAIAIGcBU+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACACBnAVPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAHAGEU+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABwBhFPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

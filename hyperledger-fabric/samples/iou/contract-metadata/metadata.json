@@ -1,0 +1,401 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "info": {
+        "title": "iou",
+        "version": "1.1.0"
+    },
+    "contract": {
+        "name": "iou",
+        "transactions": {
+            "buy": {
+                "name": "buy",
+                "description": "customer buy an existing IOU of another bank",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "bank": {
+                            "type": "string"
+                        },
+                        "owner": {
+                            "type": "string"
+                        },
+                        "iou": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/IOU"
+                }
+            },
+            "createAccount": {
+                "name": "createAccount",
+                "description": "initialize a user account",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "bank": {
+                            "type": "string"
+                        },
+                        "balance": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/Account"
+                }
+            },
+            "exchange": {
+                "name": "exchange",
+                "description": "exchange IOU to an equivalent IOU of different currency",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "bank": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/IOU"
+                }
+            },
+            "getAccountTransactions": {
+                "name": "getAccountTransactions",
+                "description": "retrieves all transactions of an account name in a specified bank",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "bank": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "key": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "object",
+                                "properties": {
+                                    "txID": {
+                                        "type": "string"
+                                    },
+                                    "txTime": {
+                                        "type": "string"
+                                    },
+                                    "account": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "iouRef": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "getBankAccounts": {
+                "name": "getBankAccounts",
+                "description": "retrieves all accounts of a specified bank",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "bank": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "key": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "bank": {
+                                        "type": "string"
+                                    },
+                                    "balance": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "getIOUHistory": {
+                "name": "getIOUHistory",
+                "description": "retrieves history of an IOU",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "txID": {
+                                "type": "string"
+                            },
+                            "txTime": {
+                                "type": "string"
+                            },
+                            "isDeleted": {
+                                "type": "boolean"
+                            },
+                            "value": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "issuer": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "issueDate": {
+                                        "type": "string"
+                                    },
+                                    "owner": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "issue": {
+                "name": "issue",
+                "description": "issue a new IOU to a customer",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "bank": {
+                            "type": "string"
+                        },
+                        "owner": {
+                            "type": "string"
+                        },
+                        "amount": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/IOU"
+                }
+            },
+            "queryIOUByAmount": {
+                "name": "queryIOUByAmount",
+                "description": "find an IOU matching issuer, owner, and amount",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "issuer": {
+                            "type": "string"
+                        },
+                        "owner": {
+                            "type": "string"
+                        },
+                        "amount": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "returns": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "key": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "issuer": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "issueDate": {
+                                        "type": "string"
+                                    },
+                                    "owner": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "redeem": {
+                "name": "redeem",
+                "description": "redeem an IOU at the issuer bank",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "bank": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/Account"
+                }
+            },
+            "send": {
+                "name": "send",
+                "description": "send specified amount of target currency to a receiver, returns the IOU that the receiver can redeem.",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "senderBank": {
+                            "type": "string"
+                        },
+                        "sender": {
+                            "type": "string"
+                        },
+                        "receiverBank": {
+                            "type": "string"
+                        },
+                        "receiver": {
+                            "type": "string"
+                        },
+                        "amount": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/IOU"
+                }
+            },
+            "transfer": {
+                "name": "transfer",
+                "description": "transfer an IOU to a new owner",
+                "operation": "invoke",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "newOwner": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/IOU"
+                }
+            }
+        }
+    },
+    "components": {
+        "Account": {
+            "$id": "Account",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "bank": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "number"
+                },
+                "currency": {
+                    "type": "string"
+                }
+            }
+        },
+        "IOU": {
+            "$id": "IOU",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "issuer": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "issueDate": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
