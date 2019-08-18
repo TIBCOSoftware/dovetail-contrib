@@ -3,32 +3,30 @@ schema {
 	mutation: Mutation
 }
 type Query {
-	queryIOUByAmount(owner: String, amount: Float, issuer: String): [IOUKV]
-	getAccountTransactions(name: String, bank: String): [TransactionKV]
 	getBankAccounts(bank: String): [AccountKV]
 	getIOUHistory(id: String): [IOUHistory]
+	getAccountTransactions(name: String, bank: String): [TransactionKV]
+	queryIOUByAmount(issuer: String, owner: String, amount: Float): [IOUKV]
 }
 type Mutation {
-	redeem(id: String, bank: String): Account
-	transfer(id: String, newOwner: String): IOU
-	createAccount(bank: String, balance: Float, name: String): Account
-	exchange(id: String, bank: String): IOU
-	issue(bank: String, owner: String, amount: Float): IOU
-	send(senderBank: String, sender: String, receiverBank: String, receiver: String, amount: Float): IOU
+	transfer(owner: String, bank: String, id: String, newOwner: String): IOU
 	buy(bank: String, owner: String, iou: String): IOU
+	createAccount(name: String, bank: String, balance: Float): Account
+	issue(bank: String, owner: String, amount: Float): IOU
+	redeem(owner: String, bank: String, id: String): Account
+	send(senderBank: String, sender: String, receiverBank: String, receiver: String, amount: Float): IOU
+	exchange(owner: String, bank: String, id: String): IOU
 }
-type IOU {
-	issuer: String
-	amount: Float
-	currency: String
-	issueDate: String
-	owner: String
-	id: String
+type IOUHistory {
+	txID: String
+	txTime: String
+	isDeleted: Boolean
+	value: IOU
 }
 
-type AccountKV {
-	value: Account
+type IOUKV {
 	key: String
+	value: IOU
 }
 
 type Account {
@@ -38,28 +36,30 @@ type Account {
 	currency: String
 }
 
-type IOUKV {
-	key: String
-	value: IOU
-}
-
 type Transaction {
-	txTime: String
 	account: String
 	amount: Float
 	iouRef: String
 	txID: String
+	txTime: String
+}
+
+type IOU {
+	amount: Float
+	currency: String
+	issueDate: String
+	owner: String
+	id: String
+	issuer: String
+}
+
+type AccountKV {
+	key: String
+	value: Account
 }
 
 type TransactionKV {
 	key: String
 	value: Transaction
-}
-
-type IOUHistory {
-	txTime: String
-	isDeleted: Boolean
-	value: IOU
-	txID: String
 }
 

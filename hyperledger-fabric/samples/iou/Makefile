@@ -52,8 +52,12 @@ deploy: build
 .PHONY: start-fn
 start-fn:
 	./start-fn.sh
+	./gen-user.sh EURBankAdmin 1
 	./gen-user.sh Alice 1
-	./gen-user.sh Bob 2
+	./gen-user.sh Bob 1
+	./gen-user.sh USDBankAdmin 2
+	./gen-user.sh Carol 2
+	./gen-user.sh David 2
 
 .PHONY: cli-init
 cli-init:
@@ -76,6 +80,11 @@ package:
 	fabric-tools package -n $(APP_NAME) -p $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
 	fabric-tools metadata -f $(APP_FILE) -m $(SRC_PATH)/contract-metadata/metadata.json -g $(SRC_PATH)/contract-metadata/metadata.gql -o $(SRC_PATH)/contract-metadata/override.json
+	cd $(SRC_PATH)/contract-metadata && \
+	sed -i -e "s/redeem(/redeem(owner: String, /" ./metadata.gql && \
+	sed -i -e "s/exchange(/exchange(owner: String, /" ./metadata.gql && \
+	sed -i -e "s/transfer(/transfer(owner: String, /" ./metadata.gql && \
+	rm metadata.gql-e
 
 .PHONY: clean-client
 clean-client:
