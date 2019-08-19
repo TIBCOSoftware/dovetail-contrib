@@ -3,20 +3,54 @@ schema {
 	mutation: Mutation
 }
 type Query {
-	getBankAccounts(bank: String): [AccountKV]
 	getIOUHistory(id: String): [IOUHistory]
-	getAccountTransactions(name: String, bank: String): [TransactionKV]
 	queryIOUByAmount(issuer: String, owner: String, amount: Float): [IOUKV]
+	getAccountTransactions(name: String, bank: String): [TransactionKV]
+	getBankAccounts(bank: String): [AccountKV]
 }
 type Mutation {
-	transfer(owner: String, bank: String, id: String, newOwner: String): IOU
-	buy(bank: String, owner: String, iou: String): IOU
-	createAccount(name: String, bank: String, balance: Float): Account
-	issue(bank: String, owner: String, amount: Float): IOU
-	redeem(owner: String, bank: String, id: String): Account
 	send(senderBank: String, sender: String, receiverBank: String, receiver: String, amount: Float): IOU
-	exchange(owner: String, bank: String, id: String): IOU
+	buy(bank: String, owner: String, iou: String): IOU
+	exchange(owner: String, id: String, bank: String): IOU
+	issue(owner: String, amount: Float, bank: String): IOU
+	redeem(owner: String, id: String, bank: String): Account
+	transfer(owner: String, id: String, newOwner: String): IOU
+	createAccount(name: String, bank: String, balance: Float): Account
 }
+type TransactionKV {
+	key: String
+	value: Transaction
+}
+
+type IOU {
+	id: String
+	issuer: String
+	amount: Float
+	currency: String
+	issueDate: String
+	owner: String
+}
+
+type Account {
+	name: String
+	bank: String
+	balance: Float
+	currency: String
+}
+
+type AccountKV {
+	key: String
+	value: Account
+}
+
+type Transaction {
+	txID: String
+	txTime: String
+	account: String
+	amount: Float
+	iouRef: String
+}
+
 type IOUHistory {
 	txID: String
 	txTime: String
@@ -27,39 +61,5 @@ type IOUHistory {
 type IOUKV {
 	key: String
 	value: IOU
-}
-
-type Account {
-	name: String
-	bank: String
-	balance: Float
-	currency: String
-}
-
-type Transaction {
-	account: String
-	amount: Float
-	iouRef: String
-	txID: String
-	txTime: String
-}
-
-type IOU {
-	amount: Float
-	currency: String
-	issueDate: String
-	owner: String
-	id: String
-	issuer: String
-}
-
-type AccountKV {
-	key: String
-	value: Account
-}
-
-type TransactionKV {
-	key: String
-	value: Transaction
 }
 

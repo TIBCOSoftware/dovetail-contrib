@@ -36,6 +36,7 @@ create: $(APP_FILE) clean
 build: $(BUILD_PATH)/$(APP_NAME)
 	-cd $(BUILD_PATH)/$(APP_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
+	flogo install github.com/project-flogo/contrib/function/coerce && \
 	flogo build -e
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
@@ -45,6 +46,8 @@ build: $(BUILD_PATH)/$(APP_NAME)
 .PHONY: deploy
 deploy: build
 	rm -Rf $(CC_DEPLOY)/$(APP_NAME)
+	cp -Rf META-INF $(BUILD_PATH)/$(APP_NAME)/src
+	cp collections_config.json $(BUILD_PATH)/$(APP_NAME)/src
 	cp -Rf $(BUILD_PATH)/$(APP_NAME)/src $(CC_DEPLOY)/$(APP_NAME)
 	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
 	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts
