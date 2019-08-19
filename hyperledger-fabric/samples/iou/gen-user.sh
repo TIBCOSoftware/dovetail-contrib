@@ -50,9 +50,10 @@ openssl x509 -noout -text -in ${FABRIC_CA_CLIENT_HOME}/msp/cacerts/localhost-${P
 fabric-ca-client enroll -u http://admin:adminpw@localhost:${PORT}
 
 # register and enroll new user
-fabric-ca-client register --id.name ''"${USER}"'' --id.secret ${USER}pw --id.type client --id.attrs 'admin='"${ADMIN}"':ecert,alias='"${USER}"',bank='"${BANK}"',email='"${USER}@${ORG}"''
+# Note: important to make id.name as user@org for signature verification!
+fabric-ca-client register --id.name ''"${USER}@${ORG}"'' --id.secret ${USER}pw --id.type client --id.attrs 'admin='"${ADMIN}"':ecert,alias='"${USER}"',bank='"${BANK}"',email='"${USER}@${ORG}"''
 export FABRIC_CA_CLIENT_HOME=${WORK}/${USER}\@${ORG}
-fabric-ca-client enroll -u http://${USER}:${USER}pw@localhost:${PORT} --enrollment.attrs "admin,alias,bank,email" -M ${FABRIC_CA_CLIENT_HOME}/msp
+fabric-ca-client enroll -u http://${USER}@${ORG}:${USER}pw@localhost:${PORT} --enrollment.attrs "admin,alias,bank,email" -M ${FABRIC_CA_CLIENT_HOME}/msp
 openssl x509 -noout -text -in ${WORK}/${USER}\@${ORG}/msp/signcerts/cert.pem
 
 # copy key and cert to first-network sample crypto-config
