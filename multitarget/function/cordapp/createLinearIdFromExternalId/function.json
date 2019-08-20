@@ -1,0 +1,18 @@
+{
+  "name": "createLinearIdFromExternalId",
+  "args": [
+    {
+      "name": "extId",
+      "type": "string"
+    }
+  ],
+  "help": {
+    "description": "create a linear Id with random UUID and external Id",
+    "example": "cordapp.createLinearIdFromExternalId(\"myid\")\nReturns\nmyid_75f2df70-91d6-4188-9c1d-aec39cb84792",
+    "usage": "cordapp.createLinearIdFromExternalId(<<external id>>)\nReturn Type\nstring"
+  },
+  "return": {"type": "string"},
+  "wi": {
+    "visible": true
+  }
+}
