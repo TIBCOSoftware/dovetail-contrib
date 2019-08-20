@@ -115,7 +115,7 @@
                     }
                 },
                 {
-                    "description": "customer buy an existing IOU of another bank",
+                    "description": "buy an existing IOU issued by another bank",
                     "settings": {
                         "name": "buy",
                         "commonData": "",
@@ -128,7 +128,8 @@
                         },
                         "input": {
                             "parameters": "=$.parameters",
-                            "txTime": "=$.txTime"
+                            "txTime": "=$.txTime",
+                            "txID": "=$.txID"
                         },
                         "output": {
                             "status": "=$.status",
@@ -200,7 +201,7 @@
                     }
                 },
                 {
-                    "description": "exchange IOU to an equivalent IOU of different currency",
+                    "description": "exchange IOU to an equivalent IOU of specified bank's currency",
                     "settings": {
                         "name": "exchange",
                         "commonData": "",
@@ -257,7 +258,8 @@
                         },
                         "input": {
                             "parameters": "=$.parameters",
-                            "txTime": "=$.txTime"
+                            "txTime": "=$.txTime",
+                            "txID": "=$.txID"
                         },
                         "output": {
                             "status": "=$.status",
@@ -491,7 +493,7 @@
                     }
                 },
                 {
-                    "description": "send specified amount of target currency to a receiver, returns the IOU that the receiver can redeem.",
+                    "description": "create or find IOU equivalent to specified amount in the currency of a receiver bank, returns the IOU owned by the sender.",
                     "settings": {
                         "name": "send",
                         "commonData": "",
@@ -504,10 +506,12 @@
                         },
                         "input": {
                             "parameters": "=$.parameters",
-                            "txTime": "=$.txTime"
+                            "txTime": "=$.txTime",
+                            "txID": "=$.txID"
                         },
                         "output": {
                             "status": "=$.status",
+                            "message": "=$.message",
                             "returns": "=$.returns"
                         }
                     },
@@ -526,8 +530,8 @@
                         "output": {
                             "parameters": {
                                 "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"senderBank\":{\"type\":\"string\"},\"sender\":{\"type\":\"string\"},\"receiverBank\":{\"type\":\"string\"},\"receiver\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}}",
-                                "fe_metadata": "{\n    \"senderBank\": \"\",\n    \"sender\": \"\",\n    \"receiverBank\": \"\",\n    \"receiver\": \"\",\n    \"amount\": 0\n}"
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"sender\":{\"type\":\"string\"},\"senderBank\":{\"type\":\"string\"},\"receiverBank\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}}",
+                                "fe_metadata": "{\n    \"sender\": \"\",\n    \"senderBank\": \"\",\n    \"receiverBank\": \"\",\n    \"amount\": 0\n}"
                             }
                         }
                     }
@@ -2199,7 +2203,7 @@
             "id": "flow:buy",
             "data": {
                 "name": "buy",
-                "description": "customer buy an existing IOU of another bank",
+                "description": "buy an existing IOU issued by another bank",
                 "links": [
                     {
                         "id": 1,
@@ -3728,7 +3732,7 @@
             "id": "flow:exchange",
             "data": {
                 "name": "exchange",
-                "description": "exchange IOU to an equivalent IOU of different currency",
+                "description": "exchange IOU to an equivalent IOU of specified bank's currency",
                 "links": [
                     {
                         "id": 1,
@@ -3780,7 +3784,7 @@
                         "from": "Log1",
                         "to": "PutBank",
                         "type": "expression",
-                        "value": "$activity[Get].code == 200 && $activity[BankConfig].currency == $activity[Get].result.currency && $activity[Cid].attrs.alias == $activity[Get].result.owner"
+                        "value": "$activity[Get].code == 200 && $activity[BankConfig].currency != $activity[Get].result.currency && $activity[Cid].attrs.alias == $activity[Get].result.owner"
                     },
                     {
                         "id": 9,
@@ -5665,7 +5669,7 @@
                                     "connectorDescription": " "
                                 },
                                 "dataType": "iou.Transaction",
-                                "privateCollection": "",
+                                "privateCollection": "=$activity[BankConfig].txnCollection",
                                 "keyType": "transactionKey",
                                 "compositeKeys": "{\n  \"account\": [\n    \"account\"\n  ],\n  \"iouRef\": [\n    \"iouRef\"\n  ]\n}",
                                 "data": {
@@ -5673,7 +5677,8 @@
                                         "account": "=$flow.parameters.bank",
                                         "txTime": "=$flow.txTime",
                                         "amount": "=0 - $activity[GetIOU].result.amount",
-                                        "iouRef": "=$activity[GetIOU].key"
+                                        "iouRef": "=$activity[GetIOU].key",
+                                        "txID": "=$flow.txID"
                                     }
                                 }
                             },
@@ -6822,7 +6827,8 @@
                                                 "value": "=$.value"
                                             }
                                         }
-                                    }
+                                    },
+                                    "message": "=$activity[Query].message"
                                 }
                             }
                         }
@@ -6876,129 +6882,81 @@
             "id": "flow:send",
             "data": {
                 "name": "send",
-                "description": "send specified amount of target currency to a receiver, returns the IOU that the receiver can redeem.",
+                "description": "create or find IOU equivalent to specified amount in the currency of a receiver bank, returns the IOU owned by the sender.",
                 "links": [
                     {
                         "id": 1,
                         "from": "Log",
+                        "to": "SenderBankConfig",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "SenderBankConfig",
                         "to": "IssueIOU",
                         "type": "expression",
                         "value": "$flow.parameters.senderBank == $flow.parameters.receiverBank"
                     },
                     {
-                        "id": 2,
+                        "id": 3,
                         "from": "IssueIOU",
                         "to": "Log1",
                         "type": "default"
                     },
                     {
-                        "id": 3,
-                        "from": "Log1",
-                        "to": "TransferIOU",
-                        "type": "default"
-                    },
-                    {
                         "id": 4,
-                        "from": "TransferIOU",
-                        "to": "Log2",
-                        "type": "default"
-                    },
-                    {
-                        "id": 5,
-                        "from": "Log2",
+                        "from": "Log1",
                         "to": "Return",
                         "type": "default"
                     },
                     {
-                        "id": 6,
-                        "from": "Log",
-                        "to": "BankConfig",
+                        "id": 5,
+                        "from": "SenderBankConfig",
+                        "to": "SearchIOU",
                         "type": "expression",
                         "value": "$flow.parameters.senderBank != $flow.parameters.receiverBank"
                     },
                     {
-                        "id": 7,
-                        "from": "BankConfig",
-                        "to": "SearchIOU",
-                        "type": "default"
-                    },
-                    {
-                        "id": 8,
+                        "id": 6,
                         "from": "SearchIOU",
                         "to": "Log3",
                         "type": "default"
                     },
                     {
-                        "id": 9,
+                        "id": 7,
                         "from": "Log3",
                         "to": "IssueSenderIOU",
                         "type": "expression",
                         "value": "$activity[SearchIOU].status != 200"
                     },
                     {
-                        "id": 10,
+                        "id": 8,
                         "from": "IssueSenderIOU",
                         "to": "Log4",
                         "type": "default"
                     },
                     {
-                        "id": 11,
+                        "id": 9,
                         "from": "Log4",
-                        "to": "ExchangeReceiverIOU",
-                        "type": "default"
-                    },
-                    {
-                        "id": 12,
-                        "from": "ExchangeReceiverIOU",
-                        "to": "Log5",
-                        "type": "default"
-                    },
-                    {
-                        "id": 13,
-                        "from": "Log5",
-                        "to": "TransferToReceiver",
-                        "type": "default"
-                    },
-                    {
-                        "id": 14,
-                        "from": "TransferToReceiver",
-                        "to": "Log6",
-                        "type": "default"
-                    },
-                    {
-                        "id": 15,
-                        "from": "Log6",
                         "to": "Return1",
                         "type": "default"
                     },
                     {
-                        "id": 16,
+                        "id": 10,
                         "from": "Log3",
                         "to": "BuyIOU",
                         "type": "expression",
                         "value": "$activity[SearchIOU].status == 200"
                     },
                     {
-                        "id": 17,
+                        "id": 11,
                         "from": "BuyIOU",
                         "to": "Log7",
                         "type": "default"
                     },
                     {
-                        "id": 18,
+                        "id": 12,
                         "from": "Log7",
-                        "to": "TransferReceiverIOU",
-                        "type": "default"
-                    },
-                    {
-                        "id": 19,
-                        "from": "TransferReceiverIOU",
-                        "to": "Log8",
-                        "type": "default"
-                    },
-                    {
-                        "id": 20,
-                        "from": "Log8",
                         "to": "Return2",
                         "type": "default"
                     }
@@ -7010,8 +6968,37 @@
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"[send] amount \", coerce.toString($flow.parameters.amount), \" from \", $flow.parameters.sender, \" to \", $flow.parameters.receiver)",
+                                "message": "=string.concat(\"[send] amount \", coerce.toString($flow.parameters.amount), \" from \", $flow.parameters.sender, \" bank \", $flow.parameters.senderBank, \" receiver bank: \", $flow.parameters.receiverBank)",
                                 "addDetails": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "SenderBankConfig",
+                        "name": "SenderBankConfig",
+                        "activity": {
+                            "ref": "#subflow",
+                            "settings": {
+                                "flowURI": "res://flow:bankConfig"
+                            },
+                            "input": {
+                                "bank": "=$flow.parameters.senderBank"
+                            },
+                            "schemas": {
+                                "input": {
+                                    "input": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"bank\":{\"type\":\"string\"}}}",
+                                        "fe_metadata": "{\n    \"bank\": \"\"\n}"
+                                    }
+                                },
+                                "output": {
+                                    "output": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"acctCollection\":{\"type\":\"string\"},\"txnCollection\":{\"type\":\"string\"},\"exchangeRate\":{\"type\":\"number\"}}}",
+                                        "fe_metadata": "{\n    \"currency\": \"\",\n    \"acctCollection\": \"\",\n    \"txnCollection\": \"\",\n    \"exchangeRate\": 0\n}"
+                                    }
+                                }
                             }
                         }
                     },
@@ -7030,7 +7017,9 @@
                                         "owner": "=$flow.parameters.sender",
                                         "amount": "=$flow.parameters.amount"
                                     }
-                                }
+                                },
+                                "txID": "=$flow.txID",
+                                "txTime": "=$flow.txTime"
                             },
                             "schemas": {
                                 "input": {
@@ -7062,89 +7051,15 @@
                         }
                     },
                     {
-                        "id": "TransferIOU",
-                        "name": "TransferIOU",
-                        "activity": {
-                            "ref": "#subflow",
-                            "settings": {
-                                "flowURI": "res://flow:transfer"
-                            },
-                            "input": {
-                                "parameters": {
-                                    "mapping": {
-                                        "id": "=$activity[IssueIOU].returns.id",
-                                        "newOwner": "=$flow.parameters.receiver"
-                                    }
-                                }
-                            },
-                            "schemas": {
-                                "input": {
-                                    "input": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"title\":\"FabricTransaction2\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
-                                        "fe_metadata": "{\"type\":\"object\",\"title\":\"FabricTransaction2\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}"
-                                    }
-                                },
-                                "output": {
-                                    "output": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}",
-                                        "fe_metadata": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "id": "Log2",
-                        "name": "Log2",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"Transfer IOU: \", $activity[TransferIOU].message)",
-                                "addDetails": false
-                            }
-                        }
-                    },
-                    {
                         "id": "Return",
                         "name": "Return",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
-                                    "status": "=$activity[TransferIOU].status",
-                                    "message": "=$activity[TransferIOU].message",
-                                    "returns": "=$activity[TransferIOU].returns"
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "id": "BankConfig",
-                        "name": "BankConfig",
-                        "activity": {
-                            "ref": "#subflow",
-                            "settings": {
-                                "flowURI": "res://flow:bankConfig"
-                            },
-                            "input": {
-                                "bank": "=$flow.parameters.senderBank"
-                            },
-                            "schemas": {
-                                "input": {
-                                    "input": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"bank\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"bank\": \"\"\n}"
-                                    }
-                                },
-                                "output": {
-                                    "output": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"currency\":{\"type\":\"string\"},\"acctCollection\":{\"type\":\"string\"},\"txnCollection\":{\"type\":\"string\"},\"exchangeRate\":{\"type\":\"number\"}}}",
-                                        "fe_metadata": "{\n    \"currency\": \"\",\n    \"acctCollection\": \"\",\n    \"txnCollection\": \"\",\n    \"exchangeRate\": 0\n}"
-                                    }
+                                    "status": "=$activity[IssueIOU].status",
+                                    "message": "=$activity[IssueIOU].message",
+                                    "returns": "=$activity[IssueIOU].returns"
                                 }
                             }
                         }
@@ -7208,9 +7123,11 @@
                                     "mapping": {
                                         "bank": "=$flow.parameters.senderBank",
                                         "owner": "=$flow.parameters.sender",
-                                        "amount": "=float.float64($flow.parameters.amount*$activity[BankConfig].exchangeRate, 2)"
+                                        "amount": "=float.float64($flow.parameters.amount*$activity[SenderBankConfig].exchangeRate, 2)"
                                     }
-                                }
+                                },
+                                "txID": "=$flow.txID",
+                                "txTime": "=$flow.txTime"
                             },
                             "schemas": {
                                 "input": {
@@ -7242,105 +7159,15 @@
                         }
                     },
                     {
-                        "id": "ExchangeReceiverIOU",
-                        "name": "ExchangeReceiverIOU",
-                        "activity": {
-                            "ref": "#subflow",
-                            "settings": {
-                                "flowURI": "res://flow:exchange"
-                            },
-                            "input": {
-                                "parameters": {
-                                    "mapping": {
-                                        "id": "=$activity[IssueSenderIOU].returns.id",
-                                        "bank": "=$flow.parameters.receiverBank"
-                                    }
-                                }
-                            },
-                            "schemas": {
-                                "input": {
-                                    "input": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"title\":\"FabricTransaction3\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
-                                        "fe_metadata": "{\"type\":\"object\",\"title\":\"FabricTransaction3\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}"
-                                    }
-                                },
-                                "output": {
-                                    "output": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}",
-                                        "fe_metadata": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "id": "Log5",
-                        "name": "Log5",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"ExchangeReceiverIOU: \", $activity[ExchangeReceiverIOU].message)",
-                                "addDetails": false
-                            }
-                        }
-                    },
-                    {
-                        "id": "TransferToReceiver",
-                        "name": "TransferToReceiver",
-                        "activity": {
-                            "ref": "#subflow",
-                            "settings": {
-                                "flowURI": "res://flow:transfer"
-                            },
-                            "input": {
-                                "parameters": {
-                                    "mapping": {
-                                        "id": "=$activity[ExchangeReceiverIOU].returns.id",
-                                        "newOwner": "=$flow.parameters.receiver"
-                                    }
-                                }
-                            },
-                            "schemas": {
-                                "input": {
-                                    "input": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"title\":\"FabricTransaction2\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
-                                        "fe_metadata": "{\"type\":\"object\",\"title\":\"FabricTransaction2\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}"
-                                    }
-                                },
-                                "output": {
-                                    "output": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}",
-                                        "fe_metadata": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "id": "Log6",
-                        "name": "Log6",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"TransferToReceiver: \", $activity[TransferToReceiver].message)",
-                                "addDetails": false
-                            }
-                        }
-                    },
-                    {
                         "id": "Return1",
                         "name": "Return1",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
-                                    "status": "=$activity[TransferToReceiver].status",
-                                    "message": "=$activity[TransferToReceiver].message",
-                                    "returns": "=$activity[TransferToReceiver].returns"
+                                    "status": "=$activity[IssueSenderIOU].status",
+                                    "message": "=$activity[IssueSenderIOU].message",
+                                    "returns": "=$activity[IssueSenderIOU].returns"
                                 }
                             }
                         }
@@ -7360,7 +7187,9 @@
                                         "owner": "=$flow.parameters.sender",
                                         "iou": "=$activity[SearchIOU].returns[0].key"
                                     }
-                                }
+                                },
+                                "txID": "=$flow.txID",
+                                "txTime": "=$flow.txTime"
                             },
                             "schemas": {
                                 "input": {
@@ -7392,60 +7221,15 @@
                         }
                     },
                     {
-                        "id": "TransferReceiverIOU",
-                        "name": "TransferReceiverIOU",
-                        "activity": {
-                            "ref": "#subflow",
-                            "settings": {
-                                "flowURI": "res://flow:transfer"
-                            },
-                            "input": {
-                                "parameters": {
-                                    "mapping": {
-                                        "id": "=$activity[BuyIOU].returns.id",
-                                        "newOwner": "=$flow.parameters.receiver"
-                                    }
-                                }
-                            },
-                            "schemas": {
-                                "input": {
-                                    "input": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"title\":\"FabricTransaction2\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
-                                        "fe_metadata": "{\"type\":\"object\",\"title\":\"FabricTransaction2\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}"
-                                    }
-                                },
-                                "output": {
-                                    "output": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}",
-                                        "fe_metadata": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "id": "Log8",
-                        "name": "Log8",
-                        "activity": {
-                            "ref": "#log",
-                            "input": {
-                                "message": "=string.concat(\"TransferReceiverIOU: \", $activity[TransferReceiverIOU].message)",
-                                "addDetails": false
-                            }
-                        }
-                    },
-                    {
                         "id": "Return2",
                         "name": "Return2",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
-                                    "status": "=$activity[TransferReceiverIOU].status",
-                                    "message": "=$activity[TransferReceiverIOU].message",
-                                    "returns": "=$activity[TransferReceiverIOU].returns"
+                                    "status": "=$activity[BuyIOU].status",
+                                    "returns": "=$activity[BuyIOU].returns",
+                                    "message": "=$activity[BuyIOU].message"
                                 }
                             }
                         }
@@ -7458,7 +7242,7 @@
                             "type": "object",
                             "schema": {
                                 "type": "json",
-                                "value": "{\"senderBank\":{\"type\":\"string\"},\"sender\":{\"type\":\"string\"},\"receiverBank\":{\"type\":\"string\"},\"receiver\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}"
+                                "value": "{\"sender\":{\"type\":\"string\"},\"senderBank\":{\"type\":\"string\"},\"receiverBank\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}"
                             }
                         },
                         {
@@ -7489,7 +7273,7 @@
                         }
                     ],
                     "fe_metadata": {
-                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction11\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"senderBank\":{\"type\":\"string\"},\"sender\":{\"type\":\"string\"},\"receiverBank\":{\"type\":\"string\"},\"receiver\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction11\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"sender\":{\"type\":\"string\"},\"senderBank\":{\"type\":\"string\"},\"receiverBank\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
                         "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
                     }
                 }
@@ -7534,5 +7318,5 @@
         }
     ],
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vcHJvamVjdC1mbG9nby9jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAPMrFE+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACADzKxRPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAISmFE+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACACEphRPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

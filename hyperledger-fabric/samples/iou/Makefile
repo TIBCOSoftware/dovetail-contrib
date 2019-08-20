@@ -88,6 +88,7 @@ package:
 	sed -i -e "s/redeem(/redeem(owner: String, /" ./metadata.gql && \
 	sed -i -e "s/exchange(/exchange(owner: String, /" ./metadata.gql && \
 	sed -i -e "s/transfer(/transfer(owner: String, /" ./metadata.gql && \
+	sed -i -e "s/send(/send(receiver: String, /" ./metadata.gql && \
 	rm metadata.gql-e
 
 .PHONY: clean-client

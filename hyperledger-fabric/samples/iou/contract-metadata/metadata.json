@@ -9,7 +9,7 @@
         "transactions": {
             "buy": {
                 "name": "buy",
-                "description": "customer buy an existing IOU of another bank",
+                "description": "buy an existing IOU issued by another bank",
                 "operation": "invoke",
                 "parameters": {
                     "type": "object",
@@ -53,7 +53,7 @@
             },
             "exchange": {
                 "name": "exchange",
-                "description": "exchange IOU to an equivalent IOU of different currency",
+                "description": "exchange IOU to an equivalent IOU of specified bank's currency",
                 "operation": "invoke",
                 "parameters": {
                     "type": "object",
@@ -307,21 +307,18 @@
             },
             "send": {
                 "name": "send",
-                "description": "send specified amount of target currency to a receiver, returns the IOU that the receiver can redeem.",
+                "description": "create or find IOU equivalent to specified amount in the currency of a receiver bank, returns the IOU owned by the sender.",
                 "operation": "invoke",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "senderBank": {
-                            "type": "string"
-                        },
                         "sender": {
                             "type": "string"
                         },
-                        "receiverBank": {
+                        "senderBank": {
                             "type": "string"
                         },
-                        "receiver": {
+                        "receiverBank": {
                             "type": "string"
                         },
                         "amount": {
