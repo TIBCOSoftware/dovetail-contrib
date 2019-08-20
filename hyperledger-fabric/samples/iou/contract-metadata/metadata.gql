@@ -3,19 +3,19 @@ schema {
 	mutation: Mutation
 }
 type Query {
-	getIOUHistory(id: String): [IOUHistory]
-	queryIOUByAmount(issuer: String, owner: String, amount: Float): [IOUKV]
 	getAccountTransactions(name: String, bank: String): [TransactionKV]
 	getBankAccounts(bank: String): [AccountKV]
+	queryIOUByAmount(amount: Float, issuer: String, owner: String): [IOUKV]
+	getIOUHistory(id: String): [IOUHistory]
 }
 type Mutation {
+	issue(amount: Float, bank: String, owner: String): IOU
 	send(senderBank: String, sender: String, receiverBank: String, receiver: String, amount: Float): IOU
-	buy(bank: String, owner: String, iou: String): IOU
-	exchange(owner: String, id: String, bank: String): IOU
-	issue(owner: String, amount: Float, bank: String): IOU
-	redeem(owner: String, id: String, bank: String): Account
 	transfer(owner: String, id: String, newOwner: String): IOU
+	buy(bank: String, owner: String, iou: String): IOU
 	createAccount(name: String, bank: String, balance: Float): Account
+	redeem(owner: String, id: String, bank: String): Account
+	exchange(owner: String, id: String, bank: String): IOU
 }
 type TransactionKV {
 	key: String
@@ -31,16 +31,11 @@ type IOU {
 	owner: String
 }
 
-type Account {
-	name: String
-	bank: String
-	balance: Float
-	currency: String
-}
-
-type AccountKV {
-	key: String
-	value: Account
+type IOUHistory {
+	txID: String
+	txTime: String
+	isDeleted: Boolean
+	value: IOU
 }
 
 type Transaction {
@@ -51,15 +46,20 @@ type Transaction {
 	iouRef: String
 }
 
-type IOUHistory {
-	txID: String
-	txTime: String
-	isDeleted: Boolean
-	value: IOU
+type AccountKV {
+	key: String
+	value: Account
 }
 
 type IOUKV {
 	key: String
 	value: IOU
+}
+
+type Account {
+	name: String
+	bank: String
+	balance: Float
+	currency: String
 }
 

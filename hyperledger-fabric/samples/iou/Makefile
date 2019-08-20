@@ -24,7 +24,7 @@ create: $(APP_FILE) clean
 	mkdir -p $(BUILD_PATH) && \
 	cp $(APP_FILE) $(BUILD_PATH)
 	cd $(BUILD_PATH) && \
-	flogo create -f $(APP_FILE) $(APP_NAME)
+	flogo create --cv v0.9.2 -f $(APP_FILE) $(APP_NAME)
 	rm $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp $(SHIM_PATH)/chaincode_shim.go $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp $(SHIM_PATH)/dovetailimports.go $(BUILD_PATH)/$(APP_NAME)/src
@@ -99,7 +99,7 @@ create-client: $(CLIENT_FILE) clean-client
 	mkdir -p $(CLIENT_PATH) && \
 	cp $(CLIENT_FILE) $(CLIENT_PATH)
 	cd $(CLIENT_PATH) && \
-	flogo create -f $(CLIENT_FILE) $(CLIENT_NAME)
+	flogo create --cv v0.9.2 -f $(CLIENT_FILE) $(CLIENT_NAME)
 	cp $(SHIM_PATH)/clientappimports.go $(CLIENT_PATH)/$(CLIENT_NAME)/src
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	echo "" >> go.mod && \
@@ -113,6 +113,8 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	go get -u -d github.com/cloudflare/cfssl@1.3.2
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
+	flogo install github.com/project-flogo/contrib/function/coerce && \
+	flogo install -r github.com/yxuco/dovetail-contrib/function/float@develop github.com/TIBCOSoftware/dovetail-contrib/function/float && \
 	flogo build -e
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	go mod vendor && \

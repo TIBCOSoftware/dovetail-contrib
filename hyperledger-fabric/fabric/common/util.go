@@ -221,7 +221,7 @@ func OrderedParameters(schemaData []byte) ([]ParameterIndex, error) {
 
 // ConstructQueryResponse iterate through query result to create array of key-value pairs, i.e.
 // JSON string of format [{"key":"mykey", "value":{}}, ...]
-func ConstructQueryResponse(resultsIterator shim.StateQueryIteratorInterface, isCompositeKey bool, stub shim.ChaincodeStubInterface) ([]byte, error) {
+func ConstructQueryResponse(resultsIterator shim.StateQueryIteratorInterface, collection string, isCompositeKey bool, stub shim.ChaincodeStubInterface) ([]byte, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString("[")
 
@@ -241,10 +241,18 @@ func ConstructQueryResponse(resultsIterator shim.StateQueryIteratorInterface, is
 			}
 			// the last composite attribute must be the state key
 			key = compositeParts[len(compositeParts)-1]
-			if value, err = stub.GetState(key); err != nil {
-				// ignore key if value does not exist
-				log.Errorf("failed to retrieve state for key %s: %+v", key, err)
-				continue
+			if collection == "" {
+				if value, err = stub.GetState(key); err != nil {
+					// ignore key if value does not exist
+					log.Errorf("failed to retrieve state for key %s: %+v", key, err)
+					continue
+				}
+			} else {
+				if value, err = stub.GetPrivateData(collection, key); err != nil {
+					// ignore key if value does not exist
+					log.Errorf("failed to retrieve state for key %s: %+v", key, err)
+					continue
+				}
 			}
 			if value == nil {
 				// ignore nil state
