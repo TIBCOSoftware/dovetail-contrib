@@ -1,2 +1,4 @@
 fabric-tools/scripts/*.yaml
 fabric-tools/scripts/crypto*
+fabricExtension.zip
+fabclientExtension.zip
