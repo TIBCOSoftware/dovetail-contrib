@@ -1,0 +1,65 @@
+schema {
+	query: Query
+	mutation: Mutation
+}
+type Query {
+	queryIOUByAmount(issuer: String, owner: String, amount: Float): [IOUKV]
+	getAccountTransactions(name: String, bank: String): [TransactionKV]
+	getBankAccounts(bank: String): [AccountKV]
+	getIOUHistory(id: String): [IOUHistory]
+}
+type Mutation {
+	send(receiver: String, sender: String, senderBank: String, receiverBank: String, amount: Float): IOU
+	transfer(owner: String, id: String, newOwner: String): IOU
+	buy(bank: String, owner: String, iou: String): IOU
+	issue(bank: String, owner: String, amount: Float): IOU
+	createAccount(bank: String, balance: Float, name: String): Account
+	exchange(owner: String, id: String, bank: String): IOU
+	redeem(owner: String, id: String, bank: String): Account
+}
+type IOUKV {
+	key: String
+	value: IOU
+}
+
+type Transaction {
+	iouRef: String
+	txID: String
+	txTime: String
+	account: String
+	amount: Float
+}
+
+type TransactionKV {
+	key: String
+	value: Transaction
+}
+
+type AccountKV {
+	key: String
+	value: Account
+}
+
+type IOU {
+	issueDate: String
+	owner: String
+	id: String
+	issuer: String
+	amount: Float
+	currency: String
+}
+
+type Account {
+	currency: String
+	name: String
+	bank: String
+	balance: Float
+}
+
+type IOUHistory {
+	txID: String
+	txTime: String
+	isDeleted: Boolean
+	value: IOU
+}
+

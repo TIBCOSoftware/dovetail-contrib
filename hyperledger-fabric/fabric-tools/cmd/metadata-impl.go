@@ -615,24 +615,33 @@ func getAttributeDefs(props map[string]interface{}) []*attributeDef {
 
 func getDefForObject(name string, props map[string]interface{}) *objectDef {
 	objectSeq++
+
+	// check cached object defs
 	attrs := getAttributeDefs(props)
-	t := name
-	cached, t, isDup := getCachedDef(t, attrs)
-	if cached != nil {
-		return cached
-	}
-	if isDup {
-		// use a different object type if not identical
-		t = fmt.Sprintf("%s%d", name, objectSeq)
-		cached, t, isDup = getCachedDef(t, attrs)
-		if cached != nil {
+	for _, cached := range objectTypes {
+		if isDuplicateDef(cached, attrs) {
 			return cached
 		}
-		if isDup {
-			t = fmt.Sprintf("%s%d", name, objectSeq)
-			fmt.Println("Ignore bad override of type", t)
+	}
+
+	// check override name
+	t := name
+	if ot, ok := schemaOverride[name]; ok {
+		t = ot
+	}
+	if _, ok := objectTypes[t]; ok {
+		// name already used by a different object, so use a unique name
+		t = fmt.Sprintf("%s%d", name, objectSeq)
+		if ot, ok := schemaOverride[t]; ok {
+			if _, ok := objectTypes[ot]; !ok {
+				t = ot
+			} else {
+				fmt.Println("Ignore duplicate override to type", ot)
+			}
 		}
 	}
+
+	// add new object to cache
 	odef := objectDef{typeID: t, attributes: attrs}
 	objectTypes[odef.typeID] = &odef
 	return &odef
@@ -666,24 +675,6 @@ func getObjectDef(name string, def map[string]interface{}) *objectDef {
 		fmt.Println("Unknown property type:", t)
 	}
 	return nil
-}
-
-func getCachedDef(typeID string, attrs []*attributeDef) (*objectDef, string, bool) {
-	t := typeID
-	if ot, ok := schemaOverride[typeID]; ok {
-		t = ot
-	}
-	if cached, ok := objectTypes[t]; ok {
-		// check for repeated object type
-		if isDuplicateDef(cached, attrs) {
-			// same object already cached
-			return cached, t, false
-		}
-		// same type ID exist in cache but different from new object
-		return nil, t, true
-	}
-	// new object does not exist in cache
-	return nil, t, false
 }
 
 func isDuplicateDef(def *objectDef, attrs []*attributeDef) bool {

@@ -42,7 +42,7 @@ func TestEval(t *testing.T) {
 	assert.Nil(t, err)
 
 	tc := test.NewActivityContext(act.Metadata())
-	tc.SetInputObject(&Input{KeyName: "testKey", IsPrivate: false})
+	tc.SetInputObject(&Input{KeyName: "testKey"})
 
 	act.Eval(tc)
 

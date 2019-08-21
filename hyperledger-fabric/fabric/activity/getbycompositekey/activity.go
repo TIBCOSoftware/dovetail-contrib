@@ -150,7 +150,7 @@ func retrievePrivateDataByCompositeKey(ctx activity.Context, ccshim shim.Chainco
 	}
 	defer resultIterator.Close()
 
-	jsonBytes, err := common.ConstructQueryResponse(resultIterator, true, ccshim)
+	jsonBytes, err := common.ConstructQueryResponse(resultIterator, input.PrivateCollection, true, ccshim)
 	if err != nil {
 		log.Errorf("failed to collect result from iterator: %+v\n", err)
 		output := &Output{Code: 500, Message: "failed to collect result from iterator"}
@@ -173,6 +173,7 @@ func retrievePrivateDataByCompositeKey(ctx activity.Context, ccshim shim.Chainco
 		ctx.SetOutputObject(output)
 		return false, errors.Wrapf(err, output.Message)
 	}
+	//	log.Debugf("result %d values %+v", len(value), value)
 
 	output := &Output{Code: 200,
 		Message:  fmt.Sprintf("retrieved data for composite key %s from private collection %s: %s", input.KeyName, input.PrivateCollection, string(jsonBytes)),
@@ -216,7 +217,7 @@ func retrieveByCompositeKey(ctx activity.Context, ccshim shim.ChaincodeStubInter
 	}
 	defer resultIterator.Close()
 
-	jsonBytes, err := common.ConstructQueryResponse(resultIterator, true, ccshim)
+	jsonBytes, err := common.ConstructQueryResponse(resultIterator, "", true, ccshim)
 	if err != nil {
 		log.Errorf("failed to collect result from iterator: %+v\n", err)
 		output := &Output{Code: 500, Message: "failed to collect result from iterator"}

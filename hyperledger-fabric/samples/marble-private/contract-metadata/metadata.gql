@@ -3,19 +3,19 @@ schema {
 	mutation: Mutation
 }
 type Query {
-	readMarblePrivateDetails(name: String): MarblePrivate
 	getMarblesByRange(startKey: String, endKey: String): [MarbleKeyValue]
 	queryMarblesByOwner(owner: String): [MarbleKeyValue]
 	readMarble(name: String): Marble
+	readMarblePrivateDetails(name: String): MarblePrivate
 }
 type Mutation {
 	transferMarble(marble_owner: MarbleTransfer): Marble
 	delete(marble_delete: MarbleDelete): Marble
 	initMarble(marble: MarbleCreate): Marble
 }
-type MarbleKeyValue {
-	key: String
-	value: Marble
+input MarbleTransfer {
+	name: String
+	owner: String
 }
 
 type MarblePrivate {
@@ -24,28 +24,28 @@ type MarblePrivate {
 	price: Float
 }
 
-input MarbleTransfer {
-	name: String
-	owner: String
-}
-
 input MarbleDelete {
 	name: String
 }
 
 input MarbleCreate {
-	owner: String
-	price: Float
 	name: String
 	color: String
 	size: Float
+	owner: String
+	price: Float
 }
 
 type Marble {
-	docType: String
 	name: String
 	color: String
 	size: Float
 	owner: String
+	docType: String
+}
+
+type MarbleKeyValue {
+	key: String
+	value: Marble
 }
 

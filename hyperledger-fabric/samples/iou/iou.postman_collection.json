@@ -1,0 +1,399 @@
+{
+	"info": {
+		"_postman_id": "042b9db1-0e8c-4621-9b55-ab362c8d37d5",
+		"name": "iou",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createAccount - Alice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    createAccount(name: \"Alice\", bank: \"EURBank\", balance: 1000) {\n        name\n        bank\n        balance\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createAccount - Bob",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    createAccount(name: \"Bob\", bank: \"EURBank\", balance: 1000) {\n        name\n        bank\n        balance\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createAccount - Carol",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    createAccount(name: \"Carol\", bank: \"USDBank\", balance: 1000) {\n        name\n        bank\n        balance\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createAccount - David",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    createAccount(name: \"David\", bank: \"USDBank\", balance: 1000) {\n        name\n        bank\n        balance\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBankAccounts - USDBank",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n    getBankAccounts(bank: \"USDBank\") {\n        key\n        value {\n            name\n            bank\n            balance\n            currency\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBankAccounts - EURBank",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n    getBankAccounts(bank: \"EURBank\") {\n        key\n        value {\n            name\n            bank\n            balance\n            currency\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "issue - David - 55 USD",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    issue(bank: \"USDBank\", owner: \"David\", amount: 55) {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer - David to Carol",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    transfer(bank: \"USDBank\", owner: \"David\", newOwner: \"Carol\", id: \"e189cde6ac166286b5fb00585bf0d007f8726f604f84caf3038125fa702c5e9a\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getIOUHistory",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n    getIOUHistory(id: \"e189cde6ac166286b5fb00585bf0d007f8726f604f84caf3038125fa702c5e9a\") {\n        txID\n        txTime\n        isDeleted\n        value {\n            id\n            issuer\n            issueDate\n            owner\n            amount\n            currency\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "redeem - Carol",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    redeem(owner: \"Carol\", bank: \"USDBank\", id: \"35a8180ce95729cdeec4c1f9df09435ed1918a39a084b0a710e7ef96a75d6037\") {\n        name\n        bank\n        balance\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "issue - Alice - 100 EUR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    issue(bank: \"EURBank\", owner: \"Alice\", amount: 100) {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "exchange - Carol - 100 EUR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    exchange(bank: \"USDBank\", owner: \"Carol\", id: \"55193d554c9460394b7fa758ca32e97c90f50ca5ba8b3bf45ea28cba3b22c53e\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getTransactions - Alice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n    getAccountTransactions(name: \"Alice\", bank: \"EURBank\") {\n        key\n        value {\n            txID\n            txTime\n            account\n            amount\n            iouRef\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send - David to Bob",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    send(senderBank: \"USDBank\", sender: \"David\", receiverBank: \"EURBank\", receiver: \"Bob\", amount: 100) {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buy - David",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    buy(bank: \"USDBank\", owner: \"David\", iou: \"55193d554c9460394b7fa758ca32e97c90f50ca5ba8b3bf45ea28cba3b22c53e\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

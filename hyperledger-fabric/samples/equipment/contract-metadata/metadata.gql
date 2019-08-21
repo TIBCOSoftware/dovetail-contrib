@@ -8,32 +8,32 @@ type Query {
 type Mutation {
 	receiveInvoice(location: String, invoiceDate: String, orgId: String, invoicePrice: Float, vendor: String, assetUniqueId: String, description: String): FixedAsset
 	submitPO(location: String, vendor: String, orgId: String, assetUniqueId: String, description: String, purchasePrice: Float): FixedAsset
-	updateAsset(assetUniqueId: String, installDate: String, location: String, model: String, orgId: String, invoiceDate: String, netBookValue: Float, serialNum: String, description: String, purchasePrice: Float): FixedAsset
-	installAsset(acquisitionDate: String, location: String, manufacturer: String, serialNum: String, installDate: String, assetUniqueId: String, vendor: String, model: String, orgId: String, description: String): FixedAsset
-	receiveAsset(vendor: String, model: String, serialNum: String, assetUniqueId: String, description: String, manufacturer: String, orgId: String, acquisitionDate: String, location: String): FixedAsset
+	updateAsset(description: String, purchasePrice: Float, invoiceDate: String, serialNum: String, assetUniqueId: String, model: String, orgId: String, installDate: String, netBookValue: Float, location: String): FixedAsset
+	installAsset(manufacturer: String, acquisitionDate: String, location: String, vendor: String, model: String, serialNum: String, orgId: String, installDate: String, assetUniqueId: String, description: String): FixedAsset
+	receiveAsset(assetUniqueId: String, acquisitionDate: String, location: String, serialNum: String, orgId: String, description: String, manufacturer: String, vendor: String, model: String): FixedAsset
 }
 type FixedAsset {
-	assetNum: String
 	owner: String
-	vendor: String
-	manufacturer: String
 	value: Float
 	location: String
-	assetUniqueId: String
-	assetTag: String
-	serialNum: String
-	netBookValue: Float
-	acquisitionDate: String
-	description: String
 	orgId: String
-	siteId: String
-	purchasePrice: Float
-	invoicePrice: Float
-	installDate: String
-	invoiceDate: [String]
+	serialNum: String
 	statusDate: String
 	model: String
+	invoicePrice: Float
+	netBookValue: Float
+	vendor: String
+	description: String
+	assetUniqueId: String
+	assetNum: String
+	manufacturer: String
+	installDate: String
+	assetTag: String
+	siteId: String
+	invoiceDate: [String]
 	retireDate: String
 	status: String
+	purchasePrice: Float
+	acquisitionDate: String
 }
 

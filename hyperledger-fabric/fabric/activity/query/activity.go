@@ -196,7 +196,7 @@ func queryPrivateData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, 
 	}
 	defer resultIterator.Close()
 
-	jsonBytes, err := common.ConstructQueryResponse(resultIterator, false, nil)
+	jsonBytes, err := common.ConstructQueryResponse(resultIterator, input.PrivateCollection, false, nil)
 	if err != nil {
 		log.Errorf("failed to collect result from iterator: %+v\n", err)
 		output := &Output{Code: 500, Message: "failed to collect result from iterator"}
@@ -262,7 +262,7 @@ func queryData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, query s
 	}
 	defer resultIterator.Close()
 
-	jsonBytes, err := common.ConstructQueryResponse(resultIterator, false, nil)
+	jsonBytes, err := common.ConstructQueryResponse(resultIterator, "", false, nil)
 	if err != nil {
 		log.Errorf("failed to collect result from iterator: %+v\n", err)
 		output := &Output{Code: 500, Message: "failed to collect result from iterator"}

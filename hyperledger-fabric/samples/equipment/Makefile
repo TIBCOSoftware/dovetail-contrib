@@ -28,7 +28,7 @@ create: $(APP_FILE) clean
 	mkdir -p $(BUILD_PATH) && \
 	cp $(APP_FILE) $(BUILD_PATH)
 	cd $(BUILD_PATH) && \
-	flogo create -f $(APP_FILE) $(APP_NAME)
+	flogo create --cv v0.9.2 -f $(APP_FILE) $(APP_NAME)
 	rm $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp $(SHIM_PATH)/chaincode_shim.go $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp $(SHIM_PATH)/dovetailimports.go $(BUILD_PATH)/$(APP_NAME)/src
@@ -87,7 +87,7 @@ create-client: $(CLIENT_FILE) clean-client
 	mkdir -p $(CLIENT_PATH) && \
 	cp $(CLIENT_FILE) $(CLIENT_PATH)
 	cd $(CLIENT_PATH) && \
-	flogo create -f $(CLIENT_FILE) $(CLIENT_NAME)
+	flogo create --cv v0.9.2 -f $(CLIENT_FILE) $(CLIENT_NAME)
 	cp $(SHIM_PATH)/clientappimports.go $(CLIENT_PATH)/$(CLIENT_NAME)/src
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	echo "" >> go.mod && \
@@ -120,7 +120,7 @@ create-gql: $(GQL_FILE) clean-gql
 	mkdir -p $(GQL_PATH) && \
 	cp $(GQL_FILE) $(GQL_PATH)
 	cd $(GQL_PATH) && \
-	flogo create -f $(GQL_FILE) $(GQL_NAME)
+	flogo create --cv v0.9.2 -f $(GQL_FILE) $(GQL_NAME)
 	cp $(SHIM_PATH)/clientappimports.go $(GQL_PATH)/$(GQL_NAME)/src
 	cd $(GQL_PATH)/$(GQL_NAME)/src && \
 	echo "" >> go.mod && \

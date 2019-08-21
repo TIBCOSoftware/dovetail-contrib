@@ -88,24 +88,19 @@ func retrieveCid(ctx activity.Context, ccshim shim.ChaincodeStubInterface) (bool
 	name := cert.Subject.CommonName
 	log.Debug("client subject cn:", name)
 
-	schema, err := common.GetActivityOutputSchema(ctx, "attrs")
-	if err != nil {
-		log.Error("schema not defined for CID attributes\n")
-		output := &Output{Code: 400, Message: "schema not defined for CID attributes"}
-		ctx.SetOutputObject(output)
-		return false, errors.Wrapf(err, output.Message)
-	}
-
-	attrs, err := getCidAttributeSpec(schema)
-	for k := range attrs {
-		v, ok, err := c.GetAttributeValue(k)
-		if err != nil {
-			log.Errorf("failed to retrieve attribute %s: %+v\n", k, err)
-		} else if !ok {
-			log.Debugf("attribute %s is not found", k)
-		} else {
-			log.Debugf("found attribute %s = %s", k, v)
-			attrs[k] = v
+	attrs := make(map[string]string)
+	if schema, err := common.GetActivityOutputSchema(ctx, "attrs"); err == nil {
+		attrs, err = getCidAttributeSpec(schema)
+		for k := range attrs {
+			v, ok, err := c.GetAttributeValue(k)
+			if err != nil {
+				log.Errorf("failed to retrieve attribute %s: %+v\n", k, err)
+			} else if !ok {
+				log.Debugf("attribute %s is not found", k)
+			} else {
+				log.Debugf("found attribute %s = %s", k, v)
+				attrs[k] = v
+			}
 		}
 	}
 
