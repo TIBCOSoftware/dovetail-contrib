@@ -1,0 +1,24 @@
+{
+    "name": "txnreply",
+    "title": "Transaction Reply",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "General",
+       "visible": true,
+       "smallIcon": "txnreply.png",
+       "description": "Log message"
+    },
+    "reply": true,
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/General/activity/txnreply",
+    "inputs": [
+        {
+            "name": "data",
+            "type": "string",
+            "required": true
+        }
+        
+    ],
+    "outputs": []
+}

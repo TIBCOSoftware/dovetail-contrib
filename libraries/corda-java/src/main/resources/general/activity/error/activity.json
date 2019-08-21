@@ -1,0 +1,26 @@
+{
+    "name": "error",
+    "title": "Throw Exception",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "General",
+       "visible": true,
+       "smallIcon": "error.png",
+       "description": "Log message"
+    },
+    "reply": true,
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/General/activity/error",
+    "inputs": [
+        
+        {
+            "name": "message",
+            "type": "string",
+            "required": true
+        }
+       
+    ],
+  
+    "outputs": []
+}

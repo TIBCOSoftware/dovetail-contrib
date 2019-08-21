@@ -1,0 +1,23 @@
+{
+  "name": "sumLong",
+  "args": [
+    {
+      "name": "lv1",
+      "type": "int64"
+    },
+    {
+      "name": "lv2",
+      "type": "int64",
+      "variable": true
+    }
+  ],
+  "help": {
+    "description": "return the sum of values",
+    "example": "math.sumLong(100, 200)\nReturns\n300",
+    "usage": "math.sumLong(<< lv1 >>, << lv2,... >>)\nReturn Type\nint64"
+  },
+  "return": {"type": "int64"},
+  "wi": {
+    "visible": true
+  }
+}
