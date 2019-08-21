@@ -51,7 +51,6 @@ deploy: build
 	cp collections_config.json $(BUILD_PATH)/$(APP_NAME)/src
 	cp -Rf $(BUILD_PATH)/$(APP_NAME)/src $(CC_DEPLOY)/$(APP_NAME)
 	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
-	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts
 
 .PHONY: start-fn
 start-fn:
@@ -66,15 +65,6 @@ start-fn:
 .PHONY: cli-init
 cli-init:
 	docker exec cli bash -c 'cd scripts; ./fn-cli-init.sh'
-
-.PHONY: cli-test
-cli-test:
-	docker exec cli bash -c 'cd scripts; ./fn-cli-test.sh'
-
-.PHONY: package-old
-package-old: 
-	docker exec cli peer chaincode package -n $(APP_NAME) -v 1.0 -p github.com/chaincode/$(APP_NAME) ../../../chaincode/$(APP_NAME).cds
-	mv $(CC_DEPLOY)/$(APP_NAME).cds $(SRC_PATH)
 
 .PHONY: package
 package:
