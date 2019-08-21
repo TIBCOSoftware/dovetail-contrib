@@ -48,14 +48,9 @@
         <scope>test</scope>
     </dependency>
   	<dependency>
-  		<groupId>com.github.torresashjian</groupId>
+  		<groupId>com.github.TIBCOSoftware</groupId>
   		<artifactId>dovetail-java-lib</artifactId>
   		<version>develop-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.github.torresashjian.dovetail-contrib</groupId>
-  		<artifactId>dovetail-activity</artifactId>
-  		<version>refactor-structure-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>com.palominolabs.metrics</groupId>

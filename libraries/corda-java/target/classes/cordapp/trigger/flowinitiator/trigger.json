@@ -1,0 +1,122 @@
+{
+    "name": "R3FlowInitiator",
+    "author": "TIBCO Software Inc.",
+    "type": "flogo:trigger",
+    "version": "1.0.0",
+    "title": "CorDApp Flow Initiator",
+
+    "display": {
+       "description": "Create a flow",
+       "uid": "r3-flow-initiator",
+       "category": "CorDApp",
+       "visible": true, 
+       "wizard": ["Flow Settings", "Flow Inputs"],
+       "smallIcon": "trigger.png",
+       "largeIcon": "trigger.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/trigger/flowinitiator",
+         
+    "settings": [
+        {
+            "name": "flowType",
+            "type": "string",
+            "required": true,
+            "display": {
+                "visible": false
+            },
+            "value": "initiator"
+        }
+    ],
+ 
+    "handler": {
+      "settings": [
+        {
+            "name": "useAnonymousIdentity",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Use confidential identities for this transaction?",
+                "visible": true
+            },
+            "wizard": {
+                "type": "boolean",
+                "step": "Flow Settings"
+            },
+            "value": true
+        },
+        {
+            "name": "hasObservers",
+            "type": "boolean",
+            "display": {
+                "visible": true,
+                "name": "Send transactions to observers?"
+            },
+            "wizard": {
+                "type": "boolean",
+                "step": "Flow Settings"
+            },
+            "value":false
+        },
+        {
+            "name": "observerManual",
+            "type": "boolean",
+            "display": {
+                "name": "Send signed transactions to observers in a separate flow?",
+                "description":"If separate flow selected, com.tibco.dovetail.container.cordapp.flows.ObserverFlowInitiator is used"
+            },
+            "wizard": {
+                "type": "boolean",
+                "step": "Flow Settings"
+            },
+            "value":false
+        },
+        {
+            "name": "schemaSelection",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Select schema to use",
+                "type": "dropdown",
+                "selection": "single"
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Flow Inputs"
+            },
+            "allowed":[]
+        },
+        {
+            "name": "inputParams",
+            "type": "complex_object",
+            "display": {
+                "type": "params",
+                "name": "Flow input parameters",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"LocalDate\", \"DateTime\"]}}, \"partyType\":{\"type\":{\"enum\":[\"\",\"Participant\", \"Observer\", \"Notary\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}"
+            },
+            "wizard": {
+                "type": "params",
+                "name": "Flow input parameters",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"LocalDate\", \"DateTime\"]}}, \"partyType\":{\"type\":{\"enum\":[\"\", \"Participant\", \"Observer\", \"Notary\"]}},\"repeating\":{\"type\":\"boolean\"}}}}",
+                "step": "Flow Inputs"
+            }
+        }
+
+     ]
+    },
+    "outputs": [
+        {
+            "name": "transactionInput",
+            "type": "complex_object"
+        },
+        {
+            "name": "ourIdentity",
+            "type": "string"
+        }
+    ],
+    "actions": [
+          {
+            "name": "Finish"
+          }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "name": "finalize",
+    "title": "Commit to Ledger",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "CorDApp",
+       "visible": true,
+       "smallIcon": "finalized.png",
+       "description": "transaction is signed by all parties, notorized and committed to ledger"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/finalize",
+    "inputs": [
+    ],
+  
+    "outputs": [
+    ]
+}
