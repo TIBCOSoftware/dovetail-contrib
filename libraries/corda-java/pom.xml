@@ -48,14 +48,14 @@
         <scope>test</scope>
     </dependency>
   	<dependency>
-  		<groupId>com.github.TIBCOSoftware</groupId>
+  		<groupId>com.github.torresashjian</groupId>
   		<artifactId>dovetail-java-lib</artifactId>
   		<version>develop-SNAPSHOT</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.github.TIBCOSoftware.dovetail-contrib</groupId>
+  		<groupId>com.github.torresashjian.dovetail-contrib</groupId>
   		<artifactId>dovetail-activity</artifactId>
-  		<version>issue-90/refactor-structure-SNAPSHOT</version>
+  		<version>refactor-structure-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>com.palominolabs.metrics</groupId>
