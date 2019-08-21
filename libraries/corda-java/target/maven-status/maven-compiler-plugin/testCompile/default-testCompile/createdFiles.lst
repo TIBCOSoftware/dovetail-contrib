@@ -1,12 +1,17 @@
+com/tibco/cp/TestRuntime.class
+com/tibco/cp/TestRuntime$MockLogService.class
 com/tibco/dovetail/corda/json/TestSerializer$PartyAmount.class
 com/example/iou/IOUContractContract$SettleIOU.class
 TestResource.class
 com/tibco/dovetail/corda/json/TestCordUtil$1.class
+com/tibco/cp/TestRuntime$MockEventService.class
 com/example/iou/IOUContractContract$IssueIOU.class
 com/example/iou/TestCordaFlowContract$MockTransferTxn.class
 com/example/iou/TestCordaFlowContract.class
 com/example/iou/TestCordaFlowContract$MockIssueTxn.class
 com/example/iou/TestCordaFlowContract$MockSettleTxn.class
+com/tibco/cp/TestRuntime$MockDataService.class
+com/tibco/cp/TestRuntime$MockContainer.class
 cordapp/trigger/TestTrigger$MockFlow.class
 cordapp/trigger/TestTrigger$MockDataService.class
 cordapp/trigger/TestTrigger.class
