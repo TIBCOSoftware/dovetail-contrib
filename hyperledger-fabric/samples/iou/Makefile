@@ -37,7 +37,7 @@ build: $(BUILD_PATH)/$(APP_NAME)
 	-cd $(BUILD_PATH)/$(APP_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
 	flogo install github.com/project-flogo/contrib/function/coerce && \
-	flogo install -r github.com/yxuco/dovetail-contrib/function/float@develop github.com/TIBCOSoftware/dovetail-contrib/function/float && \
+	flogo install -r github.com/yxuco/dovetail-contrib/hyperledger-fabric/function/float@develop github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/function/float && \
 	flogo build -e
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
@@ -105,7 +105,7 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && \
 	flogo install github.com/project-flogo/contrib/function/string && \
 	flogo install github.com/project-flogo/contrib/function/coerce && \
-	flogo install -r github.com/yxuco/dovetail-contrib/function/float@develop github.com/TIBCOSoftware/dovetail-contrib/function/float && \
+	flogo install -r github.com/yxuco/dovetail-contrib/hyperledger-fabric/function/float@develop github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/function/float && \
 	flogo build -e
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	go mod vendor && \
