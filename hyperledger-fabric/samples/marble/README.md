@@ -52,7 +52,7 @@ make package
 Start Hyperledger Fabric first-network with CouchDB:
 ```
 cd $GOPATH/src/github.com/hyperledger/fabric-samples/first-network
-./byfn.sh up -s couchdb
+./byfn.sh up -n -s couchdb
 ```
 Use `cli` docker container to install and instantiate the `marble_cc` chaincode.
 ```

@@ -92,12 +92,13 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 
 	// invoke fabric transaction
 	var response []byte
+	var status int
 	if reqType == opInvoke {
 		logger.Debugf("execute chaincode %s transaction %s", input.ChaincodeID, input.TransactionName)
-		response, err = client.ExecuteChaincode(input.ChaincodeID, input.TransactionName, params, transientMap)
+		response, status, err = client.ExecuteChaincode(input.ChaincodeID, input.TransactionName, params, transientMap)
 	} else {
 		logger.Debugf("query chaincode %s transaction %s timeout %d endpoints %s", input.ChaincodeID, input.TransactionName, input.TimeoutMillis, input.Endpoints)
-		response, err = client.QueryChaincode(input.ChaincodeID, input.TransactionName, params, transientMap)
+		response, status, err = client.QueryChaincode(input.ChaincodeID, input.TransactionName, params, transientMap)
 	}
 
 	if err != nil {
@@ -109,17 +110,27 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 
 	if response == nil {
 		logger.Debugf("no data returned from fabric")
-		output := &Output{Code: 300, Message: "no data returned from fabric"}
+		output := &Output{Code: status, Message: "no data returned from fabric"}
 		ctx.SetOutputObject(output)
 		return true, nil
 	}
-	logger.Debugf("Fabric response: %s\n", string(response))
+	logger.Debugf("Fabric response - status %d, response %s\n", status, string(response))
+
+	if status != 200 {
+		logger.Warnf("return non-200 status %d, response %+v", status, string(response))
+		output := &Output{Code: status,
+			Message: string(response),
+			Result:  response,
+		}
+		ctx.SetOutputObject(output)
+		return true, nil
+	}
 
 	var value interface{}
 	if err := json.Unmarshal(response, &value); err != nil {
 		logger.Warnf("failed to unmarshal fabric response %+v, error: %+v", response, err)
-		output := &Output{Code: 200,
-			Message: fmt.Sprintf("data returned from fabric is not JSON: %s", string(response)),
+		output := &Output{Code: 210,
+			Message: string(response),
 			Result:  response,
 		}
 		ctx.SetOutputObject(output)

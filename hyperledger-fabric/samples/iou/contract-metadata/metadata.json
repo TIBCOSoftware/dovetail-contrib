@@ -158,6 +158,36 @@
                     }
                 }
             },
+            "getIOUByIssuer": {
+                "name": "getIOUByIssuer",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "issuer": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/IOUList"
+                }
+            },
+            "getIOUByOwner": {
+                "name": "getIOUByOwner",
+                "operation": "query",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "owner": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "returns": {
+                    "$ref": "#/components/IOUList"
+                }
+            },
             "getIOUHistory": {
                 "name": "getIOUHistory",
                 "description": "retrieves history of an IOU",
@@ -252,38 +282,7 @@
                     }
                 },
                 "returns": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "key": {
-                                "type": "string"
-                            },
-                            "value": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "string"
-                                    },
-                                    "issuer": {
-                                        "type": "string"
-                                    },
-                                    "amount": {
-                                        "type": "number"
-                                    },
-                                    "currency": {
-                                        "type": "string"
-                                    },
-                                    "issueDate": {
-                                        "type": "string"
-                                    },
-                                    "owner": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    "$ref": "#/components/IOUList"
                 }
             },
             "redeem": {
@@ -391,6 +390,41 @@
                 },
                 "owner": {
                     "type": "string"
+                }
+            }
+        },
+        "IOUList": {
+            "$id": "IOUList",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "issuer": {
+                                "type": "string"
+                            },
+                            "amount": {
+                                "type": "number"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "issueDate": {
+                                "type": "string"
+                            },
+                            "owner": {
+                                "type": "string"
+                            }
+                        }
+                    }
                 }
             }
         }

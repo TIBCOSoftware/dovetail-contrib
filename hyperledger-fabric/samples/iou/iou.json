@@ -535,6 +535,112 @@
                             }
                         }
                     }
+                },
+                {
+                    "description": "",
+                    "settings": {
+                        "name": "getIOUByIssuer",
+                        "commonData": "",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:getIOUByIssuer"
+                        },
+                        "input": {
+                            "parameters": {
+                                "mapping": {
+                                    "issuer": "=$.parameters.issuer"
+                                }
+                            }
+                        },
+                        "output": {
+                            "status": "=$.status",
+                            "message": "=$.message",
+                            "returns": {
+                                "mapping": {
+                                    "@foreach($.returns)": {
+                                        "key": "=$.key",
+                                        "value": "=$.value"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "reply": {
+                        "message": "",
+                        "returnsDataType": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                            }
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"issuer\": \"\"\n}"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "",
+                    "settings": {
+                        "name": "getIOUByOwner",
+                        "commonData": "",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:getIOUByOwner"
+                        },
+                        "input": {
+                            "parameters": {
+                                "mapping": {
+                                    "owner": "=$.parameters.owner"
+                                }
+                            }
+                        },
+                        "output": {
+                            "status": "=$.status",
+                            "message": "=$.message",
+                            "returns": {
+                                "mapping": {
+                                    "@foreach($.returns)": {
+                                        "key": "=$.key",
+                                        "value": "=$.value"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "reply": {
+                        "message": "",
+                        "returnsDataType": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                            }
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"owner\": \"\"\n}"
+                            }
+                        }
+                    }
                 }
             ]
         }
@@ -704,7 +810,7 @@
                             "input": {
                                 "key": "=$flow.parameters.name",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -814,7 +920,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -862,7 +968,7 @@
                             "input": {
                                 "key": "=$flow.parameters.name",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -972,7 +1078,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -1349,7 +1455,7 @@
                             "input": {
                                 "key": "=$flow.parameters.owner",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1459,7 +1565,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -1517,7 +1623,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1627,7 +1733,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -1671,7 +1777,7 @@
                             "input": {
                                 "key": "=$flow.txID",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1781,7 +1887,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -1838,7 +1944,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.owner)",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1948,7 +2054,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -1993,7 +2099,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2103,7 +2209,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -2359,7 +2465,7 @@
                             "input": {
                                 "key": "=$flow.parameters.iou",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2469,7 +2575,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -2553,7 +2659,7 @@
                             "input": {
                                 "key": "=$flow.parameters.owner",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2663,7 +2769,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -2721,7 +2827,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2831,7 +2937,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -2875,7 +2981,7 @@
                             "input": {
                                 "key": "=$activity[GetIOU].key",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2985,7 +3091,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -3042,7 +3148,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.owner)",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3152,7 +3258,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -3342,7 +3448,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3452,7 +3558,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -3510,7 +3616,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3620,7 +3726,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -3876,7 +3982,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3986,7 +4092,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -4054,7 +4160,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4164,7 +4270,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -4210,7 +4316,7 @@
                             "input": {
                                 "key": "=$flow.txID",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4320,7 +4426,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -4377,7 +4483,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4487,7 +4593,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -4728,7 +4834,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4838,7 +4944,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -4935,7 +5041,7 @@
                             "input": {
                                 "key": "=$activity[GetIOU].result.owner",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5045,7 +5151,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -5093,7 +5199,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5203,7 +5309,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -5233,7 +5339,7 @@
                             "input": {
                                 "key": "=$activity[GetAcct].key",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5343,7 +5449,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -5398,7 +5504,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $activity[GetAcct].result.name)",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5508,7 +5614,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -5553,7 +5659,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5663,7 +5769,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -5841,7 +5947,7 @@
                                 "usePagination": false,
                                 "start": "",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5951,7 +6057,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -6141,7 +6247,7 @@
                                 "usePagination": false,
                                 "start": "",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6251,7 +6357,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -6404,7 +6510,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6514,7 +6620,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -6658,7 +6764,7 @@
                                 "usePagination": false,
                                 "start": "",
                                 "commonData": {
-                                    "id": "b6d7b980-b7b7-11e9-9f6f-e3db8406b795",
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6768,7 +6874,7 @@
                                     "propertyMap": {},
                                     "keyfield": "name",
                                     "isValid": true,
-                                    "lastUpdatedTime": 1566018735111,
+                                    "lastUpdatedTime": 1566398399000,
                                     "user": "flogo",
                                     "connectorName": "iou_data",
                                     "connectorDescription": " "
@@ -7278,6 +7384,536 @@
                     }
                 }
             }
+        },
+        {
+            "id": "flow:getIOUByIssuer",
+            "data": {
+                "name": "getIOUByIssuer",
+                "description": "",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "GetByCompositeKey",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "GetByCompositeKey",
+                        "to": "Log1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "Log1",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[getIOUByIssuer] \", $flow.parameters.issuer)",
+                                "addDetails": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "GetByCompositeKey",
+                        "name": "GetByCompositeKey",
+                        "activity": {
+                            "ref": "#getbycompositekey",
+                            "input": {
+                                "keyName": "issuer~id",
+                                "usePagination": false,
+                                "start": "",
+                                "commonData": {
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
+                                    "type": "flogo:connector",
+                                    "version": "1.0.0",
+                                    "name": "fabric-datadef",
+                                    "hashTags": [],
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "Fabric Data Definition",
+                                    "description": "Fabric Data Definition",
+                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "description": "Unique name of the data definition",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Name",
+                                                "visible": true
+                                            },
+                                            "value": "iou_data"
+                                        },
+                                        {
+                                            "name": "schemaList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Schema Definitions",
+                                                "description": "Define shared data schema",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"AccountKV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"TransactionKV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOUHistory\",\"definition\":\"[{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"isDeleted\\\":false,\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                        },
+                                        {
+                                            "name": "dataList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Shared Data",
+                                                "description": "Define shared data value",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
+                                        },
+                                        {
+                                            "name": "schema",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All schema definitions",
+                                                "description": "Schema defined in schemaList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    },\n    \"AccountKV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"name\": \"\",\n          \"bank\": \"\",\n          \"balance\": 0,\n          \"currency\": \"\"\n        }\n      }\n    ],\n    \"TransactionKV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"account\": \"\",\n          \"amount\": 0,\n          \"iouRef\": \"\"\n        }\n      }\n    ],\n    \"IOUHistory\": [\n      {\n        \"txID\": \"\",\n        \"txTime\": \"\",\n        \"isDeleted\": false,\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                            }
+                                        },
+                                        {
+                                            "name": "data",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All data definitions",
+                                                "description": "Data values defined in dataList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
+                                            }
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "flogo",
+                                    "key": "flogo/fabric/connector/datadef/connector.json",
+                                    "display": {
+                                        "category": "fabric",
+                                        "description": "Fabric Data Definition",
+                                        "visible": true,
+                                        "smallIcon": "ic-fabric@2x.png",
+                                        "largeIcon": "ic-fabric@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Save"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1566398399000,
+                                    "user": "flogo",
+                                    "connectorName": "iou_data",
+                                    "connectorDescription": " "
+                                },
+                                "dataType": "iou.IOU",
+                                "privateCollection": "",
+                                "attributes": {
+                                    "mapping": {
+                                        "issuer": "=$flow.parameters.issuer"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "attributes": {
+                                        "type": "json",
+                                        "value": "{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"}},\"required\":[]}",
+                                        "fe_metadata": "[{\"parameterName\":\"issuer\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                    }
+                                },
+                                "output": {
+                                    "result": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Log1",
+                        "name": "Log1",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"QUERY: \", $activity[GetByCompositeKey].message)",
+                                "addDetails": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "@foreach($activity[GetByCompositeKey].result)": {
+                                                "value": "=$.value",
+                                                "key": "=$.key"
+                                            }
+                                        }
+                                    },
+                                    "status": "=$activity[GetByCompositeKey].code",
+                                    "message": "=$activity[GetByCompositeKey].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"issuer\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction1\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:getIOUByOwner",
+            "data": {
+                "name": "getIOUByOwner",
+                "description": "",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "Query",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Query",
+                        "to": "Log1",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "Log1",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[getIOUByOwner] \", $flow.parameters.owner)",
+                                "addDetails": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Query",
+                        "name": "Query",
+                        "activity": {
+                            "ref": "#query",
+                            "input": {
+                                "query": "{\n    \"selector\": {\n        \"owner\": \"$owner\"\n    }\n}",
+                                "usePagination": false,
+                                "start": "",
+                                "commonData": {
+                                    "id": "7b787ed0-c421-11e9-aec8-79b6b96212b0",
+                                    "type": "flogo:connector",
+                                    "version": "1.0.0",
+                                    "name": "fabric-datadef",
+                                    "hashTags": [],
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "Fabric Data Definition",
+                                    "description": "Fabric Data Definition",
+                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "description": "Unique name of the data definition",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Name",
+                                                "visible": true
+                                            },
+                                            "value": "iou_data"
+                                        },
+                                        {
+                                            "name": "schemaList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Schema Definitions",
+                                                "description": "Define shared data schema",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"AccountKV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"TransactionKV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOUHistory\",\"definition\":\"[{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"isDeleted\\\":false,\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"}]"
+                                        },
+                                        {
+                                            "name": "dataList",
+                                            "type": "array",
+                                            "display": {
+                                                "type": "table",
+                                                "name": "Shared Data",
+                                                "description": "Define shared data value",
+                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
+                                                "readonly": false,
+                                                "valid": false,
+                                                "visible": true
+                                            },
+                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
+                                        },
+                                        {
+                                            "name": "schema",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All schema definitions",
+                                                "description": "Schema defined in schemaList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    },\n    \"AccountKV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"name\": \"\",\n          \"bank\": \"\",\n          \"balance\": 0,\n          \"currency\": \"\"\n        }\n      }\n    ],\n    \"TransactionKV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"account\": \"\",\n          \"amount\": 0,\n          \"iouRef\": \"\"\n        }\n      }\n    ],\n    \"IOUHistory\": [\n      {\n        \"txID\": \"\",\n        \"txTime\": \"\",\n        \"isDeleted\": false,\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ]\n  }\n}"
+                                            }
+                                        },
+                                        {
+                                            "name": "data",
+                                            "type": "complex_object",
+                                            "display": {
+                                                "name": "All data definitions",
+                                                "description": "Data values defined in dataList",
+                                                "type": "texteditor",
+                                                "syntax": "json",
+                                                "readonly": true,
+                                                "valid": true,
+                                                "visible": true
+                                            },
+                                            "value": {
+                                                "metadata": "",
+                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
+                                            }
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "flogo",
+                                    "key": "flogo/fabric/connector/datadef/connector.json",
+                                    "display": {
+                                        "category": "fabric",
+                                        "description": "Fabric Data Definition",
+                                        "visible": true,
+                                        "smallIcon": "ic-fabric@2x.png",
+                                        "largeIcon": "ic-fabric@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Save"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1566398399000,
+                                    "user": "flogo",
+                                    "connectorName": "iou_data",
+                                    "connectorDescription": " "
+                                },
+                                "dataType": "iou.IOU",
+                                "privateCollection": "",
+                                "queryParams": {
+                                    "mapping": {
+                                        "owner": "=$flow.parameters.owner"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "queryParams": {
+                                        "type": "json",
+                                        "value": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}},\"required\":[]}",
+                                        "fe_metadata": "[{\"parameterName\":\"owner\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                    }
+                                },
+                                "output": {
+                                    "result": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Log1",
+                        "name": "Log1",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"QUERY: \", $activity[Query].message)",
+                                "addDetails": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "status": "=$activity[Query].code",
+                                    "message": "=$activity[Query].message",
+                                    "returns": {
+                                        "mapping": {
+                                            "@foreach($activity[Query].result)": {
+                                                "key": "=$.key",
+                                                "value": "=$.value"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"owner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction2\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
         }
     ],
     "properties": [
@@ -7317,6 +7953,6 @@
             "value": 1.1
         }
     ],
-    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vcHJvamVjdC1mbG9nby9jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAPYZFU+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAD2GRVPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9oeXBlcmxlZGdlci1mYWJyaWMvZmFicmljIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L2ZhYnJpYyJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
+    "fe_metadata": "UEsDBAoAAAAIAMN9FU+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACADDfRVPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

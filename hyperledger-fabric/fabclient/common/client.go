@@ -110,7 +110,7 @@ func (c *FabricClient) Close() {
 }
 
 // QueryChaincode sends query request to Fabric network
-func (c *FabricClient) QueryChaincode(ccID, fcn string, args [][]byte, transient map[string][]byte) ([]byte, error) {
+func (c *FabricClient) QueryChaincode(ccID, fcn string, args [][]byte, transient map[string][]byte) ([]byte, int, error) {
 	opts := []channel.RequestOption{channel.WithRetry(retry.DefaultChannelOpts)}
 	if c.timeoutMillis > 0 {
 		//		fmt.Printf("set request timeout: %d ms\n", c.timeoutMillis)
@@ -122,13 +122,13 @@ func (c *FabricClient) QueryChaincode(ccID, fcn string, args [][]byte, transient
 	}
 	response, err := c.client.Query(channel.Request{ChaincodeID: ccID, Fcn: fcn, Args: args, TransientMap: transient}, opts...)
 	if err != nil {
-		return nil, err
+		return nil, 500, err
 	}
-	return response.Payload, nil
+	return response.Payload, int(response.ChaincodeStatus), nil
 }
 
 // ExecuteChaincode sends invocation request to Fabric network
-func (c *FabricClient) ExecuteChaincode(ccID, fcn string, args [][]byte, transient map[string][]byte) ([]byte, error) {
+func (c *FabricClient) ExecuteChaincode(ccID, fcn string, args [][]byte, transient map[string][]byte) ([]byte, int, error) {
 	opts := []channel.RequestOption{channel.WithRetry(retry.DefaultChannelOpts)}
 	if c.timeoutMillis > 0 {
 		//		fmt.Printf("set request timeout: %d ms\n", c.timeoutMillis)
@@ -140,9 +140,9 @@ func (c *FabricClient) ExecuteChaincode(ccID, fcn string, args [][]byte, transie
 	}
 	response, err := c.client.Execute(channel.Request{ChaincodeID: ccID, Fcn: fcn, Args: args, TransientMap: transient}, opts...)
 	if err != nil {
-		return nil, err
+		return nil, 500, err
 	}
-	return response.Payload, nil
+	return response.Payload, int(response.ChaincodeStatus), nil
 }
 
 // ReadFile returns content of a specified file
