@@ -8,18 +8,19 @@ Blockchain distributed ledger is a perfect technology to record such end-to-end 
 
 ## Design
 The system has 3 types of actors:
- - Bank service provider, who issues and redeems IOUs for its customers, and exchanges IOUs of different currencies according to a exchange rate.  The provider may be a bank, or a service unit within a bank, or a trusted service provider.  For simplicity, this sample assumes that each provider uses only one currency, and the exchange rate is a fixed constant.  We name 2 providers as `EURBank` and `USDBank`.  The exchange rate is configured as 1 EUR = 1.1 USD.
- - User account, that is associated with a bank service provider, and holds a balance of fund used purchase IOUs from the associated bank service provider.  Each account is identified by a pair of crypto key and certificate.  The account name is an alias that does not necessarily match the true identity of the account owner, and thus the transactions on the blockchain are pseudonymous.
+ - Bank service provider, who issues and redeems IOUs for its customers, and exchanges IOUs of different currencies according to an exchange rate.  The provider may be a bank, or a service unit within a bank, or a trusted service provider.  For simplicity, this sample assumes that each provider uses only one currency, and the exchange rate is a fixed constant.  We name 2 providers as `EURBank` and `USDBank`.  The exchange rate is configured as 1 EUR = 1.1 USD.
+ - User account, that is associated with a bank service provider, and holds a balance of fund used to purchase IOUs from the associated bank service provider.  Each account is identified by a pair of crypto key and certificate.  The account name is an alias that does not necessarily match the true identity of the account owner, and thus the transactions on the blockchain are pseudonymous.
  - Network operator, who operates peer nodes of the Hyperledger Fabric network, and creates crypto keys for bank administrator and user accounts.  Multiple operators may be associated with different business entities.  An operator may be part of the same bank as a bank service provider, or an independent blockchain infrastructure provider. 
 
 Hyperledger Fabric network config:
  - The first network operator, Org1, runs 2 peer nodes for `EURBank`, and `CA` server used to generate 3 crypto key pairs for `EURBankAdmin`, `Alice` and `Bob`, respectively.  The generated certificates contain attributes used for chaincode authorization.
  - The second network operator, Org2, runs 2 peer nodes for `USDBank`, and `CA` server used to generate 3 crypto key pairs for `USDBankAdmin`, `Carol` and `David`, respectively.  The generated certificates also contain attributes used for chaincode authorization.
- - Private collections `EURBankTransactions` and `USDBankTransactions` are configured to store account balance updates for acounts of `EURBank` and `USDBank` respectively.  Both operator orgs can access these 2 private collections.
+ - Private collections `EURBankTransactions` and `USDBankTransactions` are configured to store balance updates for acounts of `EURBank` and `USDBank` respectively.  Both operator orgs can access these 2 private collections.
  - Private collections `EURBankAccounts` and `USDBankAccounts` are configured to store current state of user accounts of `EURBank` and `USBBank` respectively.  Each of these private collections is exclusively accessible by only its operator org.
  - CouchDB is configured to store the current state and full history of IOU's, and indexes are defined to support rich queries on IOU's.
 
  Data object definitions:
+
  | IOU               | Account          | Transaction     |
  | ----------------- | ---------------- | --------------- |
  | id:        string | name:     string | txID:    string | 
@@ -60,7 +61,7 @@ Hyperledger Fabric network config:
 4. exchange(iou, bank)
    - Actions:
      - Change the IOU's owner to the specified bank;
-     - Create IOU issued by the bank to the IOU's owner with ammount converted to the bank's currency according to the exchange rate;
+     - Create IOU issued by the bank to the IOU's owner with amount converted to the bank's currency according to the exchange rate;
      - Record transaction for positive debt increase of the bank.
    - Rules:
      - Reject the request if the specified IOU does not exist;
@@ -80,6 +81,7 @@ Hyperledger Fabric network config:
 
 ## Other chaincode operations:
 Composite operation for finding or creating an equivalent IOU with the specified amount in the currency of a receiver's bank:
+
 6. send(sender, senderBank, receiverBank, amount)
    - Actions:
      - If senderBank is the same as receiverBank, call `issue` to create IOU issued by the senderBank to the sender with specified amount;
@@ -87,7 +89,8 @@ Composite operation for finding or creating an equivalent IOU with the specified
        - If found, call `buy` to get the IOU transferred to the sender;
        - If not found, call `issue` to create IOU issued by the senderBank with amount converted to senderBank's currency according to exchange-rate.
 
-Account management operations are also required, and they are better packaged as a separate chaincode because they require different endorsement policies. However, for simplicity of the sample, we implement only a single operation for creating accounts, and package it in the same chaincodde with IOU operations.
+Account management operations are also required, and they are better packaged as a separate chaincode because they require different endorsement policies. However, for simplicity of the sample, we implement only a single operation for creating accounts, and package it in the same chaincode with IOU operations.
+
 7. createAccount(name, bank, balance)
    - Actions:
      - create an account for an specified name at a bank with an initial balance in the bank's currency.
@@ -97,6 +100,7 @@ Account management operations are also required, and they are better packaged as
 
 ## Client operations:
 A client app is implemented to send requests to the blockchain and verify the results.  It implements a GraphQL service interface.  Although this client app implements more test operations, only the following operations are needed to support the cross-border payment process:
+
 1. Mutation createAccount(name, bank, balance): It initializes user accounts;
 2. Mutation send(senderBank, sender, receiverBank, receiver, amount): It processes the sender's request to pay the receiver the specified amount in receiverBank's currency.  It orchestrates the process by making the following calls to the chaincode:
    - Use sender credential to call the composite chaincode operation: `send(sender, senderBank, receiverBank, amount)`;
@@ -104,13 +108,13 @@ A client app is implemented to send requests to the blockchain and verify the re
    - If IOU is issued by the senderBank:
      - Use receiver credential to call chaincode operation: `exchange(iou, receiverBank)`;
      - Use receiver credential to call chaincode operation with the new IOU: `redeem(newIOU, receiverBank)`;
-   - If IOU is issued by the receiverBank:
+   - Otherwise, if IOU is issued by the receiverBank:
      - Use receiver credential to call chaincode operation: `redeem(iou, receiverBank)`.
-3. Query getBankAccounts(bank): It returns the balances of all user accounts of the specifiedd bank;
+3. Query getBankAccounts(bank): It returns the balances of all user accounts of the specified bank;
 4. Query getAccountTransactions(name|bank, bank): It returns all transactions of a user account or a bank;
 5. Query getIOUHistory(iou): It returns the history of a specified IOU.
 
-[iou.postman_collection.json](iou.postman_collection.json) contains sample GraphQL test messages that can be viewed and executed in [postman](https://www.getpostman.com/downloads/).
+The file [iou.postman_collection.json](iou.postman_collection.json) contains sample GraphQL test messages that can be viewed and executed in [postman](https://www.getpostman.com/downloads/).
 
 ## Modeling with TIBCO Cloud Integration (TCI)
 If you are already a subscriber of [TIBCO Cloud Integration (TCI)](https://cloud.tibco.com/), or you plan to sign-up for a TCI trial, you can view or edit this app by using a Chrome browser.  Refer to [Modeling with TCI](../../tci) for more detailed instructions.
