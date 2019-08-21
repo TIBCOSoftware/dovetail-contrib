@@ -48,14 +48,14 @@
         <scope>test</scope>
     </dependency>
   	<dependency>
-  		<groupId>com.tibco.dovetail</groupId>
-  		<artifactId>dovetail-runtime</artifactId>
-  		<version>0.1.4</version>
+  		<groupId>com.github.TIBCOSoftware</groupId>
+  		<artifactId>dovetail-java-lib</artifactId>
+  		<version>develop-SNAPSHOT</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.tibco.dovetail</groupId>
+  		<groupId>com.github.TIBCOSoftware.dovetail-contrib</groupId>
   		<artifactId>dovetail-activity</artifactId>
-  		<version>0.1.4</version>
+  		<version>issue-90/refactor-structure-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>com.palominolabs.metrics</groupId>
@@ -221,7 +221,7 @@
     </repository>
      <repository>
       <snapshots>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </snapshots>
       <id>jitpack</id>
       <name>jitpack Repository</name>
