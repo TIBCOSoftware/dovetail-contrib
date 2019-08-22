@@ -33,6 +33,8 @@ Skip to the next section if you do not plan to modify the included sample model.
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_private.json`](marble_private.json) to this `marble-private` sample folder.
 
+Note that when a flogo model is imported to `Flogo® Enterprise v2.6.1`, a `return` activity is automatically added to the end of all branches, which could be an issue if the `return` activity is not at the end of a flow.  Thus, you need to carefully remove the mistakenly added `return` activities after the model is imported.  This issue will be fixed in a later release of the `Flogo® Enterprise`.
+
 ## Build and deploy chaincode to Hyperledger Fabric
 
 - In the `marble-private` folder, execute `make create` to generate source code from the flogo model [`marble_private.json`](marble_private.json).
@@ -51,7 +53,7 @@ make package
 Start Hyperledger Fabric first-network with CouchDB:
 ```
 cd $GOPATH/src/github.com/hyperledger/fabric-samples/first-network
-./byfn.sh up -s couchdb
+./byfn.sh up -n -s couchdb
 ```
 Use the `cli` docker container to install and instantiate the `marble_private_cc` chaincode.
 ```

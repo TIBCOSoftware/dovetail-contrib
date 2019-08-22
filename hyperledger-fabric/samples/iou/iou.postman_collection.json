@@ -394,6 +394,58 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "send - Alice to Carol",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    send(senderBank: \"EURBank\", sender: \"Alice\", receiverBank: \"USDBank\", receiver: \"Carol\", amount: 110) {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getIOUByIssuer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n    getIOUByIssuer(issuer: \"USDBank\") {\n        key\n        value {\n            id\n            issuer\n            issueDate\n            owner\n            amount\n            currency\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
