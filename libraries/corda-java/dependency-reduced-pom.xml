@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tibco.dovetail</groupId>
   <artifactId>dovetail-corda</artifactId>
-  <version>0.1.4</version>
+  <version>0.2.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -142,9 +142,7 @@
       <url>https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases</url>
     </repository>
     <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
+      <snapshots />
       <id>jitpack</id>
       <name>jitpack Repository</name>
       <url>https://jitpack.io</url>

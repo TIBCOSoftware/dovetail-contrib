@@ -13,3 +13,9 @@ zip -r .target/multitarget/multitarget-general-extension-${build_tag////-}.zip m
 
 echo "Building multitarget functions"
 zip -r .target/multitarget/multitarget-function-${build_tag////-}.zip multitarget/function
+
+echo "Building corda java"
+cd libraries/corda-java
+mvn clean
+mvn package
+cp *.jar 

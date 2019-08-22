@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -25,6 +26,7 @@ import com.tibco.dovetail.core.runtime.engine.ContextImpl;
 import com.tibco.dovetail.core.runtime.engine.FlowEngine;
 import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.flow.TransactionFlow;
+import com.tibco.dovetail.core.runtime.engine.Scope;
 import com.tibco.dovetail.core.runtime.services.IContainerService;
 import com.tibco.dovetail.core.runtime.services.IDataService;
 import com.tibco.dovetail.core.runtime.services.IEventService;
@@ -34,7 +36,7 @@ import junit.framework.Assert;
 
 public class TestRuntime {
 
-	@Test
+	//@Test
 	public void testShcemaCompiler() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		InputStream in = this.getClass().getResourceAsStream("transactions.json");
@@ -45,22 +47,22 @@ public class TestRuntime {
 			
 			HandlerConfig[] handlerConfigs = app.getTriggers()[0].getHandlers();
 			for(int j=0; j<handlerConfigs.length; j++) {
-				String txnName = handlerConfigs[j].getSetting("transaction");
-				Resources r = handlerConfigs[j].getFlow();
+				String txnName = String.valueOf(handlerConfigs[j].getSetting("transaction"));
+				//Resources r = handlerConfigs[j].getFlow();
 	
-	             TransactionFlow flow = FlowCompiler.compile(r);
+	             TransactionFlow flow = FlowCompiler.compile(handlerConfigs[j]);
 			}
 		
 		
 	}
 	
-	@Test 
+	//@Test 
 	public void testIterator() throws Exception {
 		InputStream in = this.getClass().getResourceAsStream("iterator.json");
 		
 		FlowAppConfig app = FlowAppConfig.parseModel(in);
 		
-		FlowEngine e = new FlowEngine(FlowCompiler.compile(app.getTriggers()[0].getHandlers()[0].getFlow()));
+		FlowEngine e = new FlowEngine(FlowCompiler.compile(app.getTriggers()[0].getHandlers()[0]));
 		
 		ContextImpl context = new ContextImpl();
 		context.setContainerService(new MockContainer());
@@ -70,8 +72,9 @@ public class TestRuntime {
 		context.addInput("records", doc);
 		context.addInput("transactionId", "first");
 		context.addInput("timestamp", "timestamp");
-		ReplyData reply = e.execute(context);
-		Assert.assertEquals("Success", reply.getStatus());
+		Scope scope = new Scope();
+		ReplyData reply = e.execute(context, scope);
+		Assert.assertEquals("Success", reply.getData());
 	}
 	
 	public class MockContainer implements IContainerService {
@@ -90,37 +93,57 @@ public class TestRuntime {
 		public ILogService getLogService() {
 			return new MockLogService();
 		}
+
+		@Override
+		public void addContainerAsyncTask(String name, Object v){
+			// Do nothing
+		}
+
+		@Override
+		public Object getContainerProperty(String name){
+			return "Property";
+		}
 		
 	}
 	
-	public class MockDataService implements IDataService {
+	public class MockDataService<T, R> implements IDataService<T, R> {
+
 
 		@Override
-		public DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
+		public R getState(String assetName, String assetKey, T keyValue) {
 			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<R> getStates(String assetName, String assetKey, Set<T> keyValue){
+			return null;
+		}
+
+		@Override
+		public R putState(String assetName, String assetKey, R assetValue){
 			return assetValue;
 		}
 
 		@Override
-		public DocumentContext getState(String assetName, String assetKey, DocumentContext keyValue) {
+		public R deleteState(String assetName, String assetKey, T keyValue) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public DocumentContext deleteState(String assetName, String assetKey, DocumentContext keyValue) {
+		public boolean processPayment(DocumentContext assetValue){
+			return true;
+		}
+
+		@Override
+		public List<R> lookupState(String assetName, String assetKey, T keyValue) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public List<DocumentContext> lookupState(String assetName, String assetKey, DocumentContext keyValue) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<DocumentContext> getHistory(String assetName, String assetKey, DocumentContext keyValue) {
+		public List<R> getHistory(String assetName, String assetKey, T keyValue) {
 			// TODO Auto-generated method stub
 			return null;
 		}

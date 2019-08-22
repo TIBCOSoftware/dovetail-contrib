@@ -10,6 +10,7 @@ before_deploy:
     - make multitarget-artifacts BUILD_TAG=${TRAVIS_TAG}
     - make hyperledger-fabric-artifacts BUILD_TAG=${TRAVIS_TAG}
     - make corda-artifacts BUILD_TAG=${TRAVIS_TAG}
+    - make libraries-artifacts BUILD_TAG=${TRAVIS_TAG}
     - git tag $TRAVIS_TAG
 deploy:
   provider: releases
