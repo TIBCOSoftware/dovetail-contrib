@@ -9,4 +9,4 @@ echo "Building corda java"
 cd libraries/corda-java
 mvn clean
 mvn package
-cp target/*.jar .target/libraries
+cp target/*.jar ../../.target/libraries
