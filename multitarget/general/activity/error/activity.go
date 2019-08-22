@@ -6,7 +6,7 @@
 package txnerr
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/error"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/error"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

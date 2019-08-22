@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strings"
 
-	dtsvc "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/services"
+	dtsvc "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/runtime/services"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/core/data"
 )

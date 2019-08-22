@@ -6,7 +6,7 @@
 package query
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/query"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/query"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

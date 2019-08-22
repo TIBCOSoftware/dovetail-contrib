@@ -6,7 +6,7 @@
 package mapper
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/mapper"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/mapper"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

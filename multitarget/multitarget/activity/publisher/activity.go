@@ -6,7 +6,7 @@
 package publisher
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/publisher"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/publisher"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

@@ -9,7 +9,7 @@ package history
 import (
 	"fmt"
 
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/utils"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/core/data"
 )

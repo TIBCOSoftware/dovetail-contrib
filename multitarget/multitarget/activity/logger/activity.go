@@ -6,7 +6,7 @@
 package logger
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/logger"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/logger"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

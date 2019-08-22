@@ -6,7 +6,7 @@
 package txnreply
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/txnreply"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/txnreply"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

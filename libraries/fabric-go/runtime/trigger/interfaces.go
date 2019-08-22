@@ -6,8 +6,8 @@
 package trigger
 
 import (
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/services"
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/transaction"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/runtime/services"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/runtime/transaction"
 	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
 )
 

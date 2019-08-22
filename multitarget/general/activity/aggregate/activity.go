@@ -7,7 +7,7 @@ package aggregate
 
 // Imports
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/aggregate"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/aggregate"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

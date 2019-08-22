@@ -10,11 +10,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/services"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/runtime/services"
 
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/txnreply"
-	rttxn "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/transaction"
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/txnreply"
+	rttxn "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/runtime/transaction"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/utils"
 	fldata "github.com/TIBCOSoftware/flogo-lib/core/data"
 	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
 	"github.com/TIBCOSoftware/flogo-lib/logger"

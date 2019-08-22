@@ -10,10 +10,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/utils"
 	"github.com/TIBCOSoftware/flogo-lib/core/data"
 
-	dtsvc "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/services"
+	dtsvc "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/runtime/services"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 
