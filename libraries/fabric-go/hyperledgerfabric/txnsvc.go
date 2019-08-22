@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"time"
 
-	//"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
-	txn "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/runtime/transaction"
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
+	//"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/utils"
+	txn "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/runtime/transaction"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/utils"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/hyperledger/fabric/core/chaincode/lib/cid"
 	"github.com/hyperledger/fabric/core/chaincode/shim"

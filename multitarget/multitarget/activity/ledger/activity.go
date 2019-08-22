@@ -6,7 +6,7 @@
 package ledger
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/activity/ledger"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/activity/ledger"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

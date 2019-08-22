@@ -12,7 +12,7 @@ import (
 
 	"github.com/TIBCOSoftware/flogo-lib/core/data"
 
-	"github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/utils"
+	"github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/utils"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 )
 

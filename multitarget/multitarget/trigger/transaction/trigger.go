@@ -6,7 +6,7 @@
 package transaction
 
 import (
-	impl "github.com/TIBCOSoftware/dovetail-contrib/smartcontract-go/trigger/transaction"
+	impl "github.com/TIBCOSoftware/dovetail-contrib/libraries/fabric-go/trigger/transaction"
 	"github.com/TIBCOSoftware/flogo-lib/core/trigger"
 )
 
