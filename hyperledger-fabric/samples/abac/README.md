@@ -35,6 +35,8 @@ Skip to the next section if you do not plan to modify the included sample model.
 - You can then add or update the flows using the graphical modeler of the TIBCO Flogo® Enterprise.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`abac_app.json`](abac_app.json) to this `abac` sample folder.
 
+Note that when a flogo model is imported to `Flogo® Enterprise v2.6.1`, a `return` activity is automatically added to the end of all branches, which could be an issue if the `return` activity is not at the end of a flow.  Thus, you need to carefully remove the mistakenly added `return` activities after the model is imported.  This issue will be fixed in a later release of the `Flogo® Enterprise`.
+
 ## Build and deploy chaincode to Hyperledger Fabric
 - In this `abac` sample folder, execute `make create` to generate source code from the flogo model [`abac_app.json`](abac_app.json).
 - Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder.  Note that you may need to edit the [`Makefile`](Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
