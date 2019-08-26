@@ -135,7 +135,8 @@ create-gql: $(GQL_FILE) clean-gql
 .PHONY: build-gql
 build-gql: $(GQL_PATH)/$(GQL_NAME)
 	cd $(GQL_PATH)/$(GQL_NAME)/src && \
-	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
+	go get -u -d github.com/hyperledger/fabric-sdk-go@v1.0.0-alpha5 && \
+	go get -u -d github.com/prometheus/client_golang@0.7.0 && \
 	go get -u -d github.com/go-kit/kit@v0.8.0 && \
 	go get -u -d github.com/cloudflare/cfssl@1.3.2
 	-cd $(GQL_PATH)/$(GQL_NAME) && \
