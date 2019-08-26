@@ -10,23 +10,23 @@ This sample also demonstrates the use of Hyperledger Fabric events.
 - Download [TIBCO Flogo® Enterprise 2.6](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html).  If you do not have access to `Flogo Enterprise`, you may sign up a trial on [TIBCO CLOUD Integration (TCI)](https://cloud.tibco.com/), or download Dovetail v0.2.0.  This sample uses `TIBCO Flogo® Enterprise`, but all models can be imported and edited by using Dovetail v0.2.0 and above.
 - [Install Go](https://golang.org/doc/install)
 - Clone [Hyperledger Fabric](https://github.com/hyperledger/fabric)
-- Clone [Hyperledger Fabric Samples](https://github.com/hyperledger/fabric-samples)
+- Download Hyperledger Fabric samples and executables of latest production release as described [here](https://github.com/hyperledger/fabric-samples/tree/release-1.4)
 - Download and install [flogo-cli](https://github.com/project-flogo/cli)
 - Clone dovetail-contrib with Flogo extension for Hyperledger Fabric
 
 There are different ways to clone these packages.  This document assumes that you have installed these packages under $GOPATH after installing Go, i.e.,
 ```
 go get -u github.com/hyperledger/fabric
-go get -u github.com/hyperledger/fabric-samples
+cd $GOPATH/src/github.com/hyperledger
+curl -sSL http://bit.ly/2ysbOFE | bash -s
+export PATH=$GOPATH/src/github.com/hyperledger/fabric-samples/bin:$PATH
 go get -u github.com/project-flogo/cli/...
-go get -u github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric
+go get -u github.com/TIBCOSoftware/dovetail-contrib
 ```
-Note that the latest version of the Flogo extension for Hyperledger Fabric can be downloaded from the [`develop` branch of the `dovetail-contrib`](https://github.com/TIBCOSoftware/dovetail-contrib/tree/develop).
-
-Bootstrap fabric-samples
+Note that the latest version of the Flogo extension for Hyperledger Fabric can be downloaded from the [`develop` branch of the `dovetail-contrib`](https://github.com/TIBCOSoftware/dovetail-contrib/tree/develop), i.e.,
 ```
-cd $GOPATH/src/github.com/hyperledger/fabric-samples
-./scripts/bootstrap.sh
+cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib
+git checkout develop
 ```
 
 ## Edit smart contract (optional)

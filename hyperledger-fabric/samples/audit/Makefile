@@ -38,9 +38,10 @@ create: $(APP_FILE) clean
 
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
-	-cd $(BUILD_PATH)/$(APP_NAME) && \
-	flogo install github.com/project-flogo/contrib/function/string && \
-	flogo build -e
+	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
+	cd $(BUILD_PATH)/$(APP_NAME) && \
+	flogo install github.com/project-flogo/contrib/function/string
+
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
@@ -94,7 +95,8 @@ create-client: $(CLIENT_FILE) clean-client
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
+	go get -u -d github.com/hyperledger/fabric-sdk-go@v1.0.0-alpha5 && \
+	go get -u -d github.com/prometheus/client_golang@0.7.0 && \
 	go get -u -d github.com/go-kit/kit@v0.8.0 && \
 	go get -u -d github.com/cloudflare/cfssl@1.3.2
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && \

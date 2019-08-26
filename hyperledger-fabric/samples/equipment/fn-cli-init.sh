@@ -6,11 +6,19 @@
 . ./utils.sh
 CCNAME=${1:-"equipment_cc"}
 
-echo "install ${CCNAME} chaincode on peer0 org1"
+echo "install ${CCNAME} on peer0 org1"
 peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}
 
+echo "install ${CCNAME} on peer1 org1"
+setGlobals 1 1
+peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}
+
+echo "install ${CCNAME} on peer0 org2"
 setGlobals 0 2
-echo "install ${CCNAME} chaincode on peer0 org2"
+peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}
+
+echo "install ${CCNAME} on peer1 org2"
+setGlobals 1 2
 peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}
 
 echo "instantiate ${CCNAME} chaincode"
