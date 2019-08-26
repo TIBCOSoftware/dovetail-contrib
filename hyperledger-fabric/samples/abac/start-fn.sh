@@ -14,4 +14,4 @@ cp docker-compose-ca.yaml docker-compose-ca.yaml.orig
 sed "s/FABRIC_CA_SERVER_TLS_ENABLED=true/FABRIC_CA_SERVER_TLS_ENABLED=false/g" docker-compose-ca.yaml.orig > docker-compose-ca.yaml
 
 # start first-network
-./byfn.sh up -a -n -s couchdb
+./byfn.sh up -n -s couchdb
