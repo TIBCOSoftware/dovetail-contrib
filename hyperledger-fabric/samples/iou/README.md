@@ -180,6 +180,12 @@ Use `cli` docker container to install and instantiate the `iou_cc` chaincode.
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/iou
 make cli-init
 ```
+Note that this script installs chaincode on 4 peer nodes using the `cli` container.  It is very slow on Mac due to slow volume mounts in the docker desktop for Mac.  The following [solution](https://docs.docker.com/compose/compose-file/#caching-options-for-volume-mounts-docker-for-mac) will speed up the chaincode installation by more than 4 times.
+```
+cd $GOPATH/src/github.com/hyperledger/fabric-samples/first-network
+sed -i -e "s/github.com\/chaincode.*/github.com\/chaincode:cached/" ./docker-compose-cli.yaml
+```
+By configuring the `chaincode` volume in `cli` container as `cached`, the chaincode installation time can be reduced from 157 seconds to 37 seconds.
 
 ## Edit iou GraphQL service (optional)
 The sample Flogo model, [`iou_client.json`](iou_client.json) is a GraphQL service that invokes the `iou_cc` chaincode.  Skip to the next section if you do not plan to modify the sample model.

@@ -63,6 +63,11 @@ Use `cli` docker container to install and instantiate the `audit_cc` chaincode.
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/audit
 make cli-init
 ```
+Note that this script installs chaincode on 4 peer nodes using the `cli` container.  It is very slow on Mac due to slow volume mounts in the docker desktop for Mac.  The following [solution](https://docs.docker.com/compose/compose-file/#caching-options-for-volume-mounts-docker-for-mac) will speed up the chaincode installation by more than 4 times.
+```
+cd $GOPATH/src/github.com/hyperledger/fabric-samples/first-network
+sed -i -e "s/github.com\/chaincode.*/github.com\/chaincode:cached/" ./docker-compose-cli.yaml
+```
 
 Optionally, test the chaincode from `cli` docker container, i.e.,
 ```
