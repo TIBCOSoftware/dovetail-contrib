@@ -25,7 +25,7 @@
                 "secureConnection": false,
                 "serverKey": "",
                 "caCertificate": "",
-                "graphqlSchema": "schema {\n\tquery: Query\n\tmutation: Mutation\n}\ntype Query {\n\tgetBankAccounts(bank: String): [AccountKV]\n\tgetIOUHistory(id: String): [IOUHistory]\n\tgetAccountTransactions(name: String, bank: String): [TransactionKV]\n\tqueryIOUByAmount(issuer: String, owner: String, amount: Float): [IOUKV]\n\tgetIOUByIssuer(issuer: String): [IOUKV]\n\tgetIOUByOwner(owner: String): [IOUKV]\n}\ntype Mutation {\n\ttransfer(owner: String, bank: String, id: String, newOwner: String): IOU\n\tbuy(bank: String, owner: String, iou: String): IOU\n\tcreateAccount(name: String, bank: String, balance: Float): Account\n\tissue(bank: String, owner: String, amount: Float): IOU\n\tredeem(owner: String, bank: String, id: String): Account\n\tsend(senderBank: String, sender: String, receiverBank: String, receiver: String, amount: Float): IOU\n\texchange(owner: String, bank: String, id: String): IOU\n}\ntype IOUHistory {\n\ttxID: String\n\ttxTime: String\n\tisDeleted: Boolean\n\tvalue: IOU\n}\n\ntype IOUKV {\n\tkey: String\n\tvalue: IOU\n}\n\ntype Account {\n\tname: String\n\tbank: String\n\tbalance: Float\n\tcurrency: String\n}\n\ntype Transaction {\n\taccount: String\n\tamount: Float\n\tiouRef: String\n\ttxID: String\n\ttxTime: String\n}\n\ntype IOU {\n\tamount: Float\n\tcurrency: String\n\tissueDate: String\n\towner: String\n\tid: String\n\tissuer: String\n}\n\ntype AccountKV {\n\tkey: String\n\tvalue: Account\n}\n\ntype TransactionKV {\n\tkey: String\n\tvalue: Transaction\n}"
+                "graphqlSchema": "schema {\n\tquery: Query\n\tmutation: Mutation\n}\ntype Query {\n\tgetBankAccounts(bank: String): [AccountKV]\n\tgetIOUHistory(id: String): [IOUHistory]\n\tgetAccountTransactions(name: String, bank: String): [TransactionKV]\n\tqueryIOUByAmount(issuer: String, owner: String, amount: Float): [IOUKV]\n\tgetIOUByIssuer(issuer: String): [IOUKV]\n\tgetIOUByOwner(owner: String): [IOUKV]\n}\ntype Mutation {\n\ttransfer(owner: String, id: String, newOwner: String): IOU\n\tbuy(bank: String, owner: String, iou: String): IOU\n\tcreateAccount(name: String, bank: String, balance: Float): Account\n\tissue(bank: String, owner: String, amount: Float): IOU\n\tredeem(owner: String, bank: String, id: String): Account\n\tsend(senderBank: String, sender: String, receiverBank: String, receiver: String, amount: Float): IOU\n\texchange(owner: String, bank: String, id: String): IOU\n}\ntype IOUHistory {\n\ttxID: String\n\ttxTime: String\n\tisDeleted: Boolean\n\tvalue: IOU\n}\n\ntype IOUKV {\n\tkey: String\n\tvalue: IOU\n}\n\ntype Account {\n\tname: String\n\tbank: String\n\tbalance: Float\n\tcurrency: String\n}\n\ntype Transaction {\n\taccount: String\n\tamount: Float\n\tiouRef: String\n\ttxID: String\n\ttxTime: String\n}\n\ntype IOU {\n\tamount: Float\n\tcurrency: String\n\tissueDate: String\n\towner: String\n\tid: String\n\tissuer: String\n}\n\ntype AccountKV {\n\tkey: String\n\tvalue: Account\n}\n\ntype TransactionKV {\n\tkey: String\n\tvalue: Transaction\n}"
             },
             "id": "GraphQLTrigger",
             "handlers": [
@@ -160,11 +160,18 @@
                         }
                     },
                     "schemas": {
+                        "reply": {
+                            "data": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"IOU\":{\"type\":\"object\",\"required\":[],\"properties\":{\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}}},\"required\":[]}",
+                                "fe_metadata": "{\"type\":\"object\",\"properties\":{\"IOU\":{\"type\":\"object\",\"required\":[],\"properties\":{\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}}},\"required\":[]}"
+                            }
+                        },
                         "output": {
                             "arguments": {
                                 "type": "json",
-                                "value": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}},\"required\":[]}",
-                                "fe_metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}},\"required\":[]}"
+                                "value": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}},\"required\":[]}",
+                                "fe_metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
                     }
@@ -2107,7 +2114,7 @@
                             "type": "object",
                             "schema": {
                                 "type": "json",
-                                "value": "{\"owner\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
+                                "value": "{\"owner\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
                             }
                         }
                     ],
@@ -2122,7 +2129,7 @@
                         }
                     ],
                     "fe_metadata": {
-                        "input": "{\"type\":\"object\",\"title\":\"GraphQLTrigger\",\"properties\":{\"arguments\":{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}},\"required\":[]}}}",
+                        "input": "{\"type\":\"object\",\"title\":\"GraphQLTrigger\",\"properties\":{\"arguments\":{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}},\"required\":[]}}}",
                         "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"data\":{\"type\":\"object\",\"properties\":{\"IOU\":{\"type\":\"object\",\"required\":[],\"properties\":{\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"}}}},\"required\":[]}},\"required\":[]}"
                     }
                 }
@@ -5694,5 +5701,5 @@
         }
     ],
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9oeXBlcmxlZGdlci1mYWJyaWMvZmFiY2xpZW50IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L2ZhYmNsaWVudCJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAAwTFk+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAAMExZPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIACkLG0+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAApCxtPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

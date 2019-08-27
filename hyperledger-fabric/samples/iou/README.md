@@ -112,7 +112,9 @@ A client app is implemented to send requests to the blockchain and verify the re
      - Use receiver credential to call chaincode operation: `redeem(iou, receiverBank)`.
 3. Query getBankAccounts(bank): It returns the balances of all user accounts of the specified bank;
 4. Query getAccountTransactions(name|bank, bank): It returns all transactions of a user account or a bank;
-5. Query getIOUHistory(iou): It returns the history of a specified IOU.
+5. Query getIOUHistory(iou): It returns the history of a specified IOU;
+6. Query getIOUByIssuer: It returns list of outstanding IOUs by a specified issuer;
+7. Query getIOUByOwner: It returns list of outstanding IOUs by a specified owner.
 
 The file [iou.postman_collection.json](iou.postman_collection.json) contains sample GraphQL test messages that can be viewed and executed in [postman](https://www.getpostman.com/downloads/).
 
@@ -217,7 +219,7 @@ You can use the test messages in [iou.postman_collection.json](iou.postman_colle
 
 With a few clicks, you can also easily re-create the GraphQL service from scratch. In `TIBCO Flogo® Enterprise`, create a new app, e.g., `my_iou_gql`, choose creating `From GraphQL Schema`, and `browse and upload` the file [`metadata.gql`](contract-metadata/metadata.gql), which is generated previously by `make package`.
 
-This should create 11 Flogo flows based on the chaincode transactions defined in the `metadata`.  You can then edit each flow by adding an activity `fabclient/Fabric Request`, and configure it to call the corresponding `iou` transactions, and map the chaincode response to the `Return` activity. Note that the `send` operation is a little more complex because it is an orchestration process that makes multiple calls to the chaincode.
+This should create 13 Flogo flows based on the chaincode transactions defined in the `metadata`.  You can then edit each flow by adding an activity `fabclient/Fabric Request`, and configure it to call the corresponding `iou` transactions, and map the chaincode response to the `Return` activity. Note that the `send` operation is a little more complex because it is an orchestration process that makes multiple calls to the chaincode.
 
 Once you complete the model similar to the sample file `iou_client.json`, you can export, build and test it as described above.  Note that the default service port is `7879`, although you can make it configurable by defining an `app property` for it.
 

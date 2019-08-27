@@ -3,51 +3,28 @@ schema {
 	mutation: Mutation
 }
 type Query {
+	getIOUHistory(id: String): [IOUHistory]
 	getAccountTransactions(name: String, bank: String): [TransactionKV]
 	getBankAccounts(bank: String): [AccountKV]
-	getIOUByOwner(owner: String): [IOUKV]
-	getIOUHistory(id: String): [IOUHistory]
-	queryIOUByAmount(issuer: String, owner: String, amount: Float): [IOUKV]
 	getIOUByIssuer(issuer: String): [IOUKV]
+	getIOUByOwner(owner: String): [IOUKV]
+	queryIOUByAmount(issuer: String, owner: String, amount: Float): [IOUKV]
 }
 type Mutation {
-	issue(bank: String, owner: String, amount: Float): IOU
-	createAccount(bank: String, balance: Float, name: String): Account
-	exchange(owner: String, id: String, bank: String): IOU
-	redeem(owner: String, id: String, bank: String): Account
 	send(receiver: String, sender: String, senderBank: String, receiverBank: String, amount: Float): IOU
 	transfer(owner: String, id: String, newOwner: String): IOU
 	buy(bank: String, owner: String, iou: String): IOU
+	issue(bank: String, owner: String, amount: Float): IOU
+	createAccount(name: String, bank: String, balance: Float): Account
+	exchange(owner: String, bank: String, id: String): IOU
+	redeem(owner: String, bank: String, id: String): Account
 }
-type IOU {
-	currency: String
-	issueDate: String
-	owner: String
-	id: String
-	issuer: String
-	amount: Float
-}
-
-type TransactionKV {
-	key: String
-	value: Transaction
-}
-
-type IOUKV {
-	key: String
-	value: IOU
-}
-
-type AccountKV {
-	key: String
-	value: Account
-}
-
-type IOUHistory {
+type Transaction {
 	txID: String
 	txTime: String
-	isDeleted: Boolean
-	value: IOU
+	account: String
+	amount: Float
+	iouRef: String
 }
 
 type Account {
@@ -57,11 +34,34 @@ type Account {
 	currency: String
 }
 
-type Transaction {
-	iouRef: String
+type AccountKV {
+	value: Account
+	key: String
+}
+
+type IOUKV {
+	key: String
+	value: IOU
+}
+
+type IOUHistory {
+	isDeleted: Boolean
+	value: IOU
 	txID: String
 	txTime: String
-	account: String
+}
+
+type TransactionKV {
+	key: String
+	value: Transaction
+}
+
+type IOU {
+	currency: String
+	issueDate: String
+	owner: String
+	id: String
+	issuer: String
 	amount: Float
 }
 
