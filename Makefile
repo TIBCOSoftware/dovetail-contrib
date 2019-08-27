@@ -12,9 +12,9 @@ is-prerelease:
 release-notes: 
 	@ $(SCRIPTS_PATH)/release-notes.sh
 
-.PHONY: multichain-artifacts
-multichain-artifacts: 
-	$(SCRIPTS_PATH)/multichain-artifacts.sh ${BUILD_TAG}
+.PHONY: multitarget-artifacts
+multitarget-artifacts: 
+	$(SCRIPTS_PATH)/multitarget-artifacts.sh ${BUILD_TAG}
 
 .PHONY: hyperledger-fabric-artifacts
 hyperledger-fabric-artifacts: 
@@ -23,3 +23,7 @@ hyperledger-fabric-artifacts:
 .PHONY: corda-artifacts
 corda-artifacts: 
 	$(SCRIPTS_PATH)/corda-artifacts.sh ${BUILD_TAG}
+
+.PHONY: libraries-artifacts
+libraries-artifacts: 
+	$(SCRIPTS_PATH)/libraries-artifacts.sh ${BUILD_TAG}
