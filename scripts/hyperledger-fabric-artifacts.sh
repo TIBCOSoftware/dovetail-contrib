@@ -8,6 +8,9 @@ mkdir -p .target/hyperledger-fabric
 echo "Building fabric extension"
 zip -r .target/hyperledger-fabric/fabric-extension-${build_tag////-}.zip hyperledger-fabric/fabric
 
+echo "Building fabric general extension"
+zip -r .target/hyperledger-fabric/fabric-general-extension-${build_tag////-}.zip hyperledger-fabric/general
+
 echo "Building fabric client extension"
 zip -r .target/hyperledger-fabric/fabric-client-extension-${build_tag////-}.zip hyperledger-fabric/fabclient
 
