@@ -14,5 +14,7 @@ zip -r .target/corda/corda-cordapp-extension-${build_tag////-}.zip corda/cordapp
 echo "Building corda general extension"
 zip -r .target/corda/corda-general-extension-${build_tag////-}.zip corda/general
 
+cd corda
+
 echo "Building corda functions"
-zip -r .target/corda/corda-function-${build_tag////-}.zip corda/function
+zip -r ../.target/corda/corda-function-${build_tag////-}.zip function
