@@ -11,5 +11,7 @@ zip -r .target/multitarget/multitarget-extension-${build_tag////-}.zip multitarg
 echo "Building multitarget general extension"
 zip -r .target/multitarget/multitarget-general-extension-${build_tag////-}.zip multitarget/general
 
+cd multitarget
+
 echo "Building multitarget functions"
-zip -r .target/multitarget/multitarget-function-${build_tag////-}.zip multitarget/function
+zip -r ../.target/multitarget/multitarget-function-${build_tag////-}.zip function
