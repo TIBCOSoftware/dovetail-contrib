@@ -30,6 +30,8 @@ Hyperledger Fabric network config:
  | amount:    float  |                  | iouRef:  string |
  | currency:  string |                  |                 |
 
+Design Notes: The `Transaction` object contains the same data as IOU, and thus it does not have to be stored in a private collection.  However, this object is designed to serve query and reporting requirements, and the data will likely transfer to an off-chain database and then deleted from the blockchain system shortly after the transaction completes.  Storing the data in a private collection woulld make it easy to purge the data and still leave a hash audit trail on the blockchain.  The `Account` object, on the other hand, contains data that is private to a specific bank, and thus should not be exposed to other organizations on the same IOU channel.  To keep the account data private, all account-related transactions, e.g., `createAccount` should be submitted using `transient data` and so only a hash of the request parameters will be stored on the blockchain.
+
 ## Basic IOU operations and rules
 1. issue(bank, owner, amount)
    - Actions:
@@ -97,6 +99,8 @@ Account management operations are also required, and they are better packaged as
    - Rules:
      - Reject the request if the requestor is not the bank's admin;
      - Reject the request if an account with the same name already exists in the bank.
+
+Note that to keep the request parameters private to only the specified bank, this operation should use `transient` input parameters.  More serious readers may update the implementation of this sample to replace the `parameters` with `transient` data in the `transaction trigger` of this operation.
 
 ## Client operations:
 A client app is implemented to send requests to the blockchain and verify the results.  It implements a GraphQL service interface.  Although this client app implements more test operations, only the following operations are needed to support the cross-border payment process:
