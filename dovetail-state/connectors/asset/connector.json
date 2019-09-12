@@ -1,0 +1,101 @@
+{
+    "name": "AssetSchemaConnector",
+    "version": "1.0.0",
+    "title": "Define Ledger Asset Schema",
+    "type": "flogo:connector",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "description": "Define Ledger Asset Schema",
+        "category": "Dovetail-Ledger",
+        "visible": true,
+        "smallIcon": "params.png",
+        "largeIcon": "params.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/dovetail-state/connector/asset",
+    "keyfield": "displayname",
+    "settings": [
+        {
+            "name": "displayname",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Display Name",
+                "visible": true
+            }
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Asset Name",
+                "visible": true
+            }
+        },
+        {
+            "name": "module",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Asset Module (Namespace)",
+                "visible": true
+            }
+        },
+        {
+            "name": "assettype",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Asset Type",
+                "visible": true,
+                "type":"dropdown",
+                "selection": "single"
+            },
+            "allowed":["Linear State", "Fungible Asset"],
+            "value": "Linear State"
+        },
+        {
+            "name": "assetfields",
+            "type": "complex_object",
+            "display": {
+                "type": "params",
+                "name": "Pre-defined Asset Fields",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"name\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"LinearId\", \"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LocalDate\", \"DateTime\"]}}, \"constraint\":{\"type\":\"string\"}, \"repeating\":{\"type\":{\"enum\":[\"False\", \"True\"]}}}}}",
+                "readonly":true
+            }
+        },
+        {
+            "name": "extrafields",
+            "type": "complex_object",
+            "display": {
+                "type": "params",
+                "name": "Add Additional Fields, constraint is an boolean expression in the format of v [op] [operand], e.g v > 0. suppported op: >, >=, <, <=, ==, !=, in, not_in, between",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"name\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"LinearId\", \"String\",\"Integer\",\"Long\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LocalDate\", \"DateTime\"]}},\"constraint\":{\"type\":\"string\"}, \"repeating\":{\"type\":{\"enum\":[\"False\", \"True\"]}}}}}"
+            }
+        },
+        { 
+            "name": "partyType",
+            "type": "complex_object",
+            "required": true,
+            "display": {
+                "name": "Define Party Roles",
+                "visible": true,
+                "description":"Specify the roles of each party defined in your asset if applicable. issueSigner - signature is required for asset creation on ledger, moveSigner - signature is required for any state change on the ledger, exitSigner - signature is required for asset exit from ledger",
+                "type":"params",
+                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"party\":{\"type\":\"string\"},\"issueSigner\":{\"type\":{\"enum\":[\"True\", \"False\"]}}, \"moveSigner\":{\"type\":{\"enum\":[\"True\", \"False\"]}}, \"exitSigner\":{\"type\":{\"enum\":[\"True\", \"False\"]}}}}}"
+            }
+        },
+        {
+            "name": "schema",
+            "type": "string",
+            "display": {
+                "visible":false
+            }
+        }
+    ],
+    "actions": [ 
+        {
+            "name": "Done"
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "name": "R3SchedulableFlow",
+    "author": "TIBCO Software Inc.",
+    "type": "flogo:trigger",
+    "version": "1.0.0",
+    "title": "Dovetail CorDApp Schedulable Flow",
+
+    "display": {
+       "description": "Create a schedulable flow",
+       "uid": "r3-flow-schedulable",
+       "category": "Dovetail-CorDApp",
+       "visible": true, 
+       "wizard": ["Settings"],
+       "smallIcon": "trigger.png",
+       "largeIcon": "trigger.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/trigger/schedulable",
+         
+    "settings": [
+        {
+            "name": "flowType",
+            "type":"string",
+            "required":true,
+            "display":{
+                "visible":false
+            },
+            "value":"schedulable"
+        }
+    ],
+
+    "handler": {
+      "settings": [
+        {
+            "name": "asset",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Select the schedulable asset that triggers this flow",
+                "visible":true
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Settings"
+            },
+            "allowed": []
+          }
+     ]
+    },
+    "outputs": [
+        {
+            "name": "transactionInput",
+            "type": "complex_object"
+        },
+        {
+            "name": "ourIdentity",
+            "type": "string"
+        }
+    ],
+    "actions": [
+          {
+            "name": "Finish"
+          }
+    ]
+}

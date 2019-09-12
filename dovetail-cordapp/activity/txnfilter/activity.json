@@ -1,0 +1,58 @@
+{
+    "name": "txnfilter",
+    "title": "Ledger Transaction Filter",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-CorDApp",
+       "visible": true,
+       "smallIcon": "filter.png",
+       "description": "Filter ledger transaction"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/activity/txnfilter",
+    "inputs": [
+            {
+                "name": "filterby",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Filter transaction by",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":["Input State", "Reference State", "Output State", "Commands", "Notary","Time Window"],
+                "value": "Input State"
+            },
+            {
+                    "name": "assetName",
+                    "type": "string",
+                    "required": false,
+                    "display":{
+                        "name": "Select an Artifact",
+                        "type": "dropdown",
+                        "selection": "single"
+                    },
+                    "allowed": []
+            },
+           {
+            "name": "ledgerTxn",
+            "type": "any",
+            "required": true
+           }
+    ],
+  
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object",
+            "required": false
+        },
+        {
+            "name": "size",
+            "type": "integer",
+            "required": true
+        }
+    ]
+}

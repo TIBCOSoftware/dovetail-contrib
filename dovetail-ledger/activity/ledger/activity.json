@@ -1,0 +1,64 @@
+{
+    "name": "ledger",
+    "title": "Ledger Operation",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-Ledger",
+       "visible": true,
+       "smallIcon": "ledger.png",
+       "description": "This activity create, update or delete assets on the ledger"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-Ledger/activity/ledger",
+    "inputs": [
+            {
+                "name": "asset",
+                "type": "string",
+                "required": true,
+                "display":{
+                    "name":"Ledger Asset",
+                    "readonly": true
+                }
+           },
+           {
+            "name": "operation",
+            "type": "string",
+            "required": true,
+            "display":{
+                "name": "Action",
+                "description": "read/write assets on the ledger",
+                "type": "dropdown",
+                "selection": "single"
+            },
+            "allowed": ["PUT", "DELETE", "GET"],
+            "value": "PUT"
+           },
+           {
+            "name": "isArray",
+            "type": "boolean",
+            "required": true,
+            "display":{
+                "name": "Is Array",
+                "description": "True to perform operation on multiple assets",
+                "visible": true
+            },
+            "value": false
+           },
+           
+           {
+            "name": "input",
+            "type": "complex_object",
+            "required": true
+           }
+    ],
+  
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object",
+            "required": false
+        }
+    ]
+}

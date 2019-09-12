@@ -1,0 +1,71 @@
+{
+    "name": "invoke",
+    "title": "Invoke another smart contract action",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-Ledger",
+       "visible": true,
+       "smallIcon": "builder.png",
+       "description": "Invoke another smart contract action"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-Ledger/activity/invoke",
+    "inputs": [
+            {
+                "name": "contract",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Select the contract ",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+            {
+                "name": "contractClass",
+                "type": "string",
+                "required": false,
+                "display": {
+                    "visible":false
+                }
+            },
+            {
+                "name": "flow",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Flow Name",
+                    "visible":false
+                },
+                "value":""
+            },
+            {
+                "name": "command",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Select the contract action",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true,
+                "display":{
+                    "type":"texteditor",
+                    "syntax":"json",
+                    "mappable":true,
+                    "visible":true
+                }
+           }
+    ],
+  
+    "outputs": [
+    ]
+}

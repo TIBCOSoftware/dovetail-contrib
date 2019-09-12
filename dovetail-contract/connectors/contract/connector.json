@@ -1,0 +1,58 @@
+{
+    "name": "ContractTemplateSchemaConnector",
+    "version": "1.0.0",
+    "title": "Import Dovetail Contract",
+    "type": "flogo:connector",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "description": "Import Dovetail Contract",
+        "category": "Dovetail-Contract",
+        "visible": true,
+        "smallIcon": "params.png",
+        "largeIcon": "params.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/dovetail-contract/connector/contract",
+    "keyfield": "display",
+    "settings": [
+        {
+            "name": "display",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Contract Display Name",
+                "visible": true
+            }
+        },
+        {
+            "name": "contractFile",
+            "type": "string",
+            "required": false,
+            "display": {
+                "name": "Select Contract JSON File",
+                "visible": true ,
+                "type": "fileselector", 
+                "fileExtensions": [".json"]
+            }
+        },
+        {
+            "name": "transactions",
+            "type": "array",
+            "display": {
+                "visible":false
+            }
+        },
+        {
+            "name": "schemas",
+            "type": "object",
+            "display": {
+                "visible":false
+            }
+        }
+    ],
+    "actions": [ 
+        
+        {
+            "name": "Done"
+        }
+    ]
+}

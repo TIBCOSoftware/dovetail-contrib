@@ -1,0 +1,20 @@
+{
+    "name": "null",
+    "title": "NULL activity",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-General",
+       "visible": true,
+       "smallIcon": "empty.png",
+       "description": "null activity"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-General/activity/empty",
+    "inputs": [
+    ],
+  
+    "outputs": [
+    ]
+}
