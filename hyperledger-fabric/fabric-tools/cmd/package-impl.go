@@ -13,8 +13,8 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/proto"
+	pb "github.com/hyperledger/fabric-protos-go/peer"
 	"github.com/hyperledger/fabric/core/chaincode/platforms/golang"
-	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/pkg/errors"
 )
 
@@ -43,9 +43,9 @@ func packageCDS(path, name, version, outFile string) error {
 		Input:       input,
 	}
 	pr := &golang.Platform{}
-	codePackageBytes, err := pr.GetDeploymentPayload(spec.Path())
+	codePackageBytes, err := pr.GetDeploymentPayload(spec.ChaincodeId.Path)
 	if err != nil {
-		return errors.Wrapf(err, "failed to generate deployment payload from source %s", spec.Path())
+		return errors.Wrapf(err, "failed to generate deployment payload from source %s", spec.ChaincodeId.Path)
 	}
 
 	// write cds file

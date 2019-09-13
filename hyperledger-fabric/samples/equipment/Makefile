@@ -17,7 +17,7 @@ GQL_PATH   := /tmp/equipment_gql
 GQL_NAME   := equipment_gql
 
 FLOGO_VER     ?= v0.9.2
-DT_REPO       ?= github.com/TIBCOSoftware/dovetail-contrib
+DT_REPO       ?= github.com/yxuco/dovetail-contrib
 DT_BRANCH     ?= develop
 
 .PHONY: all
