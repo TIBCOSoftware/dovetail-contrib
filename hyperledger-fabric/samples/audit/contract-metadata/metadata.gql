@@ -7,31 +7,31 @@ type Query {
 	getRecordsByID(recID: String): [AuditKeyValue]
 	getRecordsByTxID(txID: String): [AuditKeyValue]
 	getRecordsByTxTime(txTime: String): [AuditKeyValue]
-	queryTimeRange(startTime: String, endTime: String, domain: String, owner: String): [AuditKeyValue]
+	queryTimeRange(domain: String, owner: String, startTime: String, endTime: String): [AuditKeyValue]
 }
 type Mutation {
-	createAudit(records: [AuditLog]): [AuditKeyValue]
 	deleteRecord(key: String): AuditRecord
 	deleteTransaction(txID: String): [AuditKeyValue]
+	createAudit(records: [AuditLog]): [AuditKeyValue]
 }
+input AuditLog {
+	domain: String
+	owner: String
+	data: String
+	hashType: String
+	hashValue: String
+	recID: String
+}
+
 type AuditRecord {
+	data: String
+	hashType: String
 	hashValue: String
 	txID: String
 	txTime: String
 	recID: String
 	domain: String
 	owner: String
-	data: String
-	hashType: String
-}
-
-input AuditLog {
-	hashType: String
-	hashValue: String
-	recID: String
-	domain: String
-	owner: String
-	data: String
 }
 
 type AuditKeyValue {

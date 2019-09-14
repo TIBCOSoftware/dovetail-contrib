@@ -115,7 +115,7 @@ curl -X DELETE http://localhost:8989/marbleprivate/delete/marble12
 curl -X GET http://localhost:8989/marbleprivate/owner/jerry
 ```
 
-Note that the operations for `delete` and `price` are allowed by only one of the 2 blockchain member orgs (i.e., org1 only), thus these 2 operations will fail if the REST service sends the request to an org2 peer.  You may retry the request a few times until it succeeds on an org1 peer.  The next Dovetail release will support endpoint override, and so these requests can be routed to an org1 peer only.
+Note that the operations for `delete` and `price` are allowed by only one of the 2 blockchain member orgs (i.e., org1 only), thus these 2 operations would fail if the REST service sends the request to an org2 peer.  To avoid such errors, the flow model for these operations override the fabric network endpoints to route requests to one of org1 peers only.
 
 ## Notes on GraphQL service
 The previous step `make package` generated a `GraphQL` schema file [`metadata.gql`](contract-metadata/metadata.gql), which can be used to implement a GraphQL service to invoke the `marble_private` chaincode.  Refer to the [`equipment sample`](../equipment) for steps of creating a GraphQL service with zero-code.

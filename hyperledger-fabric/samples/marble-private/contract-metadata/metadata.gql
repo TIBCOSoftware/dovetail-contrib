@@ -9,25 +9,10 @@ type Query {
 	readMarblePrivateDetails(name: String): MarblePrivate
 }
 type Mutation {
-	transferMarble(marble_owner: MarbleTransfer): Marble
-	delete(marble_delete: MarbleDelete): Marble
 	initMarble(marble: MarbleCreate): Marble
+	transferMarble(marble_owner: MarbleTransfer): Marble
+	delete(marble_delete: ReadMarbleType): Marble
 }
-input MarbleTransfer {
-	name: String
-	owner: String
-}
-
-type MarblePrivate {
-	docType: String
-	name: String
-	price: Float
-}
-
-input MarbleDelete {
-	name: String
-}
-
 input MarbleCreate {
 	name: String
 	color: String
@@ -36,12 +21,27 @@ input MarbleCreate {
 	price: Float
 }
 
+input ReadMarbleType {
+	name: String
+}
+
+type MarblePrivate {
+	docType: String
+	name: String
+	price: Float
+}
+
+input MarbleTransfer {
+	name: String
+	owner: String
+}
+
 type Marble {
+	docType: String
 	name: String
 	color: String
 	size: Float
 	owner: String
-	docType: String
 }
 
 type MarbleKeyValue {
