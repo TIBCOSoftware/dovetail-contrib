@@ -15,4 +15,4 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 )
 
-replace github.com/TIBCOSoftware/dovetail-contrib => $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib
+replace github.com/TIBCOSoftware/dovetail-contrib => github.com/TIBCOSoftware/dovetail-contrib develop
