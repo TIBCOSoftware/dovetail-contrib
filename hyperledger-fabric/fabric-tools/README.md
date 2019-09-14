@@ -8,6 +8,20 @@ go install
 fabric-tools help
 ```
 
+Note: if in the following steps, the command `fabric-tools package` fails with error,
+```
+panic: /debug/requests is already registered. You may have two independent copies of golang.org/x/net/trace in your binary, trying to maintain separate state. This may involve a vendored copy of golang.org/x/net/trace.
+
+goroutine 1 [running]:
+github.com/hyperledger/fabric/vendor/golang.org/x/net/trace.init.0()
+	$GOPATH/src/github.com/hyperledger/fabric/vendor/golang.org/x/net/trace/trace.go:116 +0x1a4
+```
+you can delete the `trace` folder under `fabric/vendor` and rebuild the `fabric-tools`, i.e.,
+```
+rm -R $GOPATH/go/src/github.com/hyperledger/fabric/vendor/golang.org/x/net/trace
+cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric-tools
+go install
+```
 ## Create Hyperledger Fabric network in IBM Cloud
 The [IBP Tutorial](https://github.com/IBM/blockchainbean2) describes how to create a Hyperledger Fabric network in IBM Cloud, which involves the following steps:
 1. Create IBM Cloud Kubernetes cluster, [IBP Tutorial (Step 4)](https://github.com/IBM/blockchainbean2#step-4-create-ibm-cloud-services);

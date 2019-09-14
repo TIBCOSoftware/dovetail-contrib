@@ -17,7 +17,7 @@ GQL_PATH   := /tmp/equipment_gql
 GQL_NAME   := equipment_gql
 
 FLOGO_VER     ?= v0.9.2
-DT_REPO       ?= github.com/yxuco/dovetail-contrib
+DT_REPO       ?= github.com/TIBCOSoftware/dovetail-contrib
 DT_BRANCH     ?= develop
 
 .PHONY: all
@@ -101,8 +101,7 @@ create-client: $(CLIENT_FILE) clean-client
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go get -u -d github.com/hyperledger/fabric-sdk-go@v1.0.0-alpha5 && \
-	go get -u -d github.com/prometheus/client_golang@0.7.0 && \
+	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
 	go get -u -d github.com/go-kit/kit@v0.8.0 && \
 	go get -u -d github.com/cloudflare/cfssl@1.3.2
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && \
@@ -135,8 +134,7 @@ create-gql: $(GQL_FILE) clean-gql
 .PHONY: build-gql
 build-gql: $(GQL_PATH)/$(GQL_NAME)
 	cd $(GQL_PATH)/$(GQL_NAME)/src && \
-	go get -u -d github.com/hyperledger/fabric-sdk-go@v1.0.0-alpha5 && \
-	go get -u -d github.com/prometheus/client_golang@0.7.0 && \
+	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
 	go get -u -d github.com/go-kit/kit@v0.8.0 && \
 	go get -u -d github.com/cloudflare/cfssl@1.3.2
 	-cd $(GQL_PATH)/$(GQL_NAME) && \

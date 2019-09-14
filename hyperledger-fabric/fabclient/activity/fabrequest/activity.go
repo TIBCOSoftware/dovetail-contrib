@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	client "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/common"
-	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/common"
 	"github.com/pkg/errors"
 	"github.com/project-flogo/core/activity"
 	"github.com/project-flogo/core/support/log"
@@ -144,21 +143,21 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	return true, nil
 }
 
-func getFabricClient(input *Input) (*client.FabricClient, error) {
+func getFabricClient(input *Input) (*common.FabricClient, error) {
 	if input.UserName == "" {
 		logger.Error("user name is not specified")
 		return nil, errors.New("user name is not specified")
 	}
 
-	configs, err := client.GetSettings(input.FabricConnector)
+	configs, err := common.GetSettings(input.FabricConnector)
 	if err != nil {
 		return nil, err
 	}
-	networkConfig, err := client.ExtractFileContent(configs[conConfig])
+	networkConfig, err := common.ExtractFileContent(configs[conConfig])
 	if err != nil {
 		return nil, errors.Wrapf(err, "invalid network config")
 	}
-	entityMatcher, err := client.ExtractFileContent(configs[conEntityMatcher])
+	entityMatcher, err := common.ExtractFileContent(configs[conEntityMatcher])
 	if err != nil {
 		return nil, errors.Wrapf(err, "invalid entity-matchers-override")
 	}
@@ -170,7 +169,7 @@ func getFabricClient(input *Input) (*client.FabricClient, error) {
 		}
 	}
 	logger.Debugf("request option: timeout %d ms, endpoints: %s", input.TimeoutMillis, strings.Join(endpoints, ", "))
-	return client.NewFabricClient(client.ConnectorSpec{
+	return common.NewFabricClient(common.ConnectorSpec{
 		Name:           configs[conName].(string),
 		NetworkConfig:  networkConfig,
 		EntityMatchers: entityMatcher,

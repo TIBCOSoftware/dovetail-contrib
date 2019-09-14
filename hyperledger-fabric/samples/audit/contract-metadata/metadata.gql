@@ -15,9 +15,20 @@ type Mutation {
 	createAudit(records: [AuditLog]): [AuditKeyValue]
 }
 input AuditLog {
+	domain: String
+	owner: String
 	data: String
 	hashType: String
 	hashValue: String
+	recID: String
+}
+
+type AuditRecord {
+	data: String
+	hashType: String
+	hashValue: String
+	txID: String
+	txTime: String
 	recID: String
 	domain: String
 	owner: String
@@ -26,16 +37,5 @@ input AuditLog {
 type AuditKeyValue {
 	key: String
 	value: AuditRecord
-}
-
-type AuditRecord {
-	txTime: String
-	recID: String
-	domain: String
-	owner: String
-	data: String
-	hashType: String
-	hashValue: String
-	txID: String
 }
 

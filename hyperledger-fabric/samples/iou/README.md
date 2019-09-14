@@ -126,36 +126,13 @@ The file [iou.postman_collection.json](iou.postman_collection.json) contains sam
 If you are already a subscriber of [TIBCO Cloud Integration (TCI)](https://cloud.tibco.com/), or you plan to sign-up for a TCI trial, you can view or edit this app by using a Chrome browser.  Refer to [Modeling with TCI](../../tci) for more detailed instructions.
 
 ## Development Prerequisite
-If you want to set up development environment and execute tests, you can install these prerequisites and follow the next sections.
-- Download [TIBCO Flogo® Enterprise 2.6](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html).  If you do not have access to `Flogo Enterprise`, you may sign up a trial on [TIBCO CLOUD Integration (TCI)](https://cloud.tibco.com/), or download Dovetail v0.2.0.  This sample is edited using `TIBCO Flogo® Enterprise`, but all models can be imported and edited by using Dovetail v0.2.0.
-- [Install Go](https://golang.org/doc/install)
-- Clone [Hyperledger Fabric](https://github.com/hyperledger/fabric)
-- Install [Fabric CA binaries](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/users-guide.html)
-- Download Hyperledger Fabric samples and executables of latest production release as described [here](https://github.com/hyperledger/fabric-samples/tree/release-1.4)
-- Download and install [flogo-cli](https://github.com/project-flogo/cli)
-- Clone dovetail-contrib with Flogo extension for Hyperledger Fabric
-
-There are different ways to clone these packages.  This document assumes that you have installed these packages under $GOPATH after installing Go, i.e.,
-```
-go get -u github.com/hyperledger/fabric
-go get -u github.com/hyperledger/fabric-ca/cmd/...
-cd $GOPATH/src/github.com/hyperledger
-curl -sSL http://bit.ly/2ysbOFE | bash -s
-export PATH=$GOPATH/src/github.com/hyperledger/fabric-samples/bin:$PATH
-go get -u github.com/project-flogo/cli/...
-go get -u github.com/TIBCOSoftware/dovetail-contrib
-```
-Note that the latest version of the Flogo extension for Hyperledger Fabric can be downloaded from the [`develop` branch of the `dovetail-contrib`](https://github.com/TIBCOSoftware/dovetail-contrib/tree/develop), i.e.,
-```
-cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib
-git checkout develop
-```
+Follow the instructions [here](../../development.md) to setup the Dovetail development environment on Mac or Linux.
 
 ## Edit smart contract (optional)
 Skip to the next section if you do not plan to modify the included chaincode model.
 
-- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.6.1/doc/pdf/TIB_flogo_2.6_users_guide.pdf?id=2)
-- Upload [`fabricExtension.zip`](../../fabricExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can generate this `zip` by using the script [`zip-fabric.sh`](../../zip-fabric.sh).
+- Start TIBCO Flogo® Enterprise or Dovetail.
+- Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `iou` and choose `Import app` to import the model [`iou.json`](iou.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`iou.json`](iou.json) to this `iou` sample folder.
@@ -186,12 +163,6 @@ Use `cli` docker container to install and instantiate the `iou_cc` chaincode.
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/iou
 make cli-init
 ```
-Note that this script installs chaincode on 4 peer nodes using the `cli` container.  It is very slow on Mac due to slow volume mounts in the docker desktop for Mac.  The following [solution](https://docs.docker.com/compose/compose-file/#caching-options-for-volume-mounts-docker-for-mac) will speed up the chaincode installation by more than 4 times.
-```
-cd $GOPATH/src/github.com/hyperledger/fabric-samples/first-network
-sed -i -e "s/github.com\/chaincode.*/github.com\/chaincode:cached/" ./docker-compose-cli.yaml
-```
-By configuring the `chaincode` volume in `cli` container as `cached`, the chaincode installation time can be reduced from 157 seconds to 37 seconds.
 
 ## Edit iou GraphQL service (optional)
 The sample Flogo model, [`iou_client.json`](iou_client.json) is a GraphQL service that invokes the `iou_cc` chaincode.  Skip to the next section if you do not plan to modify the sample model.
@@ -202,8 +173,8 @@ cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samp
 make package
 ```
 Following are steps to edit or view the GraphQL service models.
-- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.6.1/doc/pdf/TIB_flogo_2.6_users_guide.pdf?id=2)
-- Upload [`fabclientExtension.zip`](../../fabclientExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can generate this `zip` by using the script [`zip-fabclient.sh`](../../zip-fabclient.sh).
+- Start TIBCO Flogo® Enterprise or Dovetail.
+- Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `iou_client` and choose `Import app` to import the model [`iou_client.json`](iou_client.json)
 - You can then add or update the service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.
 - Open `Connections` tab, find and edit the `iou client` connector. Set the `Smart contract metadata file` to the [`metadata.json`](contract-metadata/metadata.json), which is generated in the previous step.  Set the `Network configuration file` and `entity matcher file` to the corresponding files in [`testdata`](../../testdata).
