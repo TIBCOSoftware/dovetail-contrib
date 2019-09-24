@@ -6,19 +6,22 @@ weight: 4603
 
 This repository is composed of several modules of Project Dovetail™ that users can contribute to:
 
-- [**Smart Contract Action Model Component**](SmartContract/README.md)
-- [**Smart Contract Action Go Implementation**](smartcontract-go/README.md)
-- [**Smart Contract Action Java Implementation**](smartcontract-java/README.md)
-- [**Smart Contract Blockchain Container Implementation**](blockchain/README.md)
+- [**Corda Dovetail UI extensions (Triggers, Activities, Connectors and Functions)**](corda/README.md)
+- [**Corda Java Implementation**](libraries/corda-java/README.md)
+
+- [**Hyperledger Fabric Dovetail UI extensions (Triggers, Activities, Connectors and Functions)**](hyperledger-fabric/README.md)
+- [**Hyperledger golang Implementation**](hyperledger-fabric/README.md)
+
+- [**Multitarget Dovetail UI extensions (Triggers, Activities, Connectors and Functions)**](multitarget/README.md)
 
 ## Installation
 
-For step by step instructions on how to setup Project Dovetail™ environment, please go to the installation section on the [documentation page](https://tibcosoftware.github.io/dovetail/getting-started/getting-started-webui/)
+For step by step instructions on how to setup Project Dovetail™ environment, please go to the installation section on the [documentation page](https://tibcosoftware.github.io/dovetail/ch01-01-installation.html)
 
 
 ### Contributing
 
-New activites, triggers, connectors and blockchain containers are welcome. If you would like to submit one, follow the instructions in the contributions section on the [documentation page](https://tibcosoftware.github.io/dovetail/contributing/contributing/)
+New activites, triggers, connectors and blockchain containers are welcome. If you would like to submit one, follow the instructions in the contributions section on the [documentation page](https://tibcosoftware.github.io/dovetail/ch03-00-contribute.html)
 
 ## License
 dovetail-contrib is licensed under a BSD-type license. See [LICENSE](https://github.com/TIBCOSoftware/dovetail-contrib/blob/master/LICENSE) for license text.
