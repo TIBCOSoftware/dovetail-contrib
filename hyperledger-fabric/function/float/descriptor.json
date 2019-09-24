@@ -1,0 +1,30 @@
+{
+    "name": "float",
+    "type": "flogo:function",
+    "version": "0.0.1",
+    "title": "floatFunctions",
+    "description": "floatFunctions",
+    "functions": [
+        {
+            "args": [
+                {
+                    "name": "input",
+                    "type": "any",
+                    "variable": true
+                }
+            ],
+            "help": {
+                "description": "Converts the input to a float64 with given optional floating point precision. The default precision value is 16. Currently precision upto 16 point is supported. Any precision value greater than 16 will default to 16.",
+                "example": "float.float64(\"2.77876542316664548335\",14)\nReturns\n2.77876542316665",
+                "usage": "float.float64(\u003c\u003c string \u003e\u003e,\u003c\u003cinteger\u003e\u003e)\nReturn Type\nfloat64"
+            },
+            "name": "float64",
+            "return": {
+                "type": "float64"
+            },
+            "display": {
+                "visible": true
+            }
+        }
+    ]
+}

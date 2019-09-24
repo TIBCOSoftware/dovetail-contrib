@@ -1,0 +1,10 @@
+{
+    "iou_0": "IOU",
+    "iou_1": "Account",
+    "iou_3": "IOUList",
+    "GetAccountTransactionsReturnType": "TransactionKV",
+    "GetIOUHistoryReturnType": "IOUHistory",
+    "GetBankAccountsReturnType": "AccountKV",
+    "ValueType": "Transaction",
+    "IOUListType": "IOUKV"
+}

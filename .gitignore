@@ -89,5 +89,12 @@ submodules/flogo-cicd/.build-cache
 .DS_Store
 **/.DS_Store
 .gitignore
+libraries/corda-java/.settings/
+libraries/corda-java/build/
+libraries/corda-java/logs/
+libraries/corda-java/target/
 blockchain/corda/target/
 smartcontract-java/target
+blockchain/corda/logs
+*.zip
+

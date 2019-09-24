@@ -1,0 +1,5 @@
+Release notes: 
+    - Added support for flogo 0.9.0 runtime
+    - Added hyperledger fabric extensions
+    - Added hyperledger fabric client extensions
+    - Added hyperledger fabric functions

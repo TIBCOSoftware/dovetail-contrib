@@ -1,0 +1,34 @@
+{
+    "name": "payment",
+    "title": "Payment Processor",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "SmartContract-Corda",
+       "visible": true,
+       "smallIcon": "payment.png",
+       "description": "process payment"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/SmartContract-Corda/activity/payment",
+    "inputs": [
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true,
+                "value": {
+                    "metadata": "",
+                    "value": "{\"funds\":[{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"issuerRef\":\"\", \"owner\":\"\", \"assetId\":\"\"}], \"paymentAmt\":{\"currency\":\"\", \"quantity\":0}, \"sendPaymentTo\":\"\", \"sendChangeTo\":\"\"}"
+                }
+            }
+    ],
+  
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object",
+            "required": true
+        }
+    ]
+}

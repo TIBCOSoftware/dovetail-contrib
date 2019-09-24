@@ -1,1 +1,0 @@
-zip  -u -r contrib-smartcontract.zip SmartContract/*

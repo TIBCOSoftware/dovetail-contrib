@@ -1,0 +1,43 @@
+{
+    "name": "wallet",
+    "title": "Cash Wallet",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "CorDApp",
+       "visible": true,
+       "smallIcon": "wallet.png",
+       "description": "cash related operations"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/CorDApp/activity/wallet",
+    "inputs": [
+            {
+                "name": "operation",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Operation",
+                    "type": "dropdown",
+                    "selection": "single"
+                },
+                "allowed": ["Account Balance", "Retrieve Funds"],
+                "value": "Account Balance"
+
+            },
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true
+           }
+    ],
+  
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object",
+            "required": true
+        }
+    ]
+}
