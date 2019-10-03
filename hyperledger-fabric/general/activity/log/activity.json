@@ -1,6 +1,7 @@
 {
   "name": "flogo-log",
   "type": "flogo:activity",
+  "ref": "github.com/project-flogo/contrib/activity/log",
   "version": "0.9.0",
   "title": "Log",
   "description": "Logs a message",
