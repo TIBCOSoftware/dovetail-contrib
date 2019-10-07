@@ -18,6 +18,7 @@ import com.tibco.dovetail.core.model.composer.MetadataParser;
 import com.tibco.dovetail.core.model.composer.HLCMetadata.ResourceType;
 import com.tibco.dovetail.core.model.flow.HandlerConfig;
 import com.tibco.dovetail.core.model.flow.TriggerConfig;
+import com.tibco.dovetail.core.runtime.compilers.App;
 import com.tibco.dovetail.core.runtime.compilers.FlowCompiler;
 import com.tibco.dovetail.core.runtime.flow.ReplyData;
 import com.tibco.dovetail.core.runtime.flow.TransactionFlow;
@@ -32,9 +33,9 @@ import com.tibco.dovetail.core.model.flow.AppProperty;
 public class transaction extends DefaultTriggerImpl{
 
 	@Override
-	public Map<String, ITrigger> Initialize(TriggerConfig triggerConfig, List<AppProperty> pp)  {
+	public Map<String, ITrigger> Initialize(TriggerConfig triggerConfig, App app)  {
 		try {
-			 this.properties = pp;
+			 this.properties = app.getProperties();
 			 
 			 String schema = triggerConfig.getSetting("schemas");
 	         Map<String, HLCResource> metadatas = MetadataParser.parse(schema);
@@ -47,9 +48,9 @@ public class transaction extends DefaultTriggerImpl{
 			
 			for(int j=0; j<handlerConfigs.length; j++) {
 				String txnName = handlerConfigs[j].getSetting("transaction").toString();
-			//	Resources r = handlerConfigs[j].getFlow();
-	
-	             TransactionFlow flow = FlowCompiler.compile(handlerConfigs[j]);
+				TransactionFlow flow = new TransactionFlow(app.getFlow(handlerConfigs[j].getFlowId()));
+				FlowCompiler.compileTriggeFlowMapping(flow, handlerConfigs[j]);
+			
 	
 	            //trigger inputs/outputs
 	            HLCResource txnResource =  metadatas.get(txnName);
@@ -104,7 +105,7 @@ public class transaction extends DefaultTriggerImpl{
 			        				conditions.put(values[0].trim(), values[1].trim());
 			        				
 			        			}
-			        			flow.setAcl(new TxnACL(parties, conditions));
+			        		//	flow.setAcl(new TxnACL(parties, conditions));
 			        		}
 			        	}
 	            }
@@ -115,7 +116,7 @@ public class transaction extends DefaultTriggerImpl{
 	          //  handlers.put(handlerConfigs[j].getFlowName(), flow); //will not work with multiple triggers for the same flow
 	            
 	            lookup.put(txnName, this);
-	          //  lookup.put(handlerConfigs[j].getFlowName(), this);
+	            lookup.put(handlerConfigs[j].getFlowId(), this);
 			}
 			
 			 return lookup;
@@ -166,14 +167,14 @@ public class transaction extends DefaultTriggerImpl{
 	}
 	
 	private boolean isAuthorized(ITransactionService txn, TxnACL acl) {
-		for(String attr : acl.getConditions().keySet()) {
+	/*	for(String attr : acl.getConditions().keySet()) {
 			String value = txn.getInitiatorCertAttribute(attr);
 			
 			if (value == null || !value.equals(acl.getConditions().get(attr) )) {
 				return false;
 			}
 		}
-
+*/
 		return true;
 	}
 	

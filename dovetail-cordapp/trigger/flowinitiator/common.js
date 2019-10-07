@@ -5,7 +5,7 @@ function createFlowInputSchema(inputParams) {
         return "{}";
 
    let inputs = JSON.parse(inputParams);
-   let schema = {schema:"http://json-schema.org/draft-04/schema#", type: "object", properties:{}}
+   let schema = {schema:"http://json-schema.org/draft-04/schema#", type: "object", properties:{}, description:""}
    let metadata = {metadata: {type: "Transaction"}, attributes: []};
 
    if(inputs) {
@@ -73,7 +73,7 @@ function createFlowInputSchema(inputParams) {
         
             metadata.attributes.push(attr);
        }
-  
+       schema.description = JSON.stringify(metadata)
        return JSON.stringify(schema);
    } else {
        return "{}";

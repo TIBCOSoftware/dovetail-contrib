@@ -10,7 +10,12 @@
        "smallIcon": "collection.png",
        "description": "This activity performe actions on collections of data"
     },
- 
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-General/activity/collection",
     "inputs": [
             {

@@ -42,6 +42,13 @@
             }
         },
         {
+            "name": "events",
+            "type": "array",
+            "display": {
+                "visible":false
+            }
+        },
+        {
             "name": "schemas",
             "type": "object",
             "display": {

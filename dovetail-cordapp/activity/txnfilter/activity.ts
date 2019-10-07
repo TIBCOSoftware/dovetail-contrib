@@ -25,10 +25,10 @@ export class TxnFilterActivityContributionHandler extends WiServiceHandlerContri
    
     value = (fieldName: string, context: IActivityContribution): any | Observable<any> => {
         let filterby = context.getField("filterby").value;
-        let asset = context.getField("assetName").value;
+        let asset = context.getField("assets").value;
         
         switch(fieldName) {
-            case "assetName":
+            case "assets":
                 if (filterby === "Input State" || filterby === "Output State" || filterby === "Reference State"){
                     let connectionRefs = [];
                     return Observable.create(observer => {
@@ -55,7 +55,20 @@ export class TxnFilterActivityContributionHandler extends WiServiceHandlerContri
                     });
                 } else
                     return null;
-                
+            case "assetName":
+                if(asset === "com.tibco.dovetail.system.Cash")
+                    return asset;
+
+                return Observable.create(observer => {
+                    WiContributionUtils.getConnection(this.http, asset)
+                                    .map(data => data)
+                                    .subscribe(data => {
+                                        var ns = this.getSettingValue(data, "module")
+                                        var nm = this.getSettingValue(data, "name")
+                                        observer.next(ns + "." + nm);
+                                                
+                                    })
+                });
             case "output":
                 switch(filterby){
                     case "Input State" :
@@ -148,7 +161,7 @@ export class TxnFilterActivityContributionHandler extends WiServiceHandlerContri
         let filterby = context.getField("filterby").value;
         let visible = false;
         switch(fieldName){
-            case "assetName":
+            case "assets":
                 if (filterby === "Input State" || filterby === "Output State" || filterby === "Reference State"){
                     visible = true
                 } 
@@ -176,4 +189,12 @@ export class TxnFilterActivityContributionHandler extends WiServiceHandlerContri
                             });
                         });
     }
+
+    getSettingValue(connection, setting):string {
+        for(let i=0; i < connection.settings.length; i++) {
+            if(connection.settings[i].name === setting){
+                return connection.settings[i].value
+            }
+        }
+    }   
 }

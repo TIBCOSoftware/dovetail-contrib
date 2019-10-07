@@ -10,7 +10,12 @@
        "smallIcon": "empty.png",
        "description": "null activity"
     },
- 
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-General/activity/empty",
     "inputs": [
     ],

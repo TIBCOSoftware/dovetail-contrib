@@ -48,6 +48,8 @@ export class LedgerActivityContributionHandler extends WiServiceHandlerContribut
         switch(fieldName){
             case "asset":
                 return this.getTxnAsset(context)
+            case "txn":
+                return context.getCurrentFlowName()
             case "input":
                 return Observable.create(observer => {
                     this.getAssetSchema(context).subscribe(data => {

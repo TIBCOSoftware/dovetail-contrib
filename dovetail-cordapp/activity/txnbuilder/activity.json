@@ -10,7 +10,12 @@
        "smallIcon": "builder.png",
        "description": "build transaction to sign"
     },
- 
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/activity/txnbuilder",
     "inputs": [
             {

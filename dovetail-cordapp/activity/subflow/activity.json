@@ -10,7 +10,12 @@
        "smallIcon": "sub.png",
        "description": "start an initiating flow as a subflow"
     },
- 
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/activity/subflow",
     "inputs": [
             {

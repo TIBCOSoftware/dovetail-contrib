@@ -88,6 +88,8 @@ export class CollectionActivityContributionHandler extends WiServiceHandlerContr
     value = (fieldName: string, context: IActivityContribution): any | Observable<any> => {
         let op = context.getField("operation").value;
         switch(fieldName){
+            case "operation":
+                return ["DISTINCT"]
             case "dataType":
                 let connectionRefs = [];
                 connectionRefs.push({"unique_id": "string", "name":"string"})

@@ -69,6 +69,11 @@
   		<version>2.8.11.1</version>
   	</dependency>
   	<dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.9.5</version>
+   </dependency>
+  	<dependency>
   		<groupId>net.corda</groupId>
   		<artifactId>corda-finance-workflows</artifactId>
   		<version>4.1</version>

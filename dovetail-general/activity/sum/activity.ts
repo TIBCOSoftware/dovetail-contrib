@@ -90,6 +90,14 @@ export class SumActivityContributionHandler extends WiServiceHandlerContribution
     }
  
     validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
-        return null; 
+      switch(fieldName){
+        case "groupby":
+            return Observable.create(observer => {
+              let vresult: IValidationResult = ValidationResult.newValidationResult();
+              vresult.setVisible(false);
+              observer.next(vresult);
+          });
+      }  
+      return null; 
     }
 }

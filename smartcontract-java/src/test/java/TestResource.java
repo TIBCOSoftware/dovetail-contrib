@@ -25,7 +25,7 @@ public class TestResource {
     	System.out.println("testActivityJson.......");
         try {
            ObjectMapper mapper = new ObjectMapper();
-            ActivityModel model = ActivityModel.loadModel(mapper, "smartcontract/activity/ledger");
+            ActivityModel model = ActivityModel.loadModel(mapper, "dovetail_ledger/activity/ledger");
             System.out.println(model.getRef());
         }catch (Exception e){e.printStackTrace();}
     }

@@ -10,7 +10,12 @@
        "smallIcon": "payment.png",
        "description": "process payment"
     },
- 
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-Ledger/activity/payment",
     "inputs": [
            {

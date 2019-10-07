@@ -5,11 +5,15 @@
  */
 package com.tibco.dovetail.container.corda;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import com.jayway.jsonpath.DocumentContext;
 import com.tibco.dovetail.corda.json.serializer.AbstractPartySerializer;
@@ -46,6 +50,12 @@ public class CordaUtil {
 	
 	private CordaUtil() {
 		ser_mapper = new ObjectMapper();
+		ser_mapper.enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
+		//ser_mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		ser_mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		ser_mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+		ser_mapper.enable(DeserializationFeature.USE_LONG_FOR_INTS);
+	
 		ser_mapper.registerModule(new KotlinModule());
 		
 		SimpleModule module = new SimpleModule();
@@ -59,6 +69,7 @@ public class CordaUtil {
 		module.addSerializer(PublicKey.class, new PublicKeySerializer());
 
 		ser_mapper.registerModule(module);
+		ser_mapper.registerModule(new JavaTimeModule());
 	}
 	public static synchronized CordaUtil getInstance() {
 		if(cordaUtil == null) {

@@ -29,19 +29,26 @@ export class ContractConnectorService extends WiServiceHandlerContribution {
        if(name === "Done"){
             var contracts = this.loadContract(context)
             if(contracts){
-               // var json = JSON.parse(contracts)
                 var txns = []
                 var schemas = []
+                var events = []
                 for (const c of contracts){
-                    txns.push(c.transaction)
-                    
-                    schemas.push([c.transaction, zstring.compressToUTF16(c.schema)])
+                    if(Boolean(c.transaction)){
+                        txns.push(c.transaction)
+                        schemas.push([c.transaction, zstring.compressToUTF16(c.schema)])
+                    }
+                    else{
+                        events.push(c.event)
+                        schemas.push([c.event, zstring.compressToUTF16(c.schema)])
+                    }
                 }
                 for(let i=0; i<context.settings.length; i++){
                     if(context.settings[i].name==="transactions"){
                         context.settings[i].value = txns;
                     } else if(context.settings[i].name==="schemas"){
                         context.settings[i].value = schemas;
+                    } else if(context.settings[i].name==="events"){
+                        context.settings[i].value = events;
                     } 
                 }
             }
@@ -79,13 +86,20 @@ export class ContractConnectorService extends WiServiceHandlerContribution {
                         var schema = JSON.parse(h.schemas.output.transactionInput.value)
                         var meta = JSON.parse(schema.description)
                         var ns = meta.metadata.asset.substring(0, meta.metadata.asset.lastIndexOf("."))
-                        var contract = {transaction: ns + "." + h.action.settings.flowURI.substring(11), contract: meta.metadata.asset+"Contract", contractState: meta.metadata.asset, schema:h.schemas.output.transactionInput.value}
+                        var contract = {event: "", transaction: ns + "." + h.action.settings.flowURI.substring(11), contract: meta.metadata.asset+"Contract", contractState: meta.metadata.asset, schema:h.schemas.output.transactionInput.value}
+                        contracts.push(contract)
+                    }
+                } else if(t.ref === "#scheduler"){
+                    for(var h of t.handlers){
+                        var schema = JSON.parse(h.schemas.output.transactionInput.value)
+                        var meta = JSON.parse(schema.description)
+                        var ns = meta.metadata.asset.substring(0, meta.metadata.asset.lastIndexOf("."))
+                        var contract = {transaction: "", event: ns + "." + h.action.settings.flowURI.substring(11), contract: meta.metadata.asset+"Contract", contractState: meta.metadata.asset, schema:h.schemas.output.transactionInput.value}
                         contracts.push(contract)
                     }
                 }
             }
             return contracts
-            //return JSON.stringify(contracts, null, 2)
         }
         return null
     }

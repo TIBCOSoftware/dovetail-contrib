@@ -28,7 +28,6 @@ export class TxnBuilderActivityContributionHandler extends WiServiceHandlerContr
         switch(fieldName) {
             case "contract":
                 let connectionRefs = [];
-                connectionRefs.push({"unique_id":"flow", "name":"Action in this contract..."})
                 return Observable.create(observer => {
                     WiContributionUtils.getConnections(this.http, "Dovetail-Contract").subscribe((data: IConnectorContribution[]) => {
                         data.forEach(connection => {
@@ -47,21 +46,9 @@ export class TxnBuilderActivityContributionHandler extends WiServiceHandlerContr
                         observer.next(connectionRefs);
                     });
                 });
-            case "contractClass":
-                if(Boolean(conId) == false || Boolean(cmd) == false || conId === "flow")
-                    return null;
-
-                return Observable.create(observer => {
-                    this.getSchemas(conId).subscribe( schemas => {
-                        
-                        let schema = JSON.parse(schemas[cmd]);
-                      
-                        let metadata = JSON.parse(schema.description);
-                        observer.next(metadata.metadata.asset + "Contract");
-                    });
-                });  
+           
             case "command":
-                if(Boolean(conId) == false || conId === "flow")
+                if(Boolean(conId) == false)
                     return null;
 
                 return Observable.create(observer => {
@@ -77,7 +64,7 @@ export class TxnBuilderActivityContributionHandler extends WiServiceHandlerContr
                                         });
                 });
             case "input":
-                if(Boolean(conId) == false || Boolean(cmd) == false || conId === "flow")
+                if(Boolean(conId) == false || Boolean(cmd) == false)
                     return null;
 
                 return Observable.create(observer => {
@@ -90,27 +77,7 @@ export class TxnBuilderActivityContributionHandler extends WiServiceHandlerContr
     }
  
     validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
-        let conId = context.getField("contract").value;
-        switch(fieldName){
-            case "command":
-                return Observable.create(observer => {
-                    let vresult: IValidationResult = ValidationResult.newValidationResult();
-                    vresult.setVisible(conId !== "flow" && Boolean(conId));
-                    observer.next(vresult);
-                });
-            case "flow":
-                return Observable.create(observer => {
-                    let vresult: IValidationResult = ValidationResult.newValidationResult();
-                    vresult.setVisible(conId === "flow");
-                    observer.next(vresult);
-                })
-            case "input":
-                return Observable.create(observer => {
-                    let vresult: IValidationResult = ValidationResult.newValidationResult();
-                    vresult.setReadOnly(conId !== "flow");
-                    observer.next(vresult);
-                })
-        }
+       
         return null;
     }
 

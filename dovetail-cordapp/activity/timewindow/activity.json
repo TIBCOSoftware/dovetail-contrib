@@ -10,7 +10,12 @@
        "smallIcon": "window.png",
        "description": "set transaction time window"
     },
- 
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/activity/timewindow",
     "inputs": [
             {

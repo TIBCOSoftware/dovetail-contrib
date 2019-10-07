@@ -10,7 +10,12 @@
        "smallIcon": "wallet.png",
        "description": "cash related operations"
     },
- 
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/activity/wallet",
     "inputs": [
             {

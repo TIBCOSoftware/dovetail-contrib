@@ -25,9 +25,9 @@ export class VaultQueryActivityContributionHandler extends WiServiceHandlerContr
    
     value = (fieldName: string, context: IActivityContribution): any | Observable<any> => {
         let assetType = context.getField("assetType").value;
-        let conId = context.getField("assetName").value;
+        let conId = context.getField("assets").value;
         switch(fieldName) {
-            case "assetName":
+            case "assets":
                 let connectionRefs = [];
                 return Observable.create(observer => {
                     WiContributionUtils.getConnections(this.http, "Dovetail-Ledger").subscribe((data: IConnectorContribution[]) => {
@@ -47,7 +47,18 @@ export class VaultQueryActivityContributionHandler extends WiServiceHandlerContr
                         observer.next(connectionRefs);
                     });
                 });
-                
+            case "assetName":
+                return Observable.create(observer => {
+                    WiContributionUtils.getConnection(this.http, conId)
+                                    .map(data => data)
+                                    .subscribe(data => {
+                                        var ns = this.getSettingValue(data, "module")
+                                        var nm = this.getSettingValue(data, "name")
+                                        observer.next(ns + "." + nm);
+                                               
+                                    })
+                });
+                    
             case "input":
                 if(assetType === "LinearState")
                     return linearschema;
@@ -97,4 +108,12 @@ export class VaultQueryActivityContributionHandler extends WiServiceHandlerContr
                             });
                         });
     }
+
+    getSettingValue(connection, setting):string {
+        for(let i=0; i < connection.settings.length; i++) {
+            if(connection.settings[i].name === setting){
+                return connection.settings[i].value
+            }
+        }
+    }    
 }

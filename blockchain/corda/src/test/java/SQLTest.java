@@ -25,15 +25,14 @@ import net.sf.jsqlparser.expression.*;
 public class SQLTest {
 	@Test
 	public void testsql() throws JSQLParserException {
-		Statement stmt = CCJSqlParserUtil.parse("select * from com.example.iou.IOU where linearId.externalId='abc' and ");
+		Statement stmt = CCJSqlParserUtil.parse("select * from com.example.iou.IOU where linearId.externalId='abc'");
 		Select select = (Select)stmt;
 		
 		TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
 		List<String> tableList = tablesNamesFinder.getTableList(select);
 		
 		System.out.println(tableList.toString());
-		
-		select.getSelectBody().accept(new MySelectVisitor());
+	
 		
 	}
 	
