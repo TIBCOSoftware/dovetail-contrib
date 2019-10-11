@@ -1,6 +1,6 @@
 package instance
 
-// Host returns parent flow instanance
+// Host returns parent flow instance
 func (ti *TaskInst) Host() *TaskInst {
 	h := ti.flowInst.host
 	ti.logger.Debugf("got flow host: %+v", h)

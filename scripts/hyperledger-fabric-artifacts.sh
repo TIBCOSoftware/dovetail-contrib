@@ -5,16 +5,16 @@ if [ -d .target/hyperledger-fabric ]; then
 fi
 mkdir -p .target/hyperledger-fabric
 
+cd hyperledger-fabric
+
 echo "Building fabric extension"
-zip -r .target/hyperledger-fabric/fabric-extension-${build_tag////-}.zip hyperledger-fabric/fabric
+zip -r ../.target/hyperledger-fabric/fabric-extension-${build_tag////-}.zip fabric
 
 echo "Building fabric general extension"
-zip -r .target/hyperledger-fabric/fabric-general-extension-${build_tag////-}.zip hyperledger-fabric/general
+zip -r ../.target/hyperledger-fabric/fabric-general-extension-${build_tag////-}.zip general
 
 echo "Building fabric client extension"
-zip -r .target/hyperledger-fabric/fabric-client-extension-${build_tag////-}.zip hyperledger-fabric/fabclient
-
-cd hyperledger-fabric
+zip -r ../.target/hyperledger-fabric/fabric-client-extension-${build_tag////-}.zip fabclient
 
 echo "Building fabric functions"
 zip -r ../.target/hyperledger-fabric/fabric-function-${build_tag////-}.zip function
