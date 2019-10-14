@@ -87,7 +87,7 @@ func GetChaincodeStub(ctx activity.Context) (shim.ChaincodeStubInterface, error)
 				return ccshim, nil
 			}
 			// search parent flow
-			if taskInst = Host(taskInst); taskInst == nil {
+			if taskInst = taskInst.Host(); taskInst == nil {
 				// at root flow
 				log.Error("no stub found in root flow")
 				return nil, errors.New("no stub found in root flow")
@@ -336,14 +336,4 @@ func makeCompositeKey(stub shim.ChaincodeStubInterface, keyName string, attribut
 		return ""
 	}
 	return compositeKey
-}
-
-// Host returns parent flow instance
-func Host(ti *TaskInst) *TaskInst {
-	h := ti.flowInst.host
-	ti.logger.Debugf("got flow host: %+v", h)
-	if inst, ok := h.(*TaskInst); ok {
-		return inst
-	}
-	return nil
 }
