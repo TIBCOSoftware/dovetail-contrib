@@ -10,17 +10,17 @@ type Query {
 	queryTimeRange(domain: String, owner: String, startTime: String, endTime: String): [AuditKeyValue]
 }
 type Mutation {
+	deleteRecord(key: String): AuditRecord
 	deleteTransaction(txID: String): [AuditKeyValue]
 	createAudit(records: [AuditLog]): [AuditKeyValue]
-	deleteRecord(key: String): AuditRecord
 }
 input AuditLog {
-	recID: String
 	domain: String
 	owner: String
 	data: String
 	hashType: String
 	hashValue: String
+	recID: String
 }
 
 type AuditRecord {

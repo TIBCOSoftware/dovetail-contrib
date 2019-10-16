@@ -96,7 +96,7 @@ func retrievePrivateRange(ctx activity.Context, ccshim shim.ChaincodeStubInterfa
 	}
 	defer resultIterator.Close()
 
-	jsonBytes, err := common.ConstructQueryResponse(resultIterator, false, nil)
+	jsonBytes, err := common.ConstructQueryResponse(resultIterator, input.PrivateCollection, false, nil)
 	if err != nil {
 		log.Errorf("failed to collect result from iterator: %+v\n", err)
 		output := &Output{Code: 500, Message: "failed to collect result from iterator"}
@@ -162,7 +162,7 @@ func retrieveRange(ctx activity.Context, ccshim shim.ChaincodeStubInterface, inp
 	}
 	defer resultIterator.Close()
 
-	jsonBytes, err := common.ConstructQueryResponse(resultIterator, false, nil)
+	jsonBytes, err := common.ConstructQueryResponse(resultIterator, "", false, nil)
 	if err != nil {
 		log.Errorf("failed to collect result from iterator: %+v\n", err)
 		output := &Output{Code: 500, Message: "failed to collect result from iterator"}

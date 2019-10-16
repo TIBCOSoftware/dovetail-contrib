@@ -2,15 +2,19 @@ MAKEFILE_THIS := $(lastword $(MAKEFILE_LIST))
 SRC_PATH      := $(patsubst %/,%,$(dir $(abspath $(MAKEFILE_THIS))))
 APP_FILE      := marble_app.json
 APP_NAME      := marble_cc
-BUILD_PATH    := /tmp/marble
+BUILD_PATH    ?= /tmp/marble
 FAB_PATH      := $(GOPATH)/src/github.com/hyperledger/fabric-samples
 CC_DEPLOY     := $(FAB_PATH)/chaincode
 SHIM_PATH     := $(SRC_PATH)/../../shim
 PATCH_PATH    := $(SRC_PATH)/../../flogo-patch
 
 CLIENT_FILE   := marble_client_app.json
-CLIENT_PATH   := /tmp/marble_client
+CLIENT_PATH   ?= /tmp/marble_client
 CLIENT_NAME   := marble_client
+
+FLOGO_VER     ?= v0.9.2
+DT_REPO       ?= github.com/TIBCOSoftware/dovetail-contrib
+DT_BRANCH     ?= develop
 
 .PHONY: all
 all: create build
@@ -24,19 +28,20 @@ create: $(APP_FILE) clean
 	mkdir -p $(BUILD_PATH) && \
 	cp $(APP_FILE) $(BUILD_PATH)
 	cd $(BUILD_PATH) && \
-	flogo create -f $(APP_FILE) $(APP_NAME)
+	flogo create --cv $(FLOGO_VER) -f $(APP_FILE) $(APP_NAME)
 	rm $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp $(SHIM_PATH)/chaincode_shim.go $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp $(SHIM_PATH)/dovetailimports.go $(BUILD_PATH)/$(APP_NAME)/src
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	echo "" >> go.mod && \
-	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(GOPATH)/src/github.com/TIBCOSoftware/dovetail-contrib" >> go.mod
+	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(DT_REPO) $(DT_BRANCH)" >> go.mod
 
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
-	-cd $(BUILD_PATH)/$(APP_NAME) && \
-	flogo install github.com/project-flogo/contrib/function/string && \
-	flogo build -e
+	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
+	cd $(BUILD_PATH)/$(APP_NAME) && \
+	flogo install github.com/project-flogo/contrib/function/string
+	
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
@@ -81,11 +86,11 @@ create-client: $(CLIENT_FILE) clean-client
 	mkdir -p $(CLIENT_PATH) && \
 	cp $(CLIENT_FILE) $(CLIENT_PATH)
 	cd $(CLIENT_PATH) && \
-	flogo create -f $(CLIENT_FILE) $(CLIENT_NAME)
+	flogo create --cv $(FLOGO_VER) -f $(CLIENT_FILE) $(CLIENT_NAME)
 	cp $(SHIM_PATH)/clientappimports.go $(CLIENT_PATH)/$(CLIENT_NAME)/src
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	echo "" >> go.mod && \
-	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(GOPATH)/src/github.com/TIBCOSoftware/dovetail-contrib" >> go.mod
+	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(DT_REPO) $(DT_BRANCH)" >> go.mod
 
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)

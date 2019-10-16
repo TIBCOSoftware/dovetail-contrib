@@ -10,16 +10,15 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/hyperledger/fabric-protos-go/common"
+	"github.com/hyperledger/fabric-protos-go/ledger/rwset"
+	"github.com/hyperledger/fabric-protos-go/msp"
+	pb "github.com/hyperledger/fabric-protos-go/peer"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/event"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/core"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
-	"github.com/hyperledger/fabric/protos/common"
-	"github.com/hyperledger/fabric/protos/ledger/rwset"
-	"github.com/hyperledger/fabric/protos/msp"
-	pb "github.com/hyperledger/fabric/protos/peer"
-	"github.com/hyperledger/fabric/protos/utils"
 )
 
 const (
@@ -287,11 +286,11 @@ func unmarshalBlockEvent(blkEvent *fab.BlockEvent) *BlockEventDetail {
 }
 
 func unmarshalTransaction(data []byte) (*TransactionDetail, error) {
-	envelope, err := utils.GetEnvelopeFromBlock(data)
+	envelope, err := GetEnvelopeFromBlock(data)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get envelope")
 	}
-	payload, err := utils.GetPayload(envelope)
+	payload, err := UnmarshalPayload(envelope.Payload)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get payload")
 	}
@@ -300,7 +299,7 @@ func unmarshalTransaction(data []byte) (*TransactionDetail, error) {
 	}
 
 	// channel header
-	chdr, err := utils.UnmarshalChannelHeader(payload.Header.ChannelHeader)
+	chdr, err := UnmarshalChannelHeader(payload.Header.ChannelHeader)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to unmarshal channel header")
 	}
@@ -325,7 +324,7 @@ func unmarshalTransaction(data []byte) (*TransactionDetail, error) {
 		}
 	}
 
-	txn, err := utils.GetTransaction(payload.Data)
+	txn, err := UnmarshalTransaction(payload.Data)
 	if err != nil {
 		return &td, errors.Wrapf(err, "failed to get transaction")
 	}
@@ -365,13 +364,13 @@ func unmarshalIdentity(data []byte) (*Identity, error) {
 }
 
 func unmarshalAction(data []byte) (*ActionDetail, error) {
-	ccAction, err := utils.GetChaincodeActionPayload(data)
+	ccAction, err := UnmarshalChaincodeActionPayload(data)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get action payload")
 	}
 
 	// proposal payload
-	proposalPayload, err := utils.GetChaincodeProposalPayload(ccAction.ChaincodeProposalPayload)
+	proposalPayload, err := UnmarshalChaincodeProposalPayload(ccAction.ChaincodeProposalPayload)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get proposal payload")
 	}
@@ -411,11 +410,11 @@ func unmarshalAction(data []byte) (*ActionDetail, error) {
 	}
 
 	// action response payload
-	prespPayload, err := utils.GetProposalResponsePayload(ccAction.Action.ProposalResponsePayload)
+	prespPayload, err := UnmarshalProposalResponsePayload(ccAction.Action.ProposalResponsePayload)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get proposal response payload")
 	}
-	cact, err := utils.GetChaincodeAction(prespPayload.Extension)
+	cact, err := UnmarshalChaincodeAction(prespPayload.Extension)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get chaincode action")
 	}
@@ -454,7 +453,7 @@ func unmarshalAction(data []byte) (*ActionDetail, error) {
 
 	// chaincode event
 	if cact.Events != nil {
-		if ccEvt, err := utils.GetChaincodeEvents(cact.Events); err != nil {
+		if ccEvt, err := UnmarshalChaincodeEvents(cact.Events); err != nil {
 			logger.Errorf("failed to get chaincode event: %+v", err)
 		} else {
 			ccResult.Event = &ChaincodeEvent{

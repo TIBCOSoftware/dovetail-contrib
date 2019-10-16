@@ -2,38 +2,18 @@
 This example uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to demonstrate Attribute Based Access Control (ABAC) in the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric). It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
 
 ## Prerequisite
-- Download [TIBCO Flogo® Enterprise 2.6](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html). If you do not have access to `Flogo Enterprise`, you may sign up a trial on [TIBCO CLOUD Integration (TCI)](https://cloud.tibco.com/), or download Dovetail v0.2.0 when it is released.  This sample uses `TIBCO Flogo® Enterprise`, but all models can be imported and edited by using Dovetail v0.2.0 and above.
-- [Install Go](https://golang.org/doc/install)
-- Clone [Hyperledger Fabric](https://github.com/hyperledger/fabric)
-- Clone [Hyperledger Fabric Samples](https://github.com/hyperledger/fabric-samples)
-- Install [Fabric CA binaries](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/users-guide.html)
-- Download and install [flogo-cli](https://github.com/project-flogo/cli)
-- Clone dovetail-contrib with Flogo extension for Hyperledger Fabric
-
-There are different ways to clone these packages.  This document assumes that you have installed these packages under $GOPATH after installing Go, i.e.,
-```
-go get -u github.com/hyperledger/fabric
-go get -u github.com/hyperledger/fabric-samples
-go get -u github.com/hyperledger/fabric-ca/cmd/...
-go get -u github.com/project-flogo/cli/...
-go get -u github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric
-```
-Note that the latest version of the Flogo extension for Hyperledger Fabric is required by this sample, and it is in the [`fabric-extension` branch of the `dovetail-contrib`](https://github.com/TIBCOSoftware/dovetail-contrib/tree/issue-36/fabric-extension).
-
-Bootstrap fabric-samples
-```
-cd $GOPATH/src/github.com/hyperledger/fabric-samples
-./scripts/bootstrap.sh
-```
+Follow the instructions [here](../../development.md) to setup the Dovetail development environment on Mac or Linux.
 
 ## Edit smart contract (optional)
 Skip to the next section if you do not plan to modify the included sample model.
 
-- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.6.1/doc/pdf/TIB_flogo_2.6_users_guide.pdf?id=2)
-- Upload [`fabricExtension.zip`](../../fabricExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can recreate this `zip` by using the script [`zip-fabric.sh`](../../zip-fabric.sh)
+- Start TIBCO Flogo® Enterprise or Dovetail.
+- Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `abac_app` and choose `Import app` to import the model [`abac_app.json`](abac_app.json)
 - You can then add or update the flows using the graphical modeler of the TIBCO Flogo® Enterprise.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`abac_app.json`](abac_app.json) to this `abac` sample folder.
+
+Note that when a flogo model is imported to `Flogo® Enterprise v2.6.1`, a `return` activity is automatically added to the end of all branches, which could be an issue if the `return` activity is not at the end of a flow.  Thus, you need to carefully remove the mistakenly added `return` activities after the model is imported.  This issue will be fixed in a later release of the `Flogo® Enterprise`.
 
 ## Build and deploy chaincode to Hyperledger Fabric
 - In this `abac` sample folder, execute `make create` to generate source code from the flogo model [`abac_app.json`](abac_app.json).
@@ -81,8 +61,8 @@ cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samp
 make package
 ```
 Following are steps to edit or view the REST service models.
-- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.6.1/doc/pdf/TIB_flogo_2.6_users_guide.pdf?id=2)
-- Upload [`fabclientExtension.zip`](../../fabclientExtension.zip) to TIBCO Flogo® Enterprise [Extensions](http://localhost:8090/wistudio/extensions).  Note that you can recreate this `zip` by using the script [`zip-fabclient.sh`](../../zip-fabclient.sh)
+- Start TIBCO Flogo® Enterprise or Dovetail.
+- Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `abac_client` and choose `Import app` to import the model [`abac_client.json`](abac_client.json)
 - Edit `Settings` of the REST trigger to set `port` to `=$property["PORT"]`
 - You can then add or update service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.

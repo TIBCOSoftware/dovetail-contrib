@@ -1,0 +1,14 @@
+{
+  "name": "createLinearId",
+  "args": [
+  ],
+  "help": {
+    "description": "create a linear Id with random UUID",
+    "example": "cordapp.createLinearId()\nReturns\nnull_75f2df70-91d6-4188-9c1d-aec39cb84792",
+    "usage": "cordapp.createLinearId()\nReturn Type\nstring"
+  },
+  "return": {"type": "string"},
+  "wi": {
+    "visible": true
+  }
+}

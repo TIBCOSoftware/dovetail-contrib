@@ -22,4 +22,4 @@ It supports the following activities for storing and querying data on the distri
 
 With these extensions, Hyperledger Fabric chaincode can be designed and implemented with zero code. Refer to samples [`marble-app`](../samples/marble-app) and [`marble-private`](../samples/marble-private) for more details about implementing chaincode for Hyperledger Fabric.
 
-This extension is packaged as [`fabricExtension.zip`](../fabricExtension.zip), which can be re-created from source by using the script [`zip-fabric.sh`](../zip-fabric.sh).  You can upload the zip-file to the `TIBCO Flogo® Enterprise 2.6` or `Dovetail v0.2.0` as an extension, and so they are available for modeling chaincode.
+To use this extension in Flogo model, you can create [`fabricExtension.zip`](../fabricExtension.zip) by using the script [`zip-fabric.sh`](../zip-fabric.sh), and then upload the zip-file to the `TIBCO Flogo® Enterprise 2.6` or `Dovetail v0.2.0` as an extension, and so they are available for modeling chaincode.

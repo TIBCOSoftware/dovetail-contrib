@@ -13,4 +13,4 @@ The [Fabric Request Activity](activity/fabrequest) allows you to implement clien
 
 With these extensions, Hyperledger Fabric client apps can be designed and implemented with zero code. Refer to the sample [`equipment`](../samples/equipment) for more details about implementing REST or GraphQL service that interacts with a Hyperledger Fabric network.
 
-This extension is packaged as [`fabclientExtension.zip`](../fabclientExtension.zip), which can be re-created from source by using the script [`zip-fabclient.sh`](../zip-fabclient.sh).  You can upload the zip-file to the `TIBCO Flogo® Enterprise 2.6` or `Dovetail v0.2.0` as an extension, and so they are available for modeling client apps and services for Hyperledger Fabric.
+To use this extension in Flogo model, you can create [`fabclientExtension.zip`](../fabclientExtension.zip) by using the script [`zip-fabclient.sh`](../zip-fabclient.sh), and then upload the zip-file to the `TIBCO Flogo® Enterprise 2.6` or `Dovetail v0.2.0` as an extension, and so they are available for modeling client apps and services for Hyperledger Fabric.
