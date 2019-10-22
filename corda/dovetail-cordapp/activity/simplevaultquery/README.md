@@ -10,8 +10,7 @@ The query output is an array of objects with structure of data and ref. data obj
 
 ## Settings
 | Setting       | Required | Description                                                                       |
-|:--------------|:---------|:----------------------------------------------------------------------------------|
-| model         | True     | Select contract model                                                             |
+|:--------------|:---------|:---------------------------------------------------------------------------       |
 | assetName     | True     | Select asset to query                                                             |
 | status        | True     | Asset status, default to UNCONSUMED                                               |
 | assetType     | True     | default to LinearState                                                            | 
