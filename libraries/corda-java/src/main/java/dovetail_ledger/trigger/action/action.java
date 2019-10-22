@@ -21,7 +21,7 @@ public class action extends DefaultTriggerImpl {
 	        	txnAttr.setType(a.getType());
 	        	txnAttr.setArray(a.isArray());
         		txnAttr.setAssetName(a.getType());
-        		txnAttr.setAssetRef(a.isRef());
+        		txnAttr.setAssetRef(a.isAsset() && a.isRef());
         		txnAttr.setParticipant(false);
         		txnAttr.setAsset(a.isAsset());
         		txnAttr.setReferenceData(a.isReferenceData());
