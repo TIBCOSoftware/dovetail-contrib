@@ -1,0 +1,251 @@
+{
+    "name": "math",
+    "type": "flogo:function",
+    "version": "0.0.1",
+    "title": "mathFunctions",
+    "description": "mathFunctions",
+    "functions": [
+        {
+            "args": [
+                {
+                    "name": "nbr1",
+                    "type": "any"
+                },
+                {
+                    "name": "nbr2",
+                    "type": "any",
+                    "variable": true
+                }
+            ],
+            "help": {
+                "description": "cacluate the sum of list of any numeric numbers",
+                "example": "math.sum(1.1, 2)\nReturns\n 3.1",
+                "usage": "math.sum(\u003c\u003cnbr1\u003e\u003e, \u003c\u003cnbr2\u003e\u003e)\nReturn Type\n \u003c\u003cnumber\u003e\u003e"
+            },
+            "name": "sum",
+            "return": {
+                "array": false,
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr1",
+                    "type": "integer"
+                },
+                {
+                    "name": "nbr2",
+                    "type": "integer",
+                    "variable": true
+                }
+            ],
+            "help": {
+                "description": "cacluate the sum of list of integer numbers",
+                "example": "math.sumLong(1, 2)\nReturns\n 3",
+                "usage": "math.sumLong(\u003c\u003cnbr1\u003e\u003e, \u003c\u003cnbr2\u003e\u003e)\nReturn Type\n \u003c\u003cinteger\u003e\u003e"
+            },
+            "name": "sumLong",
+            "return": {
+                "array": false,
+                "type": "integer"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr1",
+                    "type": "any"
+                },
+                {
+                    "name": "nbr2",
+                    "type": "any",
+                    "variable": true
+                }
+            ],
+            "help": {
+                "description": "Returns  the result of nbr1 - nbr2 - nbr3 - ...",
+                "example": "math.subtract(6, 3, 2)\nReturns\n1",
+                "usage": "math.subtract(\u003c\u003c nbr1 \u003e\u003e, \u003c\u003c nbr2 \u003e\u003e)\nReturn Type\nnumber"
+            },
+            "name": "subtract",
+            "return": {
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr1",
+                    "type": "integer"
+                },
+                {
+                    "name": "nbr2",
+                    "type": "integer",
+                    "variable": true
+                }
+            ],
+            "help": {
+                "description": "Returns  the result of nbr1 - nbr2 - nbr3 - ..., all numbers should be integer",
+                "example": "math.subtractLong(6, 3, 2)\nReturns\n1",
+                "usage": "math.subtractLong(\u003c\u003c nbr1 \u003e\u003e, \u003c\u003c nbr2 \u003e\u003e)\nReturn Type\ninteger"
+            },
+            "name": "subtractLong",
+            "return": {
+                "type": "integer"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr1",
+                    "type": "any"
+                },
+                {
+                    "name": "nbr2",
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "Returns  the product of two numbers",
+                "example": "math.multiply(2, 3)\nReturns\n6",
+                "usage": "math.multiply(\u003c\u003c nbr1 \u003e\u003e, \u003c\u003c nbr2 \u003e\u003e)\nReturn Type\nnumber"
+            },
+            "name": "multiple",
+            "return": {
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr1",
+                    "type": "any"
+                },
+                {
+                    "name": "nbr2",
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "Returns  the product of two integer numbers",
+                "example": "math.multiplyLong(2, 3)\nReturns\n6",
+                "usage": "math.multiplyLong(\u003c\u003c nbr1 \u003e\u003e, \u003c\u003c nbr2 \u003e\u003e)\nReturn Type\ninteger"
+            },
+            "name": "multipleLong",
+            "return": {
+                "type": "integer"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr1",
+                    "type": "any"
+                },
+                {
+                    "name": "nbr2",
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "Returns  the quotient of two numbers",
+                "example": "math.divide(6, 3)\nReturns\n2",
+                "usage": "math.divide(\u003c\u003c nbr1 \u003e\u003e, \u003c\u003c nbr2 \u003e\u003e)\nReturn Type\nnumber"
+            },
+            "name": "divide",
+            "return": {
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr",
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "return the negate value of nbr",
+                "example": "math.negate(1)\nReturns\n -1",
+                "usage": "math.negate(\u003c\u003cnbr\u003e\u003e)\nReturn Type\n number"
+            },
+            "name": "negate",
+            "return": {
+                "type": "any"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr",
+                    "type": "any"
+                }
+            ],
+            "help": {
+                "description": "return the negate value of integer number",
+                "example": "math.negateLong(1)\nReturns\n -1",
+                "usage": "math.negateLong(\u003c\u003cnbr\u003e\u003e)\nReturn Type\n integer"
+            },
+            "name": "negateLong",
+            "return": {
+                "type": "integer"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "nbr",
+                    "type": "float64"
+                },
+                {
+                    "name": "mode",
+                    "type": "string"
+                },
+                {
+                    "name": "scale",
+                    "type": "integer"
+                }
+            ],
+            "help": {
+                "description": "round the decimal number, supported roundingMode: CEILING,DOWN,UP,FLOOR,HALF_DOWN,HALF_UP,HALF_EVEN, see https://docs.oracle.com/javase/7/docs/api/java/math/RoundingMode.html for details.",
+                "example": "math.rounding(1.234, \"HALF_UP\", 1)\nReturns\n1.2",
+                "usage": "math.rounding(\u003c\u003c nbr \u003e\u003e, \u003c\u003c roundingMode \u003e\u003e, \u003c\u003c scale \u003e\u003e, ...)\nReturn Type\n float64"
+            },
+            "name": "rounding",
+            "return": {
+                "type": "float64"
+            },
+            "display": {
+                "visible": true
+            }
+        }
+    ]
+}

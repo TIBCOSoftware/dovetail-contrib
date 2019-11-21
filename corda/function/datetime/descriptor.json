@@ -1,0 +1,171 @@
+{
+    "name": "array",
+    "type": "flogo:function",
+    "version": "0.0.1",
+    "title": "cordaFunctions",
+    "description": "cordaFunctions",
+    "functions": [
+        {
+            "args": [
+                {
+                    "name": "dt1",
+                    "type": "string"
+                },
+                {
+                    "name": "dt2",
+                    "type": "string"
+                }
+            ],
+            "help": {
+                "description":"return true if dt1 is before dt2",
+                "example": "datetime.isBefore(\"2019-10-02T00:00:00Z\", \"2019-10-01T00:00:00Z\")\nReturns\ntrue",
+                "usage": "datetime.isBefore(dt1, dt2)\nReturn Type\n \u003c\u003cbool\u003e\u003e"
+            },
+            "name": "isBefore",
+            "return": {
+                "array": false,
+                "type": "bool"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "dt1",
+                    "type": "string"
+                },
+                {
+                    "name": "dt2",
+                    "type": "string"
+                }
+            ],
+            "help": {
+                "description":"return true if dt1 is after dt2",
+                "example": "datetime.isAfter(\"2019-10-02T00:00:00Z\", \"2019-10-01T00:00:00Z\")\nReturns\nfalse",
+                "usage": "datetime.isAfter(dt1, dt2)\nReturn Type\n \u003c\u003cbool\u003e\u003e"
+            },
+            "name": "isAfter",
+            "return": {
+                "array": false,
+                "type": "bool"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "dt",
+                    "type": "string"
+                },
+                {
+                    "name": "days",
+                    "type": "integer"
+                }
+            ],
+            "help": {
+                "description": "add days to dt",
+                "example": "datetime.addDays(\"2019-10-01T00:00:00Z\", 1)\nReturns\n2019-10-02T00:00:00Z",
+                "usage": "datetime.addDays(\u003c\u003c dt \u003e\u003e, \u003c\u003c days \u003e\u003e)\nReturn Type\nstring"
+            },
+            "name": "addDays",
+            "return": {
+                "type": "string"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "dt",
+                    "type": "string"
+                },
+                {
+                    "name": "days",
+                    "type": "integer"
+                }
+            ],
+            "help": {
+                "description": "minus days from dt",
+                "example": "datetime.minusDays(\"2019-10-02T00:00:00Z\", 1)\nReturns\n2019-10-01T00:00:00Z",
+                "usage": "datetime.minusDays(\u003c\u003c dt \u003e\u003e, \u003c\u003c days \u003e\u003e)\nReturn Type\nstring"
+            },
+            "name": "addDays",
+            "return": {
+                "type": "string"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "dt",
+                    "type": "string"
+                },
+                {
+                    "name": "hours",
+                    "type": "integer"
+                },
+                {
+                    "name": "minutes",
+                    "type": "integer"
+                },
+                {
+                    "name": "seconds",
+                    "type": "integer"
+                }
+            ],
+            "help": {
+                "description": "add time to dt",
+                "example": "datetime.addTime(\"2019-10-01T00:00:00Z\", 1, 1, 1)\nReturns\n2019-10-02T01:01:01Z",
+                "usage": "datetime.addTime(\u003c\u003c dt \u003e\u003e, \u003c\u003c hours \u003e\u003e, \u003c\u003c minutes \u003e\u003e, \u003c\u003c seconds \u003e\u003e)\nReturn Type\nstring"
+            },
+            "name": "addTime",
+            "return": {
+                "type": "string"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "dt",
+                    "type": "string"
+                },
+                {
+                    "name": "hours",
+                    "type": "integer"
+                },
+                {
+                    "name": "minutes",
+                    "type": "integer"
+                },
+                {
+                    "name": "seconds",
+                    "type": "integer"
+                }
+            ],
+            "help": {
+                "description": "minus time from dt",
+                "example": "datetime.minusTime(\"2019-10-01T01:01:01Z\", 1, 1, 1)\nReturns\n2019-10-02T00:00:00Z",
+                "usage": "datetime.minusTime(\u003c\u003c dt \u003e\u003e, \u003c\u003c hours \u003e\u003e, \u003c\u003c minutes \u003e\u003e, \u003c\u003c seconds \u003e\u003e)\nReturn Type\nstring"
+            },
+            "name": "minusTime",
+            "return": {
+                "type": "string"
+            },
+            "display": {
+                "visible": true
+            }
+        }
+    ]
+}

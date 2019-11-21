@@ -1,0 +1,50 @@
+{
+    "name": "StructSchema",
+    "version": "1.0.0",
+    "title": "Define Common Data Record",
+    "type": "flogo:connector",
+    "author": "TIBCO Software Inc.",
+    "display": {
+        "description": "Define Common Data Record",
+        "category": "Dovetail-General",
+        "visible": true,
+        "smallIcon": "params.png",
+        "largeIcon": "params.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-General/connector/record",
+    "keyfield": "name",
+    "settings": [
+        {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "display": {
+                "name": "Data Record Name",
+                "visible": true
+            }
+        },
+        {
+            "name": "inputParams",
+            "type": "complex_object",
+            "display": {
+                "type": "params",
+                "name": "Attributes",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"parameterName\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Boolean\", \"Integer\",\"Decimal\",\"Amount<Currency>\", \"Party\", \"LinearId\",\"LocalDate\", \"DateTime\"]}}, \"repeating\":{\"type\":\"boolean\"}}}}"
+            }
+        },
+        {
+            "name": "schema",
+            "type": "string",
+            "required": true,
+            "display": {
+                "visible": false
+            }
+        }
+   
+    ],
+    "actions": [ 
+        {
+            "name": "Finish"
+        }
+    ]
+}

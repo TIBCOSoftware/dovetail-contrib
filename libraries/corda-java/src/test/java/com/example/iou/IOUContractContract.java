@@ -28,6 +28,7 @@ public class IOUContractContract extends  CordaFlowContract implements Contract{
 	            putData("iou", iou);
 	            putData("transactionId", transactionId);
 	            putData("timestamp", timestamp);
+	            putData("command", "com.example.iou.IssueIOU");
 	        }
 	    }
 
@@ -38,6 +39,7 @@ public class IOUContractContract extends  CordaFlowContract implements Contract{
 	            putData("newLender", newLender);
 	            putData("transactionId", transactionId);
 	            putData("timestamp", timestamp);
+	            putData("command", "com.example.iou.TransferIOU");
 	        }
 	    }
 	    

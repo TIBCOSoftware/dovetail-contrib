@@ -18,6 +18,7 @@ import net.corda.confidential.IdentitySyncFlow;
 import net.corda.confidential.SwapIdentitiesFlow;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
+import net.corda.core.contracts.ReferencedStateAndRef;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.TimeWindow;
 import net.corda.core.flows.CollectSignaturesFlow;
@@ -38,6 +39,7 @@ import net.corda.core.utilities.ProgressTracker;
 public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	private TransactionBuilder builder = new TransactionBuilder();
 	private ArrayList<StateAndRef<?>> inputStates = new ArrayList<StateAndRef<?>>();
+	private ArrayList<ReferencedStateAndRef<?>> refStates = new ArrayList<ReferencedStateAndRef<?>>();
 	private ArrayList<ContractState> outputStates = new ArrayList<ContractState>();
 	private Map<CommandData, Set<PublicKey>> commands = new LinkedHashMap<CommandData, Set<PublicKey>>();
 	
@@ -172,6 +174,7 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 			});
 		});
 		
+		refStates.forEach(ref -> builder.addReferenceState(ref));
 		commands.forEach((cmd, keys) -> builder.addCommand(cmd, new ArrayList<PublicKey>(keys)));
 		
 		if(!inputStates.isEmpty() && !inannonkeys.containsAll(outannonkeys)) {
@@ -329,6 +332,10 @@ public abstract class AppFlow extends FlowLogic<SignedTransaction>{
 	
 	public void addInputState(StateAndRef<?> input) {
 		inputStates.add(input);
+	}
+	
+	public void addRefState(StateAndRef<?> input) {
+		refStates.add(new ReferencedStateAndRef(input));
 	}
 
 	public void addOutputStates(List<ContractState> outputs) {

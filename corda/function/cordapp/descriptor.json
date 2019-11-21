@@ -1,0 +1,70 @@
+{
+    "name": "array",
+    "type": "flogo:function",
+    "version": "0.0.1",
+    "title": "cordaFunctions",
+    "description": "cordaFunctions",
+    "functions": [
+        {
+            "args": [
+            ],
+            "help": {
+                "description": "create a serialized linearId with null externalId and random UUID",
+                "example": "cordapp.createLinearId()\nReturns\nnull#d352c341-1e13-42a7-ac99-b0813bcbae47",
+                "usage": "cordapp.create()\nReturn Type\n \u003c\u003cstring\u003e\u003e"
+            },
+            "name": "createLinearId",
+            "return": {
+                "array": false,
+                "type": "string"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "extId",
+                    "type": "string"
+                }
+            ],
+            "help": {
+                "description": "Returns serialized linear ID with specified extId and random UUID",
+                "example": "cordap.createLinearIdFromExternalId(\"myextid\")\nReturns\nmyextid#d352c341-1e13-42a7-ac99-b0813bcbae47",
+                "usage": "cordap.createLinearIdFromExternalIds(\u003c\u003c extid \u003e\u003e)\nReturn Type\nstring"
+            },
+            "name": "createLinearIdFromExternalId",
+            "return": {
+                "type": "string"
+            },
+            "display": {
+                "visible": true
+            }
+        },
+        {
+            "args": [
+                {
+                    "name": "extId",
+                    "type": "string"
+                },
+                {
+                    "name": "uuid",
+                    "type": "string"
+                }
+            ],
+            "help": {
+                "description": "Return serialized linear ID with specifiy extId and uuid",
+                "example": "cordapp.toLinearid(\"myextid\", \"d352c341-1e13-42a7-ac99-b0813bcbae47\")\nReturns\n myextid#d352c341-1e13-42a7-ac99-b0813bcbae47",
+                "usage": "cordapp.toLinearId(\u003c\u003cextId\u003e\u003e, \u003c\u003cuuid\u003e\u003e)\nReturn Type\n string"
+            },
+            "name": "toLinearId",
+            "return": {
+                "type": "string"
+            },
+            "display": {
+                "visible": true
+            }
+        }
+    ]
+}

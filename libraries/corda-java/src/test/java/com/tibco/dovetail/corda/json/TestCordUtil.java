@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.tibco.dovetail.container.corda.CordaUtil;
 
-import cordapp.activity.txnbuilder.BuilderSchemaAttribute;
+import dovetail_cordapp.activity.txnbuilder.BuilderSchemaAttribute;
 
 public class TestCordUtil {
 	@Test

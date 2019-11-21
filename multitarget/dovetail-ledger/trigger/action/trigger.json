@@ -1,0 +1,212 @@
+{
+    "name": "ContractActionTrigger",
+    "author": "TIBCO Software Inc.",
+    "type": "flogo:trigger",
+    "version": "1.0.0",
+    "title": "SmartContract Action Trigger",
+
+    "display": {
+       "description": "Define smart contract transaction",
+       "uid": "action-txn-trigger",
+       "category": "Dovetail-Ledger",
+       "visible": true,
+       "wizard": ["Configuration", "Security","Time Window","Define Transaction Input Fields","Define Transaction Output Fields" ],
+       "smallIcon": "trigger.png",
+       "largeIcon": "trigger.png"
+    },
+    "useReplyHandler": true,
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-Ledger/trigger/action",
+         
+    "settings": [
+    ],
+ 
+    "handler": {
+      "settings": [
+        {
+            "name": "asset",
+            "type": "object",
+            "required": true,
+            "display": {
+                "name": "Select the ledger asset whose state transition is managed by this action",
+                "visible": true
+            },
+            "wizard": {
+                "type": "dropdown",
+                "selection": "single",
+                "step": "Configuration"
+            },
+            "allowed": []
+        },
+        
+        {
+            "name": "actors",
+            "type": "complex_object",
+            "required":false,
+            "display":{
+                "type":"params",
+                "name":"Which party(parties) on the asset can perform this action?",
+                "description":"Please specify which party (parties) defined in the asset can perform this action. certAttributes is optional, should be in the form of key1=value1,key2=value2",
+                "schema":"{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"party\":{\"type\":\"string\"},\"certAttributes\":{\"type\":\"string\"}}}}"     
+            },
+            "wizard": {
+                "step": "Security"
+              },
+              "value":{
+                  "metadata":"",
+                  "value":""
+              }
+        },
+        {
+            "name": "timewindow",
+            "type": "string",
+            "required":false,
+            "display":{
+                "type":"dropdown",
+                "name":"Time window when this action can be performed?",
+                "description":"This action can be peformed at any time, or must be before, after, or between certain time windows bounded by DateTime attributes of governed asset",
+                "selection":"single"
+            },
+            "wizard": {
+                "step": "Time Window"
+              },
+              "allowed":["Any time", "Only valid if after...", "Only valid if before...", "Only valid if between..."],
+              "value":"Any time"
+        },
+        {
+            "name": "from",
+            "type": "string",
+            "required":false,
+            "display":{
+                "type":"dropdown",
+                "name":"Must on or after this date",
+                "selection":"single"
+            },
+            "wizard": {
+                "step": "Time Window"
+              }
+        },
+        {
+            "name": "until",
+            "type": "string",
+            "required":false,
+            "display":{
+                "type":"dropdown",
+                "name":"Must on or before this date",
+                "selection":"single"
+            },
+            "wizard": {
+                "step": "Time Window"
+              }
+        },
+        {
+            "name": "input",
+            "type": "complex_object",
+            "required":true,
+            "display":{
+                "type":"params",
+                "name":"Input Fields",
+                "description":"Struct - data type of Asset , AssetRef - reference to an existing asset on the ledger, AssetName - <module>.<name> defined on the Connectors tab. If the asset is reference data (should no be consumed by the transaction), specify false in the consuming field",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"name\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Decimal\", \"Integer\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"LocalDate\", \"DateTime\", \"Record\", \"AssetRef\",\"AssetRef<Cash>\"]}}, \"recordType\":{\"type\":\"string\"}, \"consuming\":{\"type\":{\"enum\":[\"True\", \"False\"]}}, \"repeating\":{\"type\":{\"enum\":[\"False\", \"True\"]}}}}}"
+          },
+            "wizard": {
+                "step": "Define Transaction Input Fields"
+            },
+            "value":{
+                "metadata":"",
+                "value":""
+            }
+        },
+        {
+            "name": "assets1",
+            "type": "complex_object",
+            "required":true,
+            "display":{
+                "type":"texteditor",
+                "name":"List of Available Records and Assets",
+                "syntax":"json",
+                "readonly":true,
+                "visible":true
+            },
+            "wizard": {
+                "step": "Define Transaction Input Fields"
+            }
+        },
+        {
+            "name": "reply",
+            "type": "complex_object",
+            "required":true,
+            "display":{
+                "type":"params",
+                "name":"Output Fields",
+                "schema": "{\"type\": \"array\",\"items\": {\"type\": \"object\",\"properties\": {\"name\": {\"type\": \"string\"},\"type\": {\"type\": {\"enum\": [\"String\",\"Decimal\", \"Integer\",\"Boolean\", \"Amount<Currency>\", \"Party\", \"LinearId\", \"LocalDate\", \"DateTime\", \"Record\", \"AssetRef\",\"AssetRef<Cash>\"]}}, \"recordType\":{\"type\":\"string\"}, \"repeating\":{\"type\":{\"enum\":[\"False\", \"True\"]}}}}}"
+          },
+            "wizard": {
+                "step": "Define Transaction Output Fields"
+            },
+            "value":{
+                "metadata":"",
+                "value":""
+            }
+        },
+        {
+            "name": "assets",
+            "type": "complex_object",
+            "required":true,
+            "display":{
+                "type":"texteditor",
+                "name":"List of Available Records and Assets",
+                "syntax":"json",
+                "readonly":true,
+                "visible":true
+            },
+            "wizard": {
+                "step": "Define Transaction Output Fields"
+            }
+        },
+        {
+            "name": "assetname",
+            "type": "string",
+            "required":false,
+            "display":{
+                "visible":false
+            }
+        },
+        {
+            "name": "assetschema",
+            "type": "string",
+            "required":false,
+            "display":{
+                "visible":false
+            }
+        }
+     ]
+    },
+     
+    "outputs": [
+        {
+            "name": "transactionInput",
+            "type": "complex_object",
+            "required":true,
+            "display":{
+                "name":"Transaction Input Schema",
+                "type":"texteditor",
+                "syntax":"json",
+                "readonly":true,
+                "visible":true,
+                "mappable":true
+            }
+        }
+    ],
+    "reply": [
+        {
+            "name": "data",
+            "type": "complex_object",
+            "required": false
+        }
+    ],    
+    "actions": [
+          {
+            "name": "Finish"
+          }
+    ]
+}

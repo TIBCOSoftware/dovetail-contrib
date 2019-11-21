@@ -1,0 +1,47 @@
+{
+    "name": "invoke",
+    "title": "Invoke another smart contract action",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-Ledger",
+       "visible": true,
+       "smallIcon": "invoke.png",
+       "description": "Invoke another smart contract action"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-Ledger/activity/invoke",
+    "inputs": [
+            {
+                "name": "contract",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Select the contract ",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+            {
+                "name": "command",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Select the contract action",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true
+           }
+    ],
+  
+    "outputs": [
+    ]
+}

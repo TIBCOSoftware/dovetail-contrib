@@ -1,0 +1,84 @@
+{
+    "name": "simplevaultquery",
+    "title": "Simple Vault Query",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-CorDApp",
+       "visible": true,
+       "smallIcon": "query.png",
+       "description": "Get contract state from the vault"
+    },
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/activity/simplevaultquery",
+    "inputs": [
+            {
+                    "name": "assets",
+                    "type": "string",
+                    "required": true,
+                    "display":{
+                        "name": "Select the asset",
+                        "type": "dropdown",
+                        "selection": "single"
+                    },
+                    "allowed": []
+            },
+            {
+                "name": "assetName",
+                "type": "string",
+                "required": true,
+                "display":{
+                    "visible":false
+                }
+            },
+           {
+                "name": "status",
+                "type": "string",
+                "required": true,
+                "display":{
+                    "name": "Contract state status",
+                    "type": "dropdow",
+                    "selection": "single"
+                },
+                "value": "UNCONSUMED",
+                "allowd": ["CONSUMED", "UNCONSUMED"]
+           },
+           {
+            "name": "assetType",
+            "type": "string",
+            "required": true,
+            "display":{
+                "name": "Contract state type",
+                "description": "Is this a linear state or fungible asset?",
+                "type": "dropdow",
+                "selection":"single"
+            },
+            "value": "LinearState",
+            "allowed":["LinearState"]
+           },
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true
+           }
+    ],
+  
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object",
+            "required": true
+        },
+        {
+            "name": "size",
+            "type": "integer",
+            "required": true
+        }
+    ]
+}

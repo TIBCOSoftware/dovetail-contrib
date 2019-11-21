@@ -1,0 +1,56 @@
+{
+    "name": "collection",
+    "title": "Collection",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-General",
+       "visible": true,
+       "smallIcon": "collection.png",
+       "description": "This activity performe actions on collections of data"
+    },
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-General/activity/collection",
+    "inputs": [
+            {
+                "name": "operation",
+                "type": "string",
+                "required": true,
+                "allowed": ["DISTINCT", "FILTER", "MERGE"],
+                "display":{
+                    "name": "Operation",
+                    "description": "operations to perform",
+                    "type": "dropdown",
+                    "selection": "single"
+                },
+                "value": "DISTINCT"
+           },
+           {
+               "name": "dataType",
+               "type": "string",
+               "required":true,
+               "display": {
+                    "name": "Collection Dataset Type",
+                    "type": "dropdown",
+                    "selection": "single"
+               }
+           },
+           {
+            "name": "input",
+            "type": "complex_object"
+           }
+    ],
+  
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object"
+           }
+    ]
+}
