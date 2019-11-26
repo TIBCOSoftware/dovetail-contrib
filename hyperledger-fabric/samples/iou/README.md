@@ -1,5 +1,5 @@
 # iou
-This sample implements a simplified cross-border payment system similar to [Ripple](https://www.ripple.com/files/ripple_product_overview.pdf). Although it is a simplified network, it implements the core blockchain operations for secure cross-border fund transfer with zero-code, thanks to the visual modeling environment of the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) and the blockchain platform of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).  The Flogo® models in this sample can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+This sample implements a simplified cross-border payment system similar to [Ripple](https://www.ripple.com/files/ripple_product_overview.pdf). Although it is a simplified network, it implements the core blockchain operations for secure cross-border fund transfer with zero-code, thanks to the visual modeling environment of the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) and the blockchain platform of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).  The Flogo® models in this sample can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
 
 ## Use case
 Alice, a customer of a bank in Europe wants to send a payment to Bob, a customer of a bank in USA.  Although the parties involved may not trust each other, we can find a chain of intermediaries with 1-to-1 trust relationships, and so that [IOU](http://www.businessdictionary.com/definition/IOU.html)s can be exchanged along the trusted path, resulting in the specified payment amount withdrawn from Alice's account at the Euro Bank, and deposited to Bob's account at the US Bank. 
@@ -137,19 +137,17 @@ Skip to the next section if you do not plan to modify the included chaincode mod
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`iou.json`](iou.json) to this `iou` sample folder.
 
-Note that when a flogo model is imported to `Flogo® Enterprise v2.6.1`, a `return` activity is automatically added to the end of all branches, which could be an issue if the `return` activity is not at the end of a flow.  Thus, you need to carefully remove the mistakenly added `return` activities after the model is imported.  This issue will be fixed in a later release of the `Flogo® Enterprise`.
-
 ## Build and deploy chaincode to Hyperledger Fabric
+Set `$PATH` to use Go 1.12.x for building chaincode.
+
 - In this `iou` sample folder, execute `make create` to generate the chaincode source code from the flogo model [`iou.json`](iou.json).
 - Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder.  Note that you may need to edit the [`Makefile`](Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
-- Execute `make package` to generate `cds` package for cloud deployment, and `metadata` for client apps.
 
 The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/iou
 make create
 make deploy
-make package
 ```
 
 ## Install and test chaincode using fabric sample first-network
@@ -181,7 +179,7 @@ Following are steps to edit or view the GraphQL service models.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`iou_client.json`](iou_client.json) to this `iou` sample folder.
 
 ## Build and start the iou GraphQL service
-Build and start the client app as follows:
+Set `$PATH` to use Go 1.13.x, and then build and start the client app as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/iou
 make create-client

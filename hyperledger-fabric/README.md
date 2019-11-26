@@ -1,5 +1,5 @@
 # Dovetail extensions for Hyperledger Fabric
-This package includes [Flogo®](https://www.flogo.io/) extensions for developing blockchain apps and smart contracts on [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).  It also provides sample blockchain apps using the Flogo visual programming environment with zero-code.  These Dovetail extensions can be used to model Hyperledger Fabric chaincode and client apps in either [TIBCO Flogo® Enterprise v2.6.1](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail v0.2.0](https://github.com/TIBCOSoftware/dovetail).
+This package includes [Flogo®](https://www.flogo.io/) extensions for developing blockchain apps and smart contracts on [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).  It also provides sample blockchain apps using the Flogo visual programming environment with zero-code.  These Dovetail extensions can be used to model Hyperledger Fabric chaincode and client apps in either [TIBCO Flogo® Enterprise v2.8.0](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail v0.2.0](https://github.com/TIBCOSoftware/dovetail).
 
 The following Flogo® extensions are currently available:
 - [Fabric Chaincode Extension](fabric), which includes connector, trigger and activities for designing and implementing Hyperledger Fabric chaincode.

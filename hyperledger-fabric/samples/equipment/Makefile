@@ -12,13 +12,13 @@ CLIENT_FILE   := equipment_client.json
 CLIENT_PATH   := /tmp/equipment_client
 CLIENT_NAME   := equipment_client
 
-GQL_FILE   := equipment_gql.json
-GQL_PATH   := /tmp/equipment_gql
-GQL_NAME   := equipment_gql
+GQL_FILE      := equipment_gql.json
+GQL_PATH      := /tmp/equipment_gql
+GQL_NAME      := equipment_gql
 
-FLOGO_VER     ?= v0.9.2
+FLOGO_VER     ?= v0.9.4
 DT_REPO       ?= github.com/TIBCOSoftware/dovetail-contrib
-DT_BRANCH     ?= develop
+DT_BRANCH     ?= master
 
 .PHONY: all
 all: create build
@@ -43,11 +43,9 @@ create: $(APP_FILE) clean
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
 	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
-	cd $(BUILD_PATH)/$(APP_NAME) && \
-	flogo install github.com/project-flogo/contrib/function/string && \
-	flogo install github.com/project-flogo/contrib/function/array
 
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
+	go get -u -d github.com/project-flogo/flow/activity/subflow@master && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
 	env GOOS=linux GOARCH=amd64 go build -mod vendor -o $(APP_NAME)
@@ -101,12 +99,8 @@ create-client: $(CLIENT_FILE) clean-client
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
-	go get -u -d github.com/go-kit/kit@v0.8.0 && \
-	go get -u -d github.com/cloudflare/cfssl@1.3.2
-	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && \
-	flogo install github.com/project-flogo/contrib/function/string && \
-	flogo build -e
+	go get -u -d github.com/hyperledger/fabric-sdk-go@master
+	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(CLIENT_PATH)/$(CLIENT_NAME)/src/vendor/github.com/project-flogo && \
@@ -134,12 +128,8 @@ create-gql: $(GQL_FILE) clean-gql
 .PHONY: build-gql
 build-gql: $(GQL_PATH)/$(GQL_NAME)
 	cd $(GQL_PATH)/$(GQL_NAME)/src && \
-	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
-	go get -u -d github.com/go-kit/kit@v0.8.0 && \
-	go get -u -d github.com/cloudflare/cfssl@1.3.2
-	-cd $(GQL_PATH)/$(GQL_NAME) && \
-	flogo install github.com/project-flogo/contrib/function/string && \
-	flogo build -e
+	go get -u -d github.com/hyperledger/fabric-sdk-go@master
+	-cd $(GQL_PATH)/$(GQL_NAME) && flogo build -e
 	cd $(GQL_PATH)/$(GQL_NAME)/src && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(GQL_PATH)/$(GQL_NAME)/src/vendor/github.com/project-flogo && \

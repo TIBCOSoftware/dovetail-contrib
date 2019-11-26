@@ -57,6 +57,7 @@ func (t *Contract) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 var (
 	cfgJson       string
+	cfgEngine     string
 	cfgCompressed bool
 )
 
@@ -64,6 +65,8 @@ var (
 func main() {
 
 	common.SetChaincodeLogLevel(logger)
+	os.Setenv("FLOGO_RUNNER_TYPE", "DIRECT")
+	os.Setenv("FLOGO_ENGINE_STOP_ON_ERROR", "false")
 
 	// necessary to access schema of complex object attributes from activity context
 	schema.Enable()
@@ -81,7 +84,7 @@ func main() {
 	// see issue: https://github.com/TIBCOSoftware/flogo-lib/issues/267
 	inputAssignMap(cfg, fabricTrigger, common.FabricStub)
 
-	_, err = engine.New(cfg, engine.DirectRunner)
+	_, err = engine.New(cfg, engine.ConfigOption(cfgEngine, cfgCompressed))
 	if err != nil {
 		log.RootLogger().Errorf("Failed to create flogo engine instance: %+v", err)
 		os.Exit(1)

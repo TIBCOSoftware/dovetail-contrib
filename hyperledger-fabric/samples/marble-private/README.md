@@ -1,5 +1,5 @@
 # marble-private
-This example uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to implement the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode [marbles02_private](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02_private).  This sample demonstrates the use of Hyperledger Fabric private collections.  It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+This example uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to implement the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode [marbles02_private](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02_private).  This sample demonstrates the use of Hyperledger Fabric private collections.  It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
 
 ## Prerequisite
 Follow the instructions [here](../../development.md) to setup the Dovetail development environment on Mac or Linux.
@@ -13,20 +13,17 @@ Skip to the next section if you do not plan to modify the included sample model.
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_private.json`](marble_private.json) to this `marble-private` sample folder.
 
-Note that when a flogo model is imported to `Flogo® Enterprise v2.6.1`, a `return` activity is automatically added to the end of all branches, which could be an issue if the `return` activity is not at the end of a flow.  Thus, you need to carefully remove the mistakenly added `return` activities after the model is imported.  This issue will be fixed in a later release of the `Flogo® Enterprise`.
-
 ## Build and deploy chaincode to Hyperledger Fabric
+Set `$PATH` to use Go 1.12.x for building chaincode.
 
 - In the `marble-private` folder, execute `make create` to generate source code from the flogo model [`marble_private.json`](marble_private.json).
 - Execute `make deploy` to deploy the chaincode to the `fabric-samples` chaincode folder.  Note that you may need to edit the [`Makefile`](Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
-- Execute `make package` to generate `cds` package for cloud deployment, and `metadata` for client apps.
 
 The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble-private
 make create
 make deploy
-make package
 ```
 
 ## Install and test chaincode using fabric sample first-network
@@ -71,7 +68,7 @@ Following are steps to edit or view the REST service models.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_private_client.json`](marble_private_client.json) to this `marble-private` sample folder.
 
 ## Build and start the marble-private REST service
-Build and start the client app as follows:
+Set `$PATH` to use Go 1.13.x, and then build and start the client app as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble-private
 make create-client
