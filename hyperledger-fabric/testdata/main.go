@@ -1,5 +1,7 @@
 package main
 
+// test program for Hyperledger Fabric event listener
+
 import (
 	"bytes"
 	"crypto/x509"
