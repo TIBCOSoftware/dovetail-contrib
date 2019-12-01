@@ -5,21 +5,25 @@
 
 . ./utils.sh
 CCNAME=iou_cc
+CDS_FILE=${CCNAME}_1.0.cds
+
+echo "package chaincode ${CCNAME}:1.0"
+peer chaincode package -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME} ${CDS_FILE}
 
 echo "install ${CCNAME} on peer0 org1"
-peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}
+peer chaincode install ${CDS_FILE}
 
 echo "install ${CCNAME} on peer1 org1"
 setGlobals 1 1
-peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}
+peer chaincode install ${CDS_FILE}
 
 echo "install ${CCNAME} on peer0 org2"
 setGlobals 0 2
-peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}
+peer chaincode install ${CDS_FILE}
 
 echo "install ${CCNAME} on peer1 org2"
 setGlobals 1 2
-peer chaincode install -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME}
+peer chaincode install ${CDS_FILE}
 
 echo "instantiate ${CCNAME}"
 # Note: some transactions (createAccount) can be done by only one of the orgs, and so the endorsement policy uses 'OR' for simplicity here;
