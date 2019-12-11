@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,33 @@ public class TestTrigger {
 		mock = new MockServices(self);
 		
 	}
+	
 	@Test
+	public void testPasreCP() {
+		ObjectMapper mapper = new ObjectMapper();
+		InputStream in = this.getClass().getResourceAsStream("cp.json");
+		
+		LinkedHashMap<String, ITrigger> contractTriggers = AppCompiler.compileApp(in).getTriggers();
+	}
+	
+	@Test
+	public void testMapper() {
+		class mydt {
+			java.time.Instant dt;
+			public java.time.Instant getDt(){
+				return dt;
+			}
+			public void setDt(java.time.Instant dt) {
+				this.dt = dt;
+			}
+		}
+		mydt dt = new mydt();
+		dt.dt = Instant.now();
+		System.out.println("dt ser =" +  CordaUtil.getInstance().toJsonObject(dt).jsonString());
+		
+	}
+	
+	//@Test
 	public void testInitiator () throws Exception {
 		AppUtil.setServiceHub(mock);
 		ObjectMapper mapper = new ObjectMapper();
@@ -215,13 +242,13 @@ public class TestTrigger {
 		}
 
 		@Override
-		public StateRef putState(String assetName, String assetKey, StateRef assetValue) {
+		public StateRef putState(String txn, String assetName, String assetKey, StateRef assetValue) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public StateRef deleteState(String assetName, String assetKey, ContractState keyValue) {
+		public StateRef deleteState(String txn, String assetName, String assetKey, ContractState keyValue) {
 			// TODO Auto-generated method stub
 			return null;
 		}

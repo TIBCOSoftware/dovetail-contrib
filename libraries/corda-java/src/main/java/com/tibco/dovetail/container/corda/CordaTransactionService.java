@@ -49,15 +49,17 @@ public class CordaTransactionService implements ITransactionService {
 	            DocumentContext valdoc = CordaUtil.getInstance().toJsonObject(value);
 	            doc.put("$", attr, valdoc.json());
 
-	            if(k.isAssetRef()) {
+	            if(k.isAsset() && k.isAssetRef()) {
 	            		if (value instanceof List) {
 	            			List<?> objs = (List<?>)value;
 	    	                 objs.forEach(o -> {
 	    	                	 	DocumentContext val = CordaUtil.getInstance().toJsonObject(o);
-	    	                	 	inputStates.add(val);
+	    	                	 	if(!k.isReferenceData())
+	    	                	 		inputStates.add(val);
 	    	                 }); 
 	            		} else {
-	            			inputStates.add(valdoc);
+	            			if(!k.isReferenceData())
+	            				inputStates.add(valdoc);
 	            		}
 	            }
 	        }

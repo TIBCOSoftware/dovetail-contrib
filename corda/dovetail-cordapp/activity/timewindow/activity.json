@@ -1,0 +1,42 @@
+{
+    "name": "timewindow",
+    "title": "Transaction Time Window",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-CorDApp",
+       "visible": true,
+       "smallIcon": "window.png",
+       "description": "set transaction time window"
+    },
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/activity/timewindow",
+    "inputs": [
+            {
+                "name": "window",
+                "type": "string",
+                "required": false,
+                "display": {
+                    "name": "Transaction time window type",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":["Only valid if after...", "Only valid if before...", "Only valid if between...", "Only valid for the duration of..."],
+                "value":"Only valid for the duration of..."
+            },
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true
+           }
+    ],
+  
+    "outputs": [
+    ]
+}

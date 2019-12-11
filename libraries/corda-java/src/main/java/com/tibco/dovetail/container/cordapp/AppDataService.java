@@ -52,7 +52,7 @@ public class AppDataService implements IDataService<StateRef,ContractState> {
 	}
 
 	@Override
-	public ContractState putState(String assetName, String assetKey, ContractState assetValue) {
+	public ContractState putState(String txn, String assetName, String assetKey, ContractState assetValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -78,11 +78,11 @@ public class AppDataService implements IDataService<StateRef,ContractState> {
 	@Override
 	public List<ContractState> getStates(String assetName, String assetKey, Set<StateRef> keyValue) {
 		List<ContractState> states = new ArrayList<ContractState>();
-		String name = getCordaAssetName(assetName);
+		String name = getCordaAssetName(assetName) + "Contract";
 		try {
 			serviceHub.loadStates(keyValue).forEach(s -> {
 				if(s != null && name != null) {
-					if(s.getClass().getName().equals(name))
+					if(s.getState().getContract().equals(name))
 						states.add(s.getState().getData());
 				}
 			});
@@ -100,7 +100,7 @@ public class AppDataService implements IDataService<StateRef,ContractState> {
 			return asset;
 	}
 	@Override
-	public ContractState deleteState(String assetName, String assetKey, StateRef keyValue) {
+	public ContractState deleteState(String txn, String assetName, String assetKey, StateRef keyValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -3,7 +3,7 @@ This example demonstrates the use of [Hyperledger Fabric](https://www.hyperledge
 - Chaincode for Hyperledger Fabric that implements the business logic for creating and querying audit trails for multiple data domains and owners;
 - GraphQL service that end-users can call to submit audit transactions.
 
-Both components are implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+Both components are implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
 
 ## Prerequisite
 Follow the instructions [here](../../development.md) to setup the Dovetail development environment on Mac or Linux.
@@ -17,19 +17,17 @@ Skip to the next section if you do not plan to modify the included chaincode mod
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`audit.json`](audit.json) to this `audit` sample folder.
 
-Note that when a flogo model is imported to `Flogo® Enterprise v2.6.1`, a `return` activity is automatically added to the end of all branches, which could be an issue if the `return` activity is not at the end of a flow.  Thus, you need to carefully remove the mistakenly added `return` activities after the model is imported.  This issue will be fixed in a later release of the `Flogo® Enterprise`.
-
 ## Build and deploy chaincode to Hyperledger Fabric
+Set `$PATH` to use Go 1.12.x for building chaincode.
+
 - In this `audit` sample folder, execute `make create` to generate the chaincode source code from the flogo model [`audit.json`](audit.json).
 - Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder.  Note that you may need to edit the [`Makefile`](Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
-- Execute `make package` to generate `cds` package for cloud deployment, and `metadata` for client apps.
 
 The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/audit
 make create
 make deploy
-make package
 ```
 
 ## Install and test chaincode using fabric sample first-network
@@ -70,7 +68,7 @@ Following are steps to edit or view the GraphQL service models.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`audit_client.json`](audit_client.json) to this `audit` sample folder.
 
 ## Build and start the audit GraphQL service
-Build and start the client app as follows:
+Set `$PATH` to use Go 1.13.x, and then build and start the client app as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/audit
 make create-client

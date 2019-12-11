@@ -48,10 +48,14 @@ public class CordaDataService implements IDataService<DocumentContext, DocumentC
     }
 
 	@Override
-	public  DocumentContext putState(String assetName, String assetKey, DocumentContext assetValue) {
+	public  DocumentContext putState(String txn, String assetName, String assetKey, DocumentContext assetValue) {
 			
 		outputStates.add((com.jayway.jsonpath.DocumentContext) assetValue);
-		cmdOutput.addOutputState(assetName, assetValue, null);
+		
+		CordaCommandDataWithData cordacmd = new CordaCommandDataWithData();
+		String ns = assetName.substring(0, assetName.lastIndexOf("."));
+		cordacmd.putData("command", ns + "." + txn);
+		cmdOutput.addOutputState(assetName, assetValue, cordacmd);
 		return assetValue;
 	}
 
@@ -79,7 +83,7 @@ public class CordaDataService implements IDataService<DocumentContext, DocumentC
 	}
 
 	@Override
-	public DocumentContext deleteState(String assetName, String assetKey, DocumentContext keyValue) {
+	public DocumentContext deleteState(String txn, String assetName, String assetKey, DocumentContext keyValue) {
 		return getState(assetName, assetKey, keyValue);
 	}
 

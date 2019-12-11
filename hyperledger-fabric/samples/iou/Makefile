@@ -12,9 +12,9 @@ CLIENT_FILE   := iou_client.json
 CLIENT_PATH   ?= /tmp/iou_client
 CLIENT_NAME   := iou_client
 
-FLOGO_VER     ?= v0.9.2
+FLOGO_VER     ?= v0.9.4
 DT_REPO       ?= github.com/TIBCOSoftware/dovetail-contrib
-DT_BRANCH     ?= develop
+DT_BRANCH     ?= master
 
 .PHONY: all
 all: create build
@@ -40,9 +40,7 @@ create: $(APP_FILE) clean
 build: $(BUILD_PATH)/$(APP_NAME)
 	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
 	cd $(BUILD_PATH)/$(APP_NAME) && \
-	flogo install github.com/project-flogo/contrib/function/string && \
-	flogo install github.com/project-flogo/contrib/function/coerce && \
-	flogo install -r $(DT_REPO)/hyperledger-fabric/function/float@$(DT_BRANCH) github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/function/float
+	flogo install github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/function/float
 
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
@@ -103,14 +101,11 @@ create-client: $(CLIENT_FILE) clean-client
 
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
-	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
+	-cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	go get -u -d github.com/hyperledger/fabric-sdk-go@master && \
-	go get -u -d github.com/go-kit/kit@v0.8.0 && \
-	go get -u -d github.com/cloudflare/cfssl@1.3.2
+	go get -u -d github.com/project-flogo/flow/activity/subflow@master
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && \
-	flogo install github.com/project-flogo/contrib/function/string && \
-	flogo install github.com/project-flogo/contrib/function/coerce && \
-	flogo install -r $(DT_REPO)/hyperledger-fabric/function/float@$(DT_BRANCH) github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/function/float && \
+	flogo install github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/function/float && \
 	flogo build -e
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	go mod vendor && \

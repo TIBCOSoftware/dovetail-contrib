@@ -1,0 +1,39 @@
+{
+    "name": "payment",
+    "title": "Payment Processor",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-Ledger",
+       "visible": true,
+       "smallIcon": "payment.png",
+       "description": "process payment"
+    },
+    "feature": {
+        "iterator": {
+                "type": "iterator",
+                "enabled": false
+        }
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-Ledger/activity/payment",
+    "inputs": [
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true,
+                "value": {
+                    "metadata": "",
+                    "value": "{\"funds\":[{\"amt\":{\"currency\":\"\", \"quantity\":0}, \"issuer\":\"\", \"issuerRef\":\"\", \"owner\":\"\"}], \"paymentAmt\":{\"currency\":\"\", \"quantity\":0}, \"sendPaymentTo\":\"\", \"sendChangeTo\":\"\"}"
+                }
+            }
+    ],
+  
+    "outputs": [
+        {
+            "name": "output",
+            "type": "complex_object",
+            "required": true
+        }
+    ]
+}

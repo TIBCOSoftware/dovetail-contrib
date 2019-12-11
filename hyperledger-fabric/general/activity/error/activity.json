@@ -1,0 +1,21 @@
+{
+  "name": "flogo-error",
+  "type": "flogo:activity",
+  "ref": "github.com/project-flogo/contrib/activity/error",
+  "version": "0.9.0",
+  "title": "Throw Error",
+  "description": "Throws an Error",
+  "homepage": "https://github.com/project-flogo/contrib/tree/master/activity/error",
+  "input":[
+    {
+      "name": "message",
+      "type": "string"
+    },
+    {
+      "name": "data",
+      "type": "object"
+    }
+  ],
+  "output": [
+  ]
+}

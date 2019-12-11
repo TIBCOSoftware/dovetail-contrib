@@ -1,0 +1,47 @@
+{
+    "name": "txnbuilder",
+    "title": "Build Transaction Proposal",
+    "version": "1.0.0",
+    "type": "flogo:activity",
+    "author": "TIBCO Software Inc.",
+    "display": {
+       "category": "Dovetail-CorDApp",
+       "visible": true,
+       "smallIcon": "builder.png",
+       "description": "build transaction to sign"
+    },
+ 
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/activity/txnbuilder",
+    "inputs": [
+            {
+                "name": "contract",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Specify the smart contract",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+            {
+                "name": "command",
+                "type": "string",
+                "required": true,
+                "display": {
+                    "name": "Specify the contract transaction",
+                    "type": "dropdown",
+                    "selection":"single"
+                },
+                "allowed":[]
+            },
+           {
+                "name": "input",
+                "type": "complex_object",
+                "required": true
+           }
+    ],
+  
+    "outputs": [
+    ]
+}

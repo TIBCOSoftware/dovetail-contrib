@@ -1,17 +1,17 @@
 # Setup Development Environment
 Dovetail fabric extensions can be used in one of the following 3 modeling environments:
 - [Dovetail release v0.2.0](https://github.com/TIBCOSoftware/dovetail/releases)
-- [TIBCO Flogo® Enterprise v2.6.1](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1)
+- [TIBCO Flogo® Enterprise v2.8.0](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0)
 - [TIBCO Cloud Integration (TCI)](https://cloud.tibco.com/)
 
 ## Prerequisite for local development
 Following are packages required for setting up development evironment locally on Mac or Linux.
 - Download [TIBCO Flogo® Enterprise 2.6.1](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html), or
 - Download [Dovetail v0.2.0](https://github.com/TIBCOSoftware/dovetail/releases)
-- [Install Go](https://golang.org/doc/install)
+- [Install Go](https://golang.org/doc/install).  Note, current release require Go 1.12.x to build Hyperledger Fabric chaincode, and Go 1.13.x to build Fabric client app. So make both version of Go available, so you can switch to the right Go version for different components.
 - Clone [Hyperledger Fabric](https://github.com/hyperledger/fabric)
-- Install [Fabric CA binaries](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/users-guide.html)
-- Download Hyperledger Fabric samples and executables of latest production release as described [here](https://github.com/hyperledger/fabric-samples/tree/release-1.4)
+- Install [Fabric CA binaries](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/users-guide.html). 
+- Download Hyperledger Fabric samples and executables of latest production release as described [here](https://github.com/hyperledger/fabric-samples/tree/release-1.4). Current release works with Fabric release 1.4.4.
 - Download and install [flogo-cli](https://github.com/project-flogo/cli)
 - Clone [dovetail-contrib](https://github.com/TIBCOSoftware/dovetail-contrib) with Flogo extension for Hyperledger Fabric
 
@@ -60,15 +60,13 @@ Note that when a Flogo model is imported to `Dovetail v0.2.0`, a `return` activi
 ## Configure TIBCO Flogo® Enterprise
 If you have the license for the `TIBCO Flogo® Enterprise`, you can use it to edit models exported from `Dovetail` or vice versa.  We use the [marble](samples/marble) sample to describe the initial setup of Flogo Enterprise UI when you start the first app model.
 
-- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.6.1/doc/pdf/TIB_flogo_2.6_users_guide.pdf?id=2)
+- Start TIBCO Flogo® Enterprise as described in [User's Guide](https://docs.tibco.com/pub/flogo/2.8.0/doc/pdf/TIB_flogo_2.8_users_guide.pdf?id=2)
 - Open http://localhost:8090 in Chrome web browser.
 - Open [Extensions](http://localhost:8090/wistudio/extensions) link, and upload [`fabricExtension.zip`](fabricExtension.zip).  Note that you can generate this `zip` by using the script [`zip-fabric.sh`](zip-fabric.sh).
 - Upload [`fabclientExtension.zip`](fabclientExtension.zip).  Note that you can generate this `zip` by using the script [`zip-fabclient.sh`](zip-fabclient.sh).
 - Create new Flogo App of name `marble_app` and choose `Import app` to import the model [`marble_app.json`](samples/marble/marble_app.json)
 - Optionally, you can then add or update the flow models in the browser.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_app.json`](marble_app.json) to the [marble](samples/marble) sample folder.
-
-Note that when a Flogo model is imported to `Flogo® Enterprise v2.6.1`, a `return` activity is automatically added to the end of all branches, which could be an issue if the `return` activity is not at the end of a flow.  Thus, you need to carefully remove the mistakenly added `return` activities after a model is imported.  This issue will be fixed in a later release of the `Flogo® Enterprise`.
 
 ## Modeling with TIBCO Cloud Integration (TCI)
 If you are already a subscriber of [TIBCO Cloud Integration (TCI)](https://cloud.tibco.com/), or you plan to sign-up for a TCI trial, you can use TCI to edit app models exported from `Dovetail` or `TIBCO Flogo Enterprise`.  Refer to [Modeling with TCI](tci) for more detailed instructions.

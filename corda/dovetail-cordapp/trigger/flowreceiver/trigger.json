@@ -1,0 +1,79 @@
+{
+    "name": "R3FlowReceiver",
+    "author": "TIBCO Software Inc.",
+    "type": "flogo:trigger",
+    "version": "1.0.0",
+    "title": "Dovetail CorDApp Flow Receiver",
+
+    "display": {
+       "description": "Create a flow",
+       "uid": "r3-flow-receiver",
+       "category": "Dovetail-CorDApp",
+       "visible": true, 
+       "wizard": ["Flow Settings"],
+       "smallIcon": "trigger.png",
+       "largeIcon": "trigger.png"
+    },
+    "ref": "github.com/TIBCOSoftware/dovetail-contrib/Dovetail-CorDApp/trigger/flowreceiver",
+         
+    "settings": [
+        {
+            "name": "flowType",
+            "type":"string",
+            "required":true,
+            "display":{
+                "name": "Flow type",
+                "type":"dropdown",
+                "selection":"single",
+                "visible":true
+            },
+            "allowed":["receiver", "observer"],
+            "value":"receiver"
+        }
+    ],
+ 
+    "handler": {
+      "settings": [
+        {
+            "name": "useAnonymousIdentity",
+            "type": "boolean",
+            "required": true,
+            "display": {
+                "name": "Use confidential identities for this transaction?",
+                "visible": true
+            },
+            "wizard": {
+                "type": "boolean",
+                "step": "Flow Settings"
+            },
+            "value": true
+        },
+        {
+            "name": "initiatorFlow",
+            "type":"string",
+            "required":true,
+            "display":{
+                "name": "Specify counter party initiator flow name",
+                "description": "The fully qualified class name of initiator flow",
+                "visible":true
+            },
+            "wizard": {
+                "type": "string",
+                "step": "Flow Settings"
+            }
+        }
+     ]
+    },
+    "outputs": [
+        {
+            "name": "ledgerTxn",
+            "type": "any",
+            "required":false
+        }
+    ],
+    "actions": [
+          {
+            "name": "Finish"
+          }
+    ]
+}
