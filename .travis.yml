@@ -1,5 +1,5 @@
-#script:
-#- echo "Starting build..."
+script:
+- echo "Starting build..."
 #before_deploy:
 #    - git config --local user.name "torresashjian"
 #    - git config --local user.email "migueltorreslopez@gmail.com"
