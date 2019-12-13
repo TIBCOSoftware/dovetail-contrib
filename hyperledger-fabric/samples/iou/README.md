@@ -147,6 +147,7 @@ The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/iou
 make create
+make build
 make deploy
 ```
 
@@ -161,6 +162,7 @@ Use `cli` docker container to install and instantiate the `iou_cc` chaincode.
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/iou
 make cli-init
 ```
+The last step also packages the `iou_cc_1.0.cds` file under the `CC_DEPLOY` folder, and it can be used to deploy the chaincode to any other Fabric networks.
 
 ## Edit iou GraphQL service (optional)
 The sample Flogo model, [`iou_client.json`](iou_client.json) is a GraphQL service that invokes the `iou_cc` chaincode.  Skip to the next section if you do not plan to modify the sample model.
@@ -168,7 +170,7 @@ The sample Flogo model, [`iou_client.json`](iou_client.json) is a GraphQL servic
 The client app requires the metadata of the `iou` chaincode. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/iou
-make package
+make metadata
 ```
 Following are steps to edit or view the GraphQL service models.
 - Start TIBCO Flogo® Enterprise or Dovetail.
@@ -206,6 +208,6 @@ docker rmi $(docker images | grep dev-peer | awk '{print $3}')
 ```
 
 ## Deploy to IBM Cloud
-To deploy the `iou` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The script `make package` has already created [`iou_cc.cds`](iou_cc.cds), which you can deploy to IBM Blockchain Platform.  Refer to [fabric-tools](../../fabric-tools) for details about installing chaincode on the IBM Blockchain Platform.
+To deploy the `iou` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The script `make cli-init` has already created `iou_cc_1.0.cds`, which you can deploy to IBM Blockchain Platform.  Refer to [fabric-tools](../../fabric-tools) for details about installing chaincode on the IBM Blockchain Platform.
 
 The GraphQL service app can access the same `iou` chaincode deployed in [IBM Cloud](https://cloud.ibm.com) using the [IBM Blockchain Platform](https://cloud.ibm.com/catalog/services/blockchain-platform-20). The only required update is the network configuration file.  [config_ibp.yaml](../../testdata/config_ibp.yaml) is a sample network configuration that can be used by the GraphQL service.

@@ -4,10 +4,13 @@
 FABRIC_SAMPLE_PATH=${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network
 cd ${FABRIC_SAMPLE_PATH}
 
-# cleanup started network if any
-./byfn.sh down
-docker rm $(docker ps -a | grep dev-peer | awk '{print $1}')
-docker rmi $(docker images | grep dev-peer | awk '{print $3}')
+cons=$(docker ps -a -f name=example.com | wc -l)
+if [ $cons -gt 1 ]; then
+  echo "cleanup previous running containers ..."
+  ./byfn.sh down
+  docker rm $(docker ps -a | grep dev-peer | awk '{print $1}')
+  docker rmi $(docker images | grep dev-peer | awk '{print $3}')
+fi
 
 # turn off TLS on CA servers
 cp docker-compose-ca.yaml docker-compose-ca.yaml.orig
