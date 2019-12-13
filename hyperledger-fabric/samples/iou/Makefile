@@ -59,13 +59,13 @@ deploy:
 
 .PHONY: start-fn
 start-fn:
-	./start-fn.sh
-	./gen-user.sh EURBankAdmin 1
-	./gen-user.sh Alice 1
-	./gen-user.sh Bob 1
-	./gen-user.sh USDBankAdmin 2
-	./gen-user.sh Carol 2
-	./gen-user.sh David 2
+	./start-fn.sh $(FAB_PATH)
+	./gen-user.sh $(FAB_PATH) EURBankAdmin 1
+	./gen-user.sh $(FAB_PATH) Alice 1
+	./gen-user.sh $(FAB_PATH) Bob 1
+	./gen-user.sh $(FAB_PATH) USDBankAdmin 2
+	./gen-user.sh $(FAB_PATH) Carol 2
+	./gen-user.sh $(FAB_PATH) David 2
 
 .PHONY: cli-init
 cli-init:

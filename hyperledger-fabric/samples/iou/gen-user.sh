@@ -4,11 +4,12 @@
 #  e.g., gen-user/sh Alice 1
 #  user-name ending with "Admin" acts as bank admin 
 
-USER=${1:-"Alice"}
+FAB_HOME=${1:-"${GOPATH}/src/github.com/hyperledger/fabric-samples"}
+USER=${2:-"Alice"}
 ORG=org1.example.com
 PORT=7054
 BANK=EURBank
-if [ "$2" == "2" ]; then
+if [ "$3" == "2" ]; then
   ORG=org2.example.com
   PORT=8054
   BANK=USDBank
@@ -20,7 +21,7 @@ if [[ "${USER}" == *Admin ]]; then
   ADMIN="true"
 fi
 
-FABRIC_SAMPLE_PATH=${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network
+FABRIC_SAMPLE_PATH=${FAB_HOME}/first-network
 WORK=/tmp/ca
 echo "generate key and cert for user ${USER}@${ORG}"
 
