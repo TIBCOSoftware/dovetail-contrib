@@ -3,7 +3,9 @@ module github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigg
 go 1.12
 
 require (
-	github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common v0.0.0-20191014214452-6ee58d835c03
-	github.com/hyperledger/fabric v1.4.3 // indirect
-	github.com/project-flogo/core v0.9.3 // indirect
+	github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common v0.2.1
+	github.com/hyperledger/fabric v1.4.4
+	github.com/project-flogo/core v0.9.4
+	github.com/stretchr/testify v1.4.0
+	github.com/xeipuuv/gojsonschema v1.2.0
 )
