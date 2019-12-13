@@ -29,7 +29,7 @@ var packageCmd = &cobra.Command{
 		version, _ := cmd.Flags().GetString("version")
 		outFile, _ := cmd.Flags().GetString("out")
 		if outFile == "" {
-			outFile = name + ".cds"
+			outFile = name + "_" + version + ".cds"
 		}
 
 		return packageCDS(path, name, version, outFile)
@@ -40,9 +40,9 @@ func init() {
 	rootCmd.AddCommand(packageCmd)
 
 	packageCmd.Flags().StringP("name", "n", "", "Name of the chaincode")
-	packageCmd.Flags().StringP("version", "v", "0", "version of the chaincode")
+	packageCmd.Flags().StringP("version", "v", "1.0", "version of the chaincode")
 	packageCmd.Flags().StringP("path", "p", "", "path of the source code, it must contain a folder \"src\"")
-	packageCmd.Flags().StringP("out", "o", "", "name of the output cds file, defaults to <chaincode name>.cds")
+	packageCmd.Flags().StringP("out", "o", "", "name of the output cds file, defaults to <name_version>.cds")
 	cobra.MarkFlagRequired(packageCmd.Flags(), "name")
 	cobra.MarkFlagRequired(packageCmd.Flags(), "path")
 }
