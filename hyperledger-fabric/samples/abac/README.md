@@ -1,5 +1,5 @@
 # abac (Attribute Based Access Control)
-This example uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to demonstrate Attribute Based Access Control (ABAC) in the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric). It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+This example uses the [TIBCO Flogo® Enterprise](https://www.tibco.com/products/tibco-flogo) to demonstrate Attribute Based Access Control (ABAC) in the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric). It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0).
 
 ## Prerequisite
 Follow the instructions [here](../../development.md) to setup the Dovetail development environment on Mac or Linux.
@@ -7,7 +7,7 @@ Follow the instructions [here](../../development.md) to setup the Dovetail devel
 ## Edit smart contract (optional)
 Skip to the next section if you do not plan to modify the included sample model.
 
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `abac_app` and choose `Import app` to import the model [`abac_app.json`](abac_app.json)
 - You can then add or update the flows using the graphical modeler of the TIBCO Flogo® Enterprise.
@@ -23,6 +23,7 @@ The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/abac
 make create
+build
 make deploy
 ```
 
@@ -56,10 +57,10 @@ The sample Flogo model, [`abac_client.json`](abac_client.json) is a REST service
 The client app requires the metadata of the `abac-app` chaincode. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/abac
-make package
+make metadata
 ```
 Following are steps to edit or view the REST service models.
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `abac_client` and choose `Import app` to import the model [`abac_client.json`](abac_client.json)
 - Edit `Settings` of the REST trigger to set `port` to `=$property["PORT"]`
@@ -68,7 +69,7 @@ Following are steps to edit or view the REST service models.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`abac_client.json`](abac_client.json) to this `abac` sample folder.
 
 ## Build and start the abac REST service
-Set `$PATH` to use Go 1.13.x, and then build and start the client app as follows
+Build and start the client app as follows
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/abac
 make create-client

@@ -8,7 +8,7 @@ go install
 fabric-tools help
 ```
 
-Note: if in the following steps, the command `fabric-tools package` fails with error,
+Note: if in the following steps, the `fabric-tools` command fails with error,
 ```
 panic: /debug/requests is already registered. You may have two independent copies of golang.org/x/net/trace in your binary, trying to maintain separate state. This may involve a vendored copy of golang.org/x/net/trace.
 
@@ -34,13 +34,7 @@ The [IBP Tutorial](https://github.com/IBM/blockchainbean2) describes how to crea
 * Create a channel, and join peers to the channel.
 
 ## Package and install/instantiate chaincode
-Chaincode must be packaged as `cds` file to be installed in IBP.  We can package the [marble_app](../samples/marble) chaincode using the following command,
-```
-cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
-make create
-make build
-make package
-```
+Chaincode must be packaged as `cds` file to be installed in IBP.  We can package the [marble_app](../samples/marble) chaincode by using `cli` container as described in the sample.
 
 You can then install and instantiate the resulting package, `marble_cc.cds` using the `IBP console` as shown in the [IBP Tutorial (Step 6)](https://github.com/IBM/blockchainbean2#step-6-deploy-blockchainbean2-smart-contract-on-the-network).
 
@@ -64,11 +58,11 @@ go get -u github.com/hyperledger/fabric-ca/cmd/...
 ```
 
 ## Edit and build marble-client app
-Use [TIBCO Flogo® Enterprise v2.6](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1) to edit the [`marble_client_app.json`](../samples/marble/marble_client_app.json):
+Use [TIBCO Flogo® Enterprise v2.8](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) to edit the [`marble_client_app.json`](../samples/marble/marble_client_app.json):
 
 * Start Flogo Enterprise
 ```
-cd $FLOGO_HOME/2.6/bin
+cd $FLOGO_HOME/2.8/bin
 ./run-studio.sh
 ```
 * Launch Flogo Console in Chrome at `http://localhost:8090`

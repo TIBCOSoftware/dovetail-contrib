@@ -96,12 +96,10 @@ create-client: $(CLIENT_FILE) clean-client
 
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
-	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go get -u -d github.com/project-flogo/flow/activity/subflow@master
-
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
 
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
+	go get -u -d github.com/project-flogo/flow/activity/subflow@master
 	go mod vendor && \
 	find vendor/$(DT_REPO)/hyperledger-fabric/fabclient/ -name '*_metadata.go' -exec rm {} \; && \
 	go build -mod vendor -o $(CLIENT_NAME)

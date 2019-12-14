@@ -5,10 +5,15 @@
 
 . ./utils.sh
 CCNAME=marble_private_cc
-CDS_FILE=${CCNAME}_1.0.cds
+CC_PATH=${GOPATH}/src/github.com/chaincode
+CDS_FILE=${CC_PATH}/${CCNAME}_1.0.cds
 
-echo "package chaincode ${CCNAME}:1.0"
-peer chaincode package -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME} ${CDS_FILE}
+if [ -f "${CDS_FILE}" ]; then
+  echo "use pre-packaged CDS: ${CDS_FILE}"
+else
+  echo "package chaincode ${CCNAME}:1.0"
+  peer chaincode package -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME} ${CDS_FILE}
+fi
 
 echo "install ${CCNAME} on peer0 org1"
 peer chaincode install ${CDS_FILE}
@@ -27,4 +32,4 @@ peer chaincode install ${CDS_FILE}
 
 echo "instantiate ${CCNAME}"
 ORDERER_ARGS="-o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
-peer chaincode instantiate $ORDERER_ARGS -C mychannel -n ${CCNAME} -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" --collections-config /opt/gopath/src/github.com/chaincode/marbles02_private/collections_config.json
+peer chaincode instantiate $ORDERER_ARGS -C mychannel -n ${CCNAME} -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" --collections-config ${CC_PATH}/marbles02_private/collections_config.json

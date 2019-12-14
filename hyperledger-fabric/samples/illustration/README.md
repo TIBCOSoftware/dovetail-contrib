@@ -1,5 +1,5 @@
 # illustration
-This example illustrates the extensions of the [project Dovetail](https://tibcosoftware.github.io/dovetail/) for developing chaincode and client apps of the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).  The Dovetail extension contains triggers and activities used to construct [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+This example illustrates the extensions of the [TIBCO Flogo® Enterprise](https://www.tibco.com/products/tibco-flogo) for developing chaincode and client apps of the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).  The Flogo extension contains triggers and activities used to construct [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0).
 
 ## Prerequisite
 Follow the instructions [here](../../development.md) to setup the Dovetail development environment on Mac or Linux.

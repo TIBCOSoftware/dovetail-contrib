@@ -3,15 +3,16 @@
 # usage: gen-user.sh name org
 #  e.g., gen-user/sh Alice 1
 
-USER=${1:-"User3"}
+FAB_HOME=${1:-"${GOPATH}/src/github.com/hyperledger/fabric-samples"}
+USER=${2:-"User3"}
 ORG=org1.example.com
 PORT=7054
-if [ "$2" == "2" ]; then
+if [ "$3" == "2" ]; then
   ORG=org2.example.com
   PORT=8054
 fi
 
-FABRIC_SAMPLE_PATH=${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network
+FABRIC_SAMPLE_PATH=${FAB_HOME}/first-network
 WORK=/tmp/ca
 echo "generate key and cert for user ${USER}@${ORG}"
 

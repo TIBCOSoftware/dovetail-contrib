@@ -6,7 +6,7 @@ Dovetail fabric extensions can be used in one of the following 2 modeling enviro
 ## Prerequisite for local development
 Following are packages required for setting up development evironment locally on Mac or Linux.
 - Download [TIBCO Flogo® Enterprise 2.8.0](https://edelivery.tibco.com/storefront/eval/tibco-flogo-enterprise/prod11810.html), or
-- [Install Go](https://golang.org/doc/install).  Note, current release require Go 1.12.x to build Hyperledger Fabric chaincode, and Go 1.13.x to build Fabric client app. So make both version of Go available, so you can switch to the right Go version for different components.
+- [Install Go](https://golang.org/doc/install).  Note, current release require Go 1.12.x to build Hyperledger Fabric chaincode, although Go 1.13.x also works for Fabric client app.
 - Download Hyperledger Fabric samples and executables of latest production release as described [here](https://github.com/hyperledger/fabric-samples/tree/release-1.4). Current release works with Fabric release 1.4.4.
 - Download and install [flogo-cli](https://github.com/project-flogo/cli)
 - Clone [dovetail-contrib](https://github.com/TIBCOSoftware/dovetail-contrib) with Flogo extension for Hyperledger Fabric
@@ -65,14 +65,14 @@ The detailed commands of the above steps are as follows:
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
 make create
 make deploy
-make package
+make metadata
 ```
-Note that if `make package` failed due to missing the `fabric-tools` executable, you can rebuild the tool as follows:
+Note that if `make metadata` failed due to missing the `fabric-tools` executable, you can rebuild the tool as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric-tools
 go install
 ```
-If the command `fabric-tools package` failed with the following error:
+If the `fabric-tools` command failed with the following error:
 ```
 panic: /debug/requests is already registered. You may have two independent copies of golang.org/x/net/trace in your binary, trying to maintain separate state. This may involve a vendored copy of golang.org/x/net/trace.
 
@@ -80,7 +80,7 @@ goroutine 1 [running]:
 github.com/hyperledger/fabric/vendor/golang.org/x/net/trace.init.0()
 	$GOPATH/src/github.com/hyperledger/fabric/vendor/golang.org/x/net/trace/trace.go:116 +0x1a4
 ```
-you can delete the `trace` folder under `fabric/vendor` and rebuild the `fabric-tools`, and then retry `make package`, i.e.,
+you can delete the `trace` folder under `fabric/vendor` and rebuild the `fabric-tools`, and then retry, i.e.,
 ```
 rm -R $GOPATH/go/src/github.com/hyperledger/fabric/vendor/golang.org/x/net/trace
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric-tools

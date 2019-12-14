@@ -1,5 +1,5 @@
 # marble-private
-This example uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to implement the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode [marbles02_private](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02_private).  This sample demonstrates the use of Hyperledger Fabric private collections.  It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+This example uses the [TIBCO Flogo® Enterprise](https://www.tibco.com/products/tibco-flogo) to implement the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode [marbles02_private](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02_private).  This sample demonstrates the use of Hyperledger Fabric private collections.  It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0).
 
 ## Prerequisite
 Follow the instructions [here](../../development.md) to setup the Dovetail development environment on Mac or Linux.
@@ -7,7 +7,7 @@ Follow the instructions [here](../../development.md) to setup the Dovetail devel
 ## Edit smart contract (opptional)
 Skip to the next section if you do not plan to modify the included sample model.
 
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `marble_private` and choose `Import app` to import the model [`marble_private.json`](marble_private.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
@@ -23,6 +23,7 @@ The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble-private
 make create
+make build
 make deploy
 ```
 
@@ -57,18 +58,20 @@ The sample Flogo model, [`marble_private_client.json`](marble_private_client.jso
 The client app requires the metadata of the `marble-private` chaincode. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble-private
-make package
+make metadata
 ```
 Following are steps to edit or view the REST service models.
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `marble_private_client` and choose `Import app` to import the model [`marble_private_client.json`](marble_private_client.json)
 - You can then add or update the service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.
 - Open `Connections` tab, find and edit the `marble private client` connector.  Set the `Smart contract metadata file` to the [`metadata.json`](contract-metadata/metadata.json), which is generated in the previous step.  Set the `Network configuration file` and `entity matcher file` to the corresponding files in [`testdata`](../../testdata).
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_private_client.json`](marble_private_client.json) to this `marble-private` sample folder.
 
+Note: after you import the REST model, check the configuration of the REST trigger.  The port should be mapped to `=$property["PORT"]`.  Correcct the mapping if it is not imported correctly.
+
 ## Build and start the marble-private REST service
-Set `$PATH` to use Go 1.13.x, and then build and start the client app as follows:
+Build and start the client app as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble-private
 make create-client
@@ -115,7 +118,7 @@ curl -X GET http://localhost:8989/marbleprivate/owner/jerry
 Note that the operations for `delete` and `price` are allowed by only one of the 2 blockchain member orgs (i.e., org1 only), thus these 2 operations would fail if the REST service sends the request to an org2 peer.  To avoid such errors, the flow model for these operations override the fabric network endpoints to route requests to one of org1 peers only.
 
 ## Notes on GraphQL service
-The previous step `make package` generated a `GraphQL` schema file [`metadata.gql`](contract-metadata/metadata.gql), which can be used to implement a GraphQL service to invoke the `marble_private` chaincode.  Refer to the [`equipment sample`](../equipment) for steps of creating a GraphQL service with zero-code.
+The previous step `make metadata` generated a `GraphQL` schema file [`metadata.gql`](contract-metadata/metadata.gql), which can be used to implement a GraphQL service to invoke the `marble_private` chaincode.  Refer to the [`equipment sample`](../equipment) for steps of creating a GraphQL service with zero-code.
 
 ## Cleanup the sample fabric network
 After you are done testing, you can stop and cleanup the Fabric sample `first-network` as follows:
@@ -127,11 +130,8 @@ docker rmi $(docker images | grep dev-peer | awk '{print $3}')
 ```
 
 ## Deploy to IBM Cloud
-To deploy the `marblle_private` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The following script creates [`marble_private_cc.cds`](marble_private_cc.cds), which you can deploy to IBM Blockchain Platform.
-```
-cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble-private
-make package
-```
+To deploy the `marblle_private` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The script `make cli-init` creates `marble_private_cc_1.0.cds`, which you can deploy to IBM Blockchain Platform.
+
 Refer to [fabric-tools](../../fabric-tools) for details about installing chaincode on the IBM Blockchain Platform.
 
 The REST or GraphQL service apps can access the same `marble_private` chaincode deployed in [IBM Cloud](https://cloud.ibm.com) using the [IBM Blockchain Platform](https://cloud.ibm.com/catalog/services/blockchain-platform-20). The only required update is the network configuration file.  [config_ibp.yaml](../../testdata/config_ibp.yaml) is a sample network configuration that can be used by the REST or GraphQL service app.

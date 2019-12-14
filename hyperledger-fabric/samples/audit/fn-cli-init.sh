@@ -5,10 +5,15 @@
 
 . ./utils.sh
 CCNAME=audit_cc
-CDS_FILE=${CCNAME}_1.0.cds
+CC_PATH=${GOPATH}/src/github.com/chaincode
+CDS_FILE=${CC_PATH}/${CCNAME}_1.0.cds
 
-echo "package chaincode ${CCNAME}:1.0"
-peer chaincode package -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME} ${CDS_FILE}
+if [ -f "${CDS_FILE}" ]; then
+  echo "use pre-packaged CDS: ${CDS_FILE}"
+else
+  echo "package chaincode ${CCNAME}:1.0"
+  peer chaincode package -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME} ${CDS_FILE}
+fi
 
 echo "install ${CCNAME} on peer0 org1"
 peer chaincode install ${CDS_FILE}

@@ -1,6 +1,6 @@
 # marble
 
-This example uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to implement the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode [marbles02](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02).  This sample demonstrates basic features of the Hyperledger Fabric, including creeation and update of states and composite-keys, and different types of queries for state and history with pagination. It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+This example uses [TIBCO Flogo® Enterprise](https://www.tibco.com/products/tibco-flogo) to implement the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode [marbles02](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02).  This sample demonstrates basic features of the Hyperledger Fabric, including creeation and update of states and composite-keys, and different types of queries for state and history with pagination. It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise 2.8.0](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0).
 
 ## Prerequisite
 Follow the instructions [here](../../development.md) to setup the Dovetail development environment on Mac or Linux.
@@ -8,14 +8,14 @@ Follow the instructions [here](../../development.md) to setup the Dovetail devel
 ## Edit smart contract (optional)
 Skip to the next section if you do not plan to modify the included sample model.
 
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `marble_app` and choose `Import app` to import the model [`marble_app.json`](marble_app.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_app.json`](marble_app.json) to this `marble` sample folder.
 
 ## Build and deploy chaincode to Hyperledger Fabric
-Set `$PATH` to use Go 1.12.x for building chaincode.
+Set `$PATH` to use Go 1.12.x for building chaincode.  Hyperledger Fabric does not support Go 1.13 yet.
 
 - In this `marble` sample folder, execute `make create` to generate the chaincode source code from the flogo model [`marble_app.json`](marble_app.json).
 - Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder.  Note that you may need to edit the [`Makefile`](Makefile) and set `CC_DEPLOY` to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
@@ -24,6 +24,7 @@ The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
 make create
+make build
 make deploy
 ```
 
@@ -38,6 +39,7 @@ Use `cli` docker container to install and instantiate the `marble_cc` chaincode.
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
 make cli-init
 ```
+The step also packages the `marble_cc_1.0.cds` file under the `CC_DEPLOY` folder, and it can be used to deploy the chaincode to any other Fabric networks.
 
 Optionally, test the chaincode from `cli` docker container, i.e.,
 ```
@@ -54,18 +56,20 @@ The sample Flogo model, [`marble_client_app.json`](marble_client_app.json) is a 
 The client app requires the metadata of the `marble-app` chaincode. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
-make package
+make metadata
 ```
 Following are steps to edit or view the REST service models.
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `marble_client_app` and choose `Import app` to import the model [`marble_client_app.json`](marble_client_app.json)
 - You can then add or update the service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.
 - Open `Connections` tab, find and edit the `marble client` connector.  Set the `Smart contract metadata file` to the [`metadata.json`](contract-metadata/metadata.json) generated in the previous step. Set the `Network configuration file` and `entity matcher file` to the corresponding files in [`testdata`](../../testdata).
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_client_app.json`](marble_client_app.json) to this `marble` sample folder.
 
+Note: after you import the REST model, check the configuration of the REST trigger.  The port should be mapped to `=$property["PORT"]`.  Correcct the mapping if it is not imported correctly.
+
 ## Build and start the marble REST service
-Set `$PATH` to use Go 1.13.x, and then build and start the client app as follows:
+Build and start the client app as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
 make create-client
@@ -127,7 +131,7 @@ docker rmi $(docker images | grep dev-peer | awk '{print $3}')
 ```
 
 ## Deploy to IBM Cloud
-To deploy the `marblle` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The following script creates [`marble_cc.cds`](marble_cc.cds), which you can deploy to IBM Blockchain Platform.
+To deploy the `marblle` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The script `make cli-init` can creates `marble_cc_1.0.cds`, which you can deploy to IBM Blockchain Platform.
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
 make package

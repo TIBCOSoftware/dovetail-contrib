@@ -1,8 +1,8 @@
 # Flogo extension for Hyperledger Fabric chaincode
 
 This Flogo extension is designed to allow developers to design and implement Hyperledger Fabric chaincode in the Flogo visual programming environment.  This extension supports the following release versions:
-- [TIBCO Flogo® Enterprise 2.6](https://docs.tibco.com/products/tibco-flogo-enterprise-2-6-1)
-- [Hyperledger Fabric 1.4](https://www.hyperledger.org/projects/fabric)
+- [TIBCO Flogo® Enterprise 2.8](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0)
+- [Hyperledger Fabric 1.4.4](https://www.hyperledger.org/projects/fabric)
 
 The [Transaction Trigger](trigger/transaction) allows you to configure the chaincode input and output schema, including normal and/or transient input parameters.
 
@@ -22,4 +22,4 @@ It supports the following activities for storing and querying data on the distri
 
 With these extensions, Hyperledger Fabric chaincode can be designed and implemented with zero code. Refer to samples [`marble-app`](../samples/marble-app) and [`marble-private`](../samples/marble-private) for more details about implementing chaincode for Hyperledger Fabric.
 
-To use this extension in Flogo model, you can create [`fabricExtension.zip`](../fabricExtension.zip) by using the script [`zip-fabric.sh`](../zip-fabric.sh), and then upload the zip-file to the `TIBCO Flogo® Enterprise 2.6` or `Dovetail v0.2.0` as an extension, and so they are available for modeling chaincode.
+To use this extension in Flogo model, you can create [`fabricExtension.zip`](../fabricExtension.zip) by using the script [`zip-fabric.sh`](../zip-fabric.sh), and then upload the zip-file to the `TIBCO Flogo® Enterprise 2.8` as an extension, and so they are available for modeling chaincode.

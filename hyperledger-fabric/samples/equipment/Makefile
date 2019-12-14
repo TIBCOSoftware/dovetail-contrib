@@ -3,7 +3,7 @@ SRC_PATH      := $(patsubst %/,%,$(dir $(abspath $(MAKEFILE_THIS))))
 APP_FILE      := equipment.json
 APP_NAME      := equipment_cc
 BUILD_PATH    := /tmp/equipment
-FAB_PATH      := $(GOPATH)/src/github.com/hyperledger/fabric-samples
+FAB_PATH      ?= $(GOPATH)/src/github.com/hyperledger/fabric-samples
 CC_DEPLOY     := $(FAB_PATH)/chaincode
 SHIM_PATH     := $(SRC_PATH)/../../shim
 PATCH_PATH    := $(SRC_PATH)/../../flogo-patch
@@ -18,7 +18,7 @@ GQL_NAME      := equipment_gql
 
 FLOGO_VER     ?= v0.9.4
 DT_REPO       ?= github.com/TIBCOSoftware/dovetail-contrib
-DT_BRANCH     ?= master
+FE_HOME       ?= $(HOME)/tibco/flogo28/2.8
 
 .PHONY: all
 all: create build
@@ -29,29 +29,29 @@ clean:
 
 .PHONY: create
 create: $(APP_FILE) clean
-	mkdir -p $(BUILD_PATH) && \
+	mkdir -p $(BUILD_PATH)
 	cp $(APP_FILE) $(BUILD_PATH)
 	cd $(BUILD_PATH) && \
 	flogo create --cv $(FLOGO_VER) -f $(APP_FILE) $(APP_NAME)
 	rm $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp $(SHIM_PATH)/chaincode_shim.go $(BUILD_PATH)/$(APP_NAME)/src/main.go
-	cp $(SHIM_PATH)/dovetailimports.go $(BUILD_PATH)/$(APP_NAME)/src
-	cd $(BUILD_PATH)/$(APP_NAME)/src && \
-	echo "" >> go.mod && \
-	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(DT_REPO) $(DT_BRANCH)" >> go.mod
+	cp $(PATCH_PATH)/codegen.sh $(BUILD_PATH)/$(APP_NAME)
+	cd $(BUILD_PATH)/$(APP_NAME) && ./codegen.sh $(FE_HOME) && chmod +x src/gomodedit.sh
 
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
 	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
 
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
-	go get -u -d github.com/project-flogo/flow/activity/subflow@master && \
+	go get -u -d github.com/project-flogo/flow/activity/subflow@master
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
-	env GOOS=linux GOARCH=amd64 go build -mod vendor -o $(APP_NAME)
+	find vendor/$(DT_REPO)/hyperledger-fabric/fabric/ -name '*_metadata.go' -exec rm {} \; && \
+	env GOOS=linux GOARCH=amd64 go build -mod vendor -o ../$(APP_NAME)
 
 .PHONY: deploy
-deploy: build
+deploy:
+	rm -f $(CC_DEPLOY)/$(APP_NAME)_1.0.cds
 	rm -Rf $(CC_DEPLOY)/$(APP_NAME)
 	cp -Rf $(BUILD_PATH)/$(APP_NAME)/src $(CC_DEPLOY)/$(APP_NAME)
 	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
@@ -72,13 +72,8 @@ cli-init:
 cli-test:
 	docker exec cli bash -c 'cd scripts; ./fn-cli-test.sh $(APP_NAME)'
 
-.PHONY: package
-package:
-	-rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
-	mkdir -p $(GOPATH)/src/github.com/chaincode
-	cp -R $(BUILD_PATH)/$(APP_NAME)/src $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
-	fabric-tools package -n $(APP_NAME) -p $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
-	rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
+.PHONY: metadata
+metadata:
 	fabric-tools metadata -f $(APP_FILE) -m $(SRC_PATH)/contract-metadata/metadata.json -g $(SRC_PATH)/contract-metadata/metadata.gql -o $(SRC_PATH)/contract-metadata/override.json
 
 .PHONY: clean-client
@@ -87,23 +82,20 @@ clean-client:
 
 .PHONY: create-client
 create-client: $(CLIENT_FILE) clean-client
-	mkdir -p $(CLIENT_PATH) && \
+	mkdir -p $(CLIENT_PATH)
 	cp $(CLIENT_FILE) $(CLIENT_PATH)
 	cd $(CLIENT_PATH) && \
 	flogo create --cv $(FLOGO_VER) -f $(CLIENT_FILE) $(CLIENT_NAME)
-	cp $(SHIM_PATH)/clientappimports.go $(CLIENT_PATH)/$(CLIENT_NAME)/src
-	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	echo "" >> go.mod && \
-	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(DT_REPO) $(DT_BRANCH)" >> go.mod
+	cp $(PATCH_PATH)/codegen.sh $(CLIENT_PATH)/$(CLIENT_NAME)
+	cd $(CLIENT_PATH)/$(CLIENT_NAME) && ./codegen.sh $(FE_HOME) && chmod +x src/gomodedit.sh
 
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
-	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go get -u -d github.com/hyperledger/fabric-sdk-go@master
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
+
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	go mod vendor && \
-	cp -R $(PATCH_PATH)/* $(CLIENT_PATH)/$(CLIENT_NAME)/src/vendor/github.com/project-flogo && \
+	find vendor/$(DT_REPO)/hyperledger-fabric/fabclient/ -name '*_metadata.go' -exec rm {} \; && \
 	go build -mod vendor -o $(CLIENT_NAME)
 
 .PHONY: run
@@ -116,23 +108,20 @@ clean-gql:
 
 .PHONY: create-gql
 create-gql: $(GQL_FILE) clean-gql
-	mkdir -p $(GQL_PATH) && \
+	mkdir -p $(GQL_PATH)
 	cp $(GQL_FILE) $(GQL_PATH)
 	cd $(GQL_PATH) && \
 	flogo create --cv $(FLOGO_VER) -f $(GQL_FILE) $(GQL_NAME)
-	cp $(SHIM_PATH)/clientappimports.go $(GQL_PATH)/$(GQL_NAME)/src
-	cd $(GQL_PATH)/$(GQL_NAME)/src && \
-	echo "" >> go.mod && \
-	echo "replace github.com/TIBCOSoftware/dovetail-contrib => $(DT_REPO) $(DT_BRANCH)" >> go.mod
+	cp $(PATCH_PATH)/codegen.sh $(GQL_PATH)/$(GQL_NAME)
+	cd $(GQL_PATH)/$(GQL_NAME) && ./codegen.sh $(FE_HOME) && chmod +x src/gomodedit.sh
 
 .PHONY: build-gql
 build-gql: $(GQL_PATH)/$(GQL_NAME)
-	cd $(GQL_PATH)/$(GQL_NAME)/src && \
-	go get -u -d github.com/hyperledger/fabric-sdk-go@master
 	-cd $(GQL_PATH)/$(GQL_NAME) && flogo build -e
+
 	cd $(GQL_PATH)/$(GQL_NAME)/src && \
 	go mod vendor && \
-	cp -R $(PATCH_PATH)/* $(GQL_PATH)/$(GQL_NAME)/src/vendor/github.com/project-flogo && \
+	find vendor/$(DT_REPO)/hyperledger-fabric/fabclient/ -name '*_metadata.go' -exec rm {} \; && \
 	go build -mod vendor -o $(GQL_NAME)
 
 .PHONY: run-gql

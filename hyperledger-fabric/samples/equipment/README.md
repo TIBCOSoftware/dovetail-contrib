@@ -1,8 +1,8 @@
 # equipment
-This example demonstrates the use of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) for tracking equipment purchasing and installations.  This sample demonstrates the use of Hyperledger Fabric events, and client services using REST or GraphQL APIs.  It uses the [project Dovetail](https://tibcosoftware.github.io/dovetail/) to implement and deploy following 2 components:
+This example demonstrates the use of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) for tracking equipment purchasing and installations.  This sample demonstrates the use of Hyperledger Fabric events, and client services using REST or GraphQL APIs.  It uses the [TIBCO Flogo® Enterprise](https://www.tibco.com/products/tibco-flogo) to implement and deploy following 2 components:
 - Chaincode for Hyperledger Fabric that implements the business logic for tracking equipment assets on blockchain;
 - Client services that end-users can call to submit transactions, i.e., chaincode invocations for equipment tracking.  Two equivalent service implementations are provided for demonstration. One service implements REST APIs, and the other implements equivalent GraphQL APIs.
-Both components are implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+Both components are implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code.  The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0).
 
 This sample also demonstrates the use of Hyperledger Fabric events.
 
@@ -12,7 +12,7 @@ Follow the instructions [here](../../development.md) to setup the Dovetail devel
 ## Edit smart contract (optional)
 Skip to the next section if you do not plan to modify the included chaincode model.
 
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `equipment` and choose `Import app` to import the model [`equipment.json`](equipment.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
@@ -28,6 +28,7 @@ The detailed commands of the above steps are as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/equipment
 make create
+make build
 make deploy
 ```
 
@@ -58,20 +59,20 @@ The sample Flogo model, [`equipment_client.json`](equipment_client.json) is a RE
 The client app requires the metadata of the `equipment` chaincode. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/equipment
-make package
+make metadata
 ```
 Following are steps to edit or view the REST service models.
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `equipment_client` and choose `Import app` to import the model [`equipment_client.json`](equipment_client.json)
 - You can then add or update the service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.
 - Open `Connections` tab, find and edit the `equipment client` connector. Set the `Smart contract metadata file` to the [`metadata.json`](contract-metadata/metadata.json), which is generated in the previous step.  Set the `Network configuration file` and `entity matcher file` to the corresponding files in [`testdata`](../../testdata).
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`equipment_client.json`](equipment_client.json) to this `equipment` sample folder.
 
-Note that the current version of `Dovetail` may fail to import this app, if so, import the GraphQL app, [`equipment_gql.json`](equipment_gql.json) instead.
+Note: after you import the REST model, check the configuration of the REST trigger.  The port should be mapped to `=$property["PORT"]`.  Correcct the mapping if it is not imported correctly.  Also check the mapping of `User Name` field in the `eventListener` flow, and correct the mapping if it is not imported correctly.
 
 ## Build and start the equipment REST service
-Set `$PATH` to use Go 1.13.x, and then build and start the client app as follows:
+Build and start the client app as follows:
 ```
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/equipment
 make create-client
@@ -117,11 +118,8 @@ docker rmi $(docker images | grep dev-peer | awk '{print $3}')
 ```
 
 ## Deploy to IBM Cloud
-To deploy the `equipment` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The following script creates [`equipment_cc.cds`](equipment_cc.cds), which you can deploy to IBM Blockchain Platform.
-```
-cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/equipment
-make package
-```
+To deploy the `equipment` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format.  The script `make cli-init` created `equipment_cc_1.0.cds`, which you can deploy to IBM Blockchain Platform.
+
 Refer to [fabric-tools](../../fabric-tools) for details about installing chaincode on the IBM Blockchain Platform.
 
 The REST and GraphQL service apps can access the same `equipment` chaincode deployed in [IBM Cloud](https://cloud.ibm.com) using the [IBM Blockchain Platform](https://cloud.ibm.com/catalog/services/blockchain-platform-20). The only required update is the network configuration file.  [config_ibp.yaml](../../testdata/config_ibp.yaml) is a sample network configuration that can be used by the REST and GraphQL service apps.

@@ -1,5 +1,5 @@
 # iou
-This sample implements a simplified cross-border payment system similar to [Ripple](https://www.ripple.com/files/ripple_product_overview.pdf). Although it is a simplified network, it implements the core blockchain operations for secure cross-border fund transfer with zero-code, thanks to the visual modeling environment of the [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) and the blockchain platform of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).  The Flogo® models in this sample can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0) or [Dovetail](https://github.com/TIBCOSoftware/dovetail).
+This sample implements a simplified cross-border payment system similar to [Ripple](https://www.ripple.com/files/ripple_product_overview.pdf). Although it is a simplified network, it implements the core blockchain operations for secure cross-border fund transfer with zero-code, thanks to the visual modeling environment of the [TIBCO Flogo® Enterprise](https://www.tibco.com/products/tibco-flogo) and the blockchain platform of [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric).  The Flogo® models in this sample can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0).
 
 ## Use case
 Alice, a customer of a bank in Europe wants to send a payment to Bob, a customer of a bank in USA.  Although the parties involved may not trust each other, we can find a chain of intermediaries with 1-to-1 trust relationships, and so that [IOU](http://www.businessdictionary.com/definition/IOU.html)s can be exchanged along the trusted path, resulting in the specified payment amount withdrawn from Alice's account at the Euro Bank, and deposited to Bob's account at the US Bank. 
@@ -131,7 +131,7 @@ Follow the instructions [here](../../development.md) to setup the Dovetail devel
 ## Edit smart contract (optional)
 Skip to the next section if you do not plan to modify the included chaincode model.
 
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `iou` and choose `Import app` to import the model [`iou.json`](iou.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
@@ -173,7 +173,7 @@ cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samp
 make metadata
 ```
 Following are steps to edit or view the GraphQL service models.
-- Start TIBCO Flogo® Enterprise or Dovetail.
+- Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
 - Create new Flogo App of name `iou_client` and choose `Import app` to import the model [`iou_client.json`](iou_client.json)
 - You can then add or update the service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.
