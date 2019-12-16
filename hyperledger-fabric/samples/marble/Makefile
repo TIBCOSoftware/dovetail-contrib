@@ -80,9 +80,6 @@ create-client: $(CLIENT_FILE) clean-client
 
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
-	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	./gomodedit.sh
-
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
 
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \

@@ -84,7 +84,6 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	go mod vendor && \
-	cp -R $(PATCH_PATH)/* $(CLIENT_PATH)/$(CLIENT_NAME)/src/vendor/github.com/project-flogo && \
 	find vendor/$(DT_REPO)/hyperledger-fabric/fabclient/ -name '*_metadata.go' -exec rm {} \; && \
 	go build -mod vendor -o $(CLIENT_NAME)
 

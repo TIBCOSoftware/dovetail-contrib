@@ -43,7 +43,7 @@ build: $(BUILD_PATH)/$(APP_NAME)
 	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
 
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
-	go get -u -d github.com/project-flogo/flow/activity/subflow@master
+	go get -u -d github.com/project-flogo/flow/activity/subflow@master && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
 	find vendor/$(DT_REPO)/hyperledger-fabric/fabric/ -name '*_metadata.go' -exec rm {} \; && \
