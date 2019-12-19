@@ -76,7 +76,20 @@ make create-client
 make build-client
 make run
 ```
-
+Note that the flow model `marble_fe.json` is similar to the `marble_client_app.json` used above, except that it uses the Flogo Enterprise `REST` trigger, which is not open-source.  To build this model, you need to initialize `go-module` for the Flogo Enterprise triggers/activities as follows:
+```
+# set Flogo Enterprise installation home FE_HOME, e.g.,
+export FE_HOME=${HOME}/tibco/flogo/2.8
+cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fe-generator
+./init-gomod.sh ${FE_HOME}
+```
+Then, you can build the marble_fe client:
+```
+cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
+make create-fe-client
+make build-client
+make run
+```
 ## Test marble REST service and marble chaincode
 The REST service implements the following APIs to invoke corresponding blockchain transactions of the `marble` chaincode:
 - **Create Marble** (PUT): it creates a new marble.
