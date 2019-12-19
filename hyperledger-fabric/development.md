@@ -52,7 +52,7 @@ If you have the license for the `TIBCO Flogo® Enterprise`, you can use it to ed
 
 Note: if a client app uses `General` triggers/acrivities included by the `TIBCO Flogo® Enterprise`, you need to use the following script to enable go-module for these components;
 ```
-cd ../../fe-generator
+cd ./fe-generator
 ./init-gomod.sh ${FE_HOME}
 ```
 ## Modeling with TIBCO Cloud Integration (TCI)
