@@ -12,6 +12,8 @@ CLIENT_FILE   := marble_client_app.json
 CLIENT_PATH   ?= /tmp/marble_client
 CLIENT_NAME   := marble_client
 
+FE_CLIENT_FILE := marble_fe.json
+
 FLOGO_VER     ?= v0.9.4
 DT_REPO       ?= github.com/TIBCOSoftware/dovetail-contrib
 FE_HOME       ?= $(HOME)/tibco/flogo28/2.8
@@ -80,6 +82,9 @@ create-client: $(CLIENT_FILE) clean-client
 
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
+	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
+	./gomodedit.sh
+
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
 
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
@@ -90,3 +95,13 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 .PHONY: run
 run:
 	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/src/$(CLIENT_NAME)
+
+.PHONY: create-fe-client
+create-fe-client: $(FE_CLIENT_FILE) clean-client
+	mkdir -p $(CLIENT_PATH)
+	cp $(FE_CLIENT_FILE) $(CLIENT_PATH)
+	cd $(CLIENT_PATH) && \
+	flogo create --cv $(FLOGO_VER) -f $(FE_CLIENT_FILE) $(CLIENT_NAME)
+	cp $(PATCH_PATH)/codegen.sh $(CLIENT_PATH)/$(CLIENT_NAME)
+	cd $(CLIENT_PATH)/$(CLIENT_NAME) && ./codegen.sh $(FE_HOME) && chmod +x src/gomodedit.sh
+

@@ -9,7 +9,7 @@
         "github.com/project-flogo/contrib/function/array",
         "github.com/project-flogo/contrib/function/string"
     ],
-    "name": "marble_client",
+    "name": "marble_fe",
     "description": " ",
     "version": "1.1.0",
     "type": "flogo:app",
@@ -29,100 +29,6 @@
             },
             "id": "ReceiveHTTPMessage",
             "handlers": [
-                {
-                    "description": "Create a marble",
-                    "settings": {
-                        "Method": "PUT",
-                        "Path": "/marble/create",
-                        "OutputValidation": false
-                    },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Create_Marble"
-                        },
-                        "input": {
-                            "content": "=$.body.content"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
-                    },
-                    "reply": {
-                        "code": 200,
-                        "configureResponseCodes": false,
-                        "message": {}
-                    },
-                    "schemas": {
-                        "reply": {
-                            "data": {
-                                "type": "json",
-                                "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n                \"name\": {\n                    \"type\": \"string\"\n                },\n                \"color\": {\n                    \"type\": \"string\"\n                },\n                \"size\": {\n                    \"type\": \"number\"\n                },\n                \"owner\": {\n                    \"type\": \"string\"\n                }\n            }\n}",
-                                "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n                \"name\": {\n                    \"type\": \"string\"\n                },\n                \"color\": {\n                    \"type\": \"string\"\n                },\n                \"size\": {\n                    \"type\": \"number\"\n                },\n                \"owner\": {\n                    \"type\": \"string\"\n                }\n            }\n}"
-                            }
-                        },
-                        "output": {
-                            "headers": {
-                                "type": "json",
-                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
-                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
-                            },
-                            "body": {
-                                "type": "json",
-                                "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"content\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"name\": {\n                    \"type\": \"string\"\n                },\n                \"color\": {\n                    \"type\": \"string\"\n                },\n                \"size\": {\n                    \"type\": \"number\"\n                },\n                \"owner\": {\n                    \"type\": \"string\"\n                }\n            }\n        }\n    }\n}",
-                                "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"content\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"name\": {\n                    \"type\": \"string\"\n                },\n                \"color\": {\n                    \"type\": \"string\"\n                },\n                \"size\": {\n                    \"type\": \"number\"\n                },\n                \"owner\": {\n                    \"type\": \"string\"\n                }\n            }\n        }\n    }\n}"
-                            }
-                        }
-                    }
-                },
-                {
-                    "description": "fetch marble by name",
-                    "settings": {
-                        "Method": "GET",
-                        "Path": "/marble/key/{name}",
-                        "OutputValidation": false
-                    },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Get_Marble"
-                        },
-                        "input": {
-                            "name": "=$.pathParams.name"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
-                    },
-                    "reply": {
-                        "code": 200,
-                        "configureResponseCodes": false,
-                        "message": {}
-                    },
-                    "schemas": {
-                        "reply": {
-                            "data": {
-                                "type": "json",
-                                "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n                \"name\": {\n                    \"type\": \"string\"\n                },\n                \"color\": {\n                    \"type\": \"string\"\n                },\n                \"size\": {\n                    \"type\": \"number\"\n                },\n                \"owner\": {\n                    \"type\": \"string\"\n                }\n            }\n}",
-                                "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n                \"name\": {\n                    \"type\": \"string\"\n                },\n                \"color\": {\n                    \"type\": \"string\"\n                },\n                \"size\": {\n                    \"type\": \"number\"\n                },\n                \"owner\": {\n                    \"type\": \"string\"\n                }\n            }\n}"
-                            }
-                        },
-                        "output": {
-                            "pathParams": {
-                                "type": "json",
-                                "value": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[]}",
-                                "fe_metadata": "[{\"parameterName\":\"name\",\"type\":\"string\"}]"
-                            },
-                            "headers": {
-                                "type": "json",
-                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
-                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
-                            }
-                        }
-                    }
-                },
                 {
                     "description": "query marbles of an owner",
                     "settings": {
@@ -183,53 +89,6 @@
                     }
                 },
                 {
-                    "description": "transfer marble to a new owner",
-                    "settings": {
-                        "Method": "PUT",
-                        "Path": "/marble/transfer",
-                        "OutputValidation": false
-                    },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Transfer_Marble"
-                        },
-                        "input": {
-                            "content": "=$.body.content"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
-                    },
-                    "reply": {
-                        "code": 200,
-                        "configureResponseCodes": false,
-                        "message": {}
-                    },
-                    "schemas": {
-                        "reply": {
-                            "data": {
-                                "type": "json",
-                                "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}",
-                                "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}"
-                            }
-                        },
-                        "output": {
-                            "headers": {
-                                "type": "json",
-                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
-                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
-                            },
-                            "body": {
-                                "type": "json",
-                                "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"content\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"name\": {\n                    \"type\": \"string\"\n                },\n                \"newOwner\": {\n                    \"type\": \"string\"\n                }\n            }\n        }\n    }\n}",
-                                "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"content\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"name\": {\n                    \"type\": \"string\"\n                },\n                \"newOwner\": {\n                    \"type\": \"string\"\n                }\n            }\n        }\n    }\n}"
-                            }
-                        }
-                    }
-                },
-                {
                     "description": "query marbles of key range, [startKey, endKey)",
                     "settings": {
                         "Method": "GET",
@@ -285,60 +144,6 @@
                                 "type": "json",
                                 "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"startKey\": {\n            \"type\": \"string\"\n        },\n        \"endKey\": {\n            \"type\": \"string\"\n        }\n    }\n}",
                                 "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"startKey\": {\n            \"type\": \"string\"\n        },\n        \"endKey\": {\n            \"type\": \"string\"\n        }\n    }\n}"
-                            }
-                        }
-                    }
-                },
-                {
-                    "description": "transfer all marbles of a color",
-                    "settings": {
-                        "Method": "PUT",
-                        "Path": "/marble/transfercolor",
-                        "OutputValidation": false
-                    },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Transfer_By_Color"
-                        },
-                        "input": {
-                            "content": "=$.body.content"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": {
-                                "mapping": {
-                                    "@foreach($.returns.data,data)": {
-                                        "key": "=$loop.key",
-                                        "value": "=$loop.value"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "reply": {
-                        "code": 200,
-                        "configureResponseCodes": false,
-                        "message": {}
-                    },
-                    "schemas": {
-                        "reply": {
-                            "data": {
-                                "type": "json",
-                                "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"key\": {\n                                \"type\": \"string\"\n                            },\n                            \"value\": {\n                                \"type\": \"object\",\n                                \"properties\": {\n                                    \"name\": {\n                                        \"type\": \"string\"\n                                    },\n                                    \"color\": {\n                                        \"type\": \"string\"\n                                    },\n                                    \"size\": {\n                                        \"type\": \"number\"\n                                    },\n                                    \"owner\": {\n                                        \"type\": \"string\"\n                                    }\n                                }\n                            }\n                        }\n                    }\n}",
-                                "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"key\": {\n                                \"type\": \"string\"\n                            },\n                            \"value\": {\n                                \"type\": \"object\",\n                                \"properties\": {\n                                    \"name\": {\n                                        \"type\": \"string\"\n                                    },\n                                    \"color\": {\n                                        \"type\": \"string\"\n                                    },\n                                    \"size\": {\n                                        \"type\": \"number\"\n                                    },\n                                    \"owner\": {\n                                        \"type\": \"string\"\n                                    }\n                                }\n                            }\n                        }\n                    }\n}"
-                            }
-                        },
-                        "output": {
-                            "headers": {
-                                "type": "json",
-                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
-                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
-                            },
-                            "body": {
-                                "type": "json",
-                                "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"content\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"color\": {\n                    \"type\": \"string\"\n                },\n                \"newOwner\": {\n                    \"type\": \"string\"\n                }\n            }\n        }\n    }\n}",
-                                "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"content\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"color\": {\n                    \"type\": \"string\"\n                },\n                \"newOwner\": {\n                    \"type\": \"string\"\n                }\n            }\n        }\n    }\n}"
                             }
                         }
                     }
@@ -495,6 +300,215 @@
                             }
                         }
                     }
+                },
+                {
+                    "description": "Create a marble",
+                    "settings": {
+                        "Method": "PUT",
+                        "Path": "/marble/create",
+                        "OutputValidation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:Create_Marble"
+                        },
+                        "input": {
+                            "body": "=$.body"
+                        },
+                        "output": {
+                            "data": "=$.data"
+                        }
+                    },
+                    "reply": {
+                        "code": 200,
+                        "configureResponseCodes": false,
+                        "message": {}
+                    },
+                    "schemas": {
+                        "reply": {
+                            "data": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"name\": \"marble11\",\n  \"color\": \"blue\",\n  \"size\": 35,\n  \"owner\": \"tom\"\n}"
+                            }
+                        },
+                        "output": {
+                            "headers": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+                            },
+                            "body": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"name\": \"marble11\",\n  \"color\": \"blue\",\n  \"size\": 35,\n  \"owner\": \"tom\"\n}"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "fetch marble by name",
+                    "settings": {
+                        "Method": "GET",
+                        "Path": "/marble/key/{name}",
+                        "OutputValidation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:Get_Marble"
+                        },
+                        "input": {
+                            "name": "=$.pathParams.name"
+                        },
+                        "output": {
+                            "code": "=$.returns.code",
+                            "data": "=$.returns.data"
+                        }
+                    },
+                    "reply": {
+                        "code": 200,
+                        "configureResponseCodes": false,
+                        "message": {}
+                    },
+                    "schemas": {
+                        "reply": {
+                            "data": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"name\": \"marble11\",\n  \"color\": \"blue\",\n  \"size\": 35,\n  \"owner\": \"tom\"\n}"
+                            }
+                        },
+                        "output": {
+                            "pathParams": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"name\",\"type\":\"string\"}]"
+                            },
+                            "headers": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+                            },
+                            "body": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"name\": \"marble11\",\n  \"color\": \"blue\",\n  \"size\": 35,\n  \"owner\": \"tom\"\n}"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "transfer marble to a new owner",
+                    "settings": {
+                        "Method": "PUT",
+                        "Path": "/marble/transfer",
+                        "OutputValidation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:Transfer_Marble"
+                        },
+                        "input": {
+                            "content": {
+                                "mapping": {
+                                    "name": "=$.body.name",
+                                    "newOwner": "=$.body.newOwner"
+                                }
+                            }
+                        },
+                        "output": {
+                            "code": "=$.returns.code",
+                            "data": "=$.returns.data"
+                        }
+                    },
+                    "reply": {
+                        "code": 200,
+                        "configureResponseCodes": false,
+                        "message": {}
+                    },
+                    "schemas": {
+                        "reply": {
+                            "data": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"name\": \"\",\n  \"color\": \"\",\n  \"size\": 0,\n  \"owner\": \"\"\n}"
+                            }
+                        },
+                        "output": {
+                            "headers": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+                            },
+                            "body": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"name\": \"marble12\",\n  \"newOwner\": \"jerry\"\n}"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "transfer all marbles of a color",
+                    "settings": {
+                        "Method": "PUT",
+                        "Path": "/marble/transfercolor",
+                        "OutputValidation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:Transfer_By_Color"
+                        },
+                        "input": {
+                            "content": {
+                                "mapping": {
+                                    "color": "=$.body.color",
+                                    "newOwner": "=$.body.newOwner"
+                                }
+                            }
+                        },
+                        "output": {
+                            "code": "=$.returns.code",
+                            "data": {
+                                "mapping": {
+                                    "@foreach($.returns.data,data)": {
+                                        "key": "=$loop.key",
+                                        "value": "=$loop.value"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "reply": {
+                        "code": 200,
+                        "configureResponseCodes": false,
+                        "message": {}
+                    },
+                    "schemas": {
+                        "reply": {
+                            "data": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}",
+                                "fe_metadata": "[ {\"key\": \"\",\n   \"value\": {\n  \"name\": \"\",\n  \"color\": \"blue\",\n  \"size\": 0,\n  \"owner\": \"\"\n}}]"
+                            }
+                        },
+                        "output": {
+                            "headers": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+                            },
+                            "body": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"color\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n  \"color\": \"blue\",\n  \"newOwner\": \"jerry\"\n}"
+                            }
+                        }
+                    }
                 }
             ]
         }
@@ -543,7 +557,7 @@
                         "activity": {
                             "ref": "#log",
                             "input": {
-                                "message": "=string.concat(\"[Create Marble] {\", $flow.content.name, \", \", $flow.content.color, \", \", $flow.content.owner, \"}\")",
+                                "message": "=string.concat(\"[Create Marble] {\", $flow.body.name, \", \", $flow.body.color, \", \", $flow.body.size, \", \", $flow.body.owner, \"}\")",
                                 "addDetails": false
                             }
                         }
@@ -551,12 +565,12 @@
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -701,12 +715,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "initMarble",
@@ -715,12 +729,13 @@
                                 "userName": "=$property[\"CLIENT_USER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_CC\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
-                                        "name": "=$flow.content.name",
-                                        "color": "=$flow.content.color",
-                                        "size": "=$flow.content.size",
-                                        "owner": "=$flow.content.owner"
+                                        "name": "=$flow.body.name",
+                                        "color": "=$flow.body.color",
+                                        "size": "=$flow.body.size",
+                                        "owner": "=$flow.body.owner"
                                     }
                                 }
                             },
@@ -762,12 +777,8 @@
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
-                                    "returns": {
-                                        "mapping": {
-                                            "code": "=$activity[FabricRequest].code",
-                                            "data": "=$activity[FabricRequest].result"
-                                        }
-                                    }
+                                    "code": "=$activity[FabricRequest].code",
+                                    "data": "=$activity[FabricRequest].result"
                                 }
                             }
                         }
@@ -787,7 +798,15 @@
                 "metadata": {
                     "input": [
                         {
-                            "name": "content",
+                            "name": "headers",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}}"
+                            }
+                        },
+                        {
+                            "name": "body",
                             "type": "object",
                             "schema": {
                                 "type": "json",
@@ -797,17 +816,21 @@
                     ],
                     "output": [
                         {
-                            "name": "returns",
+                            "name": "code",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "data",
                             "type": "object",
                             "schema": {
                                 "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
+                                "value": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
                             }
                         }
                     ],
                     "fe_metadata": {
-                        "input": "{\n    \"content\": {\n        \"name\": \"\",\n        \"color\": \"\",\n        \"size\": 0,\n        \"owner\": \"\"\n    }\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": {\n            \"name\": \"\",\n            \"color\": \"\",\n            \"size\": 0,\n            \"owner\": \"\"\n        }\n    }\n}"
+                        "input": "{\"type\":\"object\",\"title\":\"ReceiveHTTPMessage\",\"properties\":{\"headers\":{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]},\"body\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"code\":{\"type\":\"integer\",\"required\":false},\"data\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
                     }
                 },
                 "explicitReply": true
@@ -869,7 +892,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1014,12 +1037,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "readMarble",
@@ -1176,7 +1199,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1321,12 +1344,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "queryMarblesByOwner",
@@ -1487,7 +1510,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1632,12 +1655,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "transferMarble",
@@ -1798,7 +1821,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1943,12 +1966,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "getMarblesByRange",
@@ -2114,7 +2137,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2259,12 +2282,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "transferMarblesBasedOnColor",
@@ -2430,7 +2453,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2575,12 +2598,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "delete",
@@ -2736,7 +2759,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2881,12 +2904,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "getHistoryForMarble",
@@ -3049,7 +3072,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "181eeef0-1e0d-11ea-b88d-cde1a40c11b5",
+                                    "id": "33ae43f0-21b4-11ea-9e5a-3d6abf76f45e",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -3194,12 +3217,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1576285217631,
+                                    "lastUpdatedTime": 1576686843311,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network",
                                     "isImported": true,
-                                    "createdTime": 1576285217631,
+                                    "createdTime": 1576686843311,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "getMarblesByRangeWithPagination",
@@ -3342,6 +3365,6 @@
         }
     ],
     "connections": {},
-    "contrib": "W3sicmVmIjoiZ2l0LnRpYmNvLmNvbS9naXQvcHJvZHVjdC9pcGFhcy93aS1jb250cmliLmdpdC9jb250cmlidXRpb25zL0dlbmVyYWwiLCJzM2xvY2F0aW9uIjoiVGliY28vR2VuZXJhbCJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9oeXBlcmxlZGdlci1mYWJyaWMvZmFiY2xpZW50IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L2ZhYmNsaWVudCJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAIYIjk+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACACGCI5Pq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9oeXBlcmxlZGdlci1mYWJyaWMvZmFiY2xpZW50IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L2ZhYmNsaWVudCJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9LHsicmVmIjoiZ2l0LnRpYmNvLmNvbS9naXQvcHJvZHVjdC9pcGFhcy93aS1jb250cmliLmdpdC9jb250cmlidXRpb25zL0dlbmVyYWwiLCJzM2xvY2F0aW9uIjoiVGliY28vR2VuZXJhbCJ9XQ==",
+    "fe_metadata": "UEsDBAoAAAAIABCUkk+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAAQlJJPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

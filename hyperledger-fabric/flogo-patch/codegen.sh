@@ -8,6 +8,7 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 FE_SRC=${1}/lib/core/src
+FE_GENERAL=$(dirname "${1}")/data/localstack/wicontributions/Tibco/General
 
 function printImports {
   local imp=$(cat flogo.json | jq .imports[])
@@ -31,12 +32,22 @@ function printImports {
 function printGomod {
   echo "#!/bin/bash"
   local imp=$(cat flogo.json | jq -r .imports[])
+  local general=""
   for f in $imp; do
     if [[ $f == *product/ipaas/wi-contrib.git* ]]; then
       echo "go mod edit -require=${f}@v0.0.0"
-      echo "go mod edit -replace=${f}@v0.0.0=${FE_SRC}/${f}"
+      if [[ $f == *contributions/General* ]]; then
+        general="true"
+        echo "go mod edit -replace=${f}@v0.0.0=${FE_GENERAL}/${f##*contributions/General/}"
+      else
+        echo "go mod edit -replace=${f}@v0.0.0=${FE_SRC}/${f}"
+      fi
     fi
   done
+  if [ ! -z "${general}" ]; then
+    echo "go mod edit -require=git.tibco.com/git/product/ipaas/wi-contrib.git/engine@v0.0.0"
+    echo "go mod edit -replace=git.tibco.com/git/product/ipaas/wi-contrib.git/engine@v0.0.0=${FE_SRC}/git.tibco.com/git/product/ipaas/wi-contrib.git/engine"
+  fi
 }
 
 if [ -d "${FE_SRC}" ]; then
