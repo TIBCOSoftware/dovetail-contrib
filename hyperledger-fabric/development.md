@@ -50,6 +50,11 @@ If you have the license for the `TIBCO Flogo® Enterprise`, you can use it to ed
 - Optionally, you can then add or update the flow models in the browser.
 - After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_app.json`](marble_app.json) to the [marble](samples/marble) sample folder.
 
+Note: if a client app uses `General` triggers/acrivities included by the `TIBCO Flogo® Enterprise`, you need to use the following script to enable go-module for these components;
+```
+cd ../../fe-generator
+./init-gomod.sh ${FE_HOME}
+```
 ## Modeling with TIBCO Cloud Integration (TCI)
 If you are already a subscriber of [TIBCO Cloud Integration (TCI)](https://cloud.tibco.com/), or you plan to sign-up for a TCI trial, you can use TCI to edit app models exported from `Dovetail` or `TIBCO Flogo Enterprise`.  Refer to [Modeling with TCI](tci) for more detailed instructions.
 
