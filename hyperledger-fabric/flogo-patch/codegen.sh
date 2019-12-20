@@ -7,8 +7,6 @@
 # ./codegen.sh /usr/local/tibco/flogo/2.8
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-FE_SRC=${1}/lib/core/src
-FE_GENERAL=$(dirname "${1}")/data/localstack/wicontributions/Tibco/General
 
 function printImports {
   local imp=$(cat flogo.json | jq .imports[])
@@ -50,16 +48,28 @@ function printGomod {
   fi
 }
 
+if [ -f "flogo.json" ]; then
+  echo "generate dovetail imports"
+  printImports > src/dovetailimports.go
+fi
+
+feroot=${1:-"${FE_HOME}"}
+if [ -z "${feroot}" ]; then
+  echo "skip Flogo Enterprise config: FE_HOME is not specified"
+  exit 0
+fi
+
+FE_SRC=${feroot}/lib/core/src
+FE_GENERAL=$(dirname "${feroot}")/data/localstack/wicontributions/Tibco/General
+
 if [ -d "${FE_SRC}" ]; then
   echo "use Flogo Enterprise extension from ${FE_SRC}"
 else
   echo "Flogo Enterprise extension does not exist in ${FE_SRC}"
-  echo "must pass the name of FE home folder to codegen.sh"
   exit 1
 fi
 
 if [ -f "flogo.json" ]; then
-  printImports > src/dovetailimports.go
   printGomod > src/gomodedit.sh
 else
   echo "cannot find flogo.json. codegen.sh must run from a Flogo project root"

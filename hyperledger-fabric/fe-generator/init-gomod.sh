@@ -5,8 +5,9 @@
 # ./init-gomod.sh "/usr/local/tibco/flogo/2.8" "trigger/rest"
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-FE_SRC=${1}/lib/core/src
-FE_GENERAL=$(dirname "${1}")/data/localstack/wicontributions/Tibco/General
+feroot=${1:-"${FE_HOME}"}
+FE_SRC=${feroot}/lib/core/src
+FE_GENERAL=$(dirname "${feroot}")/data/localstack/wicontributions/Tibco/General
 
 function createEngineMod {
   local engineDir=${FE_SRC}/git.tibco.com/git/product/ipaas/wi-contrib.git/engine
@@ -31,13 +32,13 @@ function createGeneralMod {
     cd ${compDir}
     go mod init git.tibco.com/git/product/ipaas/wi-contrib.git/contributions/General/${1}
     go mod edit -require=git.tibco.com/git/product/ipaas/wi-contrib.git/engine@v0.0.0
-    go mod edit -replace=git.tibco.com/git/product/ipaas/wi-contrib.git/engine@v0.0.0=/Users/yxu/work/DovetailDemo/flogo/2.8/lib/core/src/git.tibco.com/git/product/ipaas/wi-contrib.git/engine
+    go mod edit -replace=git.tibco.com/git/product/ipaas/wi-contrib.git/engine@v0.0.0=${FE_SRC}/git.tibco.com/git/product/ipaas/wi-contrib.git/engine
     go mod tidy
   fi
 }
 
 if [ ! -d "${FE_GENERAL}" ]; then
-  echo "${1} is not a valid FE home directory"
+  echo "${feroot} is not a valid FE home directory"
   exit 1
 fi
 
