@@ -685,7 +685,7 @@
                         "from": "Log3",
                         "to": "Get",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "IsAdmin",
                         "value": "$activity[Cid].attrs.bank == $flow.parameters.bank && $activity[Cid].attrs.admin == \"true\""
                     },
                     {
@@ -699,16 +699,15 @@
                         "from": "Log1",
                         "to": "DuplicateError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "AcctExists",
                         "value": "$activity[Get].code == 200"
                     },
                     {
                         "id": 8,
                         "from": "Log1",
                         "to": "Put",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[Get].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "IsNew"
                     },
                     {
                         "id": 9,
@@ -726,9 +725,8 @@
                         "id": 11,
                         "from": "Log3",
                         "to": "NotAuthorizedError",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[Cid].attrs.bank != $flow.parameters.bank || $activity[Cid].attrs.admin != \"true\""
+                        "type": "exprOtherwise",
+                        "label": "NotAdmin"
                     }
                 ],
                 "tasks": [
@@ -824,7 +822,7 @@
                             "input": {
                                 "key": "=$flow.parameters.name",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -845,7 +843,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -938,10 +936,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection"
@@ -989,7 +990,7 @@
                             "input": {
                                 "key": "=$flow.parameters.name",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1010,7 +1011,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -1103,10 +1104,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection",
@@ -1233,7 +1237,7 @@
                         "from": "Log",
                         "to": "ReturnUSD",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "USDBank",
                         "value": "$flow.bank == \"USDBank\""
                     },
                     {
@@ -1241,7 +1245,7 @@
                         "from": "Log",
                         "to": "ReturnEUR",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "EURBank",
                         "value": "$flow.bank == \"EURBank\""
                     }
                 ],
@@ -1345,16 +1349,15 @@
                         "id": 3,
                         "from": "Cid",
                         "to": "NotOwnerError",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[Cid].attrs.alias != $flow.parameters.owner"
+                        "type": "exprOtherwise",
+                        "label": "NotOwner"
                     },
                     {
                         "id": 4,
                         "from": "Cid",
                         "to": "Get",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "ValidOwner",
                         "value": "$activity[Cid].attrs.alias == $flow.parameters.owner"
                     },
                     {
@@ -1368,7 +1371,7 @@
                         "from": "Log1",
                         "to": "NoAccountError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "InvalidAcct",
                         "value": "$activity[Get].code != 200"
                     },
                     {
@@ -1376,7 +1379,7 @@
                         "from": "Log1",
                         "to": "NoFundError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "OverdrawnAcct",
                         "value": "$activity[Get].code == 200 && $activity[Get].result.balance < $flow.parameters.amount"
                     },
                     {
@@ -1384,7 +1387,7 @@
                         "from": "Log1",
                         "to": "PutAcct",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "Authorized",
                         "value": "$activity[Get].code == 200 && $activity[Get].result.balance >= $flow.parameters.amount"
                     },
                     {
@@ -1498,7 +1501,7 @@
                             "input": {
                                 "key": "=$flow.parameters.owner",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1519,7 +1522,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -1612,10 +1615,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection"
@@ -1668,13 +1674,13 @@
                     {
                         "id": "PutAcct",
                         "name": "PutAcct",
-                        "description": "",
+                        "description": "This activity stores data to fabric ledger",
                         "activity": {
                             "ref": "#put",
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1695,7 +1701,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -1788,10 +1794,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection",
@@ -1827,13 +1836,13 @@
                     {
                         "id": "PutIOU",
                         "name": "PutIOU",
-                        "description": "",
+                        "description": "This activity stores data to fabric ledger",
                         "activity": {
                             "ref": "#put",
                             "input": {
                                 "key": "=$flow.txID",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1854,7 +1863,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -1947,10 +1956,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -2000,13 +2012,13 @@
                     {
                         "id": "PutOwnerTx",
                         "name": "PutOwnerTx",
-                        "description": "",
+                        "description": "This activity stores data to fabric ledger",
                         "activity": {
                             "ref": "#put",
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.owner)",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2027,7 +2039,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -2120,10 +2132,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
                                 "privateCollection": "=$activity[BankConfig].txnCollection",
@@ -2160,13 +2175,13 @@
                     {
                         "id": "PutBankTx",
                         "name": "PutBankTx",
-                        "description": "",
+                        "description": "This activity stores data to fabric ledger",
                         "activity": {
                             "ref": "#put",
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2187,7 +2202,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -2280,10 +2295,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
                                 "privateCollection": "=$activity[BankConfig].txnCollection",
@@ -2406,7 +2424,7 @@
                         "from": "Log3",
                         "to": "NoIOUError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "InvalidIOU",
                         "value": "$activity[GetIOU].code != 200"
                     },
                     {
@@ -2414,7 +2432,7 @@
                         "from": "Log3",
                         "to": "BankOwnedError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "NotOwnedByBank",
                         "value": "$activity[GetIOU].code == 200 && $activity[GetIOU].result.owner != $flow.parameters.bank"
                     },
                     {
@@ -2422,23 +2440,22 @@
                         "from": "Log3",
                         "to": "Cid",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "IOUVerified",
                         "value": "$activity[GetIOU].code == 200 && $activity[GetIOU].result.owner == $flow.parameters.bank"
                     },
                     {
                         "id": 7,
                         "from": "Cid",
                         "to": "NotOwnerError",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[Cid].attrs.alias != $flow.parameters.owner"
+                        "type": "exprOtherwise",
+                        "label": "NotOwner"
                     },
                     {
                         "id": 8,
                         "from": "Cid",
                         "to": "Get",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "IsOwner",
                         "value": "$activity[Cid].attrs.alias == $flow.parameters.owner"
                     },
                     {
@@ -2452,7 +2469,7 @@
                         "from": "Log1",
                         "to": "NoAccountError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "InvalidAcct",
                         "value": "$activity[Get].code != 200"
                     },
                     {
@@ -2460,7 +2477,7 @@
                         "from": "Log1",
                         "to": "NoFundError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "OverdrawnAcct",
                         "value": "$activity[Get].code == 200 && $activity[Get].result.balance < $activity[GetIOU].result.amount*$activity[BankConfig].exchangeRate"
                     },
                     {
@@ -2468,7 +2485,7 @@
                         "from": "Log1",
                         "to": "PutAcct",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "Authorized",
                         "value": "$activity[Get].code == 200 && $activity[Get].result.balance >= $activity[GetIOU].result.amount*$activity[BankConfig].exchangeRate"
                     },
                     {
@@ -2548,7 +2565,7 @@
                             "input": {
                                 "key": "=$flow.parameters.iou",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2569,7 +2586,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -2662,10 +2679,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": ""
@@ -2752,7 +2772,7 @@
                             "input": {
                                 "key": "=$flow.parameters.owner",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2773,7 +2793,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -2866,10 +2886,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection"
@@ -2928,7 +2951,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2949,7 +2972,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -3042,10 +3065,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection",
@@ -3087,7 +3113,7 @@
                             "input": {
                                 "key": "=$activity[GetIOU].key",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3108,7 +3134,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -3201,10 +3227,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -3260,7 +3289,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.owner)",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3281,7 +3310,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -3374,10 +3403,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
                                 "privateCollection": "=$activity[BankConfig].txnCollection",
@@ -3500,7 +3532,7 @@
                         "from": "Log1",
                         "to": "NotExistError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "InvalidIOU",
                         "value": "$activity[Get].code != 200"
                     },
                     {
@@ -3508,7 +3540,7 @@
                         "from": "Log1",
                         "to": "NotOwnerError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "NotOwner",
                         "value": "$activity[Get].code == 200 && $activity[Cid].attrs.alias != $activity[Get].result.owner"
                     },
                     {
@@ -3516,7 +3548,7 @@
                         "from": "Log1",
                         "to": "Put",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "Authorized",
                         "value": "$activity[Get].code == 200 && $activity[Get].result.owner == $activity[Cid].attrs.alias"
                     },
                     {
@@ -3565,13 +3597,13 @@
                     {
                         "id": "Get",
                         "name": "Get",
-                        "description": "",
+                        "description": "This activity fetches data by key from fabric ledger",
                         "activity": {
                             "ref": "#get",
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3592,7 +3624,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -3685,10 +3717,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": ""
@@ -3747,7 +3782,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3768,7 +3803,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -3861,10 +3896,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -4006,7 +4044,7 @@
                         "from": "Log1",
                         "to": "NotExistError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "InvalidIOU",
                         "value": "$activity[Get].code != 200"
                     },
                     {
@@ -4014,7 +4052,7 @@
                         "from": "Log1",
                         "to": "NotOwnerError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "NotOwner",
                         "value": "$activity[Get].code == 200 && $activity[Cid].attrs.alias != $activity[Get].result.owner"
                     },
                     {
@@ -4022,7 +4060,7 @@
                         "from": "Log1",
                         "to": "SameCurrencyError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "SameCurrency",
                         "value": "$activity[Get].code == 200 && $activity[Get].result.currency == $activity[BankConfig].currency"
                     },
                     {
@@ -4030,7 +4068,7 @@
                         "from": "Log1",
                         "to": "PutBank",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "Authorized",
                         "value": "$activity[Get].code == 200 && $activity[BankConfig].currency != $activity[Get].result.currency && $activity[Cid].attrs.alias == $activity[Get].result.owner"
                     },
                     {
@@ -4121,13 +4159,13 @@
                     {
                         "id": "Get",
                         "name": "Get",
-                        "description": "",
+                        "description": "This activity fetches data by key from fabric ledger",
                         "activity": {
                             "ref": "#get",
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4148,7 +4186,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -4241,10 +4279,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": ""
@@ -4308,13 +4349,13 @@
                     {
                         "id": "PutBank",
                         "name": "PutBank",
-                        "description": "",
+                        "description": "This activity stores data to fabric ledger",
                         "activity": {
                             "ref": "#put",
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4335,7 +4376,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -4428,10 +4469,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -4469,13 +4513,13 @@
                     {
                         "id": "PutOwner",
                         "name": "PutOwner",
-                        "description": "",
+                        "description": "This activity stores data to fabric ledger",
                         "activity": {
                             "ref": "#put",
                             "input": {
                                 "key": "=$flow.txID",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4496,7 +4540,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -4589,10 +4633,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -4648,7 +4695,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4669,7 +4716,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -4762,10 +4809,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
                                 "privateCollection": "=$activity[BankConfig].txnCollection",
@@ -4888,7 +4938,7 @@
                         "from": "Log1",
                         "to": "NoIOUError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "InvalidIOU",
                         "value": "$activity[GetIOU].code != 200"
                     },
                     {
@@ -4896,7 +4946,7 @@
                         "from": "Log1",
                         "to": "NotIssuerError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "BankIsNotIssuer",
                         "value": "$activity[GetIOU].code == 200 && $activity[GetIOU].result.issuer != $flow.parameters.bank"
                     },
                     {
@@ -4904,7 +4954,7 @@
                         "from": "Log1",
                         "to": "NotOwnerError",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "NotIOUOwner",
                         "value": "$activity[GetIOU].code == 200 && $activity[GetIOU].result.owner != $activity[Cid].attrs.alias"
                     },
                     {
@@ -4912,7 +4962,7 @@
                         "from": "Log1",
                         "to": "BankConfig",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "Authorized",
                         "value": "$activity[GetIOU].code == 200 && $activity[GetIOU].result.issuer == $flow.parameters.bank && $activity[GetIOU].result.owner == $activity[Cid].attrs.alias"
                     },
                     {
@@ -4931,16 +4981,15 @@
                         "id": 10,
                         "from": "Log2",
                         "to": "NoAcctError",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[GetAcct].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "InvalidAcct"
                     },
                     {
                         "id": 11,
                         "from": "Log2",
                         "to": "Delete",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "ValidCustomer",
                         "value": "$activity[GetAcct].code == 200"
                     },
                     {
@@ -5013,7 +5062,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5034,7 +5083,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -5127,10 +5176,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": ""
@@ -5230,7 +5282,7 @@
                             "input": {
                                 "key": "=$activity[GetIOU].result.owner",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5251,7 +5303,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -5344,10 +5396,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection"
@@ -5395,7 +5450,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5416,7 +5471,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -5509,10 +5564,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -5540,7 +5598,7 @@
                             "input": {
                                 "key": "=$activity[GetAcct].key",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5561,7 +5619,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -5654,10 +5712,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection",
@@ -5711,7 +5772,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $activity[GetAcct].result.name)",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5732,7 +5793,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -5825,10 +5886,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
                                 "privateCollection": "=$activity[BankConfig].txnCollection",
@@ -5871,7 +5935,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5892,7 +5956,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -5985,10 +6049,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
                                 "privateCollection": "=$activity[BankConfig].txnCollection",
@@ -6168,7 +6235,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6189,7 +6256,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -6282,10 +6349,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
                                 "privateCollection": "=$activity[BankConfig].acctCollection",
@@ -6478,7 +6548,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6499,7 +6569,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -6592,10 +6662,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
                                 "privateCollection": "=$activity[BankConfig].txnCollection",
@@ -6749,7 +6822,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6770,7 +6843,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -6863,10 +6936,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU"
                             },
@@ -7012,7 +7088,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -7033,7 +7109,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -7126,10 +7202,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -7255,7 +7334,7 @@
                         "from": "SenderBankConfig",
                         "to": "IssueIOU",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "SameBank",
                         "value": "$flow.parameters.senderBank == $flow.parameters.receiverBank"
                     },
                     {
@@ -7274,9 +7353,8 @@
                         "id": 5,
                         "from": "SenderBankConfig",
                         "to": "SearchIOU",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$flow.parameters.senderBank != $flow.parameters.receiverBank"
+                        "type": "exprOtherwise",
+                        "label": "InterBank"
                     },
                     {
                         "id": 6,
@@ -7288,9 +7366,8 @@
                         "id": 7,
                         "from": "Log3",
                         "to": "IssueSenderIOU",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[SearchIOU].status != 200"
+                        "type": "exprOtherwise",
+                        "label": "NewIOU"
                     },
                     {
                         "id": 8,
@@ -7309,7 +7386,7 @@
                         "from": "Log3",
                         "to": "BuyIOU",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "IOUExists",
                         "value": "$activity[SearchIOU].status == 200"
                     },
                     {
@@ -7706,7 +7783,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -7727,7 +7804,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -7820,10 +7897,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -7980,7 +8060,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "dcea3920-0d4a-11ea-bd44-d5936a9802ca",
+                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -8001,7 +8081,7 @@
                                                 "name": "Name",
                                                 "visible": true
                                             },
-                                            "value": "iou_data"
+                                            "value": "iou_data_1"
                                         },
                                         {
                                             "name": "schemaList",
@@ -8094,10 +8174,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574442874299,
+                                    "lastUpdatedTime": 1578521398083,
                                     "user": "flogo",
-                                    "connectorName": "iou_data",
-                                    "connectorDescription": " "
+                                    "connectorName": "iou_data_1",
+                                    "connectorDescription": " ",
+                                    "isImported": true,
+                                    "createdTime": 1578521398083,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
                                 "privateCollection": "",
@@ -8244,5 +8327,5 @@
     ],
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vcHJvamVjdC1mbG9nby9jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAPmKdk+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAD5inZPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAFu3KFCrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABbtyhQq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }
