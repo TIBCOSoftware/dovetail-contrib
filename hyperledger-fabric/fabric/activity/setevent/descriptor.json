@@ -1,7 +1,7 @@
 
 {
     "name": "fabric-setevent",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:activity",
     "title": "Set Event",
     "author": "TIBCO Software Inc.",
@@ -21,7 +21,7 @@
         },
         {
             "name": "payload",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Event payload definition",
                 "description": "Schema definition of the event payload, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
@@ -46,7 +46,7 @@
         },
         {
             "name": "result",
-            "type": "complex_object"
+            "type": "object"
         }
     ]
 }

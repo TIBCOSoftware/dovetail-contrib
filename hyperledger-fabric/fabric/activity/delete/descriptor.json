@@ -1,7 +1,7 @@
 
 {
     "name": "fabric-delete",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:activity",
     "title": "Delete",
     "author": "TIBCO Software Inc.",
@@ -21,7 +21,7 @@
         },
         {
             "name": "commonData",
-            "type": "object",
+            "type": "connection",
             "display": {
                 "name": "Common data definition",
                 "description": "Select common data collection",
@@ -96,7 +96,7 @@
         },
         {
             "name": "result",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Deleted object definition",
                 "description": "Schema definition of the deleted object, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",

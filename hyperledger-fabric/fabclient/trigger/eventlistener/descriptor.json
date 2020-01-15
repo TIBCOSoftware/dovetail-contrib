@@ -1,6 +1,6 @@
 {
     "name": "fabclient-eventlistener",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:trigger",
     "title": "Fabric Event Listener",
     "author": "TIBCO Software Inc.",
@@ -18,7 +18,7 @@
     "handler": {
         "settings": [{
             "name": "connectionName",
-            "type": "object",
+            "type": "connection",
             "display": {
                 "name": "Fabric connection",
                 "description": "Select a Fabric connection",
@@ -26,7 +26,8 @@
                 "visible": true
             },
             "wizard": {
-                "type": "connection",
+                "type": "dropdown",
+                "selection": "single",
                 "step": "Step 1"
             },
             "allowed":[]

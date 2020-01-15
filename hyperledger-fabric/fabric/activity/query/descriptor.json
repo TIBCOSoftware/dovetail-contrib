@@ -1,7 +1,7 @@
 
 {
     "name": "fabric-query",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:activity",
     "title": "Query",
     "author": "TIBCO Software Inc.",
@@ -55,7 +55,7 @@
         },
         {
             "name": "commonData",
-            "type": "object",
+            "type": "connection",
             "display": {
                 "name": "Common data definition",
                 "description": "Select common data collection",
@@ -101,7 +101,7 @@
         },
         {
             "name": "result",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Result array definition",
                 "description": "Schema definition of the resulting array of key and value, e.g.,\r\n[{\r\n  \"key\": \"string\",\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",

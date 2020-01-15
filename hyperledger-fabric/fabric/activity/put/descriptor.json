@@ -1,6 +1,6 @@
 {
     "name": "fabric-put",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:activity",
     "title": "Put",
     "author": "TIBCO Software Inc.",
@@ -20,7 +20,7 @@
         },
         {
             "name": "commonData",
-            "type": "object",
+            "type": "connection",
             "display": {
                 "name": "Common data definition",
                 "description": "Select common data collection",
@@ -43,7 +43,7 @@
         },
         {
             "name": "data",
-            "type": "complex_object",
+            "type": "object",
             "required": true,
             "display": {
                 "name": "Data object definition",
@@ -97,7 +97,7 @@
         },
         {
             "name": "result",
-            "type": "complex_object"
+            "type": "object"
         }
     ]
 }

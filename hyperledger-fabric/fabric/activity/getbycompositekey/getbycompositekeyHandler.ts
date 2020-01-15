@@ -116,20 +116,20 @@ export class getbycompositekeyHandler extends WiServiceHandlerContribution {
             let attributesParsed: any = {};
 
             try {
-                attributesParsed = JSON.parse(attributesField.value.value);
+                attributesParsed = JSON.parse(attributesField.value);
             } catch (e) { }
 
             for (let attr of attributesParsed) {
                 if (!attr.parameterName) {
                     errMessage = "Parameter Name should not be empty";
-                    vresult.setError("FABTIC-GETCOMPOSITE-1000", errMessage);
+                    vresult.setError("FABRIC-GETCOMPOSITE-1000", errMessage);
                     vresult.setValid(false);
                     break;
                 } else {
                     for (let paramName of arrParamNamesTmp) {
                         if (paramName === attr.parameterName) {
                             errMessage = "Attribute Name \'" + attr.parameterName + "\' already exists";
-                            vresult.setError("FABTIC-GETCOMPOSITE-1000", errMessage);
+                            vresult.setError("FABRIC-GETCOMPOSITE-1000", errMessage);
                             vresult.setValid(false);
                             break;
                         }
@@ -157,13 +157,13 @@ export class getbycompositekeyHandler extends WiServiceHandlerContribution {
                 vresult.setReadOnly(false);
             }
             let resultField: IFieldDefinition = context.getField("result");
-            if (resultField.value && resultField.value.value) {
+            if (resultField.value) {
                 try {
                     let valRes;
-                    valRes = JSON.parse(resultField.value.value);
+                    valRes = JSON.parse(resultField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-GETCOMPOSITE-1010", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-GETCOMPOSITE-1010", "Invalid JSON: " + e.toString());
                 }
             }
             return vresult;

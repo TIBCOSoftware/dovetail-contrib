@@ -1,7 +1,7 @@
 
 {
     "name": "fabric-cid",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:activity",
     "title": "Cid",
     "author": "TIBCO Software Inc.",
@@ -38,7 +38,7 @@
         },
         {
             "name": "attrs",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Define CID attributes",
                 "description": "Schema definition of the attributes, e.g.,\r\n{\r\n  \"attr1\": \"\",\r\n  \"attr2\": \"\"\r\n}",

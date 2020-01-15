@@ -103,13 +103,13 @@ export class fabrequestHandler extends WiServiceHandlerContribution {
         if (fieldName === "parameters" || fieldName === "transient" || fieldName === "result") {
             let vresult: IValidationResult = ValidationResult.newValidationResult();
             let valueField: IFieldDefinition = context.getField(fieldName);
-            if (valueField.value && valueField.value.value) {
+            if (valueField.value) {
                 try {
                     let valRes;
-                    valRes = JSON.parse(valueField.value.value);
+                    valRes = JSON.parse(valueField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-REQUEST-1000", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-REQUEST-1000", "Invalid JSON: " + e.toString());
                 }
             }
             vresult.setReadOnly(true);

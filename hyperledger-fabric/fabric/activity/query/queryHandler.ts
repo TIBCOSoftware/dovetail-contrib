@@ -104,7 +104,7 @@ export class queryHandler extends WiServiceHandlerContribution {
             let queryParamsParsed: any = {};
 
             try {
-                queryParamsParsed = JSON.parse(queryParamsField.value.value);
+                queryParamsParsed = JSON.parse(queryParamsField.value);
             } catch (e) { }
 
             for (let queryParam of queryParamsParsed) {
@@ -117,7 +117,7 @@ export class queryHandler extends WiServiceHandlerContribution {
                     for (let paramName of arrParamNamesTmp) {
                         if (paramName === queryParam.parameterName) {
                             errMessage = "Parameter Name \'" + queryParam.parameterName + "\' already exists";
-                            vresult.setError("FABTIC-QUERY-1010", errMessage);
+                            vresult.setError("FABRIC-QUERY-1010", errMessage);
                             vresult.setValid(false);
                             break;
                         }
@@ -157,13 +157,13 @@ export class queryHandler extends WiServiceHandlerContribution {
                 vresult.setReadOnly(false);
             }
             let resultField: IFieldDefinition = context.getField("result");
-            if (resultField.value && resultField.value.value) {
+            if (resultField.value) {
                 try {
                     let valRes;
-                    valRes = JSON.parse(resultField.value.value);
+                    valRes = JSON.parse(resultField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-QUERY-1000", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-QUERY-1000", "Invalid JSON: " + e.toString());
                 }
             }
             return vresult;

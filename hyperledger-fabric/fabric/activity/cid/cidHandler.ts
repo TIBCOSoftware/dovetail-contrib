@@ -31,13 +31,13 @@ export class cidHandler extends WiServiceHandlerContribution {
         if (fieldName === "attrs") {
             let vresult: IValidationResult = ValidationResult.newValidationResult();
             let attrsField: IFieldDefinition = context.getField("attrs");
-            if (attrsField.value && attrsField.value.value) {
+            if (attrsField.value) {
                 try {
                     let valRes;
-                    valRes = JSON.parse(attrsField.value.value);
+                    valRes = JSON.parse(attrsField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-CID-1000", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-CID-1000", "Invalid JSON: " + e.toString());
                 }
             }
             return vresult;

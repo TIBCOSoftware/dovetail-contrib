@@ -131,7 +131,7 @@ export class transactionHandler extends WiServiceHandlerContribution {
                         valRes = JSON.parse(dataField.value.value);
                         valRes = JSON.stringify(valRes);
                     } catch (e) {
-                        return vresult.setError("FABTIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
+                        return vresult.setError("FABRIC-TRIGGER-1000", "Invalid JSON: " + e.toString());
                     }
                 }
                 vresult.setReadOnly(false);

@@ -1,7 +1,7 @@
 
 {
     "name": "fabclient-request",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:activity",
     "title": "Fabric Request",
     "author": "TIBCO Software Inc.",
@@ -18,7 +18,7 @@
         {
             "name": "connectionName",
             "required": true,
-            "type": "object",
+            "type": "connection",
             "display": {
                 "name": "Fabric Connection Name",
                 "description": "Select a Fabric connection",
@@ -77,7 +77,7 @@
         },
         {
             "name": "parameters",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Parameters",
                 "description": "An example JSON data that defines input parameters of the transaction, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
@@ -89,7 +89,7 @@
         },
         {
             "name": "transient",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Transient attributes",
                 "description": "An example JSON data that defines transient input attributes of the transaction, e.g.,\r\n{\r\n  \"trans1\": \"string\",\r\n  \"trans2\": {\"field1\": 0}\r\n}",
@@ -111,7 +111,7 @@
         },
         {
             "name": "result",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Deleted object definition",
                 "description": "Schema definition of the transaction result, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",

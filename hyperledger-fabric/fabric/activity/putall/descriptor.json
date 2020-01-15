@@ -1,7 +1,7 @@
 
 {
     "name": "fabric-putall",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:activity",
     "title": "Put All",
     "author": "TIBCO Software Inc.",
@@ -16,7 +16,7 @@
     "inputs": [
         {
             "name": "commonData",
-            "type": "object",
+            "type": "connection",
             "display": {
                 "name": "Common data definition",
                 "description": "Select common data collection",
@@ -39,7 +39,7 @@
         },
         {
             "name": "data",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Key-value pairs",
                 "description": "Schema definition of array of key-value pairs, e.g.,\r\n[{\r\n  \"key\": \"string\",\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",
@@ -96,7 +96,7 @@
         },
         {
             "name": "result",
-            "type": "complex_object"
+            "type": "object"
         }
     ]
 }

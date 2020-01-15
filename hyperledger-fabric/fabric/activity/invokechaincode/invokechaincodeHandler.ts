@@ -29,26 +29,26 @@ export class invokechaincodeHandler extends WiServiceHandlerContribution {
         if (fieldName === "parameters") {
             let vresult: IValidationResult = ValidationResult.newValidationResult();
             let parametersField: IFieldDefinition = context.getField("parameters");
-            if (parametersField.value && parametersField.value.value) {
+            if (parametersField.value) {
                 try {
                     let valRes;
-                    valRes = JSON.parse(parametersField.value.value);
+                    valRes = JSON.parse(parametersField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-INVOKE-1000", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-INVOKE-1000", "Invalid JSON: " + e.toString());
                 }
             }
             return vresult;
         } else if (fieldName === "result") {
             let vresult: IValidationResult = ValidationResult.newValidationResult();
             let resultField: IFieldDefinition = context.getField("result");
-            if (resultField.value && resultField.value.value) {
+            if (resultField.value) {
                 try {
                     let valRes;
-                    valRes = JSON.parse(resultField.value.value);
+                    valRes = JSON.parse(resultField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-INVOKE-1010", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-INVOKE-1010", "Invalid JSON: " + e.toString());
                 }
             }
             return vresult;

@@ -1,7 +1,7 @@
 
 {
     "name": "fabric-endorsement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:activity",
     "title": "Endorsement Policy",
     "author": "TIBCO Software Inc.",

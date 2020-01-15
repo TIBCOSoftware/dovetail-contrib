@@ -56,7 +56,7 @@ export class datadefHandler extends WiServiceHandlerContribution {
                             let val = JSON.parse(row[attr]);
                             JSON.stringify(val);
                         } catch (e) {
-                            vresult.setError("FABTIC-DATA-1020", "Invalid JSON for " + myid + ": " + e.toString());
+                            vresult.setError("FABRIC-DATA-1020", "Invalid JSON for " + myid + ": " + e.toString());
                             vresult.setValid(false);
                             return vresult;    
                         }

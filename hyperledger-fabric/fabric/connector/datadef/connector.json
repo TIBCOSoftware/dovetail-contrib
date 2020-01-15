@@ -1,6 +1,6 @@
 {
     "name": "fabric-datadef",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "flogo:connector",
     "title": "Fabric Data Definition",
     "author": "TIBCO Software Inc.",
@@ -47,7 +47,7 @@
         },
         {
             "name": "schema",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "All schema definitions",
                 "description": "Schema defined in schemaList",
@@ -58,7 +58,7 @@
         },
         {
             "name": "data",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "All data definitions",
                 "description": "Data values defined in dataList",

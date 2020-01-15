@@ -93,8 +93,8 @@ export class putallHandler extends WiServiceHandlerContribution {
             } else if (fieldName === "result") {
                 // set it the same as data if not using shared data defs
                 let dataField: IFieldDefinition = context.getField("data");
-                if (dataField.value && dataField.value.value) {
-                    return dataField.value.value;
+                if (dataField.value) {
+                    return dataField.value;
                 }
             }
         } else if (fieldName === "keyType" ) {
@@ -160,16 +160,16 @@ export class putallHandler extends WiServiceHandlerContribution {
                 vresult.setReadOnly(false);
             }
             let dataField: IFieldDefinition = context.getField("data");
-            if (dataField.value && dataField.value.value) {
+            if (dataField.value) {
                 try {
                     let valRes;
-                    valRes = JSON.parse(dataField.value.value);
+                    valRes = JSON.parse(dataField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-PUTALL-1000", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-PUTALL-1000", "Invalid JSON: " + e.toString());
                 }
             } else {
-                vresult.setError("FABTIC-PUTALL-1010", "Data schema must not be empty");
+                vresult.setError("FABRIC-PUTALL-1010", "Data schema must not be empty");
             }
             return vresult;
         } else if (fieldName === "compositeKeys") {
@@ -188,7 +188,7 @@ export class putallHandler extends WiServiceHandlerContribution {
                     valRes = JSON.parse(keyField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-PUT-1020", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-PUT-1020", "Invalid JSON: " + e.toString());
                 }
             }
             return vresult;

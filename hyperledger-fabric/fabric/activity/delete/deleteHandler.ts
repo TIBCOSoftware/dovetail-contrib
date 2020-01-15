@@ -157,7 +157,7 @@ export class deleteHandler extends WiServiceHandlerContribution {
                     valRes = JSON.parse(keyField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-DELETE-1010", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-DELETE-1010", "Invalid JSON: " + e.toString());
                 }
             }
             return vresult;
@@ -171,13 +171,13 @@ export class deleteHandler extends WiServiceHandlerContribution {
                 vresult.setReadOnly(false);
             }
             let resultField: IFieldDefinition = context.getField("result");
-            if (resultField.value && resultField.value.value) {
+            if (resultField.value) {
                 try {
                     let valRes;
-                    valRes = JSON.parse(resultField.value.value);
+                    valRes = JSON.parse(resultField.value);
                     valRes = JSON.stringify(valRes);
                 } catch (e) {
-                    vresult.setError("FABTIC-DELETE-1000", "Invalid JSON: " + e.toString());
+                    vresult.setError("FABRIC-DELETE-1000", "Invalid JSON: " + e.toString());
                 }
             }
             return vresult;
