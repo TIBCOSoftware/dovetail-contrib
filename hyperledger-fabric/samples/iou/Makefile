@@ -47,7 +47,6 @@ build: $(BUILD_PATH)/$(APP_NAME)
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
-	find vendor/$(DT_REPO)/hyperledger-fabric/fabric/ -name '*_metadata.go' -exec rm {} \; && \
 	env GOOS=linux GOARCH=amd64 go build -mod vendor -o ../$(APP_NAME)
 
 .PHONY: deploy
@@ -101,7 +100,6 @@ build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
 	go get -u -d github.com/project-flogo/flow/activity/subflow@master && \
 	go mod vendor && \
-	find vendor/$(DT_REPO)/hyperledger-fabric/fabclient/ -name '*_metadata.go' -exec rm {} \; && \
 	go build -mod vendor -o $(CLIENT_NAME)
 
 .PHONY: run

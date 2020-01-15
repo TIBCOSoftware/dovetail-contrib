@@ -299,7 +299,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -444,10 +444,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "initMarble",
                                 "requestType": "invoke",
@@ -608,7 +611,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -753,10 +756,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "readMarble",
                                 "requestType": "query",
@@ -911,7 +917,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1056,10 +1062,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "queryMarblesByOwner",
                                 "requestType": "query",
@@ -1218,7 +1227,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1363,10 +1372,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "transferMarble",
                                 "requestType": "invoke",
@@ -1525,7 +1537,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1670,10 +1682,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "getMarblesByRange",
                                 "requestType": "query",
@@ -1837,7 +1852,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1982,10 +1997,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "transferMarblesBasedOnColor",
                                 "requestType": "invoke",
@@ -2149,7 +2167,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2294,10 +2312,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "delete",
                                 "requestType": "invoke",
@@ -2451,7 +2472,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2596,10 +2617,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "getHistoryForMarble",
                                 "requestType": "query",
@@ -2760,7 +2784,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "b983a590-0dac-11ea-bd44-d5936a9802ca",
+                                    "id": "0a9c4e50-373d-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2905,10 +2929,13 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1574489589558,
+                                    "lastUpdatedTime": 1579054589877,
                                     "user": "flogo",
                                     "connectorName": "marble client",
-                                    "connectorDescription": "marble client using fabric sample first network"
+                                    "connectorDescription": "marble client using fabric sample first network",
+                                    "isImported": true,
+                                    "createdTime": 1579054589877,
+                                    "subscriptionId": "flogo_sbsc"
                                 },
                                 "transactionName": "getMarblesByRangeWithPagination",
                                 "requestType": "query",
@@ -3050,5 +3077,5 @@
     ],
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvdHJpZ2dlci9yZXN0IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvdHJpZ2dlci9yZXN0In0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi9hY3Rpdml0eS9sb2ciLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9sb2cifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9kb3ZldGFpbC1jb250cmliL2h5cGVybGVkZ2VyLWZhYnJpYy9mYWJjbGllbnQiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vZmFiY2xpZW50In0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi9hY3Rpdml0eS9lcnJvciIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2Vycm9yIn1d",
-    "fe_metadata": "UEsDBAoAAAAIAHOQeU+rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABzkHlPq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAG4YL1CrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABuGC9Qq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

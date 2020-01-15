@@ -822,7 +822,7 @@
                             "input": {
                                 "key": "=$flow.parameters.name",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -936,12 +936,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -990,7 +990,7 @@
                             "input": {
                                 "key": "=$flow.parameters.name",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1104,12 +1104,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -1501,7 +1501,7 @@
                             "input": {
                                 "key": "=$flow.parameters.owner",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1615,12 +1615,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -1680,7 +1680,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1794,12 +1794,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -1842,7 +1842,7 @@
                             "input": {
                                 "key": "=$flow.txID",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -1956,12 +1956,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -2018,7 +2018,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.owner)",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2132,12 +2132,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
@@ -2181,7 +2181,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2295,12 +2295,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
@@ -2565,7 +2565,7 @@
                             "input": {
                                 "key": "=$flow.parameters.iou",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2679,12 +2679,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -2772,7 +2772,7 @@
                             "input": {
                                 "key": "=$flow.parameters.owner",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -2886,12 +2886,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -2951,7 +2951,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3065,12 +3065,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -3113,7 +3113,7 @@
                             "input": {
                                 "key": "=$activity[GetIOU].key",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3227,12 +3227,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -3289,7 +3289,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.owner)",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3403,12 +3403,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
@@ -3603,7 +3603,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3717,12 +3717,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -3782,7 +3782,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -3896,12 +3896,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -4165,7 +4165,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4279,12 +4279,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -4355,7 +4355,7 @@
                             "input": {
                                 "key": "=$activity[Get].key",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4469,12 +4469,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -4519,7 +4519,7 @@
                             "input": {
                                 "key": "=$flow.txID",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4633,12 +4633,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -4695,7 +4695,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -4809,12 +4809,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
@@ -5062,7 +5062,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5176,12 +5176,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -5282,7 +5282,7 @@
                             "input": {
                                 "key": "=$activity[GetIOU].result.owner",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5396,12 +5396,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -5450,7 +5450,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5564,12 +5564,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -5598,7 +5598,7 @@
                             "input": {
                                 "key": "=$activity[GetAcct].key",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5712,12 +5712,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -5772,7 +5772,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $activity[GetAcct].result.name)",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -5886,12 +5886,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
@@ -5935,7 +5935,7 @@
                             "input": {
                                 "key": "=string.concat($flow.txID, \":\", $flow.parameters.bank)",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6049,12 +6049,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
@@ -6235,7 +6235,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6349,12 +6349,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Account",
@@ -6548,7 +6548,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6662,12 +6662,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.Transaction",
@@ -6822,7 +6822,7 @@
                             "input": {
                                 "key": "=$flow.parameters.id",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -6936,12 +6936,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU"
@@ -7088,7 +7088,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -7202,12 +7202,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -7783,7 +7783,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -7897,12 +7897,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -8060,7 +8060,7 @@
                                 "pageSize": 0,
                                 "start": "",
                                 "commonData": {
-                                    "id": "9b892930-3263-11ea-9b8e-8d8113ee18ff",
+                                    "id": "ed1cfa90-3742-11ea-8b4c-a56bccb1268c",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabric-datadef",
@@ -8174,12 +8174,12 @@
                                     "keyfield": "name",
                                     "iteratorAccumulate": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1578521398083,
+                                    "lastUpdatedTime": 1579057117369,
                                     "user": "flogo",
                                     "connectorName": "iou_data_1",
                                     "connectorDescription": " ",
                                     "isImported": true,
-                                    "createdTime": 1578521398083,
+                                    "createdTime": 1579057117369,
                                     "subscriptionId": "flogo_sbsc"
                                 },
                                 "dataType": "iou.IOU",
@@ -8327,5 +8327,5 @@
     ],
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vcHJvamVjdC1mbG9nby9jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAFu3KFCrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABbtyhQq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAG8XL1CrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABvFy9Qq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }
