@@ -42,7 +42,6 @@ build: $(BUILD_PATH)/$(APP_NAME)
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
-	find vendor/$(DT_REPO)/hyperledger-fabric/fabric/ -name '*_metadata.go' -exec rm {} \; && \
 	env GOOS=linux GOARCH=amd64 go build -mod vendor -o ../$(APP_NAME)
 
 .PHONY: deploy
@@ -82,11 +81,6 @@ create-client: $(CLIENT_FILE) clean-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
 
-	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go mod vendor && \
-	find vendor/$(DT_REPO)/hyperledger-fabric/fabclient/ -name '*_metadata.go' -exec rm {} \; && \
-	go build -mod vendor -o $(CLIENT_NAME)
-
 .PHONY: run
 run:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/src/$(CLIENT_NAME)
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
