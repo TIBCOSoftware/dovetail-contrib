@@ -54,7 +54,7 @@ deploy:
 	rm -f $(CC_DEPLOY)/$(APP_NAME)_1.0.cds
 	rm -Rf $(CC_DEPLOY)/$(APP_NAME)
 	cp -Rf $(BUILD_PATH)/$(APP_NAME)/src $(CC_DEPLOY)/$(APP_NAME)
-	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
+	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts/fn-init-iou.sh
 
 .PHONY: start-fn
 start-fn:
@@ -68,7 +68,7 @@ start-fn:
 
 .PHONY: cli-init
 cli-init:
-	docker exec cli bash -c 'cd scripts; ./fn-cli-init.sh'
+	docker exec cli bash -c 'cd scripts; ./fn-init-iou.sh'
 
 .PHONY: metadata
 metadata:
@@ -95,13 +95,10 @@ create-client: $(CLIENT_FILE) clean-client
 
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
-	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
-
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go get -u -d github.com/project-flogo/flow/activity/subflow@master && \
-	go mod vendor && \
-	go build -mod vendor -o $(CLIENT_NAME)
+	go get -u -d github.com/project-flogo/flow/activity/subflow@master
+	cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
 
 .PHONY: run
 run:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/src/$(CLIENT_NAME)
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)

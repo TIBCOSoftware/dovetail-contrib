@@ -49,16 +49,16 @@ deploy:
 	rm -f $(CC_DEPLOY)/$(APP_NAME)_1.0.cds
 	rm -Rf $(CC_DEPLOY)/$(APP_NAME)
 	cp -Rf $(BUILD_PATH)/$(APP_NAME)/src $(CC_DEPLOY)/$(APP_NAME)
-	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
-	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts
+	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts/fn-init-marble-private.sh
+	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts/fn-test-marble-private.sh
 
 .PHONY: cli-init
 cli-init:
-	docker exec cli bash -c 'cd scripts; ./fn-cli-init.sh'
+	docker exec cli bash -c 'cd scripts; ./fn-init-marble-private.sh'
 
 .PHONY: cli-test
 cli-test:
-	docker exec cli bash -c 'cd scripts; ./fn-cli-test.sh'
+	docker exec cli bash -c 'cd scripts; ./fn-test-marble-private.sh'
 
 .PHONY: metadata
 metadata:

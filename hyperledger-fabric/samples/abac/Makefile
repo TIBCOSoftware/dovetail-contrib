@@ -41,7 +41,6 @@ build: $(BUILD_PATH)/$(APP_NAME)
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
-	find vendor/$(DT_REPO)/hyperledger-fabric/fabric/ -name '*_metadata.go' -exec rm {} \; && \
 	env GOOS=linux GOARCH=amd64 go build -mod vendor -o ../$(APP_NAME)
 
 .PHONY: deploy
@@ -49,8 +48,8 @@ deploy:
 	rm -f $(CC_DEPLOY)/$(APP_NAME)_1.0.cds
 	rm -Rf $(CC_DEPLOY)/$(APP_NAME)
 	cp -Rf $(BUILD_PATH)/$(APP_NAME)/src $(CC_DEPLOY)/$(APP_NAME)
-	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts
-	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts
+	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts/fn-init-abac.sh
+	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts/fn-test-abac.sh
 
 .PHONY: start-fn
 start-fn:
@@ -60,11 +59,11 @@ start-fn:
 
 .PHONY: cli-init
 cli-init:
-	docker exec cli bash -c 'cd scripts; ./fn-cli-init.sh'
+	docker exec cli bash -c 'cd scripts; ./fn-init-abac.sh'
 
 .PHONY: cli-test
 cli-test:
-	docker exec cli bash -c 'cd scripts; ./fn-cli-test.sh'
+	docker exec cli bash -c 'cd scripts; ./fn-test-abac.sh'
 
 .PHONY: metadata
 metadata:
@@ -85,13 +84,8 @@ create-client: $(CLIENT_FILE) clean-client
 
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
-	-cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
-
-	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go mod vendor && \
-	find vendor/$(DT_REPO)/hyperledger-fabric/fabclient/ -name '*_metadata.go' -exec rm {} \; && \
-	go build -mod vendor -o $(CLIENT_NAME)
+	cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
 
 .PHONY: run
 run:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/src/$(CLIENT_NAME)
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(CLIENT_PATH)/$(CLIENT_NAME)/bin/$(CLIENT_NAME)
