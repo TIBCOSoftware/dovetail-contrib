@@ -4,6 +4,7 @@ APP_FILE      := iou.json
 APP_NAME      := iou_cc
 BUILD_PATH    ?= /tmp/iou
 FAB_PATH      ?= $(GOPATH)/src/github.com/hyperledger/fabric-samples
+PEER_CRYPTO   := $(FAB_PATH)/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com
 CC_DEPLOY     := $(FAB_PATH)/chaincode
 SHIM_PATH     := $(SRC_PATH)/../../shim
 PATCH_PATH    := $(SRC_PATH)/../../flogo-patch
@@ -69,6 +70,15 @@ start-fn:
 .PHONY: cli-init
 cli-init:
 	docker exec cli bash -c 'cd scripts; ./fn-init-iou.sh'
+
+# Note: this does not work cross-platform, e.g., cds built on Mac cannot be used in linux container
+.PHONY: package
+package: $(BUILD_PATH)/$(APP_NAME)/src $(PEER_CRYPTO)
+	mkdir -p $(GOPATH)/src/github.com/chaincode
+	-rm -R $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
+	cp -R $(BUILD_PATH)/$(APP_NAME)/src $(GOPATH)/src/github.com/chaincode/$(APP_NAME)
+	cp $(SHIM_PATH)/core.yaml $(PEER_CRYPTO)
+	FABRIC_CFG_PATH=$(PEER_CRYPTO) $(FAB_PATH)/bin/peer chaincode package -n $(APP_NAME) -v 1.0 -l golang -p github.com/chaincode/$(APP_NAME) $(FAB_PATH)/chaincode/$(APP_NAME)_1.0.cds
 
 .PHONY: metadata
 metadata:
