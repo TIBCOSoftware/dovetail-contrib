@@ -29,7 +29,7 @@ create: $(APP_FILE) clean
 	mkdir -p $(BUILD_PATH)
 	cp $(APP_FILE) $(BUILD_PATH)
 	cd $(BUILD_PATH) && \
-	flogo create --cv $(FLOGO_VER) -f $(APP_FILE) $(APP_NAME)
+	flogo create --cv $(FLOGO_VER) --verbose -f $(APP_FILE) $(APP_NAME)
 	rm $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp $(SHIM_PATH)/chaincode_shim.go $(BUILD_PATH)/$(APP_NAME)/src/main.go
 	cp -Rf META-INF $(BUILD_PATH)/$(APP_NAME)/src
@@ -40,10 +40,12 @@ create: $(APP_FILE) clean
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
-	go get -u -d github.com/project-flogo/flow/activity/subflow@master && \
-	./gomodedit.sh
+	./gomodedit.sh && \
+	go mod edit -replace=github.com/project-flogo/core@v0.10.1=github.com/project-flogo/core@$(FLOGO_VER) && \
+	go mod edit -replace=github.com/project-flogo/flow@v0.10.0=github.com/project-flogo/flow@$(FLOGO_VER) && \
+	go mod edit -replace=github.com/project-flogo/flow/activity/subflow@v0.9.0=github.com/project-flogo/flow/activity/subflow@master
 
-	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
+	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e --verbose
 
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
 	go mod vendor && \
@@ -106,7 +108,9 @@ create-client: $(CLIENT_FILE) clean-client
 .PHONY: build-client
 build-client: $(CLIENT_PATH)/$(CLIENT_NAME)
 	cd $(CLIENT_PATH)/$(CLIENT_NAME)/src && \
-	go get -u -d github.com/project-flogo/flow/activity/subflow@master
+	go mod edit -replace=github.com/project-flogo/core@v0.10.1=github.com/project-flogo/core@$(FLOGO_VER) && \
+	go mod edit -replace=github.com/project-flogo/flow@v0.10.0=github.com/project-flogo/flow@$(FLOGO_VER) && \
+	go mod edit -replace=github.com/project-flogo/flow/activity/subflow@v0.9.0=github.com/project-flogo/flow/activity/subflow@master
 	cd $(CLIENT_PATH)/$(CLIENT_NAME) && flogo build -e
 
 .PHONY: run
