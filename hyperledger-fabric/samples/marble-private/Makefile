@@ -37,6 +37,10 @@ create: $(APP_FILE) clean
 
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
+	cd $(BUILD_PATH)/$(APP_NAME)/src && \
+	go mod edit -replace=github.com/project-flogo/core@v0.10.1=github.com/project-flogo/core@$(FLOGO_VER) && \
+	go mod edit -replace=github.com/project-flogo/flow@v0.10.0=github.com/project-flogo/flow@$(FLOGO_VER)
+
 	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
 
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \

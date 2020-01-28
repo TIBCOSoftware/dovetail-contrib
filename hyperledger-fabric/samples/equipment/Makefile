@@ -40,10 +40,14 @@ create: $(APP_FILE) clean
 
 .PHONY: build
 build: $(BUILD_PATH)/$(APP_NAME)
+	cd $(BUILD_PATH)/$(APP_NAME)/src && \
+	go mod edit -replace=github.com/project-flogo/core@v0.10.1=github.com/project-flogo/core@$(FLOGO_VER) && \
+	go mod edit -replace=github.com/project-flogo/flow@v0.10.0=github.com/project-flogo/flow@$(FLOGO_VER) && \
+	go mod edit -replace=github.com/project-flogo/flow/activity/subflow@v0.9.0=github.com/project-flogo/flow/activity/subflow@master
+
 	-cd $(BUILD_PATH)/$(APP_NAME) && flogo build -e
 
 	cd $(BUILD_PATH)/$(APP_NAME)/src && \
-	go get -u -d github.com/project-flogo/flow/activity/subflow@master && \
 	go mod vendor && \
 	cp -R $(PATCH_PATH)/* $(BUILD_PATH)/$(APP_NAME)/src/vendor/github.com/project-flogo && \
 	env GOOS=linux GOARCH=amd64 go build -mod vendor -o ../$(APP_NAME)
