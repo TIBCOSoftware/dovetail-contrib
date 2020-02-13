@@ -20,6 +20,10 @@ function buildCDS {
 
   local modelFile=${MODEL##*/}
   local modelDir=${MODEL%/*}
+  if [ "${modelDir}" == "${modelFile}" ]; then
+    echo "set model file directory to PWD"
+    modelDir="."
+  fi
   local modelName=${NAME}
   if [ -z "${NAME}" ]; then
     modelName="${modelFile%.*}_cc"

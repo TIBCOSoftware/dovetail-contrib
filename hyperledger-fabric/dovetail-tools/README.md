@@ -15,6 +15,8 @@ This command will write the resulting CDS file as `/path/to/dovetail-contrib/hyp
 
 This command will start a `dovetail-tools` container to execute the build commands if the container is not running already.
 
+Refer the [Makefile](../samples/iou/Makefile) to see how the script is used to build chaincode and client app in the `IOU` sample application.
+
 ## Build application executable
 
 After you complete a client app model in Flogo Enterprise or TIBCO Cloud, you can download the model as a `json` file, e.g., [iou_client.json](../samples/iou/iou_client.json), and then build the executable for a specified operating system as follows:
