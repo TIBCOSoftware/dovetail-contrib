@@ -13,7 +13,7 @@ Following are packages required for setting up development evironment locally on
 - Download Hyperledger Fabric samples and executables of latest production release as described [here](https://github.com/hyperledger/fabric-samples/tree/release-1.4). Current release works with Fabric release 1.4.4.
 - Clone [dovetail-contrib](https://github.com/TIBCOSoftware/dovetail-contrib) with Flogo extension for Hyperledger Fabric
 
-For example, install them to a demo directory, you use the following commands:
+For example, you can install these packages to a demo directory by using the following commands:
 
 ```bash
 cd $HOME/work/DovetailDemo
@@ -23,9 +23,9 @@ export FAB_PATH=$HOME/work/DovetailDemo/fabric-samples
 git clone https://github.com/TIBCOSoftware/dovetail-contrib.git
 ```
 
-This is all you need to start developing chaincode and client apps, and build artifacts using a `dovetail-tools` docker container.  Refer the [IOU](samples/iou) sample for step-by-step instructions about how to implement, build, deploy and run a blockchain application.
+This is all you need to start developing chaincode and client apps, and build artifacts using a [dovetail-tools](./dovetail-tools) docker container.  Refer the [IOU](samples/iou) sample for step-by-step instructions about how to implement, build, deploy and run a blockchain application.
 
-If you want to build artifacts locally, instead of the `dovetail-tools` docker container, you will need to install and configure the following tools:
+If you want to build artifacts locally, instead of using the `dovetail-tools` docker container, you will need to install and configure the following tools:
 
 - [Install Go](https://golang.org/doc/install).  The current release requires Go 1.12.x to build Hyperledger Fabric chaincode.
 - Download and install [flogo-cli](https://github.com/project-flogo/cli)
@@ -79,7 +79,7 @@ It is simplest to build chaincode using the `dovetail-tools` docker container as
 
 The other sampples describes local build process.  We use the [marble](samples/marble) sample to describe the steps to deploy and invoke chaincode with the `byfn` network of the `fabric-samples`.
 
-- In the [marble](samples/marble) sample folder, execute `make create` to generate chaincode source code from the flogo model [`marble_app.json`](samples/marble/marble_app.json).
+- In the [marble](samples/marble) sample folder, execute `make create` and `make build` to generate and build chaincode source code from the flogo model [`marble_app.json`](samples/marble/marble_app.json).
 - Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder.  Note that you may need to set `FAB_PATH` env or edit the [`Makefile`](samples/marble/Makefile) to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
 - Execute `make metadata` to generate `metadata` for client apps.
 
