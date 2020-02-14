@@ -23,7 +23,7 @@ export FAB_PATH=$HOME/work/DovetailDemo/fabric-samples
 git clone https://github.com/TIBCOSoftware/dovetail-contrib.git
 ```
 
-This is all you need to start developing chaincode and client apps, and build artifacts using a [dovetail-tools](./dovetail-tools) docker container.  Refer the [IOU](samples/iou) sample for step-by-step instructions about how to implement, build, deploy and run a blockchain application.
+This is all you need to start developing chaincode and client apps, and build artifacts using a [dovetail-tools](./dovetail-tools) docker container.  You can then follow the following sections to configure a local Flogo Enterprise instance or your TCI account and then follow the [IOU](samples/iou) sample for step-by-step instructions about how to implement, build, deploy and run a blockchain application.
 
 If you want to build artifacts locally, instead of using the `dovetail-tools` docker container, you will need to install and configure the following tools:
 

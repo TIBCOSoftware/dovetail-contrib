@@ -237,3 +237,7 @@ docker rmi $(docker images | grep dev-peer | awk '{print $3}')
 The CDS package, `iou_cc_1.0.cds`, created by the build script above can be used to deploy to IBM Blockchain Platform.  Refer to [fabric-tools](../../fabric-tools) for details about installing chaincode on the IBM Blockchain Platform.
 
 The GraphQL service app can access the same `iou_cc` chaincode deployed in [IBM Cloud](https://cloud.ibm.com) using the [IBM Blockchain Platform](https://cloud.ibm.com/catalog/services/blockchain-platform-20). The only required update is the network configuration file.  [config_ibp.yaml](../../testdata/config_ibp.yaml) is a sample network configuration that can be used by the GraphQL service.
+
+## Deploy to other cloud
+
+You can also deploy and test chaincode or applications in a Kubernetes cluster by other cloud service providers, e.g., Amazon AWS, Microsoft Azure, or Google GCP.  The open-source project [fabric-operation](https://github.com/yxuco/fabric-operation) provides scripts to create Kubernetes clusters and manage Hyperledger Fabric networks in each of the 3 major cloud service providers.  Even though AWS and Azure provide their own managed service for Hyperledger Fabric, they do not support the latest version of the fabric release, e.g., release v1.4.4, and thus you will need to manage your own clusters in any cloud provider other than IBM, which is when open-source project such as [fabric-operation](https://github.com/yxuco/fabric-operation) can help.
