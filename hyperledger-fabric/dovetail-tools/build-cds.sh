@@ -68,9 +68,9 @@ function build {
   fi
   mkdir -p /opt/gopath/src/github.com/chaincode
   cp -Rf /tmp/${NAME}/${NAME}/src /opt/gopath/src/github.com/chaincode/${NAME}
-  fabric-tools package -n ${NAME} -v ${VERSION} -p /opt/gopath/src/github.com/chaincode/${NAME} -o ${HOME}/work/${NAME}_${VERSION}.cds
-  chmod +r ${HOME}/work/${NAME}_${VERSION}.cds
-  echo "chaincode cds package: ./work/${NAME}_${VERSION}.cds"
+  fabric-tools package -n ${NAME} -v ${VERSION} -p /opt/gopath/src/github.com/chaincode/${NAME} -o ${WORK}/${NAME}_${VERSION}.cds
+  chmod +r ${WORK}/${NAME}_${VERSION}.cds
+  echo "chaincode cds package: ${WORK}/${NAME}_${VERSION}.cds"
 }
 
 create

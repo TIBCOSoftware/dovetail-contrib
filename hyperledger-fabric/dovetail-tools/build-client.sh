@@ -47,8 +47,8 @@ function build {
   flogo build -e --verbose
   cd src
   go mod vendor
-  GOOS=${TOS} GOARCH=${TARCH} go build -mod vendor -o ${HOME}/work/${NAME}_${TOS}_${TARCH}
-  echo "client executable: ./work/${NAME}_${TOS}_${TARCH}"
+  GOOS=${TOS} GOARCH=${TARCH} go build -mod vendor -o ${WORK}/${NAME}_${TOS}_${TARCH}
+  echo "client executable: ${WORK}/${NAME}_${TOS}_${TARCH}"
 }
 
 create
