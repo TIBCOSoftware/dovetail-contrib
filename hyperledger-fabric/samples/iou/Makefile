@@ -8,7 +8,7 @@ CC_DEPLOY     := $(FAB_PATH)/chaincode
 
 CLIENT_FILE   := iou_client.json
 CLIENT_NAME   := iou
-CLIENT_OS     := darwin
+CLIENT_OS     ?= darwin
 
 .PHONY: all
 all: build deploy

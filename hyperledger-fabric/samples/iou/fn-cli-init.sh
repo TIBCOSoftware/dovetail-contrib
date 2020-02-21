@@ -9,7 +9,7 @@ CC_PATH=${GOPATH}/src/github.com/chaincode
 CDS_FILE=${CC_PATH}/${CCNAME}/${CCNAME}_1.0.cds
 
 if [ ! -f "${CDS_FILE}" ]; then
-  echo "cannot find cds package at ${CDS_FILE}"
+  echo "cannot find cds package: ${CDS_FILE}"
   exit 1
 fi
 
