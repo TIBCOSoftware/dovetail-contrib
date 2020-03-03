@@ -6,7 +6,7 @@ The gateway service is a generic Fabric client service that provides REST and gR
 
 If you use a cloud provider, i.e., `AWS`, `Azure`, or `GCP`, you can use a `bastion` host to build and test the gateway service, and thus you do not need to install anything on your local PC.  Scripts are provided to setup the `bastion` host for each of the supported cloud providers.  Refer to the folder for [AWS](../aws), [Azure](../az), or [GCP](../gcp) for more details.
 
-To build the service from source code for local test, you need to install the following prerequisites:
+For local test, the gateway service is already pre-built for Mac and Linux as `gateway-darwin` and `gateway-linux`.  You may also build the service from source code, but you need to install the following prerequisites:
 
 * Download and install Go as described [here](https://golang.org/dl/)
 * Download and install `protoc` as described [here](https://grpc.io/docs/quickstart/go/)
@@ -20,7 +20,8 @@ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 You can then build the gateway service using the [Makefile](./Makefile), i.e.,
 
 ```bash
-# clean and build for local test on Mac
+# build gateway service for linux and mac
+cd ../service
 make
 ```
 
@@ -52,6 +53,13 @@ cd ../service
 ```
 
 On a Mac, this gateway service listens to REST requests on a `NodePort`: `30081`.  You can also run the service on a cloud provider.  The scripts support [AWS](../aws), [Azure](../az), and [GCP](../gcp).  Click one of the links to see how easy it is to start a Hyperledger Fabric network in the cloud, and expose the blockchain as a public service via this `gateway service`.
+
+If you want to use this service to test chaincode deployed on a local `byfn` network (in the fabric-samples), you can also run the service without Kubernetes, i.e.,
+
+```bash
+cd ../service
+make run
+```
 
 ## Invoke Fabric transactions using Swagger-UI
 

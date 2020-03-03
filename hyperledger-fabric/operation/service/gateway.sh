@@ -444,12 +444,12 @@ function startGateway {
   createArtifacts
 
   if [ "${ENV_TYPE}" == "docker" ]; then
-    if [ -f ${SCRIPT_DIR}/gateway ]; then
+    if [ -f ${SCRIPT_DIR}/gateway-darwin ]; then
       echo "start gateway service"
       cd ${SCRIPT_DIR}
-      CRYPTO_PATH=${DATA_ROOT}/gateway ./gateway -network config_${CHANNEL_ID}.yaml -matcher matchers.yaml -org ${ORG} -logtostderr -v 2
+      CRYPTO_PATH=${DATA_ROOT}/gateway ./gateway-darwin -network config_${CHANNEL_ID}.yaml -matcher matchers.yaml -org ${ORG} -logtostderr -v 2
     else
-      echo "Cannot find gateway executable. Build it and then retry."
+      echo "Cannot find gateway-darwin executable. Build it and then retry."
       return 1
     fi
   else

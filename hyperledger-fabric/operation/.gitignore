@@ -3,7 +3,5 @@ aws/config/
 az/config/
 gcp/config/
 **/*.sh-e
-service/gateway
-service/gateway-linux
 **/TIB_flogo*
 netop1.com/

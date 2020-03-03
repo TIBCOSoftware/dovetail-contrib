@@ -136,13 +136,9 @@ This command creates the test channel `mychannel`, installs and instantiates a t
 
 ### Start client gateway service and use REST APIs to test chaincode
 
-Refer [gateway](../service/README.md) for more details on how to build and start a REST API service for applications to interact with one or more Fabric networks. The following commands can be used on the bastion host to start a gateway service that exposes a Swagger-UI.
+Refer [gateway](../service/README.md) for more details on how to build and start a REST API service for applications to interact with one or more Fabric networks. The following command starts a gateway service from the bastion host by using the pre-built executable `gateway-linux`.
 
 ```bash
-cd ../service
-# build the gateway service from source code, which creates executable 'gateway-linux'
-make build
-
 # config and start gateway service for Azure
 ./gateway.sh start
 ```
