@@ -19,7 +19,7 @@ Enter your account info in a pop-up browser window.  Note that you may lookup yo
 Create and start the AKS cluster with all defaults:
 
 ```bash
-cd ./az
+cd /path/to/dovetail-contrib/hyperledger-fabric/operation/az
 ./az-util.sh create
 ```
 
@@ -85,6 +85,9 @@ cd ../ca
 ./ca-server.sh start
 # wait until 3 ca server and client PODs are in running state
 ./ca-crypto.sh bootstrap
+
+# optionally shutdown ca to save some resources
+./ca-server.sh shutdown
 ```
 
 This command starts 2 CA servers and a CA client, and generates crypto data according to the network specification, [netop1.env](../config/netop1.env).  You can verify the result using the following commands:
@@ -140,6 +143,7 @@ Refer [gateway](../service/README.md) for more details on how to build and start
 
 ```bash
 # config and start gateway service for Azure
+cd ../service
 ./gateway.sh start
 ```
 
@@ -150,6 +154,18 @@ The URL of the load-balancer is printed by the script as, e.g.,
 http://52.148.162.197:7081/swagger
 ```
 Copy and paste the URL (your actual URL will be different) into a Chrome web-browser, and use it to test the sample chaincode as described in [gateway](../service/README.md).
+
+Verify the gateway connection by posting following request to `/v1/connection`:
+
+```json
+{
+  "channel_id": "mychannel",
+  "user_name": "Admin",
+  "org_name": "netop1"
+}
+```
+
+It will return a `connection_id`: `16453564131388984820`.
 
 ### Build and start Dovetail chaincode and service
 
@@ -169,7 +185,7 @@ cd ../network
 ./network.sh instantiate-chaincode -n peer-0 -c mychannel -s marble_cc -v 1.0 -m '{"Args":["init"]}'
 ```
 
-You can send test transactions by using the Swagger UI of the gateway service, e.g., insert a new marble by posting the following transaction:
+You can send test transactions by using the Swagger UI of the gateway service, e.g., insert a new marble by posting the following transaction to `/v1/transaction`:
 
 ```json
 {

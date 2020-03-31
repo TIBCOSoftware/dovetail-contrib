@@ -22,7 +22,7 @@ Select your Google account in a pop-up browser window to login to Google Cloud. 
 Edit [env.sh](./env.sh) to upldate `GCP_PROJECT` to the name of the project created above or any existing project, and then create and start the GKE cluster with all defaults:
 
 ```bash
-cd ./gcp
+cd /path/to/dovetail-contrib/hyperledger-fabric/operation/gcp
 ./gcp-util.sh create
 ```
 
@@ -89,6 +89,9 @@ cd ../ca
 ./ca-server.sh start
 # wait until 3 ca server and client PODs are in running state
 ./ca-crypto.sh bootstrap
+
+# optionally shutdown ca to save some resources
+./ca-server.sh shutdown
 ```
 
 This command starts 2 CA servers and a CA client, and generates crypto data according to the network specification, [netop1.env](../config/netop1.env).  You can verify the result using the following commands:
@@ -144,6 +147,7 @@ Refer [gateway](../service/README.md) for more details on how to build and start
 
 ```bash
 # config and start gateway service for GCP
+cd ../service
 ./gateway.sh start
 ```
 
@@ -154,6 +158,18 @@ The URL of the load-balancer is printed by the script as, e.g.,
 http://34.82.144.78:7081/swagger
 ```
 Copy and paste the URL (your actual URL will be different) into a Chrome web-browser, and use it to test the sample chaincode as described in [gateway](../service/README.md).
+
+Verify the gateway connection by posting following request to `/v1/connection`:
+
+```json
+{
+  "channel_id": "mychannel",
+  "user_name": "Admin",
+  "org_name": "netop1"
+}
+```
+
+It will return a `connection_id`: `16453564131388984820`.
 
 ### Build and start Dovetail chaincode and service
 
@@ -173,7 +189,7 @@ cd ../network
 ./network.sh instantiate-chaincode -n peer-0 -c mychannel -s marble_cc -v 1.0 -m '{"Args":["init"]}'
 ```
 
-You can send test transactions by using the Swagger UI of the gateway service, e.g., insert a new marble by posting the following transaction:
+You can send test transactions by using the Swagger UI of the gateway service, e.g., insert a new marble by posting the following transaction to `/v1/transaction`:
 
 ```json
 {
