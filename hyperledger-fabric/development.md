@@ -17,7 +17,7 @@ For example, you can install these packages to a demo directory by using the fol
 
 ```bash
 cd $HOME/work/DovetailDemo
-curl -sSL http://bit.ly/2ysbOFE | bash -s
+curl -sSL http://bit.ly/2ysbOFE | bash -s -- 1.4.4 1.4.4 0.4.18
 export PATH=$HOME/work/DovetailDemo/fabric-samples/bin:$PATH
 export FAB_PATH=$HOME/work/DovetailDemo/fabric-samples
 git clone https://github.com/TIBCOSoftware/dovetail-contrib.git
@@ -87,7 +87,6 @@ The detailed commands of the above steps are as follows:
 
 ```bash
 cd $HOME/work/DovetailDemo/dovetail-contrib/hyperledger-fabric/samples/marble
-make create
 make build
 make deploy
 make metadata
