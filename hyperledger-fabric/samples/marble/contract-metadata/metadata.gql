@@ -3,25 +3,32 @@ schema {
 	mutation: Mutation
 }
 type Query {
-	queryMarbles(query: String): [MarbleKeyValue]
-	queryMarblesByOwner(owner: String): [MarbleKeyValue]
-	queryMarblesWithPagination(query: String, pageSize: Float, bookmark: String): MarbleQueryResult
-	readMarble(name: String): Marble
-	getMarblesByRange(startKey: String, endKey: String): [MarbleKeyValue]
 	getMarblesByRangeWithPagination(bookmark: String, startKey: String, endKey: String, pageSize: Float): MarbleQueryResult
+	queryMarblesByOwner(owner: String): [MarbleKeyValue]
+	queryMarblesWithPagination(bookmark: String, query: String, pageSize: Float): MarbleQueryResult
+	readMarble(name: String): Marble
 	getHistoryForMarble(name: String): [MarbleHistory]
+	getMarblesByRange(startKey: String, endKey: String): [MarbleKeyValue]
+	queryMarbles(query: String): [MarbleKeyValue]
 }
 type Mutation {
-	transferMarble(name: String, newOwner: String): Marble
 	transferMarblesBasedOnColor(color: String, newOwner: String): [MarbleKeyValue]
+	transferMarble(name: String, newOwner: String): Marble
 	delete(name: String): Marble
 	initMarble(): Marble
 }
 type MarbleHistory {
-	isDeleted: Boolean
 	value: Marble
 	txID: String
 	txTime: String
+	isDeleted: Boolean
+}
+
+type Marble {
+	name: String
+	color: String
+	size: Float
+	owner: String
 }
 
 type MarbleKeyValue {
@@ -29,16 +36,9 @@ type MarbleKeyValue {
 	value: Marble
 }
 
-type Marble {
-	color: String
-	size: Float
-	owner: String
-	name: String
-}
-
 type MarbleQueryResult {
+	marbles: [MarbleKeyValue]
 	count: Float
 	bookmark: String
-	marbles: [MarbleKeyValue]
 }
 

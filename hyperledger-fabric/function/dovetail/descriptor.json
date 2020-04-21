@@ -1,0 +1,76 @@
+{
+  "name": "dovetail",
+  "type": "flogo:function",
+  "version": "0.0.1",
+  "title": "Dovetail utility functions",
+  "description": "Utility functions used by Dovetail samples",
+  "homepage": "https://github.com/TIBCOSoftware/dovetail-contrib/tree/master/hyperledger-fabric/function/dovetail",
+  "functions": [
+    {
+      "name": "sum",
+      "description": "Returns sum of all numeric items of an array",
+      "example": "dovetail.sum(json.path(\"$.[*].item\", $activity.array)) => 500",
+      "args": [
+        {
+          "name": "items",
+          "type": "array",
+          "valueType": "any"
+        }
+      ],
+      "return": {
+        "type": "float64"
+      }
+    },
+    {
+      "name": "parseDate",
+      "description": "Parse a date string and return array of year, month and date.",
+      "example": "dovetail.parseDate(\"2020-03-11\")) => [2020,3,11]",
+      "args": [
+        {
+          "name": "date",
+          "type": "string"
+        }
+      ],
+      "return": {
+        "type": "array",
+        "valueType": "int"
+      }
+    },
+    {
+      "name": "compareJSON",
+      "description": "compare all fields of 2 JSON objects, return FullMatch, SupersetMatch, or NoMatch.",
+      "example": "dovetail.compareJSON({\"foo\": 1, \"bar\": \"one\"}, {\"foo\": 1}) => SupersetMatch",
+      "args": [
+        {
+          "name": "obj1",
+          "type": "any"
+        },
+        {
+          "name": "obj2",
+          "type": "any"
+        }
+      ],
+      "return": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "notZeroValue",
+      "description": "accepting 2 values, return the second value if it is not zero value, otherwise, return the first value",
+      "example": "dovetail.notZeroValue(\"foo\", \"\") => \"foo\"",
+      "args": [
+        {
+          "name": "v1",
+          "type": "any"
+        },
+        {
+          "name": "v2",
+          "type": "any"
+        }
+      ],
+      "return": {
+        "type": "any"
+      }
+    }
+  ]
+}
