@@ -71,6 +71,32 @@
       "return": {
         "type": "any"
       }
+    },
+    {
+      "name": "conditionalChoice",
+      "description": "if condition is false and the original is different from the value, return the optional object, otherwise, return the value object.",
+      "example": "dovetail.conditionalChoice(false,\"foo\", \"bar\", \"opt\") => \"opt\"",
+      "args": [
+        {
+          "name": "condition",
+          "type": "boolean"
+        },
+        {
+          "name": "original",
+          "type": "any"
+        },
+        {
+          "name": "value",
+          "type": "any"
+        },
+        {
+          "name": "optional",
+          "type": "any"
+        }
+      ],
+      "return": {
+        "type": "any"
+      }
     }
   ]
 }
