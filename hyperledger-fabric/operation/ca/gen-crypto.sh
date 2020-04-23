@@ -101,17 +101,21 @@ function userCrypto {
     if [ "${_cmd}" == "enroll" ]; then
       local _csrhosts=${CLIENT_HOSTS:-"localhost,cli.${FABRIC_ORG}"}
       for u in ${_users}; do
-        echo "enroll ${u}@${FABRIC_ORG} - ${CRYPTO_DIR}"
-        fabric-ca-client enroll --tls.certfiles tls-cert.pem ${PROFILE} --csr.names "${CSR_NAMES}" --csr.hosts "${_csrhosts}" --enrollment.attrs "alias,email,hf.Type,hf.EnrollmentID" -u https://${u}@${FABRIC_ORG}:${u}pw@${CA_HOST_PORT} -M ${FABRIC_CA_HOME}/${u}\@${FABRIC_ORG}/${CRYPTO_DIR}
+        local nm="${u%%@*}"
+        echo "enroll ${nm}@${FABRIC_ORG} - ${CRYPTO_DIR}"
+        fabric-ca-client enroll --tls.certfiles tls-cert.pem ${PROFILE} --csr.names "${CSR_NAMES}" --csr.hosts "${_csrhosts}" --enrollment.attrs "alias,entity,email,hf.Type,hf.EnrollmentID" -u https://${nm}@${FABRIC_ORG}:${nm}pw@${CA_HOST_PORT} -M ${FABRIC_CA_HOME}/${nm}\@${FABRIC_ORG}/${CRYPTO_DIR}
         if [ "${CRYPTO_DIR}" == "tls" ]; then
           # assuming "tlsca" is called after "ca"
-          copyNodeCrypto ${u} users client
+          copyNodeCrypto ${nm} users client
         fi
       done
     else
       for u in ${_users}; do
-        echo "register ${u}@${FABRIC_ORG} - ${CRYPTO_DIR}"
-        fabric-ca-client register --id.name ''"${u}@${FABRIC_ORG}"'' --id.secret ${u}pw --id.type client --id.attrs 'alias='"${u}"',email='"${u}@${FABRIC_ORG}"'' --tls.certfiles tls-cert.pem -u ${CA_ADMIN_URL}
+        local nm="${u%%@*}"
+        local dm="${u##*@}"
+        local cn="${dm%%.*}"
+        echo "register ${nm}@${FABRIC_ORG} - ${CRYPTO_DIR}"
+        fabric-ca-client register --id.name ''"${nm}@${FABRIC_ORG}"'' --id.secret ${nm}pw --id.type client --id.attrs 'alias='"${nm}"',entity='"${cn}"',email='"${nm}@${dm}"'' --tls.certfiles tls-cert.pem -u ${CA_ADMIN_URL}
       done
     fi
   fi

@@ -1,12 +1,13 @@
 package dovetail
 
 import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/nsf/jsondiff"
 	"github.com/project-flogo/core/data"
 	"github.com/project-flogo/core/data/expression/function"
 	"github.com/project-flogo/core/support/log"
-	"github.com/nsf/jsondiff"
-	"encoding/json"
-	"fmt"
 )
 
 // Note: alternative implementation could use reflect.DeepEqual(x, y) to check for FullMatch
@@ -37,7 +38,7 @@ func (s *CompareJSON) Eval(params ...interface{}) (interface{}, error) {
 	if len(params) < 2 {
 		return nil, fmt.Errorf("need 2 input objects to compare")
 	}
-	
+
 	p1, err := toJSONBytes(params[0])
 	if err != nil {
 		return nil, fmt.Errorf("first param is invalid JSON: %v", err)
