@@ -135,5 +135,5 @@ Note that the above script uses a tool `yq` to merge 2 `yaml` files.  The tool c
 ```bash
 curl -OL https://github.com/mikefarah/yq/releases/download/2.4.1/yq_darwin_amd64
 chmod +x yq_darwin_amd64
-sudo mv yq_darwin_amd64 /usr/local/yq
+sudo mv yq_darwin_amd64 /usr/local/bin/yq
 ```

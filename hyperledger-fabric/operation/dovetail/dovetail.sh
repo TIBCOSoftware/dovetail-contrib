@@ -471,6 +471,10 @@ spec:
           value: \"true\"
         - name: FLOGO_SCHEMA_VALIDATION
           value: \"false\"
+        - name: ENDPOINT
+          value: \"\"
+        - name: TIMEOUTMS
+          value: \"0\"
         - name: POD_NAME
           valueFrom:
             fieldRef:
@@ -526,14 +530,14 @@ function printHelp() {
   echo "  dovetail.sh <cmd> [options]"
   echo "    <cmd> - one of the following commands"
   echo "      - 'install-fe' - install Flogo Enterprise from zip; arguments: -s <FE-installer-zip>"
-  echo "      - 'config-app' - config client app with specified network and entity matcher yaml; args: -m [-i -n -u]"
+  echo "      - 'config-app' - config client app with specified network and entity matcher yaml; args: -m [-c -n -u]"
   echo "      - 'start-app' - build and start kubernetes service for specified app model that is previously configured using config-app; args: -m"
   echo "      - 'stop-app' - shutdown kubernetes service for specified app model; args: -m"
   echo "    -p <property file> - the .env file in config folder that defines network properties, e.g., netop1 (default)"
   echo "    -t <env type> - deployment environment type: one of 'docker', 'k8s' (default), 'aws', 'az', or 'gcp'"
   echo "    -s <source> - Flogo enterprise install zip file"
   echo "    -m <json> - flogo model file in json format, e.g., marble.json"
-  echo "    -i <channel-id> - channel for client app to invoke chaincode"
+  echo "    -c <channel-id> - channel for client app to invoke chaincode"
   echo "    -n <port-number> - service listen port, e.g. '7091' (default)"
   echo "    -u <user> - user that client app uses to connect to fabric network, e.g. 'Admin' (default)"
   echo "  dovetail.sh -h (print this message)"
@@ -543,7 +547,7 @@ ORG_ENV="netop1"
 
 CMD=${1}
 shift
-while getopts "h?p:t:s:m:i:n:u:" opt; do
+while getopts "h?p:t:s:m:c:n:u:" opt; do
   case "$opt" in
   h | \?)
     printHelp
@@ -561,7 +565,7 @@ while getopts "h?p:t:s:m:i:n:u:" opt; do
   m)
     MODEL=$OPTARG
     ;;
-  i)
+  c)
     CHANNEL_ID=$OPTARG
     ;;
   n)
