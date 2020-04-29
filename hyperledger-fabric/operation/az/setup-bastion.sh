@@ -23,11 +23,6 @@ echo "STORAGE_KEY=${STORAGE_KEY}" >> .azure/store-secret
 
 mnt_point=mnt/share
 
-# download fabric operation project
-git clone https://github.com/yxuco/fabric-operation.git
-sed -i -e "s|^MOUNT_POINT=.*|MOUNT_POINT=${mnt_point}|" ./fabric-operation/config/setup.sh
-sed -i -e "s|^AZ_STORAGE_SHARE=.*|AZ_STORAGE_SHARE=${STORAGE_SHARE}|" ./fabric-operation/config/setup.sh
-
 # mount Azure file
 sudo mkdir -p /${mnt_point}
 
@@ -84,6 +79,9 @@ sudo mv yq_linux_amd64 /usr/local/yq
 
 echo "setup dovetail"
 git clone https://github.com/TIBCOSoftware/dovetail-contrib.git
+sed -i -e "s|^MOUNT_POINT=.*|MOUNT_POINT=${mnt_point}|" ./dovetail-contrib/hyperledger-fabric/operation/config/setup.sh
+sed -i -e "s|^AZ_STORAGE_SHARE=.*|AZ_STORAGE_SHARE=${STORAGE_SHARE}|" ./dovetail-contrib/hyperledger-fabric/operation/config/setup.sh
+
 go get -u github.com/project-flogo/cli/...
 
 # install fabric binary for chaincode packaging

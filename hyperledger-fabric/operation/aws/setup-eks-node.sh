@@ -40,11 +40,6 @@ done
 echo "install EFS csi driver"
 kubectl apply -k "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
 
-echo "download fabric-operation project and set filesystem id ${AWS_FSID}"
-git clone https://github.com/yxuco/fabric-operation.git
-sed -i -e "s|^MOUNT_POINT=.*|MOUNT_POINT=${MOUNT_POINT}|" ./fabric-operation/config/setup.sh
-sed -i -e "s|^AWS_FSID=.*|AWS_FSID=${AWS_FSID}|" ./fabric-operation/config/setup.sh
-
 echo "install protobuf 3.7.1"
 PROTOC_ZIP=protoc-3.7.1-linux-x86_64.zip
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/$PROTOC_ZIP
@@ -85,8 +80,11 @@ curl -OL https://github.com/mikefarah/yq/releases/download/2.4.1/yq_linux_amd64
 chmod +x yq_linux_amd64
 sudo mv yq_linux_amd64 /usr/local/yq
 
-echo "setup dovetail"
+echo "clone dovetail and set filesystem id ${AWS_FSID}"
 git clone https://github.com/TIBCOSoftware/dovetail-contrib.git
+sed -i -e "s|^MOUNT_POINT=.*|MOUNT_POINT=${MOUNT_POINT}|" ./dovetail-contrib/hyperledger-fabric/operation/config/setup.sh
+sed -i -e "s|^AWS_FSID=.*|AWS_FSID=${AWS_FSID}|" ./dovetail-contrib/hyperledger-fabric/operation/config/setup.sh
+
 go get -u github.com/project-flogo/cli/...
 
 # install fabric binary for chaincode packaging
