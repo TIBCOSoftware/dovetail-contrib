@@ -10,7 +10,6 @@ The detailed commands of the above steps are as follows:
 
 ```bash
 cd $GOPATH/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/samples/marble
-make create
 make build
 make deploy
 ```

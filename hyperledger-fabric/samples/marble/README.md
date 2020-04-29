@@ -142,6 +142,8 @@ curl -X GET "http://localhost:8989/marble/rangepage?startKey=marble21&endKey=mar
 curl -X GET "http://localhost:8989/marble/rangepage?startKey=marble21&endKey=marble27&pageSize=3&bookmark=marble5"
 ```
 
+You can use couchdb UI to view the current states via [http://localhost:5984/_utils](http://localhost:5984/_utils)
+
 ## Notes on GraphQL service
 
 The previous step `make package` generated a `GraphQL` schema file [`metadata.gql`](contract-metadata/metadata.gql), which can be used to implement a GraphQL service to invoke the `marble` chaincode.  Refer to the [`equipment sample`](../equipment) for steps of creating a GraphQL service with zero-code.
