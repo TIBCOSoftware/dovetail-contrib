@@ -554,16 +554,17 @@ function buildFlogoChaincode {
     echo "set model file directory to PWD"
     _src="."
   fi
-  if [ ! -f "${DATA_ROOT}/tool/${name}/${_model}" ]; then
-    echo "copy ${MODEL} to ${DATA_ROOT}/tool/${name}"
+  if [ -f "${DATA_ROOT}/tool/${name}/${_model}" ]; then
+    echo "cleanup old model in ${DATA_ROOT}/tool/${name}"
     ${surm} -rf ${DATA_ROOT}/tool/${name}
     ${sumd} -p ${DATA_ROOT}/tool/${name}
-    ${sucp} ${MODEL} ${DATA_ROOT}/tool/${name}
-    if [ -d "${_src}/META-INF" ]; then
-      echo "copy META-INF from model folder"
-      ${surm} -rf ${DATA_ROOT}/tool/${name}/META-INF
-      ${sucp} -rf ${_src}/META-INF ${DATA_ROOT}/tool/${name}
-    fi
+  fi
+  echo "copy ${MODEL} to ${DATA_ROOT}/tool/${name}"
+  ${sucp} ${MODEL} ${DATA_ROOT}/tool/${name}
+  if [ -d "${_src}/META-INF" ]; then
+    echo "copy META-INF from model folder"
+    ${surm} -rf ${DATA_ROOT}/tool/${name}/META-INF
+    ${sucp} -rf ${_src}/META-INF ${DATA_ROOT}/tool/${name}
   fi
 
   local cmd="build-cds.sh ./${name}/${_model} ${name} ${VERSION}"

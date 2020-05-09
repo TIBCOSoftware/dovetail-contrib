@@ -276,6 +276,10 @@ function shutdownApp {
   echo "stop ${modelName} service ..."
   kubectl delete -f ${DATA_ROOT}/gateway/k8s/${modelName}.yaml
   kubectl delete -f ${DATA_ROOT}/gateway/k8s/${modelName}-pv.yaml
+  if [ ! -z "${DELETE}" ]; then
+    echo "remove executable for rebuild: ${DATA_ROOT}/gateway/${modelName}_linux_amd64"
+    ${surm} -f ${DATA_ROOT}/gateway/${modelName}_linux_amd64
+  fi
 }
 
 # replace network config in an app model with specified Fabric network yaml
@@ -532,7 +536,7 @@ function printHelp() {
   echo "      - 'install-fe' - install Flogo Enterprise from zip; arguments: -s <FE-installer-zip>"
   echo "      - 'config-app' - config client app with specified network and entity matcher yaml; args: -m [-c -n -u]"
   echo "      - 'start-app' - build and start kubernetes service for specified app model that is previously configured using config-app; args: -m"
-  echo "      - 'stop-app' - shutdown kubernetes service for specified app model; args: -m"
+  echo "      - 'stop-app' - shutdown kubernetes service for specified app model; args: -m [-d]"
   echo "    -p <property file> - the .env file in config folder that defines network properties, e.g., netop1 (default)"
   echo "    -t <env type> - deployment environment type: one of 'docker', 'k8s' (default), 'aws', 'az', or 'gcp'"
   echo "    -s <source> - Flogo enterprise install zip file"
@@ -540,6 +544,7 @@ function printHelp() {
   echo "    -c <channel-id> - channel for client app to invoke chaincode"
   echo "    -n <port-number> - service listen port, e.g. '7091' (default)"
   echo "    -u <user> - user that client app uses to connect to fabric network, e.g. 'Admin' (default)"
+  echo "    -d - Delete app executable so it'll be rebuilt on next start-app"
   echo "  dovetail.sh -h (print this message)"
 }
 
@@ -547,7 +552,7 @@ ORG_ENV="netop1"
 
 CMD=${1}
 shift
-while getopts "h?p:t:s:m:c:n:u:" opt; do
+while getopts "h?p:t:s:m:c:n:u:d" opt; do
   case "$opt" in
   h | \?)
     printHelp
@@ -573,6 +578,8 @@ while getopts "h?p:t:s:m:c:n:u:" opt; do
     ;;
   u)
     USER_ID=$OPTARG
+    ;;
+  d) DELETE="true"
     ;;
   esac
 done
