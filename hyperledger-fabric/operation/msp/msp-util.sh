@@ -557,9 +557,9 @@ function buildFlogoChaincode {
   if [ -f "${DATA_ROOT}/tool/${name}/${_model}" ]; then
     echo "cleanup old model in ${DATA_ROOT}/tool/${name}"
     ${surm} -rf ${DATA_ROOT}/tool/${name}
-    ${sumd} -p ${DATA_ROOT}/tool/${name}
   fi
   echo "copy ${MODEL} to ${DATA_ROOT}/tool/${name}"
+  ${sumd} -p ${DATA_ROOT}/tool/${name}
   ${sucp} ${MODEL} ${DATA_ROOT}/tool/${name}
   if [ -d "${_src}/META-INF" ]; then
     echo "copy META-INF from model folder"

@@ -2,8 +2,9 @@ MAKEFILE_THIS := $(lastword $(MAKEFILE_LIST))
 SRC_PATH      := $(patsubst %/,%,$(dir $(abspath $(MAKEFILE_THIS))))
 APP_FILE      := marble_app.json
 APP_NAME      := marble_cc
+WORK_PATH     ?= $(HOME)/work/dovetail
 TOOL_PATH     := $(SRC_PATH)/../../dovetail-tools
-FAB_PATH      ?= $(GOPATH)/src/github.com/hyperledger/fabric-samples
+FAB_PATH      ?= $(WORK_PATH)/fabric-samples
 CC_DEPLOY     := $(FAB_PATH)/chaincode
 
 CLIENT_FILE   := marble_client_app.json
@@ -59,3 +60,13 @@ run:
 .PHONY: build-fe-client
 build-fe-client: $(FE_CLIENT_FILE) clean-client
 	$(TOOL_PATH)/build.sh client -f $(FE_CLIENT_FILE) -n $(CLIENT_NAME) -s $(CLIENT_OS)
+
+.PHONY: start
+start:
+	cd $(FAB_PATH)/first-network && ./byfn.sh up -a -n -s couchdb
+
+.PHONY: shutdown
+shutdown:
+	cd $(FAB_PATH)/first-network && ./byfn.sh down
+	docker rm $(docker ps -a | grep dev-peer | awk '{print $1}')
+	docker rmi $(docker images | grep dev-peer | awk '{print $3}')
