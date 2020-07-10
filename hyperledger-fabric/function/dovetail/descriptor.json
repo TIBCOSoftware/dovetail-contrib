@@ -5,29 +5,54 @@
   "title": "Dovetail utility functions",
   "description": "Utility functions used by Dovetail samples",
   "homepage": "https://github.com/TIBCOSoftware/dovetail-contrib/tree/master/hyperledger-fabric/function/dovetail",
-  "functions": [
+  "functions": [{
+      "name": "cosmosdbAuthToken",
+      "description": "Returns authorization token for Azure Cosmos DB",
+      "example": "dovetail.cosmosdbAuthToken(\"get\",\"dbs/demodb/colls/democoll/docs\",\"Thu, 09 Jul 2020 16:54:37 GMT\",\"0ejqFuQrwF2xgUamnTYud3RFYIMXbq7kaTj0ysU0b9Z83X8IY710UInJIqxRbqJQlHBPbjaWTb3aBdrGDpya2w==\") => type%3Dmaster%26ver%3D1.0%26sig%3DJKjpNXODvUbkjnXsbyrJVekAcSX0jKnPXduEhDjG%2FDU%3D",
+      "args": [{
+          "name": "verb",
+          "type": "string"
+        },
+        {
+          "name": "requestURI",
+          "type": "string"
+        },
+        {
+          "name": "utc",
+          "type": "string"
+        },
+        {
+          "name": "masterKey",
+          "type": "string"
+        }
+      ],
+      "return": {
+        "type": "string"
+      }
+    },
     {
       "name": "sum",
       "description": "Returns sum of all numeric items of an array",
       "example": "dovetail.sum(json.path(\"$.[*].item\", $activity.array)) => 500",
-      "args": [
-        {
-          "name": "items",
-          "type": "array",
-          "valueType": "any"
-        }
-      ],
+      "args": [{
+        "name": "items",
+        "type": "array",
+        "valueType": "any"
+      }],
       "return": {
         "type": "float64"
       }
     },
     {
       "name": "parseDate",
-      "description": "Parse a date string and return array of year, month and date.",
+      "description": "Parse a date string and return array of year, month and date. Default format '2006-01-02'",
       "example": "dovetail.parseDate(\"2020-03-11\")) => [2020,3,11]",
-      "args": [
-        {
+      "args": [{
           "name": "date",
+          "type": "string"
+        },
+        {
+          "name": "format",
           "type": "string"
         }
       ],
@@ -40,8 +65,7 @@
       "name": "compareJSON",
       "description": "compare all fields of 2 JSON objects, return FullMatch, SupersetMatch, or NoMatch.",
       "example": "dovetail.compareJSON({\"foo\": 1, \"bar\": \"one\"}, {\"foo\": 1}) => SupersetMatch",
-      "args": [
-        {
+      "args": [{
           "name": "obj1",
           "type": "any"
         },
@@ -58,8 +82,7 @@
       "name": "notZeroValue",
       "description": "accepting 2 values, return the second value if it is not zero value, otherwise, return the first value",
       "example": "dovetail.notZeroValue(\"foo\", \"\") => \"foo\"",
-      "args": [
-        {
+      "args": [{
           "name": "v1",
           "type": "any"
         },
@@ -76,8 +99,7 @@
       "name": "conditionalChoice",
       "description": "if condition is false and the original is different from the value, return the optional object, otherwise, return the value object.",
       "example": "dovetail.conditionalChoice(false,\"foo\", \"bar\", \"opt\") => \"opt\"",
-      "args": [
-        {
+      "args": [{
           "name": "condition",
           "type": "boolean"
         },

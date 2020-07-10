@@ -2,10 +2,11 @@ package dovetail
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/project-flogo/core/data"
 	"github.com/project-flogo/core/data/expression/function"
 	"github.com/project-flogo/core/support/log"
-	"github.com/tkuchiki/parsetime"
 )
 
 // ParseDate dummy struct
@@ -36,8 +37,20 @@ func (s *ParseDate) Eval(params ...interface{}) (interface{}, error) {
 		return nil, fmt.Errorf("param %T is not a date string", params[0])
 	}
 
-	p, _ := parsetime.NewParseTime()
-	t, err := p.Parse(dateStr)
+	fmtStr := "2006-01-02"
+	if len(params) > 1 {
+		if layout, ok := params[1].(string); ok && layout != "" {
+			fmtStr = layout
+		}
+	}
+
+	if len(dateStr) > len(fmtStr) {
+		dateStr = dateStr[0:len(fmtStr)]
+	}
+	// use utility of github.com/tkuchiki/parsetime
+	// p, _ := parsetime.NewParseTime()
+	// t, err := p.Parse(dateStr)
+	t, err := time.Parse(fmtStr, dateStr)
 	if err != nil {
 		return nil, fmt.Errorf("invalid date string '%s': %v", dateStr, err)
 	}
