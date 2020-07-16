@@ -14,6 +14,7 @@ curr_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"; echo "$(pwd)")"
 source ${curr_dir}/${1:-"netop1"}.env
 
 # set defaults
+FAB_VERSION=${FAB_VERSION:-"1.4.4"}
 ORG=${FABRIC_ORG%%.*}
 ORG_MSP="${ORG}MSP"
 ORDERER_MSP=${ORDERER_MSP:-"${ORG}OrdererMSP"}

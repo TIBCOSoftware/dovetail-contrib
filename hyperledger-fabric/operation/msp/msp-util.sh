@@ -278,7 +278,7 @@ function printDockerYaml {
 services:
   tool:
     container_name: tool
-    image: hyperledger/fabric-tools
+    image: hyperledger/fabric-tools:${FAB_VERSION}
     tty: true
     stdin_open: true
     environment:

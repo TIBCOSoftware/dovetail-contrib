@@ -31,7 +31,7 @@ function printServerService {
 
   echo "
   ${CN_NAME}:
-    image: hyperledger/fabric-ca
+    image: hyperledger/fabric-ca:${FAB_VERSION}
     container_name: ${CN_NAME}
     ports:
     - ${PORT}:7054
@@ -55,7 +55,7 @@ function printClientService {
 
   echo "
   ${CLIENT_NAME}:
-    image: hyperledger/fabric-ca
+    image: hyperledger/fabric-ca:${FAB_VERSION}
     container_name: ${CLIENT_NAME}
     environment:
     - SVC_DOMAIN=${SVC_DOMAIN}
@@ -218,7 +218,7 @@ spec:
     spec:
       containers:
       - name: ca-client
-        image: hyperledger/fabric-ca
+        image: hyperledger/fabric-ca:${FAB_VERSION}
         resources:
           requests:
             memory: ${POD_MEM}
@@ -281,7 +281,7 @@ spec:
     spec:
       containers:
       - name: ${CA_NAME}-server
-        image: hyperledger/fabric-ca
+        image: hyperledger/fabric-ca:${FAB_VERSION}
         resources:
           requests:
             memory: ${POD_MEM}

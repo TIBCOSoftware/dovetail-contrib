@@ -61,7 +61,7 @@ function printOrdererService {
   echo "
   ${ord}.${FABRIC_ORG}:
     container_name: ${ord}.${FABRIC_ORG}
-    image: hyperledger/fabric-orderer
+    image: hyperledger/fabric-orderer:${FAB_VERSION}
     environment:
       - FABRIC_LOGGING_SPEC=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -107,7 +107,7 @@ function printPeerService {
   echo "
   ${p}.${FABRIC_ORG}:
     container_name: ${p}.${FABRIC_ORG}
-    image: hyperledger/fabric-peer
+    image: hyperledger/fabric-peer:${FAB_VERSION}
     environment:
       - CORE_PEER_ID=${p}.${FABRIC_ORG}
       - CORE_PEER_ADDRESS=${p}.${FABRIC_ORG}:7051
@@ -122,6 +122,7 @@ function printPeerService {
       # bridge network as the peers
       # https://docs.docker.com/compose/networking/
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=docker_${ORG}
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FAB_VERSION}
       - FABRIC_LOGGING_SPEC=INFO
       #- FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_TLS_ENABLED=true
@@ -193,7 +194,7 @@ function printCliService {
   echo "
   cli:
     container_name: cli
-    image: hyperledger/fabric-tools
+    image: hyperledger/fabric-tools:${FAB_VERSION}
     tty: true
     stdin_open: true
     environment:
@@ -487,7 +488,7 @@ spec:
       containers:
       - name: orderer
         imagePullPolicy: Always
-        image: hyperledger/fabric-orderer:1.4.3
+        image: hyperledger/fabric-orderer:${FAB_VERSION}
         resources:
           requests:
             memory: ${POD_MEM}
@@ -605,7 +606,7 @@ spec:
         ports:
          - containerPort: 5984
       - name: peer 
-        image: hyperledger/fabric-peer
+        image: hyperledger/fabric-peer:${FAB_VERSION}
         resources:
           requests:
             memory: ${POD_MEM}
@@ -631,6 +632,8 @@ spec:
           value: unix:///host/var/run/docker.sock
         - name: CORE_VM_DOCKER_HOSTCONFIG_DNS
           value: ${DNS_IP}
+        - name: CORE_CHAINCODE_BUILDER
+          value: hyperledger/fabric-ccenv:${FAB_VERSION}
         - name: FABRIC_LOGGING_SPEC
           value: INFO
         - name: CORE_PEER_TLS_ENABLED
@@ -718,7 +721,7 @@ metadata:
 spec:
   containers:
   - name: cli
-    image: hyperledger/fabric-tools
+    image: hyperledger/fabric-tools:${FAB_VERSION}
     imagePullPolicy: Always
     resources:
       requests:
