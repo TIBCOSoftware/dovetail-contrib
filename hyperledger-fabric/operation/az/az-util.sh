@@ -100,6 +100,12 @@ function cleanup {
   az storage account delete -n ${STORAGE_ACCT} -y
   echo "delete AKS cluster ${AKS_CLUSTER}"
   az aks delete -g ${RESOURCE_GROUP} -n ${AKS_CLUSTER} -y
+  adlist=$(az ad app list --display-name ${AKS_CLUSTER} --query '[].appId' -o tsv)
+  adids=($adlist)
+  for i in "${adids[@]}"; do
+    echo "delete ad entry of ${AKS_CLUSTER}: $i"
+    az ad app delete --id $i
+  done
   echo "delete resource group ${RESOURCE_GROUP}"
   az group delete -n ${RESOURCE_GROUP} -y
 
