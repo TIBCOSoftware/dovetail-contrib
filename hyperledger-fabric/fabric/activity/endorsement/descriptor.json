@@ -1,7 +1,6 @@
-
 {
     "name": "fabric-endorsement",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:activity",
     "title": "Endorsement Policy",
     "author": "TIBCO Software Inc.",
@@ -13,8 +12,7 @@
     },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/endorsement",
     "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/endorsement",
-    "inputs": [
-        {
+    "inputs": [{
             "name": "key",
             "type": "string",
             "required": true
@@ -75,28 +73,17 @@
             }
         },
         {
-            "name": "isPrivate",
-            "type": "boolean",
-            "required": true,
-            "display": {
-                "name": "Data is private",
-                "description": "Data is on private collection"
-            },
-            "value": false
-        },
-        {
             "name": "collection",
             "type": "string",
             "display": {
                 "name": "Private collection name",
                 "description": "Name of the private collection",
                 "appPropertySupport": true,
-                "visible": false
+                "visible": true
             }
         }
     ],
-    "outputs": [
-        {
+    "outputs": [{
             "name": "code",
             "type": "integer"
         },

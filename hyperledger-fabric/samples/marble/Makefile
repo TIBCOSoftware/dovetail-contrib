@@ -1,14 +1,14 @@
 MAKEFILE_THIS := $(lastword $(MAKEFILE_LIST))
 SRC_PATH      := $(patsubst %/,%,$(dir $(abspath $(MAKEFILE_THIS))))
-APP_FILE      := marble_app.json
+APP_FILE      := marble.json
 APP_NAME      := marble_cc
 WORK_PATH     ?= $(HOME)/work/dovetail
 TOOL_PATH     := $(SRC_PATH)/../../dovetail-tools
 FAB_PATH      ?= $(WORK_PATH)/fabric-samples
 CC_DEPLOY     := $(FAB_PATH)/chaincode
 
-CLIENT_FILE   := marble_client_app.json
-CLIENT_NAME   := marble
+CLIENT_FILE   := marble_client.json
+CLIENT_NAME   := marble_client
 CLIENT_OS     ?= darwin
 
 FE_CLIENT_FILE := marble_fe.json
@@ -19,16 +19,17 @@ all: build deploy
 .PHONY: clean
 clean:
 	rm -Rf $(TOOL_PATH)/work/$(APP_NAME)
-	rm -f $(TOOL_PATH)/work/$(APP_NAME)_1.0.cds
 
 .PHONY: build
 build: $(APP_FILE) clean
 	$(TOOL_PATH)/build.sh cds -f $(APP_FILE) -n $(APP_NAME)
 
 .PHONY: deploy
-deploy: $(TOOL_PATH)/work/$(APP_NAME)_1.0.cds
-	mkdir -p $(CC_DEPLOY)/$(APP_NAME)
-	cp $(TOOL_PATH)/work/$(APP_NAME)_1.0.cds $(CC_DEPLOY)/$(APP_NAME)
+deploy: $(TOOL_PATH)/work/$(APP_HAME)
+	-rm -rf $(CC_DEPLOY)/$(APP_NAME)
+	cp -Rf $(TOOL_PATH)/work/$(APP_NAME)/$(APP_NAME) $(CC_DEPLOY)
+	cp $(TOOL_PATH)/work/$(APP_NAME)/$(APP_NAME)_linux_amd64 $(CC_DEPLOY)/$(APP_NAME)
+	cp $(TOOL_PATH)/work/$(APP_NAME)/$(APP_NAME)_1.0.cds $(CC_DEPLOY)/$(APP_NAME)
 	cp fn-cli-init.sh $(FAB_PATH)/first-network/scripts/fn-init-marble.sh
 	cp fn-cli-test.sh $(FAB_PATH)/first-network/scripts/fn-test-marble.sh
 
@@ -47,7 +48,6 @@ metadata:
 .PHONY: clean-client
 clean-client:
 	rm -Rf $(TOOL_PATH)/work/$(CLIENT_NAME)
-	rm -f $(TOOL_PATH)/work/$(CLIENT_NAME)_$(CLIENT_OS)_amd64
 
 .PHONY: build-client
 build-client: $(CLIENT_FILE) clean-client
@@ -55,7 +55,7 @@ build-client: $(CLIENT_FILE) clean-client
 
 .PHONY: run
 run:
-	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(TOOL_PATH)/work/$(CLIENT_NAME)_$(CLIENT_OS)_amd64
+	FLOGO_APP_PROP_RESOLVERS=env FLOGO_APP_PROPS_ENV=auto PORT=8989 FLOGO_LOG_LEVEL=DEBUG FLOGO_SCHEMA_SUPPORT=true FLOGO_SCHEMA_VALIDATION=false CRYPTO_PATH=$(FAB_PATH)/first-network/crypto-config $(TOOL_PATH)/work/$(CLIENT_NAME)/$(CLIENT_NAME)_$(CLIENT_OS)_amd64
 
 .PHONY: build-fe-client
 build-fe-client: $(FE_CLIENT_FILE) clean-client
@@ -63,10 +63,10 @@ build-fe-client: $(FE_CLIENT_FILE) clean-client
 
 .PHONY: start
 start:
-	cd $(FAB_PATH)/first-network && ./byfn.sh up -a -n -s couchdb
+	cd $(FAB_PATH)/first-network && ./byfn.sh up -a -n -s couchdb -i 1.4.9
 
 .PHONY: shutdown
 shutdown:
 	cd $(FAB_PATH)/first-network && ./byfn.sh down
-	docker rm $(docker ps -a | grep dev-peer | awk '{print $1}')
-	docker rmi $(docker images | grep dev-peer | awk '{print $3}')
+	-docker rm $(docker ps -a | grep dev-peer | awk '{print $1}')
+	-docker rmi $(docker images | grep dev-peer | awk '{print $3}')

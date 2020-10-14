@@ -3,11 +3,11 @@
 # This file is subject to the license terms contained
 # in the license file that is distributed with this file.
 
-version: '2'
+version: "2"
 services:
   dovetail:
     container_name: dovetail-tools
-    image: yxuco/dovetail-tools:v1.0.0
+    image: yxuco/dovetail-tools:v1.1.0
     tty: true
     stdin_open: true
     environment:

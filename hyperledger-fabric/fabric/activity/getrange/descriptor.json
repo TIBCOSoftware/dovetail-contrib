@@ -1,7 +1,6 @@
-
 {
     "name": "fabric-getrange",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:activity",
     "title": "Get Range",
     "author": "TIBCO Software Inc.",
@@ -13,8 +12,7 @@
     },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getrange",
     "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getrange",
-    "inputs": [
-        {
+    "inputs": [{
             "name": "startKey",
             "type": "string",
             "required": true
@@ -43,36 +41,12 @@
             "type": "string"
         },
         {
-            "name": "commonData",
-            "type": "connection",
-            "display": {
-                "name": "Common data definition",
-                "description": "Select common data collection",
-                "type": "connection",
-                "visible": true
-            },
-            "allowed":[]
-        },
-        {
-            "name": "dataType",
-            "type": "string",
-            "display":{
-                "name": "Data object type",
-                "description": "Select output data schema",
-                "type": "dropdown",
-                "selection": "single",
-                "visible": false
-            },
-            "allowed": []
-        },
-        {
             "name": "privateCollection",
             "type": "string",
             "required": false
         }
     ],
-    "outputs": [
-        {
+    "outputs": [{
             "name": "code",
             "type": "integer"
         },
@@ -96,7 +70,9 @@
                 "description": "Schema definition of the resulting array of key and value, e.g.,\r\n[{\r\n  \"key\": \"string\",\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",
                 "type": "texteditor",
                 "syntax": "json",
-                "readonly": false
+                "readonly": false,
+                "mappable": true,
+                "visible": true
             }
         }
     ]

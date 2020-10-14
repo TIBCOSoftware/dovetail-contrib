@@ -15,7 +15,6 @@ type Input struct {
 	Role              string `md:"role,allowed(MEMBER,ADMIN,CLIENT,PEER)"`
 	Organizations     string `md:"organizations"`
 	Policy            string `md:"policy"`
-	IsPrivate         bool   `md:"isPrivate,required"`
 	PrivateCollection string `md:"collection"`
 }
 
@@ -35,7 +34,6 @@ func (i *Input) ToMap() map[string]interface{} {
 		"role":          i.Role,
 		"organizations": i.Organizations,
 		"policy":        i.Policy,
-		"isPrivate":     i.IsPrivate,
 		"collection":    i.PrivateCollection,
 	}
 }
@@ -57,9 +55,6 @@ func (i *Input) FromMap(values map[string]interface{}) error {
 		return err
 	}
 	if i.Policy, err = coerce.ToString(values["policy"]); err != nil {
-		return err
-	}
-	if i.IsPrivate, err = coerce.ToBool(values["isPrivate"]); err != nil {
 		return err
 	}
 	if i.PrivateCollection, err = coerce.ToString(values["collection"]); err != nil {
@@ -87,7 +82,7 @@ func (o *Output) FromMap(values map[string]interface{}) error {
 		return err
 	}
 	if o.Message, err = coerce.ToString(values["message"]); err != nil {
-		return err
+		o.Message = ""
 	}
 	if o.StateKey, err = coerce.ToString(values["key"]); err != nil {
 		return err

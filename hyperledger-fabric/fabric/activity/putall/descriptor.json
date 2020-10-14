@@ -1,7 +1,7 @@
 
 {
     "name": "fabric-putall",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:activity",
     "title": "Put All",
     "author": "TIBCO Software Inc.",
@@ -15,29 +15,6 @@
     "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
     "inputs": [
         {
-            "name": "commonData",
-            "type": "connection",
-            "display": {
-                "name": "Common data definition",
-                "description": "Select common data collection",
-                "type": "connection",
-                "visible": true
-            },
-            "allowed":[]
-        },
-        {
-            "name": "dataType",
-            "type": "string",
-            "display":{
-                "name": "Data object type",
-                "description": "Select input data schema",
-                "type": "dropdown",
-                "selection": "single",
-                "visible": false
-            },
-            "allowed": []
-        },
-        {
             "name": "data",
             "type": "object",
             "display": {
@@ -45,7 +22,8 @@
                 "description": "Schema definition of array of key-value pairs, e.g.,\r\n[{\r\n  \"key\": \"string\",\r\n  \"value\": {\"field1\": \"\", \"field2\": 0}\r\n}]",
                 "type": "texteditor",
                 "syntax": "json",
-                "mappable": true
+                "mappable": true,
+                "visible": true
             }
         },
         {
@@ -54,26 +32,12 @@
             "required": false
         },
         {
-            "name": "keyType",
-            "type": "string",
-            "display":{
-                "name": "Composite key type",
-                "description": "Select composite key definition",
-                "type": "dropdown",
-                "selection": "single",
-                "visible": false
-            },
-            "allowed": []
-        },
-        {
             "name": "compositeKeys",
             "type": "string",
             "display": {
                 "name": "Composite keys",
-                "description": "Define composite key name and attributes (Note: the state key will be appended if it is not included here), e.g. {\r\n    \"color~name\": [\"color\", \"name\"],\r\n    \"owner~name\": [\"owner\", \"name\"]\r\n}",
-                "type": "texteditor",
-                "syntax": "json",
-                "readonly": false
+                "description": "Define name of composite key and attributes using format index1=attr1,attr2;index2=attr1,attr2 (Note: if state key does not match the value of the last attribute of an index, the state-key will be appended to the end of the index), e.g. \"index-color=color,name;index-owner=owner,name\"",
+                "appPropertySupport": true
             }
         }
     ],

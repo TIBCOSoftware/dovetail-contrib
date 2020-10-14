@@ -195,7 +195,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n    transfer(bank: \"USDBank\", owner: \"David\", newOwner: \"Carol\", id: \"e189cde6ac166286b5fb00585bf0d007f8726f604f84caf3038125fa702c5e9a\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"query": "mutation {\n    transfer(owner: \"David\", newOwner: \"Carol\", id: \"a82e0d8ca30fb4453453344fc344039ffe907ca834846fb74ecc22ae5d7deba7\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
 						"variables": ""
 					}
 				},
@@ -221,7 +221,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query {\n    getIOUHistory(id: \"e189cde6ac166286b5fb00585bf0d007f8726f604f84caf3038125fa702c5e9a\") {\n        txID\n        txTime\n        isDeleted\n        value {\n            id\n            issuer\n            issueDate\n            owner\n            amount\n            currency\n        }\n    }\n}",
+						"query": "query {\n    getIOUHistory(id: \"a82e0d8ca30fb4453453344fc344039ffe907ca834846fb74ecc22ae5d7deba7\") {\n        txID\n        txTime\n        isDeleted\n        value {\n            id\n            issuer\n            issueDate\n            owner\n            amount\n            currency\n        }\n    }\n}",
 						"variables": ""
 					}
 				},
@@ -247,7 +247,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n    redeem(owner: \"Carol\", bank: \"USDBank\", id: \"35a8180ce95729cdeec4c1f9df09435ed1918a39a084b0a710e7ef96a75d6037\") {\n        name\n        bank\n        balance\n        currency\n    }\n}",
+						"query": "mutation {\n    redeem(owner: \"Carol\", bank: \"USDBank\", id: \"a82e0d8ca30fb4453453344fc344039ffe907ca834846fb74ecc22ae5d7deba7\") {\n        name\n        bank\n        balance\n        currency\n    }\n}",
 						"variables": ""
 					}
 				},
@@ -292,6 +292,32 @@
 			"response": []
 		},
 		{
+			"name": "transfer - Alice to Carol",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n    transfer(owner: \"Alice\", newOwner: \"Carol\", id: \"259340bcfebf55919df42d25f8b8ce1d57b66a42178928bec9669fab5a6e1193\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8989/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8989",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "exchange - Carol - 100 EUR",
 			"request": {
 				"method": "POST",
@@ -299,7 +325,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n    exchange(bank: \"USDBank\", owner: \"Carol\", id: \"55193d554c9460394b7fa758ca32e97c90f50ca5ba8b3bf45ea28cba3b22c53e\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"query": "mutation {\n    exchange(bank: \"USDBank\", owner: \"Carol\", id: \"259340bcfebf55919df42d25f8b8ce1d57b66a42178928bec9669fab5a6e1193\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
 						"variables": ""
 					}
 				},
@@ -344,14 +370,14 @@
 			"response": []
 		},
 		{
-			"name": "send - David to Bob",
+			"name": "buy - David",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n    send(senderBank: \"USDBank\", sender: \"David\", receiverBank: \"EURBank\", receiver: \"Bob\", amount: 100) {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"query": "mutation {\n    buy(bank: \"USDBank\", owner: \"David\", iou: \"259340bcfebf55919df42d25f8b8ce1d57b66a42178928bec9669fab5a6e1193\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
 						"variables": ""
 					}
 				},
@@ -370,14 +396,14 @@
 			"response": []
 		},
 		{
-			"name": "buy - David",
+			"name": "send - David to Bob",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n    buy(bank: \"USDBank\", owner: \"David\", iou: \"55193d554c9460394b7fa758ca32e97c90f50ca5ba8b3bf45ea28cba3b22c53e\") {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
+						"query": "mutation {\n    send(senderBank: \"USDBank\", sender: \"David\", receiverBank: \"EURBank\", receiver: \"Bob\", amount: 100) {\n        id\n        issuer\n        issueDate\n        owner\n        amount\n        currency\n    }\n}",
 						"variables": ""
 					}
 				},
@@ -447,5 +473,6 @@
 			},
 			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/project-flogo/core/data/metadata"
+	"github.com/project-flogo/core/data/schema"
 	"github.com/project-flogo/core/trigger"
 
 	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/common"
@@ -76,10 +77,11 @@ func (t *Factory) New(config *trigger.Config) (trigger.Trigger, error) {
 			trig.transientMap[name] = true
 		}
 
-		if schema, ok := hc.Schemas.Output[oParameters].(map[string]interface{}); ok {
-			log.Infof("schema config: %+v\n", schema)
-			log.Infof("schema value: %T: %+v\n", schema["value"], schema["value"])
-			if index, err := common.OrderedParameters([]byte(schema["value"].(string))); err == nil {
+		if s, err := schema.FindOrCreate(hc.Schemas.Output[oParameters]); err == nil {
+			log.Infof("schema config: %+v\n", s)
+			if s == nil {
+				log.Debugf("no parameters for handler %s\n", name)
+			} else if index, err := common.OrderedParameters([]byte(s.Value())); err == nil {
 				if index != nil {
 					log.Debugf("cache parameters for handler %s: %+v\n", name, index)
 					trig.parameters[name] = index
@@ -212,9 +214,8 @@ func (t *Trigger) Invoke(stub shim.ChaincodeStubInterface, fn string, args []str
 		log.Info("flogo flow did not return any data")
 		if reply.Message != "" {
 			return 300, reply.Message, nil
-		} else {
-			return 300, "No data returned", nil
 		}
+		return 300, "No data returned", nil
 	}
 
 	replyData, err := json.Marshal(reply.Returns)

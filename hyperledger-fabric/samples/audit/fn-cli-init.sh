@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# install and instantiate marble_cc in the Fabric sample first-network
+# install and instantiate audit_cc in the Fabric sample first-network
 # execute this script from the scripts folder of the cli docker container
 
 . ./utils.sh

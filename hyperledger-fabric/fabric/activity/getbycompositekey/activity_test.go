@@ -42,9 +42,16 @@ func TestEval(t *testing.T) {
 	assert.Nil(t, err)
 
 	tc := test.NewActivityContext(act.Metadata())
-	tc.SetInputObject(&Input{KeyName: "testKey"})
+	tc.SetInputObject(&Input{KeyName: "testKey=attr1,attr2", Attributes: map[string]interface{}{"attr1": "value1", "attr2": "value2"}})
 
-	act.Eval(tc)
+	input := &Input{}
+	err = tc.GetInputObject(input)
+	assert.NoError(t, err, "GetInputObject should not return error")
 
-	//check result attr
+	keyName, keyValues, err := extractCompositeKeyValues(input.KeyName, input.Attributes)
+	assert.NoError(t, err, "extractCompositeKeyValues should not return error")
+
+	assert.Equal(t, "testKey", keyName, "extracted composite key %s should be 'tetKey'", keyName)
+	assert.Equal(t, 2, len(keyValues), "extracted composite key length %d should be 2", len(keyValues))
+	assert.Equal(t, "value2", keyValues[1], "second attribute of composite key %s is not 'value2'", keyValues[1])
 }

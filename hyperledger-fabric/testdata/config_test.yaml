@@ -9,7 +9,6 @@
 # knowledge that must be acquired from out-of-band sources. This file provides such a source.
 #
 
-
 #
 # Schema version of the content. Used by the SDK to apply the corresponding parsing rules.
 #
@@ -19,7 +18,6 @@ version: 1.0.0
 # The client section used by GO SDK.
 #
 client:
-
   # Which organization does this application instance belong to? The value must be the name of an org
   # defined under "organizations"
   organization: org1
@@ -29,44 +27,44 @@ client:
 
   # Global configuration for peer, event service and orderer timeouts
   # if this this section is omitted, then default values will be used (same values as below)
-#  peer:
-#    timeout:
-#      connection: 10s
-#      response: 180s
-#      discovery:
-#        # Expiry period for discovery service greylist filter
-#        # The channel client will greylist peers that are found to be offline
-#        # to prevent re-selecting them in subsequent retries.
-#        # This interval will define how long a peer is greylisted
-#        greylistExpiry: 10s
+  #  peer:
+  #    timeout:
+  #      connection: 10s
+  #      response: 180s
+  #      discovery:
+  #        # Expiry period for discovery service greylist filter
+  #        # The channel client will greylist peers that are found to be offline
+  #        # to prevent re-selecting them in subsequent retries.
+  #        # This interval will define how long a peer is greylisted
+  #        greylistExpiry: 10s
 
-    # the below timeouts are commented out to use the default values that are found in
-    # "pkg/fab/endpointconfig.go"
-    # the client is free to override the default values by uncommenting and resetting
-    # the values as they see fit in their config file
-#    timeout:
-#      connection: 15s
-#      registrationResponse: 15s
-#  orderer:
-#    timeout:
-#      connection: 15s
-#      response: 15s
-#  global:
-#    timeout:
-#      query: 180s
-#      execute: 180s
-#      resmgmt: 180s
-#    cache:
-#      connectionIdle: 30s
-#      eventServiceIdle: 2m
-#      channelConfig: 30m
-#      channelMembership: 30s
-#      discovery: 10s
-#      selection: 10m
+  # the below timeouts are commented out to use the default values that are found in
+  # "pkg/fab/endpointconfig.go"
+  # the client is free to override the default values by uncommenting and resetting
+  # the values as they see fit in their config file
+  #    timeout:
+  #      connection: 15s
+  #      registrationResponse: 15s
+  #  orderer:
+  #    timeout:
+  #      connection: 15s
+  #      response: 15s
+  #  global:
+  #    timeout:
+  #      query: 180s
+  #      execute: 180s
+  #      resmgmt: 180s
+  #    cache:
+  #      connectionIdle: 30s
+  #      eventServiceIdle: 2m
+  #      channelConfig: 30m
+  #      channelMembership: 30s
+  #      discovery: 10s
+  #      selection: 10m
 
   # Root of the MSP directories with keys and certs.
   cryptoconfig:
-    path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config
+    path: ${FAB_PATH}/first-network/crypto-config
 
   # Some SDKs support pluggable KV stores, the properties under "credentialStore"
   # are implementation specific
@@ -84,12 +82,12 @@ client:
   # [Optional] BCCSP config for the client. Used by GO SDK.
   BCCSP:
     security:
-     enabled: true
-     default:
-      provider: "SW"
-     hashAlgorithm: "SHA2"
-     softVerify: true
-     level: 256
+      enabled: true
+      default:
+        provider: "SW"
+      hashAlgorithm: "SHA2"
+      softVerify: true
+      level: 256
 
   tlsCerts:
     # [Optional]. Use system certificate pool when connecting to peers, orderers (for negotiating TLS) Default: false
@@ -98,9 +96,9 @@ client:
     # [Optional]. Client key and cert for TLS handshake with peers and orderers
     client:
       key:
-        path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key
+        path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key
       cert:
-        path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt
+        path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt
 
 #
 # [Optional]. But most apps would have this section so that channel objects can be constructed
@@ -108,14 +106,12 @@ client:
 # section.
 #
 channels:
-
   # Default channel is used if channel configuration is missing or if defined channel configuration is missing info
   # If channel doesn't define peers then peers from default channel will be used
   # If channel doesn't define orderes then orderes from default channel will be used
   # If channel doesn't define policies then policies from default channel will be used.
   # Also, if channel defines policies and some policy info is missing than that missing info will be filled from default channel.
   _default:
-
     # [Optional]. list of peers from participating orgs
     peers:
       peer0.org1.example.com:
@@ -235,8 +231,8 @@ channels:
           attempts: 4
           initialBackoff: 1s
 
-#    orderers:
-#      - orderer.example.com
+    #    orderers:
+    #      - orderer.example.com
 
     peers:
       peer0.org1.example.com:
@@ -245,11 +241,12 @@ channels:
         ledgerQuery: true
         eventSource: true
 
-      peer1.org1.example.com:
-        endorsingPeer: true
-        chaincodeQuery: true
-        ledgerQuery: true
-        eventSource: true
+      # comment out this peer because default byfn.sh does not install mycc on this peer
+      #peer1.org1.example.com:
+      #  endorsingPeer: true
+      #  chaincodeQuery: true
+      #  ledgerQuery: true
+      #  eventSource: true
 
       peer0.org2.example.com:
         endorsingPeer: true
@@ -271,7 +268,7 @@ organizations:
     mspid: Org1MSP
 
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
-    cryptoPath:  peerOrganizations/org1.example.com/users/{username}@org1.example.com/msp
+    cryptoPath: peerOrganizations/org1.example.com/users/{username}@org1.example.com/msp
 
     peers:
       - peer0.org1.example.com
@@ -294,7 +291,7 @@ organizations:
     mspid: Org2MSP
 
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
-    cryptoPath:  peerOrganizations/org2.example.com/users/{username}@org2.example.com/msp
+    cryptoPath: peerOrganizations/org2.example.com/users/{username}@org2.example.com/msp
 
     peers:
       - peer0.org2.example.com
@@ -305,12 +302,11 @@ organizations:
 
   # Orderer Org name
   ordererorg:
-      # Membership Service Provider ID for this organization
-      mspID: OrdererMSP
+    # Membership Service Provider ID for this organization
+    mspID: OrdererMSP
 
-      # Needed to load users crypto keys and certs for this org (absolute path or relative to global crypto path, DEV mode)
-      cryptoPath: ordererOrganizations/example.com/users/{username}@example.com/msp
-
+    # Needed to load users crypto keys and certs for this org (absolute path or relative to global crypto path, DEV mode)
+    cryptoPath: ordererOrganizations/example.com/users/{username}@example.com/msp
 
 #
 # List of orderers to send transaction and channel create/update requests to. For the time
@@ -353,7 +349,7 @@ orderers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+      path: ${FAB_PATH}/first-network/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
 
 #
 # List of peers to send various requests to, including endorsement, query
@@ -383,7 +379,7 @@ peers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
   peer1.org1.example.com:
     # this URL is used to send endorsement and query requests
@@ -394,7 +390,7 @@ peers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
   peer0.org2.example.com:
     url: peer0.org2.example.com:8051
@@ -402,7 +398,7 @@ peers:
     #  ssl-target-name-override: peer0.org2.example.com
 
     tlsCACerts:
-      path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+      path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
 
   peer1.org2.example.com:
     url: peer1.org2.example.com:9051
@@ -410,7 +406,7 @@ peers:
     #  ssl-target-name-override: peer1.org2.example.com
 
     tlsCACerts:
-      path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+      path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
 
 #
 # Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows
@@ -426,13 +422,13 @@ certificateAuthorities:
     #  ssl-target-name-override: ca.org1.example.com
     tlsCACerts:
       # Comma-Separated list of paths
-      path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
       # Client key and cert for SSL handshake with Fabric CA
       client:
         key:
-          path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key
+          path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key
         cert:
-          path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt
+          path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt
 
     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
     # needed to enroll and invoke new users.
@@ -448,16 +444,16 @@ certificateAuthorities:
     #  ssl-target-name-override: ca.org2.example.com
     tlsCACerts:
       # Comma-Separated list of paths
-      path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+      path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
       # Client key and cert for SSL handshake with Fabric CA
       client:
         key:
-          path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/tls/client.key
+          path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/tls/client.key
         cert:
-          path: ${GOPATH}/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/tls/client.crt
+          path: ${FAB_PATH}/first-network/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/tls/client.crt
 
-     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
-     # needed to enroll and invoke new users.
+      # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
+      # needed to enroll and invoke new users.
     registrar:
       enrollId: admin
       enrollSecret: adminpw
@@ -465,13 +461,13 @@ certificateAuthorities:
     caName: ca.org2.example.com
 
 # EntityMatchers enable substitution of network hostnames with static configurations
- # so that properties can be mapped. Regex can be used for this purpose
+# so that properties can be mapped. Regex can be used for this purpose
 # UrlSubstitutionExp can be empty which means the same network hostname will be used
 # UrlSubstitutionExp can be given same as mapped peer url, so that mapped peer url can be used
 # UrlSubstitutionExp can have golang regex matchers like ${1}.local.example.${2}:${3} for pattern
- # like peer0.org1.example.com:1234 which converts peer0.org1.example.com to peer0.org1.local.example.com:1234
+# like peer0.org1.example.com:1234 which converts peer0.org1.example.com to peer0.org1.local.example.com:1234
 # sslTargetOverrideUrlSubstitutionExp follow in the same lines as
- # SubstitutionExp for the fields gprcOptions.ssl-target-name-override respectively
+# SubstitutionExp for the fields gprcOptions.ssl-target-name-override respectively
 # In any case mappedHost's config will be used, so mapped host cannot be empty, if entityMatchers are used
 #entityMatchers:
 #entityMatchers:

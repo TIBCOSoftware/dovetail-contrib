@@ -13,10 +13,10 @@
     ],
     "name": "iou_client",
     "description": " ",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:app",
     "appModel": "1.1.1",
-    "feVersion": "2.8.0",
+    "feVersion": "2.10.0",
     "triggers": [
         {
             "ref": "#graphql",
@@ -66,7 +66,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"bank\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getBankAccounts"
                 },
                 {
                     "description": "",
@@ -101,7 +102,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getIOUHistory"
                 },
                 {
                     "description": "",
@@ -136,7 +138,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getAccountTransactions"
                 },
                 {
                     "description": "",
@@ -171,7 +174,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_queryIOUByAmount"
                 },
                 {
                     "description": "",
@@ -206,7 +210,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_transfer"
                 },
                 {
                     "description": "",
@@ -241,7 +246,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"bank\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"iou\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_buy"
                 },
                 {
                     "description": "",
@@ -276,7 +282,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"},\"balance\":{\"type\":\"number\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_createAccount"
                 },
                 {
                     "description": "",
@@ -311,7 +318,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"bank\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_issue"
                 },
                 {
                     "description": "",
@@ -346,7 +354,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_redeem"
                 },
                 {
                     "description": "send amount of receiver's currency",
@@ -381,7 +390,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"senderBank\":{\"type\":\"string\"},\"sender\":{\"type\":\"string\"},\"receiverBank\":{\"type\":\"string\"},\"receiver\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_send"
                 },
                 {
                     "description": "",
@@ -416,7 +426,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"bank\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_exchange"
                 },
                 {
                     "description": "",
@@ -451,7 +462,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getIOUByIssuer"
                 },
                 {
                     "description": "",
@@ -486,7 +498,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getIOUByOwner"
                 }
             ]
         }
@@ -513,12 +526,12 @@
                     {
                         "id": 3,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogAccounts",
                         "type": "default"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogAccounts",
                         "to": "Return",
                         "type": "default"
                     }
@@ -532,7 +545,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getBankAccounts] \", $flow.arguments.bank)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -560,7 +574,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -574,7 +588,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -597,7 +611,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -717,15 +731,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "getBankAccounts",
                                 "requestType": "query",
@@ -749,24 +762,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"bank\": {\n            \"type\": \"string\"\n          },\n          \"balance\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"bank\": {\n            \"type\": \"string\"\n          },\n          \"balance\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://AccountKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogAccounts",
+                        "name": "LogAccounts",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -836,12 +846,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogIOUHist",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogIOUHist",
                         "to": "Return",
                         "type": "default"
                     }
@@ -855,7 +865,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getIOUHistory] \", $flow.arguments.id)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -867,7 +878,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -890,7 +901,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -1010,15 +1021,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "getIOUHistory",
                                 "requestType": "query",
@@ -1042,24 +1052,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"txID\": {\n        \"type\": \"string\"\n      },\n      \"txTime\": {\n        \"type\": \"string\"\n      },\n      \"isDeleted\": {\n        \"type\": \"boolean\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"issueDate\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"txID\": {\n        \"type\": \"string\"\n      },\n      \"txTime\": {\n        \"type\": \"string\"\n      },\n      \"isDeleted\": {\n        \"type\": \"boolean\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"issueDate\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOUHistory"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogIOUHist",
+                        "name": "LogIOUHist",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1139,12 +1146,12 @@
                     {
                         "id": 3,
                         "from": "BankRequest",
-                        "to": "Log1",
+                        "to": "LogBankTxs",
                         "type": "default"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogBankTxs",
                         "to": "Return",
                         "type": "default"
                     },
@@ -1158,12 +1165,12 @@
                     {
                         "id": 6,
                         "from": "AcctRequest",
-                        "to": "Log2",
+                        "to": "LogAcctTxs",
                         "type": "default"
                     },
                     {
                         "id": 7,
-                        "from": "Log2",
+                        "from": "LogAcctTxs",
                         "to": "Return1",
                         "type": "default"
                     }
@@ -1177,7 +1184,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"getAccountTransactions] \", $flow.arguments.name, \" at bank \", $flow.arguments.bank)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1205,7 +1213,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -1214,12 +1222,12 @@
                     {
                         "id": "BankRequest",
                         "name": "BankRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1242,7 +1250,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -1362,15 +1370,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "getAccountTransactions",
                                 "requestType": "query",
@@ -1390,24 +1397,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"account\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"iouRef\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"account\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"iouRef\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://TransactionKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogBankTxs",
+                        "name": "LogBankTxs",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[BankRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1436,12 +1440,12 @@
                     {
                         "id": "AcctRequest",
                         "name": "AcctRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1464,7 +1468,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -1584,15 +1588,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "getAccountTransactions",
                                 "requestType": "query",
@@ -1612,24 +1615,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"account\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"iouRef\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"account\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"iouRef\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://TransactionKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log2",
-                        "name": "Log2",
+                        "id": "LogAcctTxs",
+                        "name": "LogAcctTxs",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[AcctRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1699,12 +1699,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogIOUs",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogIOUs",
                         "to": "Return",
                         "type": "default"
                     }
@@ -1718,19 +1718,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[queryIOUByAmount] issuer \", $flow.arguments.issuer, \" owner \", $flow.arguments.owner, \" amount \", coerce.toString($flow.arguments.amount))",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1753,7 +1754,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -1873,15 +1874,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "queryIOUByAmount",
                                 "requestType": "query",
@@ -1901,24 +1901,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"IOUList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"issueDate\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"IOUList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"issueDate\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOUKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogIOUs",
+                        "name": "LogIOUs",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1994,12 +1991,12 @@
                     {
                         "id": 3,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogIOU",
                         "type": "default"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogIOU",
                         "to": "Return",
                         "type": "default"
                     }
@@ -2013,7 +2010,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[transfer] \", $flow.arguments.id, \" from \", $flow.arguments.owner, \" to \", $flow.arguments.newOwner)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2041,7 +2039,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -2050,12 +2048,12 @@
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2078,7 +2076,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -2198,15 +2196,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "transfer",
                                 "requestType": "invoke",
@@ -2231,24 +2228,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogIOU",
+                        "name": "LogIOU",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2319,12 +2313,12 @@
                     {
                         "id": 3,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogIOU",
                         "type": "default"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogIOU",
                         "to": "Return",
                         "type": "default"
                     }
@@ -2338,7 +2332,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[buy] \", $flow.arguments.iou, \" by owner \", $flow.arguments.owner, \" at bank \", $flow.arguments.bank)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2366,7 +2361,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -2375,12 +2370,12 @@
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2403,7 +2398,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -2523,15 +2518,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "buy",
                                 "requestType": "invoke",
@@ -2551,24 +2545,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogIOU",
+                        "name": "LogIOU",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2639,12 +2630,12 @@
                     {
                         "id": 3,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogAcct",
                         "type": "default"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogAcct",
                         "to": "Return",
                         "type": "default"
                     }
@@ -2658,7 +2649,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[createAccount] \", $flow.arguments.name, \" at bank \", $flow.arguments.bank)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2686,7 +2678,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -2695,12 +2687,12 @@
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2723,7 +2715,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -2843,15 +2835,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "createAccount",
                                 "requestType": "invoke",
@@ -2871,24 +2862,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"Account\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"Account\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://Account"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogAcct",
+                        "name": "LogAcct",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2959,12 +2947,12 @@
                     {
                         "id": 3,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogIOU",
                         "type": "default"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogIOU",
                         "to": "Return",
                         "type": "default"
                     }
@@ -2978,7 +2966,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[issue] amount \", coerce.toString($flow.arguments.amount), \" to \", $flow.arguments.owner, \" at bank \", $flow.arguments.bank)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -3006,7 +2995,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -3015,12 +3004,12 @@
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -3043,7 +3032,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -3163,15 +3152,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "issue",
                                 "requestType": "invoke",
@@ -3191,24 +3179,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogIOU",
+                        "name": "LogIOU",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -3279,12 +3264,12 @@
                     {
                         "id": 3,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogAcct",
                         "type": "default"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogAcct",
                         "to": "Return",
                         "type": "default"
                     }
@@ -3298,7 +3283,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[redeem] \", $flow.arguments.id, \" by owner \", $flow.arguments.owner)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -3326,7 +3312,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -3335,12 +3321,12 @@
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -3363,7 +3349,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -3483,15 +3469,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "redeem",
                                 "requestType": "invoke",
@@ -3516,24 +3501,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"Account\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"Account\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://Account"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogAcct",
+                        "name": "LogAcct",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -3604,24 +3586,24 @@
                     {
                         "id": 3,
                         "from": "SendRequest",
-                        "to": "Log1",
+                        "to": "LogSenderIOU",
                         "type": "default"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogSenderIOU",
                         "to": "TransferRequest",
                         "type": "default"
                     },
                     {
                         "id": 5,
                         "from": "TransferRequest",
-                        "to": "Log5",
+                        "to": "LogRecvIOU",
                         "type": "default"
                     },
                     {
                         "id": 6,
-                        "from": "Log5",
+                        "from": "LogRecvIOU",
                         "to": "ReceiverBankConfig",
                         "type": "default"
                     },
@@ -3636,24 +3618,24 @@
                     {
                         "id": 8,
                         "from": "ExchangeRequest",
-                        "to": "Log2",
+                        "to": "LogExchIOU",
                         "type": "default"
                     },
                     {
                         "id": 9,
-                        "from": "Log2",
+                        "from": "LogExchIOU",
                         "to": "ReddeemExRequest",
                         "type": "default"
                     },
                     {
                         "id": 10,
                         "from": "ReddeemExRequest",
-                        "to": "Log3",
+                        "to": "LogAcct",
                         "type": "default"
                     },
                     {
                         "id": 11,
-                        "from": "Log3",
+                        "from": "LogAcct",
                         "to": "Return",
                         "type": "default"
                     },
@@ -3668,12 +3650,12 @@
                     {
                         "id": 13,
                         "from": "RedeemRequest",
-                        "to": "Log4",
+                        "to": "LogRedeem",
                         "type": "default"
                     },
                     {
                         "id": 14,
-                        "from": "Log4",
+                        "from": "LogRedeem",
                         "to": "Return1",
                         "type": "default"
                     }
@@ -3687,7 +3669,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[send] amount \", coerce.toString($flow.arguments.amount), \" from \", $flow.arguments.sender, \" to \", $flow.arguments.receiver)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -3715,7 +3698,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -3724,12 +3707,12 @@
                     {
                         "id": "SendRequest",
                         "name": "SendRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -3752,7 +3735,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -3872,15 +3855,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "send",
                                 "requestType": "invoke",
@@ -3907,36 +3889,33 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogSenderIOU",
+                        "name": "LogSenderIOU",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Send response: \", $activity[SendRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "TransferRequest",
                         "name": "TransferRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -3959,7 +3938,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -4079,15 +4058,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "transfer",
                                 "requestType": "invoke",
@@ -4112,24 +4090,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log5",
-                        "name": "Log5",
+                        "id": "LogRecvIOU",
+                        "name": "LogRecvIOU",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Transfer response: \", $activity[TransferRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -4157,7 +4132,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -4166,12 +4141,12 @@
                     {
                         "id": "ExchangeRequest",
                         "name": "ExchangeRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -4194,7 +4169,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -4314,15 +4289,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "exchange",
                                 "requestType": "invoke",
@@ -4347,36 +4321,33 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log2",
-                        "name": "Log2",
+                        "id": "LogExchIOU",
+                        "name": "LogExchIOU",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Exchange response: \", $activity[ExchangeRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "ReddeemExRequest",
                         "name": "ReddeemExRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -4399,7 +4370,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -4519,15 +4490,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "redeem",
                                 "requestType": "invoke",
@@ -4552,24 +4522,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"Account\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"Account\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://Account"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log3",
-                        "name": "Log3",
+                        "id": "LogAcct",
+                        "name": "LogAcct",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Redeem reponse: \", $activity[ReddeemExRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -4593,12 +4560,12 @@
                     {
                         "id": "RedeemRequest",
                         "name": "RedeemRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -4621,7 +4588,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -4741,15 +4708,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "redeem",
                                 "requestType": "invoke",
@@ -4774,24 +4740,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"Account\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"Account\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://Account"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log4",
-                        "name": "Log4",
+                        "id": "LogRedeem",
+                        "name": "LogRedeem",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Redeem response: \", $activity[RedeemRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -4868,12 +4831,12 @@
                     {
                         "id": 4,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogIOU",
                         "type": "default"
                     },
                     {
                         "id": 5,
-                        "from": "Log1",
+                        "from": "LogIOU",
                         "to": "Return",
                         "type": "default"
                     }
@@ -4887,7 +4850,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[exchange] \", $flow.arguments.id, \" by owner \", $flow.arguments.owner)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -4915,7 +4879,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -4945,7 +4909,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"orgName\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"orgName\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"orgName\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -4954,12 +4918,12 @@
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -4982,7 +4946,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -5102,15 +5066,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "exchange",
                                 "requestType": "invoke",
@@ -5135,24 +5098,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"IOU\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogIOU",
+                        "name": "LogIOU",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -5234,7 +5194,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[bankConfig] \", $flow.bank)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -5292,7 +5253,7 @@
                     ],
                     "fe_metadata": {
                         "input": "{\n    \"bank\": \"\"\n}",
-                        "output": "{\n    \"endpoints\": \"\",\n    \"admin\": \"\",\n    \"orgName\": \"\"\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"endpoints\":{\"type\":\"string\"},\"admin\":{\"type\":\"string\"},\"orgName\":{\"type\":\"string\"}}}"
                     }
                 }
             }
@@ -5329,7 +5290,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[userConfig] \", $flow.user)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -5375,7 +5337,7 @@
                     ],
                     "fe_metadata": {
                         "input": "{\n    \"user\": \"\"\n}",
-                        "output": "{\n    \"orgName\": \"\"\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"orgName\":{\"type\":\"string\"}}}"
                     }
                 }
             }
@@ -5423,7 +5385,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getIOUByIssuer] \", $flow.arguments.issuer)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -5435,7 +5398,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -5458,7 +5421,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -5578,15 +5541,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "getIOUByIssuer",
                                 "requestType": "query",
@@ -5627,7 +5589,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response - status: \", coerce.toString($activity[FabricRequest].code), \" message: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -5736,7 +5699,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getByOwner] \", $flow.arguments.owner)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -5748,7 +5712,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "32d703f0-3743-11ea-8b4c-a56bccb1268c",
+                                    "id": "ed86b1e0-1349-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -5771,7 +5735,7 @@
                                                 "readonly": false,
                                                 "valid": true
                                             },
-                                            "value": "iou_client_1"
+                                            "value": "iou_client"
                                         },
                                         {
                                             "name": "description",
@@ -5891,15 +5855,14 @@
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579057234351,
+                                    "lastUpdatedTime": 1603249517481,
                                     "user": "flogo",
-                                    "connectorName": "iou_client_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579057234351,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorName": "iou_client",
+                                    "connectorDescription": " "
                                 },
                                 "transactionName": "getIOUByOwner",
                                 "requestType": "query",
@@ -5940,7 +5903,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -6024,7 +5988,39 @@
             "value": "iou_cc"
         }
     ],
+    "schemas": {
+        "AccountKV": {
+            "type": "json",
+            "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"bank\": {\n            \"type\": \"string\"\n          },\n          \"balance\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"bank\": {\n            \"type\": \"string\"\n          },\n          \"balance\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+        },
+        "IOUHistory": {
+            "type": "json",
+            "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"txID\": {\n        \"type\": \"string\"\n      },\n      \"txTime\": {\n        \"type\": \"string\"\n      },\n      \"isDeleted\": {\n        \"type\": \"boolean\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"issueDate\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"txID\": {\n        \"type\": \"string\"\n      },\n      \"txTime\": {\n        \"type\": \"string\"\n      },\n      \"isDeleted\": {\n        \"type\": \"boolean\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"issueDate\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+        },
+        "TransactionKV": {
+            "type": "json",
+            "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"account\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"iouRef\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"account\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"iouRef\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+        },
+        "IOUKV": {
+            "type": "json",
+            "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"issueDate\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"issueDate\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+        },
+        "IOU": {
+            "type": "json",
+            "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"issuer\": {\n      \"type\": \"string\"\n    },\n    \"amount\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    },\n    \"issueDate\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    }\n  }\n}"
+        },
+        "Account": {
+            "type": "json",
+            "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"bank\": {\n      \"type\": \"string\"\n    },\n    \"balance\": {\n      \"type\": \"number\"\n    },\n    \"currency\": {\n      \"type\": \"string\"\n    }\n  }\n}"
+        }
+    },
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9oeXBlcmxlZGdlci1mYWJyaWMvZmFiY2xpZW50IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L2ZhYmNsaWVudCJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAC4YL1CrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAAuGC9Qq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIALB7VVGrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACACwe1VRq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

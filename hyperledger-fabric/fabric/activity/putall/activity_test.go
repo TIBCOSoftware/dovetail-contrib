@@ -42,7 +42,7 @@ func TestEval(t *testing.T) {
 	assert.Nil(t, err)
 
 	tc := test.NewActivityContext(act.Metadata())
-	tc.SetInputObject(&Input{IsPrivate: false})
+	tc.SetInputObject(&Input{StateData: []interface{}{map[string]interface{}{"key": "foo", "value": "bar"}}})
 
 	act.Eval(tc)
 

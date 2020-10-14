@@ -78,6 +78,7 @@ type Metadata struct {
 var schemaCache map[string]*SchemaValue
 var sharedSchema map[string]int
 var schemaSeq int
+var appSchema = make(map[string]string)
 
 func init() {
 	schemaCache = make(map[string]*SchemaValue)
@@ -111,9 +112,19 @@ func generateMetadata(appfile, outpath string) error {
 				Schemas map[string]json.RawMessage `json:"schemas"`
 			} `json:"handlers"`
 		} `json:"triggers"`
+		Schemas map[string]struct {
+			Value string `json:"value"`
+		} `json:"schemas,omitempty"`
 	}
 	if err := json.Unmarshal(appconfig, &contractData); err != nil {
 		return errors.Wrapf(err, "failed to extract contract data from flogo config file %s", appfile)
+	}
+
+	// cache application schemas
+	if len(contractData.Schemas) > 0 {
+		for k, v := range contractData.Schemas {
+			appSchema["schema://"+k] = v.Value
+		}
 	}
 
 	// construct output metadata
@@ -185,39 +196,48 @@ func toSharedSchema(schema []byte) []byte {
 	return schema
 }
 
+func extractSchemaValue(def json.RawMessage) []byte {
+	defstr := string(def)
+	if strings.HasPrefix(defstr, "\"schema://") {
+		// replace with app-level schema
+		k := defstr[1 : len(defstr)-1]
+		if v, ok := appSchema[k]; ok {
+			return addSchemaToCache(v)
+		}
+		return nil
+	}
+
+	// parse schema value
+	var sch struct {
+		Value string `json:"value"`
+	}
+	if err := json.Unmarshal(def, &sch); err == nil && sch.Value != "" {
+		return addSchemaToCache(sch.Value)
+	}
+	return nil
+}
+
 func extractTransactionSchema(schemas map[string]json.RawMessage) Transaction {
 	var parameters, transient, returns []byte
 	if reply, ok := schemas["reply"]; ok {
 		var r struct {
-			Returns struct {
-				Value string `json:"value"`
-			} `json:"returns"`
+			Returns json.RawMessage `json:"returns"`
 		}
-		if err := json.Unmarshal(reply, &r); err != nil {
-			fmt.Printf("failed to unmarshal reply: %+v\n", err)
-		} else {
-			if r.Returns.Value != "" {
-				returns = addSchemaToCache(r.Returns.Value)
-			}
+		if err := json.Unmarshal(reply, &r); err == nil && r.Returns != nil {
+			returns = extractSchemaValue(r.Returns)
 		}
 	}
 	if output, ok := schemas["output"]; ok {
 		var o struct {
-			Parameters struct {
-				Value string `json:"value"`
-			} `json:"parameters,omitempty"`
-			Transient struct {
-				Value string `json:"value"`
-			} `json:"transient,omitempty"`
+			Parameters json.RawMessage `json:"parameters,omitempty"`
+			Transient  json.RawMessage `json:"transient,omitempty"`
 		}
-		if err := json.Unmarshal(output, &o); err != nil {
-			fmt.Printf("failed to unmarshal output: %+v\n", err)
-		} else {
-			if o.Parameters.Value != "" {
-				parameters = addSchemaToCache(o.Parameters.Value)
+		if err := json.Unmarshal(output, &o); err == nil {
+			if o.Parameters != nil {
+				parameters = extractSchemaValue(o.Parameters)
 			}
-			if o.Transient.Value != "" {
-				transient = addSchemaToCache(o.Transient.Value)
+			if o.Transient != nil {
+				transient = extractSchemaValue(o.Transient)
 			}
 		}
 	}

@@ -9,7 +9,8 @@
 # or, 
 #   docker-image.sh upload
 # e.g.,
-#   ./docker-image.sh build -e ~/work/DovetailDemo/felib/flogo.zip
+#   ./docker-image.sh build -e ~/work/dovetail/felib/flogo.zip
+#   docker login
 #   ./docker-image.sh upload -u dhuser -d
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; echo "$(pwd)")"
@@ -21,17 +22,19 @@ version: '2'
 services:
   dovetail:
     container_name: dovetail
-    image: hyperledger/fabric-tools:1.4.4
+    image: hyperledger/fabric-tools:1.4
     tty: true
     stdin_open: true
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - WORK=/root/work
-      - FLOGO_VER=v0.9.4
-      - FE_HOME=/root/flogo/2.8
+      - DOVETAIL_REPO=github.com/yxuco
+      - FLOGO_REPO=github.com/yxuco
+      - FLOGO_REPO_VER=v1.1.1
+      - FLOGO_VER=v1.1.0
+      - FE_HOME=/root/flogo/2.10
       - SHIM_PATH=/root/dovetail-contrib/hyperledger-fabric/shim
-      - PATCH_PATH=/root/dovetail-contrib/hyperledger-fabric/flogo-patch
     working_dir: /root
     command: /bin/bash
     volumes:
@@ -45,9 +48,12 @@ function buildImage {
     echo "copy Flogo Enterprise lib ${FELIB}"
     cp ${FELIB} ${SCRIPT_DIR}/work/flogo.zip
   fi
+  # these scripts runs in container, so copy to shared volume
   cp ${SCRIPT_DIR}/dovetail-init.sh ${SCRIPT_DIR}/work
   cp ${SCRIPT_DIR}/build-cds.sh ${SCRIPT_DIR}/work
   cp ${SCRIPT_DIR}/build-client.sh ${SCRIPT_DIR}/work
+  cp ${SCRIPT_DIR}/codegen.sh ${SCRIPT_DIR}/work
+
   printDovetailYaml > ${SCRIPT_DIR}/work/dovetail-build.yaml
   cd ${SCRIPT_DIR}/work
   echo "start dovetail image builder ..."
@@ -84,7 +90,7 @@ function printHelp() {
   echo "      - 'build' - build dovetail-tools image with optional args: [ -n name -v version -e flogo-zip ]"
   echo "      - 'upload' - upload image to docker hub with optional args: -u user -p passwd [ -n name -v version -d ]"
   echo "    -n <image name> - name of the docker image, e.g., dovetail-tools (default)"
-  echo "    -v <image version> - version of the docker image, e.g., 'v1.0.0' (default)"
+  echo "    -v <image version> - version of the docker image, e.g., 'v1.1.0' (default)"
   echo "    -e <flogo lib> - path of the zip file for Flogo Enterprise library"
   echo "    -u <user> - user name for a docker hub account"
   echo "    -p <passwd> - password for a docker hub account"
@@ -93,7 +99,7 @@ function printHelp() {
 }
 
 NAME="dovetail-tools"
-VERSION="v1.0.0"
+VERSION="v1.1.0"
 
 CMD=${1}
 shift

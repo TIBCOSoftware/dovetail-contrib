@@ -102,15 +102,13 @@ func deletePrivateData(ctx activity.Context, ccshim shim.ChaincodeStubInterface,
 	}
 
 	// delete composite keys if specified
-	if compositeKeyDefs, _ := getCompositeKeyDefinition(input.CompositeKeys); compositeKeyDefs != nil {
-		compKeys := common.ExtractCompositeKeys(ccshim, compositeKeyDefs, input.StateKey, value)
-		if compKeys != nil && len(compKeys) > 0 {
-			for _, k := range compKeys {
-				if err := ccshim.DelPrivateData(input.PrivateCollection, k); err != nil {
-					log.Errorf("failed to delete composite key %s from collection %s: %+v\n", k, input.PrivateCollection, err)
-				} else {
-					log.Debugf("deleted composite key %s from collection %s\n", k, input.PrivateCollection)
-				}
+	compKeys := common.ExtractCompositeKeys(ccshim, input.CompositeKeys, input.StateKey, value)
+	if compKeys != nil && len(compKeys) > 0 {
+		for _, k := range compKeys {
+			if err := ccshim.DelPrivateData(input.PrivateCollection, k); err != nil {
+				log.Errorf("failed to delete composite key %s from collection %s: %+v\n", k, input.PrivateCollection, err)
+			} else {
+				log.Debugf("deleted composite key %s from collection %s\n", k, input.PrivateCollection)
 			}
 		}
 	}
@@ -159,15 +157,13 @@ func deleteData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, input 
 	}
 
 	// delete composite keys if specified
-	if compositeKeyDefs, _ := getCompositeKeyDefinition(input.CompositeKeys); compositeKeyDefs != nil {
-		compKeys := common.ExtractCompositeKeys(ccshim, compositeKeyDefs, input.StateKey, value)
-		if compKeys != nil && len(compKeys) > 0 {
-			for _, k := range compKeys {
-				if err := ccshim.DelState(k); err != nil {
-					log.Errorf("failed to delete composite key %s: %+v\n", k, err)
-				} else {
-					log.Debugf("deleted composite key %s\n", k)
-				}
+	compKeys := common.ExtractCompositeKeys(ccshim, input.CompositeKeys, input.StateKey, value)
+	if compKeys != nil && len(compKeys) > 0 {
+		for _, k := range compKeys {
+			if err := ccshim.DelState(k); err != nil {
+				log.Errorf("failed to delete composite key %s: %+v\n", k, err)
+			} else {
+				log.Debugf("deleted composite key %s\n", k)
 			}
 		}
 	}
@@ -180,19 +176,4 @@ func deleteData(ctx activity.Context, ccshim shim.ChaincodeStubInterface, input 
 	}
 	ctx.SetOutputObject(output)
 	return true, nil
-}
-
-func getCompositeKeyDefinition(compositeKeys string) (map[string][]string, error) {
-	if compositeKeys != "" {
-		log.Debugf("Got composite key definition: %s\n", compositeKeys)
-		ckDefs := make(map[string][]string)
-		if err := json.Unmarshal([]byte(compositeKeys), &ckDefs); err != nil {
-			log.Warningf("failed to unmarshal composite key definitions: %+v\n", err)
-			return nil, err
-		}
-		log.Debugf("Parsed composite key definitions: %+v\n", ckDefs)
-		return ckDefs, nil
-	}
-	log.Debugf("No composite key is defined")
-	return nil, nil
 }

@@ -13,8 +13,9 @@ if [ -f "${WORK}/flogo.zip" ]; then
 fi
 mv ${WORK}/build-cds.sh ${HOME}
 mv ${WORK}/build-client.sh ${HOME}
+mv ${WORK}/codegen.sh ${HOME}
 
-git clone https://github.com/TIBCOSoftware/dovetail-contrib.git
+git clone https://${DOVETAIL_REPO}/dovetail-contrib.git
 go get -u github.com/project-flogo/cli/...
 cd dovetail-contrib/hyperledger-fabric/fabric-tools
 go install

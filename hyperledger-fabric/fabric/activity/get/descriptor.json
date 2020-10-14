@@ -1,7 +1,6 @@
-
 {
     "name": "fabric-get",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:activity",
     "title": "Get",
     "author": "TIBCO Software Inc.",
@@ -13,34 +12,10 @@
     },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
     "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
-    "inputs": [
-        {
+    "inputs": [{
             "name": "key",
             "type": "string",
             "required": true
-        },
-        {
-            "name": "commonData",
-            "type": "connection",
-            "display": {
-                "name": "Common data definition",
-                "description": "Select common data collection",
-                "type": "connection",
-                "visible": true
-            },
-            "allowed":[]
-        },
-        {
-            "name": "dataType",
-            "type": "string",
-            "display":{
-                "name": "Data object type",
-                "description": "Select output data schema",
-                "type": "dropdown",
-                "selection": "single",
-                "visible": false
-            },
-            "allowed": []
         },
         {
             "name": "privateCollection",
@@ -48,8 +23,7 @@
             "required": false
         }
     ],
-    "outputs": [
-        {
+    "outputs": [{
             "name": "code",
             "type": "integer"
         },
@@ -69,7 +43,8 @@
                 "description": "Schema definition of the result, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
                 "type": "texteditor",
                 "syntax": "json",
-                "readonly": false
+                "mappable": true,
+                "visible": true
             }
         }
     ]

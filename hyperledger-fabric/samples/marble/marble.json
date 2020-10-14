@@ -1,0 +1,2517 @@
+{
+    "imports": [
+        "github.com/project-flogo/flow",
+        "github.com/project-flogo/contrib/activity/log",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+        "github.com/project-flogo/contrib/activity/error",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
+        "github.com/project-flogo/contrib/activity/actreturn",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/delete",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getrange",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/gethistory",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction",
+        "github.com/project-flogo/contrib/function/array",
+        "github.com/project-flogo/contrib/function/string"
+    ],
+    "name": "marble",
+    "description": " ",
+    "version": "2.0.0",
+    "type": "flogo:app",
+    "appModel": "1.1.1",
+    "feVersion": "2.10.0",
+    "triggers": [
+        {
+            "ref": "#transaction",
+            "name": "fabric-transaction",
+            "description": "create a new marble, store into chaincode state",
+            "settings": {},
+            "id": "FabricTransaction",
+            "handlers": [
+                {
+                    "description": "create a new marble, store into chaincode state",
+                    "settings": {
+                        "name": "initMarble",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:initMarble"
+                        },
+                        "input": {
+                            "parameters": "=$.parameters",
+                            "txID": "=$.txID",
+                            "txTime": "=$.txTime"
+                        },
+                        "output": {
+                            "returns": "=$.returns",
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://Marble"
+                        },
+                        "output": {
+                            "parameters": "schema://Marble"
+                        }
+                    },
+                    "name": "initMarble"
+                },
+                {
+                    "description": "read a marble from chancode state",
+                    "settings": {
+                        "name": "readMarble",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:readMarble"
+                        },
+                        "input": {
+                            "parameters": {
+                                "mapping": {
+                                    "name": "=$.parameters.name"
+                                }
+                            }
+                        },
+                        "output": {
+                            "returns": "=$.returns",
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://Marble"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"name\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "readMarble"
+                },
+                {
+                    "description": "remove a marble key/value pair from chaincode state",
+                    "settings": {
+                        "name": "delete",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:delete"
+                        },
+                        "input": {
+                            "parameters": {
+                                "mapping": {
+                                    "name": "=$.parameters.name"
+                                }
+                            }
+                        },
+                        "output": {
+                            "returns": "=$.returns",
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://Marble"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"name\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "delete"
+                },
+                {
+                    "description": "transfer a marble to a new owner",
+                    "settings": {
+                        "name": "transferMarble",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:transferMarble"
+                        },
+                        "input": {
+                            "parameters": "=$.parameters"
+                        },
+                        "output": {
+                            "returns": "=$.returns",
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://Marble"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"name\": \"\",\n    \"newOwner\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "transferMarble"
+                },
+                {
+                    "description": "performs a range query based on the start and end keys provided",
+                    "settings": {
+                        "name": "getMarblesByRange",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:getMarblesByRange"
+                        },
+                        "input": {
+                            "parameters": "=$.parameters"
+                        },
+                        "output": {
+                            "returns": {
+                                "mapping": {
+                                    "@foreach($.returns,index)": {
+                                        "key": "=$loop.key",
+                                        "value": "=$loop.value"
+                                    }
+                                }
+                            },
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://MarbleMap"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"startKey\": \"\",\n    \"endKey\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "getMarblesByRange"
+                },
+                {
+                    "description": "transfer marbles of a given color to a new owner",
+                    "settings": {
+                        "name": "transferMarblesBasedOnColor",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:transferMarblesBasedOnColor"
+                        },
+                        "input": {
+                            "parameters": "=$.parameters"
+                        },
+                        "output": {
+                            "returns": {
+                                "mapping": {
+                                    "@foreach($.returns,index)": {
+                                        "key": "=$loop.key",
+                                        "value": "=$loop.value"
+                                    }
+                                }
+                            },
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://MarbleMap"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"color\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"color\": \"\",\n    \"newOwner\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "transferMarblesBasedOnColor"
+                },
+                {
+                    "description": "queries for marbles based on a specified owner",
+                    "settings": {
+                        "name": "queryMarblesByOwner",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:queryMarblesByOwner"
+                        },
+                        "input": {
+                            "parameters": {
+                                "mapping": {
+                                    "owner": "=$.parameters.owner"
+                                }
+                            }
+                        },
+                        "output": {
+                            "returns": {
+                                "mapping": {
+                                    "@foreach($.returns,index)": {
+                                        "key": "=$loop.key",
+                                        "value": "=$loop.value"
+                                    }
+                                }
+                            },
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://MarbleMap"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"owner\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "queryMarblesByOwner"
+                },
+                {
+                    "description": "uses a query string to perform a query for marbles",
+                    "settings": {
+                        "name": "queryMarbles",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:queryMarbles"
+                        },
+                        "input": {
+                            "parameters": {
+                                "mapping": {
+                                    "query": "=$.parameters.query"
+                                }
+                            }
+                        },
+                        "output": {
+                            "returns": {
+                                "mapping": {
+                                    "@foreach($.returns,index)": {
+                                        "key": "=$loop.key",
+                                        "value": "=$loop.value"
+                                    }
+                                }
+                            },
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://MarbleMap"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"query\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "queryMarbles"
+                },
+                {
+                    "description": "performs a range query based on the start and end key, page size, and a bookmark",
+                    "settings": {
+                        "name": "getMarblesByRangeWithPagination",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:getMarblesByRangeWithPagination"
+                        },
+                        "input": {
+                            "parameters": "=$.parameters"
+                        },
+                        "output": {
+                            "returns": {
+                                "mapping": {
+                                    "count": "=$.returns.count",
+                                    "bookmark": "=$.returns.bookmark",
+                                    "marbles": {
+                                        "@foreach($.returns.marbles,index)": {
+                                            "key": "=$loop.key",
+                                            "value": "=$loop.value"
+                                        }
+                                    }
+                                }
+                            },
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://MarbleMapPage"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"startKey\": \"\",\n    \"endKey\": \"\",\n    \"pageSize\": 0,\n    \"bookmark\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "getMarblesByRangeWithPagination"
+                },
+                {
+                    "description": "uses a query string, page size and a bookmark too perform a query for marbles",
+                    "settings": {
+                        "name": "queryMarblesWithPagination",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:queryMarblesWithPagination"
+                        },
+                        "input": {
+                            "parameters": "=$.parameters"
+                        },
+                        "output": {
+                            "returns": {
+                                "mapping": {
+                                    "count": "=$.returns.count",
+                                    "bookmark": "=$.returns.bookmark",
+                                    "marbles": {
+                                        "@foreach($.returns.marbles,index)": {
+                                            "key": "=$loop.key",
+                                            "value": "=$loop.value"
+                                        }
+                                    }
+                                }
+                            },
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://MarbleMapPage"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"query\": \"\",\n    \"pageSize\": 0,\n    \"bookmark\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "queryMarblesWithPagination"
+                },
+                {
+                    "description": "retrieve history of a specified marble",
+                    "settings": {
+                        "name": "getHistoryForMarble",
+                        "validation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:getHistoryForMarble"
+                        },
+                        "input": {
+                            "parameters": {
+                                "mapping": {
+                                    "name": "=$.parameters.name"
+                                }
+                            }
+                        },
+                        "output": {
+                            "returns": {
+                                "mapping": {
+                                    "@foreach($.returns,index)": {
+                                        "txID": "=$loop.txID",
+                                        "txTime": "=$loop.txTime",
+                                        "isDeleted": "=$loop.isDeleted",
+                                        "value": "=$loop.value"
+                                    }
+                                }
+                            },
+                            "status": "=$.status",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "returns": "schema://MarbleHistory"
+                        },
+                        "output": {
+                            "parameters": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
+                                "fe_metadata": "{\n    \"name\": \"\"\n}"
+                            }
+                        }
+                    },
+                    "name": "getHistoryForMarble"
+                }
+            ]
+        }
+    ],
+    "resources": [
+        {
+            "id": "flow:initMarble",
+            "data": {
+                "name": "initMarble",
+                "description": "create a new marble, store into chaincode state",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "Get",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Get",
+                        "to": "LogGet",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogGet",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "label": "Exists",
+                        "value": "$activity[Get].code == 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "LogGet",
+                        "to": "Put",
+                        "type": "expression",
+                        "label": "CreateNew",
+                        "value": "$activity[Get].code == 300"
+                    },
+                    {
+                        "id": 5,
+                        "from": "Put",
+                        "to": "LogPut",
+                        "type": "default"
+                    },
+                    {
+                        "id": 6,
+                        "from": "LogPut",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[initMarble] Get marble: \", $flow.parameters.name)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Get",
+                        "name": "Get",
+                        "description": "This activity fetches data by key from fabric ledger",
+                        "activity": {
+                            "ref": "#get",
+                            "input": {
+                                "key": "=$flow.parameters.name",
+                                "privateCollection": ""
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogGet",
+                        "name": "LogGet",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"GET: \", $activity[Get].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "description": "",
+                        "activity": {
+                            "ref": "#error",
+                            "input": {
+                                "message": "=string.concat(\"Marble already exists: \", $activity[Get].key)"
+                            }
+                        }
+                    },
+                    {
+                        "id": "Put",
+                        "name": "Put",
+                        "description": "This activity stores data to fabric ledger",
+                        "activity": {
+                            "ref": "#put",
+                            "input": {
+                                "key": "=$flow.parameters.name",
+                                "privateCollection": "",
+                                "compositeKeys": "=$property[\"CompositeKeys.ColorName\"]",
+                                "data": {
+                                    "mapping": {
+                                        "docType": "marble",
+                                        "name": "=$flow.parameters.name",
+                                        "color": "=$flow.parameters.color",
+                                        "size": "=$flow.parameters.size",
+                                        "owner": "=$flow.parameters.owner"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "data": "schema://MarbleLedger"
+                                },
+                                "output": {
+                                    "result": {
+                                        "type": "json",
+                                        "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"docType\": {\n            \"type\": \"string\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+                                        "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"docType\": {\n            \"type\": \"string\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogPut",
+                        "name": "LogPut",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"PUT: \", $activity[Put].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "name": "=$activity[Put].result.name",
+                                            "color": "=$activity[Put].result.color",
+                                            "size": "=$activity[Put].result.size",
+                                            "owner": "=$activity[Put].result.owner"
+                                        }
+                                    },
+                                    "status": "=$activity[Put].code",
+                                    "message": "=$activity[Put].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:readMarble",
+            "data": {
+                "name": "readMarble",
+                "description": "read a marble from chancode state",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "Get",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Get",
+                        "to": "LogGet",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogGet",
+                        "to": "Return",
+                        "type": "expression",
+                        "label": "Found",
+                        "value": "$activity[Get].code == 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "LogGet",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "label": "NotFound",
+                        "value": "$activity[Get].code != 200"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[readMarble] \", $flow.parameters.name)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Get",
+                        "name": "Get",
+                        "description": "This activity fetches data by key from fabric ledger",
+                        "activity": {
+                            "ref": "#get",
+                            "input": {
+                                "key": "=$flow.parameters.name",
+                                "privateCollection": ""
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogGet",
+                        "name": "LogGet",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"GET: \", $activity[Get].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "name": "=$activity[Get].result.name",
+                                            "color": "=$activity[Get].result.color",
+                                            "size": "=$activity[Get].result.size",
+                                            "owner": "=$activity[Get].result.owner"
+                                        }
+                                    },
+                                    "status": "=$activity[Get].code",
+                                    "message": "=$activity[Get].message"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "description": "",
+                        "activity": {
+                            "ref": "#error",
+                            "input": {
+                                "message": "=string.concat(\"Cannot find marble \", $flow.parameters.name, \": \", $activity[Get].message)"
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:delete",
+            "data": {
+                "name": "delete",
+                "description": "remove a marble key/value pair from chaincode state",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "Get",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Get",
+                        "to": "LogGet",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogGet",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "label": "NotFound",
+                        "value": "$activity[Get].code != 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "LogGet",
+                        "to": "Delete",
+                        "type": "expression",
+                        "label": "Delete",
+                        "value": "$activity[Get].code == 200"
+                    },
+                    {
+                        "id": 5,
+                        "from": "Delete",
+                        "to": "LogDelete",
+                        "type": "default"
+                    },
+                    {
+                        "id": 6,
+                        "from": "LogDelete",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[delete] \", $flow.parameters.name)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Get",
+                        "name": "Get",
+                        "description": "This activity fetches data by key from fabric ledger",
+                        "activity": {
+                            "ref": "#get",
+                            "input": {
+                                "key": "=$flow.parameters.name",
+                                "privateCollection": ""
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogGet",
+                        "name": "LogGet",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"GET: \", $activity[Get].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "description": "",
+                        "activity": {
+                            "ref": "#error",
+                            "input": {
+                                "message": "=string.concat(\"Failed to find marble \", $flow.parameters.name, \": \", $activity[Get].message)"
+                            }
+                        }
+                    },
+                    {
+                        "id": "Delete",
+                        "name": "Delete",
+                        "description": "This activity deletes data from fabric world state",
+                        "activity": {
+                            "ref": "#delete",
+                            "input": {
+                                "key": "=$activity[Get].key",
+                                "privateCollection": "",
+                                "keysOnly": false,
+                                "compositeKeys": "=$property[\"CompositeKeys.ColorName\"]"
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogDelete",
+                        "name": "LogDelete",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"DELETE: \", $activity[Delete].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "name": "=$activity[Delete].result.name",
+                                            "color": "=$activity[Delete].result.color",
+                                            "size": "=$activity[Delete].result.size",
+                                            "owner": "=$activity[Delete].result.owner"
+                                        }
+                                    },
+                                    "status": "=$activity[Delete].code",
+                                    "message": "=$activity[Delete].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:transferMarble",
+            "data": {
+                "name": "transferMarble",
+                "description": "transfer a marble to a new owner",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "Get",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Get",
+                        "to": "LogGet",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogGet",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "label": "NotFound",
+                        "value": "$activity[Get].code != 200"
+                    },
+                    {
+                        "id": 4,
+                        "from": "LogGet",
+                        "to": "Put",
+                        "type": "expression",
+                        "label": "Update",
+                        "value": "$activity[Get].code == 200"
+                    },
+                    {
+                        "id": 5,
+                        "from": "Put",
+                        "to": "LogPut",
+                        "type": "default"
+                    },
+                    {
+                        "id": 6,
+                        "from": "LogPut",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[transferMarble] \", $flow.parameters.name, \" new owner: \", $flow.parameters.newOwner)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Get",
+                        "name": "Get",
+                        "description": "This activity fetches data by key from fabric ledger",
+                        "activity": {
+                            "ref": "#get",
+                            "input": {
+                                "key": "=$flow.parameters.name",
+                                "privateCollection": ""
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogGet",
+                        "name": "LogGet",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"GET: \", $activity[Get].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "description": "",
+                        "activity": {
+                            "ref": "#error",
+                            "input": {
+                                "message": "=string.concat(\"Failed to find marble \", $flow.parameters.name, \": \", $activity[Get].message)"
+                            }
+                        }
+                    },
+                    {
+                        "id": "Put",
+                        "name": "Put",
+                        "description": "This activity stores data to fabric ledger",
+                        "activity": {
+                            "ref": "#put",
+                            "input": {
+                                "key": "=$activity[Get].key",
+                                "privateCollection": "",
+                                "compositeKeys": "",
+                                "data": {
+                                    "mapping": {
+                                        "docType": "=$activity[Get].result.docType",
+                                        "name": "=$activity[Get].result.name",
+                                        "color": "=$activity[Get].result.color",
+                                        "size": "=$activity[Get].result.size",
+                                        "owner": "=$flow.parameters.newOwner"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "data": "schema://MarbleLedger"
+                                },
+                                "output": {
+                                    "result": {
+                                        "type": "json",
+                                        "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"docType\": {\n            \"type\": \"string\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+                                        "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"docType\": {\n            \"type\": \"string\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogPut",
+                        "name": "LogPut",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"PUT: \", $activity[Put].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "name": "=$activity[Put].result.name",
+                                            "color": "=$activity[Put].result.color",
+                                            "size": "=$activity[Put].result.size",
+                                            "owner": "=$activity[Put].result.owner"
+                                        }
+                                    },
+                                    "status": "=$activity[Put].code",
+                                    "message": "=$activity[Put].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:getMarblesByRange",
+            "data": {
+                "name": "getMarblesByRange",
+                "description": "performs a range query based on the start and end keys provided",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "GetRange",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "GetRange",
+                        "to": "LogResult",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogResult",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[getMarblesByRange] in [\", $flow.parameters.startKey, \", \", $flow.parameters.endKey, \")\")",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "GetRange",
+                        "name": "GetRange",
+                        "description": "This activity fetches data by range of keys from fabric ledger",
+                        "activity": {
+                            "ref": "#getrange",
+                            "input": {
+                                "startKey": "=$flow.parameters.startKey",
+                                "endKey": "=$flow.parameters.endKey",
+                                "usePagination": false,
+                                "pageSize": 0,
+                                "start": "",
+                                "privateCollection": ""
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogResult",
+                        "name": "LogResult",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"GET_RANGE: \", $activity[GetRange].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "@foreach($activity[GetRange].result,index)": {
+                                                "key": "=$loop.key",
+                                                "value": {
+                                                    "name": "=$loop.value.name",
+                                                    "color": "=$loop.value.color",
+                                                    "size": "=$loop.value.size",
+                                                    "owner": "=$loop.value.owner"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "status": "=$activity[GetRange].code",
+                                    "message": "=$activity[GetRange].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:transferMarblesBasedOnColor",
+            "data": {
+                "name": "transferMarblesBasedOnColor",
+                "description": "transfer marbles of a given color to a new owner",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "GetByCompositeKey",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "GetByCompositeKey",
+                        "to": "LogGet",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogGet",
+                        "to": "PutAll",
+                        "type": "expression",
+                        "label": "UpdateAll",
+                        "value": "$activity[GetByCompositeKey].code == 200 && $activity[GetByCompositeKey].count > 0"
+                    },
+                    {
+                        "id": 4,
+                        "from": "PutAll",
+                        "to": "LogPutAll",
+                        "type": "default"
+                    },
+                    {
+                        "id": 5,
+                        "from": "LogPutAll",
+                        "to": "Return",
+                        "type": "expression",
+                        "label": "Updated",
+                        "value": "$activity[PutAll].count > 0"
+                    },
+                    {
+                        "id": 6,
+                        "from": "LogPutAll",
+                        "to": "ThrowError",
+                        "type": "expression",
+                        "label": "NotUpdated",
+                        "value": "$activity[PutAll].count == 0"
+                    },
+                    {
+                        "id": 7,
+                        "from": "LogGet",
+                        "to": "ThrowError1",
+                        "type": "expression",
+                        "label": "NotFound",
+                        "value": "$activity[GetByCompositeKey].code != 200 || $activity[GetByCompositeKey].count == 0"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[transferMarblesBasedOnColor] \", $flow.parameters.color, \" new owner: \", $flow.parameters.newOwner)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "GetByCompositeKey",
+                        "name": "GetByCompositeKey",
+                        "description": "This activity fetches data by composite-key from fabric ledger",
+                        "activity": {
+                            "ref": "#getbycompositekey",
+                            "input": {
+                                "keyName": "=$property[\"CompositeKeys.ColorName\"]",
+                                "usePagination": false,
+                                "pageSize": 0,
+                                "start": "",
+                                "privateCollection": "",
+                                "attributes": {
+                                    "mapping": {
+                                        "color": "=$flow.parameters.color"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "attributes": {
+                                        "type": "json",
+                                        "value": "{\"type\":\"object\",\"properties\":{\"color\":{\"type\":\"string\"}},\"required\":[]}",
+                                        "fe_metadata": "[{\"parameterName\":\"color\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                    }
+                                },
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogGet",
+                        "name": "LogGet",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"GET_BY_COMPOSITE_KEY: \", $activity[GetByCompositeKey].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "PutAll",
+                        "name": "PutAll",
+                        "description": "This activity stores multiple records in fabric ledger",
+                        "activity": {
+                            "ref": "#putall",
+                            "input": {
+                                "privateCollection": "",
+                                "compositeKeys": "",
+                                "data": {
+                                    "mapping": {
+                                        "@foreach($activity[GetByCompositeKey].result,index)": {
+                                            "key": "=$loop.key",
+                                            "value": {
+                                                "docType": "=$loop.value.docType",
+                                                "name": "=$loop.value.name",
+                                                "color": "=$loop.value.color",
+                                                "size": "=$loop.value.size",
+                                                "owner": "=$flow.parameters.newOwner"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "data": "schema://MarbleLedger"
+                                },
+                                "output": {
+                                    "result": {
+                                        "type": "json",
+                                        "value": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"docType\": {\n            \"type\": \"string\"\n          },\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"color\": {\n            \"type\": \"string\"\n          },\n          \"size\": {\n            \"type\": \"number\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"docType\": {\n            \"type\": \"string\"\n          },\n          \"name\": {\n            \"type\": \"string\"\n          },\n          \"color\": {\n            \"type\": \"string\"\n          },\n          \"size\": {\n            \"type\": \"number\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogPutAll",
+                        "name": "LogPutAll",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"PUT_ALL: \", $activity[PutAll].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "@foreach($activity[PutAll].result,index)": {
+                                                "key": "=$loop.key",
+                                                "value": {
+                                                    "name": "=$loop.value.name",
+                                                    "color": "=$loop.value.color",
+                                                    "size": "=$loop.value.size",
+                                                    "owner": "=$loop.value.owner"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "status": "=$activity[PutAll].code",
+                                    "message": "=$activity[PutAll].message"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "ThrowError",
+                        "name": "ThrowError",
+                        "description": "",
+                        "activity": {
+                            "ref": "#error",
+                            "input": {
+                                "message": "=string.concat(\"No marble transferred: \", $activity[PutAll].message)"
+                            }
+                        }
+                    },
+                    {
+                        "id": "ThrowError1",
+                        "name": "ThrowError1",
+                        "description": "",
+                        "activity": {
+                            "ref": "#error",
+                            "input": {
+                                "message": "=string.concat(\"Marble does not exists for color: \", $flow.parameters.color)"
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"color\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction6\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"color\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:queryMarblesByOwner",
+            "data": {
+                "name": "queryMarblesByOwner",
+                "description": "queries for marbles based on a specified owner",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "Query",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Query",
+                        "to": "LogResult",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogResult",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[queryMarblesByOwner] \", $flow.parameters.owner)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Query",
+                        "name": "Query",
+                        "description": "This activity fetches data by rich query on fabric Couch DB",
+                        "activity": {
+                            "ref": "#query",
+                            "input": {
+                                "query": "{\n    \"selector\": {\n        \"docType\": \"marble\",\n        \"owner\": \"$owner\"\n    }\n}",
+                                "usePagination": false,
+                                "pageSize": 0,
+                                "start": "",
+                                "privateCollection": "",
+                                "queryParams": {
+                                    "mapping": {
+                                        "owner": "=$flow.parameters.owner"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "queryParams": {
+                                        "type": "json",
+                                        "value": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}},\"required\":[]}",
+                                        "fe_metadata": "[{\"parameterName\":\"owner\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                    }
+                                },
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogResult",
+                        "name": "LogResult",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"QUERY: \", $activity[Query].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "@foreach($activity[Query].result,index)": {
+                                                "key": "=$loop.key",
+                                                "value": {
+                                                    "name": "=$loop.value.name",
+                                                    "color": "=$loop.value.color",
+                                                    "size": "=$loop.value.size",
+                                                    "owner": "=$loop.value.owner"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "status": "=$activity[Query].code",
+                                    "message": "=$activity[Query].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"owner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction7\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:queryMarbles",
+            "data": {
+                "name": "queryMarbles",
+                "description": "uses a query string to perform a query for marbles",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "Query",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Query",
+                        "to": "LogResult",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogResult",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[queryMarbles] \", $flow.parameters.query)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Query",
+                        "name": "Query",
+                        "description": "This activity fetches data by rich query on fabric Couch DB",
+                        "activity": {
+                            "ref": "#query",
+                            "input": {
+                                "query": "\"$query\"",
+                                "usePagination": false,
+                                "pageSize": 0,
+                                "start": "",
+                                "privateCollection": "",
+                                "queryParams": {
+                                    "mapping": {
+                                        "query": "=$flow.parameters.query"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "queryParams": {
+                                        "type": "json",
+                                        "value": "{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"}},\"required\":[]}",
+                                        "fe_metadata": "[{\"parameterName\":\"query\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                    }
+                                },
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogResult",
+                        "name": "LogResult",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"QUERY: \", $activity[Query].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "@foreach($activity[Query].result,index)": {
+                                                "key": "=$loop.key",
+                                                "value": {
+                                                    "name": "=$loop.value.name",
+                                                    "color": "=$loop.value.color",
+                                                    "size": "=$loop.value.size",
+                                                    "owner": "=$loop.value.owner"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "status": "=$activity[Query].code",
+                                    "message": "=$activity[Query].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"query\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction8\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:getMarblesByRangeWithPagination",
+            "data": {
+                "name": "getMarblesByRangeWithPagination",
+                "description": "performs a range query based on the start and end key, page size, and a bookmark",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "GetRange",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "GetRange",
+                        "to": "LogResult",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogResult",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[getMarblesByRangeWithPagination] in [\", $flow.parameters.startKey, \", \", $flow.parameters.endKey, \")\")",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "GetRange",
+                        "name": "GetRange",
+                        "description": "This activity fetches data by range of keys from fabric ledger",
+                        "activity": {
+                            "ref": "#getrange",
+                            "input": {
+                                "startKey": "=$flow.parameters.startKey",
+                                "endKey": "=$flow.parameters.endKey",
+                                "usePagination": true,
+                                "pageSize": "=$flow.parameters.pageSize",
+                                "start": "=$flow.parameters.bookmark",
+                                "privateCollection": ""
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogResult",
+                        "name": "LogResult",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"GET_RANGE: \", $activity[GetRange].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "count": "=$activity[GetRange].count",
+                                            "bookmark": "=$activity[GetRange].bookmark",
+                                            "marbles": {
+                                                "@foreach($activity[GetRange].result,index)": {
+                                                    "key": "=$loop.key",
+                                                    "value": {
+                                                        "name": "=$loop.value.name",
+                                                        "color": "=$loop.value.color",
+                                                        "size": "=$loop.value.size",
+                                                        "owner": "=$loop.value.owner"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "message": "=$activity[GetRange].message",
+                                    "status": "=$activity[GetRange].code"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction9\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"startKey\":{\"type\":\"string\"},\"endKey\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:queryMarblesWithPagination",
+            "data": {
+                "name": "queryMarblesWithPagination",
+                "description": "uses a query string, page size and a bookmark too perform a query for marbles",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "Query",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "Query",
+                        "to": "LogResult",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogResult",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[queryMarblesWithPagination] \", $flow.parameters.query)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Query",
+                        "name": "Query",
+                        "description": "This activity fetches data by rich query on fabric Couch DB",
+                        "activity": {
+                            "ref": "#query",
+                            "input": {
+                                "query": "\"$query\"",
+                                "usePagination": true,
+                                "pageSize": "=$flow.parameters.pageSize",
+                                "start": "=$flow.parameters.bookmark",
+                                "privateCollection": "",
+                                "queryParams": {
+                                    "mapping": {
+                                        "query": "=$flow.parameters.query"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "queryParams": {
+                                        "type": "json",
+                                        "value": "{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"}},\"required\":[]}",
+                                        "fe_metadata": "[{\"parameterName\":\"query\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                    }
+                                },
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogResult",
+                        "name": "LogResult",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"QUERY: \", $activity[Query].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "count": "=$activity[Query].count",
+                                            "bookmark": "=$activity[Query].bookmark",
+                                            "marbles": {
+                                                "@foreach($activity[Query].result,index)": {
+                                                    "key": "=$loop.key",
+                                                    "value": {
+                                                        "name": "=$loop.value.name",
+                                                        "color": "=$loop.value.color",
+                                                        "size": "=$loop.value.size",
+                                                        "owner": "=$loop.value.owner"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "status": "=$activity[Query].code",
+                                    "message": "=$activity[Query].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"query\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction10\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"pageSize\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "flow:getHistoryForMarble",
+            "data": {
+                "name": "getHistoryForMarble",
+                "description": "retrieve history of a specified marble",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "Log",
+                        "to": "GetHistory",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "GetHistory",
+                        "to": "LogResult",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "LogResult",
+                        "to": "Return",
+                        "type": "default"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "Log",
+                        "name": "Log",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"[getHistoryForMarble] \", $flow.parameters.name)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "GetHistory",
+                        "name": "GetHistory",
+                        "description": "This activity fetches history of a key from fabric ledger",
+                        "activity": {
+                            "ref": "#gethistory",
+                            "input": {
+                                "key": "=$flow.parameters.name"
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://MarbleLedger"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "LogResult",
+                        "name": "LogResult",
+                        "description": "",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "message": "=string.concat(\"GET_HISTORY: \", $activity[GetHistory].message)",
+                                "addDetails": false,
+                                "usePrint": false
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "description": "",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "returns": {
+                                        "mapping": {
+                                            "@foreach($activity[GetHistory].result,index)": {
+                                                "txID": "=$loop.txID",
+                                                "txTime": "=$loop.txTime",
+                                                "isDeleted": "=$loop.isDeleted",
+                                                "value": "=$loop.value"
+                                            }
+                                        }
+                                    },
+                                    "status": "=$activity[GetHistory].code",
+                                    "message": "=$activity[GetHistory].message"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "parameters",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"name\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "transient",
+                            "type": "object"
+                        },
+                        {
+                            "name": "txID",
+                            "type": "string"
+                        },
+                        {
+                            "name": "txTime",
+                            "type": "string"
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "status",
+                            "type": "float64"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "returns",
+                            "type": "array",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}},\"transient\":{\"type\":\"object\"},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                }
+            }
+        }
+    ],
+    "properties": [
+        {
+            "name": "CompositeKeys.ColorName",
+            "type": "string",
+            "value": "color~name=color,name"
+        }
+    ],
+    "schemas": {
+        "Marble": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+        },
+        "MarbleLedger": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"docType\": {\n            \"type\": \"string\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"docType\": {\n            \"type\": \"string\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"color\": {\n            \"type\": \"string\"\n        },\n        \"size\": {\n            \"type\": \"number\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+        },
+        "MarbleMap": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"name\": {\n                        \"type\": \"string\"\n                    },\n                    \"color\": {\n                        \"type\": \"string\"\n                    },\n                    \"size\": {\n                        \"type\": \"number\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"name\": {\n                        \"type\": \"string\"\n                    },\n                    \"color\": {\n                        \"type\": \"string\"\n                    },\n                    \"size\": {\n                        \"type\": \"number\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
+        },
+        "MarbleMapPage": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"count\": {\n            \"type\": \"number\"\n        },\n        \"bookmark\": {\n            \"type\": \"string\"\n        },\n        \"marbles\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"key\": {\n                        \"type\": \"string\"\n                    },\n                    \"value\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"name\": {\n                                \"type\": \"string\"\n                            },\n                            \"color\": {\n                                \"type\": \"string\"\n                            },\n                            \"size\": {\n                                \"type\": \"number\"\n                            },\n                            \"owner\": {\n                                \"type\": \"string\"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"count\": {\n            \"type\": \"number\"\n        },\n        \"bookmark\": {\n            \"type\": \"string\"\n        },\n        \"marbles\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"key\": {\n                        \"type\": \"string\"\n                    },\n                    \"value\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"name\": {\n                                \"type\": \"string\"\n                            },\n                            \"color\": {\n                                \"type\": \"string\"\n                            },\n                            \"size\": {\n                                \"type\": \"number\"\n                            },\n                            \"owner\": {\n                                \"type\": \"string\"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
+        },
+        "MarbleHistory": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"txID\": {\n                \"type\": \"string\"\n            },\n            \"txTime\": {\n                \"type\": \"string\"\n            },\n            \"isDeleted\": {\n                \"type\": \"boolean\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"name\": {\n                        \"type\": \"string\"\n                    },\n                    \"color\": {\n                        \"type\": \"string\"\n                    },\n                    \"size\": {\n                        \"type\": \"number\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"txID\": {\n                \"type\": \"string\"\n            },\n            \"txTime\": {\n                \"type\": \"string\"\n            },\n            \"isDeleted\": {\n                \"type\": \"boolean\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"name\": {\n                        \"type\": \"string\"\n                    },\n                    \"color\": {\n                        \"type\": \"string\"\n                    },\n                    \"size\": {\n                        \"type\": \"number\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
+        }
+    },
+    "connections": {},
+    "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vcHJvamVjdC1mbG9nby9jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9LHsicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvZXJyb3IiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9lcnJvciJ9XQ==",
+    "fe_metadata": "UEsDBAoAAAAIAHyEUlGrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAB8hFJRq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+}

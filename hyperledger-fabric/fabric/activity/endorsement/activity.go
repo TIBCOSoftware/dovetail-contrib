@@ -69,7 +69,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		return false, err
 	}
 
-	if input.IsPrivate {
+	if len(input.PrivateCollection) > 0 {
 		// set endorsement policy for a key on a private collection
 		return setPrivatePolicy(ctx, stub, input)
 	}
@@ -80,12 +80,6 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 
 func setPrivatePolicy(ctx activity.Context, ccshim shim.ChaincodeStubInterface, input *Input) (bool, error) {
 	// set endorsement policy on a private collection
-	if input.PrivateCollection == "" {
-		log.Error("private collection is not specified\n")
-		output := &Output{Code: 400, Message: "private collection is not specified"}
-		ctx.SetOutputObject(output)
-		return false, errors.New(output.Message)
-	}
 	ep, err := ccshim.GetPrivateDataValidationParameter(input.PrivateCollection, input.StateKey)
 	if err != nil {
 		log.Errorf("failed to retrieve policy for private collection %s: %+v\n", input.PrivateCollection, err)

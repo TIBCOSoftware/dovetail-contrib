@@ -51,15 +51,13 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	}
 	log.Debugf("input value type %T: %+v\n", input.StateData, input.StateData)
 
-	// get composite key definitions
-	compositeKeyDefs, _ := getCompositeKeyDefinition(input.CompositeKeys)
-
 	// get chaincode stub
 	stub, err := common.GetChaincodeStub(ctx)
 	if err != nil || stub == nil {
 		log.Errorf("failed to retrieve fabric stub: %+v\n", err)
 		output := &Output{Code: 500, Message: err.Error()}
 		ctx.SetOutputObject(output)
+		return false, err
 	}
 
 	var successCount, errorCount int
@@ -70,7 +68,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		for _, v := range input.StateData {
 			vmap := v.(map[string]interface{})
 			vkey := vmap[common.KeyField].(string)
-			if err := storePrivateData(stub, input.PrivateCollection, compositeKeyDefs, vkey, vmap[common.ValueField]); err != nil {
+			if err := storePrivateData(stub, input.PrivateCollection, input.CompositeKeys, vkey, vmap[common.ValueField]); err != nil {
 				errorCount++
 				errorKeys = append(errorKeys, vkey)
 			} else {
@@ -83,7 +81,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		for _, v := range input.StateData {
 			vmap := v.(map[string]interface{})
 			vkey := vmap[common.KeyField].(string)
-			if err := storeData(stub, compositeKeyDefs, vkey, vmap[common.ValueField]); err != nil {
+			if err := storeData(stub, input.CompositeKeys, vkey, vmap[common.ValueField]); err != nil {
 				errorCount++
 				errorKeys = append(errorKeys, vkey)
 			} else {
@@ -124,7 +122,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	return true, nil
 }
 
-func storePrivateData(ccshim shim.ChaincodeStubInterface, collection string, compositeKeyDefs map[string][]string, key string, value interface{}) error {
+func storePrivateData(ccshim shim.ChaincodeStubInterface, collection string, compositeKeyDefs string, key string, value interface{}) error {
 	jsonBytes, err := json.Marshal(value)
 	if err != nil {
 		log.Errorf("failed to marshal value '%+v', error: %+v\n", value, err)
@@ -139,7 +137,7 @@ func storePrivateData(ccshim shim.ChaincodeStubInterface, collection string, com
 	log.Debugf("stored in private collection %s, data: %s\n", collection, string(jsonBytes))
 
 	// store composite keys if required
-	if compositeKeyDefs == nil {
+	if len(compositeKeyDefs) == 0 {
 		return nil
 	}
 	compositeKeys := common.ExtractCompositeKeys(ccshim, compositeKeyDefs, key, value)
@@ -156,7 +154,7 @@ func storePrivateData(ccshim shim.ChaincodeStubInterface, collection string, com
 	return nil
 }
 
-func storeData(ccshim shim.ChaincodeStubInterface, compositeKeyDefs map[string][]string, key string, value interface{}) error {
+func storeData(ccshim shim.ChaincodeStubInterface, compositeKeyDefs string, key string, value interface{}) error {
 	jsonBytes, err := json.Marshal(value)
 	if err != nil {
 		log.Errorf("failed to marshal value '%+v', error: %+v\n", value, err)
@@ -170,7 +168,7 @@ func storeData(ccshim shim.ChaincodeStubInterface, compositeKeyDefs map[string][
 	log.Debugf("stored data on ledger: %s\n", string(jsonBytes))
 
 	// store composite keys if required
-	if compositeKeyDefs == nil {
+	if len(compositeKeyDefs) == 0 {
 		return nil
 	}
 	compositeKeys := common.ExtractCompositeKeys(ccshim, compositeKeyDefs, key, value)
@@ -185,19 +183,4 @@ func storeData(ccshim shim.ChaincodeStubInterface, compositeKeyDefs map[string][
 		}
 	}
 	return nil
-}
-
-func getCompositeKeyDefinition(compositeKeys string) (map[string][]string, error) {
-	if compositeKeys != "" {
-		log.Debugf("Got composite key definition: %s\n", compositeKeys)
-		ckDefs := make(map[string][]string)
-		if err := json.Unmarshal([]byte(compositeKeys), &ckDefs); err != nil {
-			log.Warningf("failed to unmarshal composite key definitions: %+v\n", err)
-			return nil, err
-		}
-		log.Debugf("Parsed composite key definitions: %+v\n", ckDefs)
-		return ckDefs, nil
-	}
-	log.Debugf("No composite key is defined")
-	return nil, nil
 }

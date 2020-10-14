@@ -1,105 +1,109 @@
 {
     "imports": [
         "github.com/project-flogo/flow",
-        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/delete",
-        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/endorsement",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/cid",
         "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/get",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/delete",
         "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getbycompositekey",
         "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/gethistory",
         "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/getrange",
-        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/invokechaincode",
         "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/put",
         "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/putall",
-        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query",
         "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/setevent",
-        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/cid",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/invokechaincode",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/endorsement",
+        "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/query",
         "github.com/project-flogo/contrib/activity/actreturn",
         "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/trigger/transaction",
         "github.com/project-flogo/contrib/function/array"
     ],
     "name": "all_fabric",
-    "description": " ",
-    "version": "1.1.0",
+    "description": "",
+    "version": "2.0.0",
     "type": "flogo:app",
     "appModel": "1.1.1",
-    "feVersion": "2.8.0",
+    "feVersion": "2.10.0",
     "triggers": [
         {
             "ref": "#transaction",
             "name": "fabric-transaction",
-            "description": "Illustrate all activities for Hyperledger Fabric release 1.4",
+            "description": "This trigger executes a Hyperledger Fabric transaction",
             "settings": {},
             "id": "FabricTransaction",
             "handlers": [
                 {
-                    "description": "Illustrate all activities for Hyperledger Fabric release 1.4",
+                    "description": "",
                     "settings": {
-                        "name": "illustration",
-                        "commonData": "",
+                        "name": "createIOU",
                         "validation": false
                     },
                     "action": {
                         "ref": "github.com/project-flogo/flow",
                         "settings": {
-                            "flowURI": "res://flow:all_activities"
+                            "flowURI": "res://flow:sample"
                         },
                         "input": {
                             "parameters": "=$.parameters",
+                            "transient": "=$.transient",
                             "txID": "=$.txID",
                             "txTime": "=$.txTime"
                         },
                         "output": {
                             "status": "=$.status",
                             "message": "=$.message",
-                            "returns": "=$.returns"
+                            "returns": {
+                                "mapping": {
+                                    "@foreach($.returns, returns)": {
+                                        "key": "=$loop.key",
+                                        "value": "=$loop.value"
+                                    }
+                                }
+                            }
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
-                            }
+                            "returns": "schema://IOUMap"
                         },
                         "output": {
-                            "parameters": {
+                            "parameters": "schema://IOU",
+                            "transient": {
                                 "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"account\":{\"type\":\"string\"},\"balance\":{\"type\":\"number\"}}}",
+                                "fe_metadata": "{\n    \"account\": \"\",\n    \"balance\": 0\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "sample"
                 }
             ]
         }
     ],
     "resources": [
         {
-            "id": "flow:all_activities",
+            "id": "flow:sample",
             "data": {
-                "name": "all_activities",
-                "description": "Illustrate all activities for Hyperledger Fabric release 1.4",
+                "name": "sample",
+                "description": "",
                 "links": [
                     {
                         "id": 1,
-                        "from": "Delete",
-                        "to": "EndorsementPolicy",
-                        "type": "default"
-                    },
-                    {
-                        "id": 2,
-                        "from": "EndorsementPolicy",
+                        "from": "Cid",
                         "to": "Get",
                         "type": "default"
                     },
                     {
-                        "id": 3,
+                        "id": 2,
                         "from": "Get",
+                        "to": "Delete",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "Delete",
                         "to": "GetByCompositeKey",
                         "type": "default"
                     },
@@ -118,205 +122,57 @@
                     {
                         "id": 6,
                         "from": "GetRange",
-                        "to": "InvokeChaincode",
-                        "type": "default"
-                    },
-                    {
-                        "id": 7,
-                        "from": "InvokeChaincode",
                         "to": "Put",
                         "type": "default"
                     },
                     {
-                        "id": 8,
+                        "id": 7,
                         "from": "Put",
                         "to": "PutAll",
                         "type": "default"
                     },
                     {
-                        "id": 9,
+                        "id": 8,
                         "from": "PutAll",
-                        "to": "Query",
-                        "type": "default"
-                    },
-                    {
-                        "id": 10,
-                        "from": "Query",
                         "to": "SetEvent",
                         "type": "default"
                     },
                     {
-                        "id": 11,
+                        "id": 9,
                         "from": "SetEvent",
-                        "to": "Cid",
+                        "to": "InvokeChaincode",
+                        "type": "default"
+                    },
+                    {
+                        "id": 10,
+                        "from": "InvokeChaincode",
+                        "to": "EndorsementPolicy",
+                        "type": "default"
+                    },
+                    {
+                        "id": 11,
+                        "from": "EndorsementPolicy",
+                        "to": "Query",
                         "type": "default"
                     },
                     {
                         "id": 12,
-                        "from": "Cid",
+                        "from": "Query",
                         "to": "Return",
                         "type": "default"
                     }
                 ],
                 "tasks": [
                     {
-                        "id": "Delete",
-                        "name": "Delete",
-                        "description": "This activity deletes data from fabric world state",
+                        "id": "Cid",
+                        "name": "Cid",
+                        "description": "This activity returns requesting client ID",
                         "activity": {
-                            "ref": "#delete",
-                            "input": {
-                                "key": "=$flow.parameters.id",
-                                "commonData": {
-                                    "id": "5a70f500-37b2-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "iou_data_1_1"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579104974928,
-                                    "user": "flogo",
-                                    "connectorName": "iou_data_1_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579104974928,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "iou.IOU",
-                                "privateCollection": "",
-                                "keysOnly": false,
-                                "keyType": "iouKey",
-                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"issueDate~id\": [\n    \"issueDate\",\n    \"id\"\n  ]\n}"
-                            },
+                            "ref": "#cid",
                             "schemas": {
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
-                                    }
+                                    "attrs": "schema://ClientCert"
                                 }
-                            }
-                        }
-                    },
-                    {
-                        "id": "EndorsementPolicy",
-                        "name": "EndorsementPolicy",
-                        "description": "This activity manages state-based endorsement policy for fabric",
-                        "activity": {
-                            "ref": "#endorsement",
-                            "input": {
-                                "key": "=$flow.parameters.id",
-                                "operation": "LIST",
-                                "role": "MEMBER",
-                                "organizations": "",
-                                "policy": "",
-                                "isPrivate": false,
-                                "collection": ""
                             }
                         }
                     },
@@ -327,136 +183,31 @@
                         "activity": {
                             "ref": "#get",
                             "input": {
-                                "key": "=$flow.parameters.id",
-                                "commonData": {
-                                    "id": "5a70f500-37b2-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "iou_data_1_1"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579104974928,
-                                    "user": "flogo",
-                                    "connectorName": "iou_data_1_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579104974928,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "iou.IOU",
-                                "privateCollection": ""
+                                "key": "mykey",
+                                "privateCollection": "=$property[\"Collections.Org1Collection\"]"
                             },
                             "schemas": {
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
-                                    }
+                                    "result": "schema://IOU"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Delete",
+                        "name": "Delete",
+                        "description": "This activity deletes data from fabric world state",
+                        "activity": {
+                            "ref": "#delete",
+                            "input": {
+                                "key": "mykey",
+                                "privateCollection": "=$property[\"Collections.Org1Collection\"]",
+                                "keysOnly": false,
+                                "compositeKeys": "=$property[\"CompositeKeys.IOUKeys\"]"
+                            },
+                            "schemas": {
+                                "output": {
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
@@ -468,134 +219,14 @@
                         "activity": {
                             "ref": "#getbycompositekey",
                             "input": {
-                                "keyName": "issuer~id",
+                                "keyName": "=$property[\"CompositeKeys.IssuerKey\"]",
                                 "usePagination": false,
                                 "pageSize": 0,
                                 "start": "",
-                                "commonData": {
-                                    "id": "5a70f500-37b2-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "iou_data_1_1"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579104974928,
-                                    "user": "flogo",
-                                    "connectorName": "iou_data_1_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579104974928,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "iou.IOU",
-                                "privateCollection": "",
+                                "privateCollection": "=$property[\"Collections.Org1Collection\"]",
                                 "attributes": {
                                     "mapping": {
-                                        "issuer": "=$flow.parameters.issuer"
+                                        "issuer": "foo"
                                     }
                                 }
                             },
@@ -604,15 +235,11 @@
                                     "attributes": {
                                         "type": "json",
                                         "value": "{\"type\":\"object\",\"properties\":{\"issuer\":{\"type\":\"string\"}},\"required\":[]}",
-                                        "fe_metadata": "[{\"parameterName\":\"issuer\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                                        "fe_metadata": "[{\"parameterName\":\"issuer\",\"type\":\"string\"}]"
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
@@ -624,135 +251,11 @@
                         "activity": {
                             "ref": "#gethistory",
                             "input": {
-                                "key": "=$flow.parameters.id",
-                                "commonData": {
-                                    "id": "5a70f500-37b2-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "iou_data_1_1"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579104974928,
-                                    "user": "flogo",
-                                    "connectorName": "iou_data_1_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579104974928,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "iou.IOU"
+                                "key": "mykey"
                             },
                             "schemas": {
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"txID\": \"\",\n    \"txTime\": \"\",\n    \"isDeleted\": false,\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
@@ -764,167 +267,16 @@
                         "activity": {
                             "ref": "#getrange",
                             "input": {
-                                "startKey": "aa",
-                                "endKey": "zz",
+                                "startKey": "start",
+                                "endKey": "end",
                                 "usePagination": false,
                                 "pageSize": 0,
                                 "start": "",
-                                "commonData": {
-                                    "id": "5a70f500-37b2-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "iou_data_1_1"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579104974928,
-                                    "user": "flogo",
-                                    "connectorName": "iou_data_1_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579104974928,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "iou.IOU",
-                                "privateCollection": ""
+                                "privateCollection": "=$property[\"Collections.Org1Collection\"]"
                             },
                             "schemas": {
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "id": "InvokeChaincode",
-                        "name": "InvokeChaincode",
-                        "description": "",
-                        "activity": {
-                            "ref": "#invokechaincode",
-                            "input": {
-                                "chaincodeName": "iou_cc",
-                                "channelID": "mychannel",
-                                "transactionName": "issue",
-                                "parameters": {
-                                    "mapping": {
-                                        "id": "=$flow.parameters.id"
-                                    }
-                                }
-                            },
-                            "schemas": {
-                                "input": {
-                                    "parameters": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"id\":\"\"\n}"
-                                    }
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
@@ -932,148 +284,28 @@
                     {
                         "id": "Put",
                         "name": "Put",
-                        "description": "",
+                        "description": "This activity stores data to fabric ledger",
                         "activity": {
                             "ref": "#put",
                             "input": {
-                                "key": "=$flow.parameters.id",
-                                "commonData": {
-                                    "id": "5a70f500-37b2-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "iou_data_1_1"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579104974928,
-                                    "user": "flogo",
-                                    "connectorName": "iou_data_1_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579104974928,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "iou.IOU",
-                                "keyType": "iouKey",
-                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"issueDate~id\": [\n    \"issueDate\",\n    \"id\"\n  ]\n}",
-                                "data": "=$flow.parameters"
+                                "key": "mykey",
+                                "privateCollection": "=$property[\"Collections.Org1Collection\"]",
+                                "compositeKeys": "=$property[\"CompositeKeys.IOUKeys\"]",
+                                "data": {
+                                    "mapping": {
+                                        "iid": "mykey"
+                                    }
+                                }
                             },
                             "schemas": {
                                 "input": {
-                                    "data": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
-                                    }
+                                    "data": "schema://IOU"
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"id\": \"\",\n  \"issuer\": \"\",\n  \"amount\": 0,\n  \"currency\": \"\",\n  \"issueDate\": \"\",\n  \"owner\": \"\"\n}"
+                                        "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"iid\": {\n            \"type\": \"string\"\n        },\n        \"issuer\": {\n            \"type\": \"string\"\n        },\n        \"amount\": {\n            \"type\": \"number\"\n        },\n        \"currency\": {\n            \"type\": \"string\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+                                        "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"iid\": {\n            \"type\": \"string\"\n        },\n        \"issuer\": {\n            \"type\": \"string\"\n        },\n        \"amount\": {\n            \"type\": \"number\"\n        },\n        \"currency\": {\n            \"type\": \"string\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}"
                                     }
                                 }
                             }
@@ -1082,310 +314,32 @@
                     {
                         "id": "PutAll",
                         "name": "PutAll",
-                        "description": "",
+                        "description": "This activity stores multiple records in fabric ledger",
                         "activity": {
                             "ref": "#putall",
                             "input": {
-                                "commonData": {
-                                    "id": "5a70f500-37b2-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "iou_data_1_1"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579104974928,
-                                    "user": "flogo",
-                                    "connectorName": "iou_data_1_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579104974928,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "iou.IOU",
-                                "keyType": "iouKey",
-                                "compositeKeys": "{\n  \"issuer~id\": [\n    \"issuer\",\n    \"id\"\n  ],\n  \"issueDate~id\": [\n    \"issueDate\",\n    \"id\"\n  ]\n}",
+                                "privateCollection": "=$property[\"Collections.Org1Collection\"]",
+                                "compositeKeys": "=$property[\"CompositeKeys.IOUKeys\"]",
                                 "data": {
                                     "mapping": [
                                         {
-                                            "key": "=$flow.parameters.id",
-                                            "value": "=$flow.parameters"
+                                            "key": "mykey",
+                                            "value": {
+                                                "iid": "mykey"
+                                            }
                                         }
                                     ]
                                 }
                             },
                             "schemas": {
                                 "input": {
-                                    "data": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "data": "schema://IOU"
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "id": "Query",
-                        "name": "Query",
-                        "description": "",
-                        "activity": {
-                            "ref": "#query",
-                            "input": {
-                                "query": "{\n    \"selector\": {\n        \"owner\": \"$owner\",\n        \"amount\": {\n            \"$gt\": \"$min_size\"\n        }\n    }\n}",
-                                "usePagination": false,
-                                "pageSize": 0,
-                                "start": "",
-                                "commonData": {
-                                    "id": "5a70f500-37b2-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "iou_data_1_1"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU\",\"definition\":\"{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"IOU_KV\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"id\\\":\\\"\\\",\\\"issuer\\\":\\\"\\\",\\\"amount\\\":0,\\\"currency\\\":\\\"\\\",\\\"issueDate\\\":\\\"\\\",\\\"owner\\\":\\\"\\\"}}]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Account\",\"definition\":\"{\\\"name\\\":\\\"\\\",\\\"bank\\\":\\\"\\\",\\\"balance\\\":0,\\\"currency\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iou\",\"name\":\"Transaction\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"account\\\":\\\"\\\",\\\"amount\\\":0,\\\"iouRef\\\":\\\"\\\"}\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issuer~id\",\"value\":\"[\\\"issuer\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"iouKey\",\"name\":\"issueDate~id\",\"value\":\"[\\\"issueDate\\\",\\\"id\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"accountKey\",\"name\":\"bank~name\",\"value\":\"[\\\"bank\\\",\\\"name\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"account\",\"value\":\"[\\\"account\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"transactionKey\",\"name\":\"iouRef\",\"value\":\"[\\\"iouRef\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iou\": {\n    \"IOU\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    },\n    \"IOU_KV\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"id\": \"\",\n          \"issuer\": \"\",\n          \"amount\": 0,\n          \"currency\": \"\",\n          \"issueDate\": \"\",\n          \"owner\": \"\"\n        }\n      }\n    ],\n    \"Account\": {\n      \"name\": \"\",\n      \"bank\": \"\",\n      \"balance\": 0,\n      \"currency\": \"\"\n    },\n    \"Transaction\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"account\": \"\",\n      \"amount\": 0,\n      \"iouRef\": \"\"\n    }\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"iouKey\": {\n    \"issuer~id\": [\n      \"issuer\",\n      \"id\"\n    ],\n    \"issueDate~id\": [\n      \"issueDate\",\n      \"id\"\n    ]\n  },\n  \"accountKey\": {\n    \"bank~name\": [\n      \"bank\",\n      \"name\"\n    ]\n  },\n  \"transactionKey\": {\n    \"account\": [\n      \"account\"\n    ],\n    \"iouRef\": [\n      \"iouRef\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579104974928,
-                                    "user": "flogo",
-                                    "connectorName": "iou_data_1_1",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579104974928,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "iou.IOU",
-                                "queryParams": {
-                                    "mapping": {
-                                        "owner": "=$flow.parameters.owner",
-                                        "min_size": "=$flow.parameters.amount"
-                                    }
-                                }
-                            },
-                            "schemas": {
-                                "input": {
-                                    "queryParams": {
-                                        "type": "json",
-                                        "value": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"min_size\":{\"type\":\"number\"}},\"required\":[]}",
-                                        "fe_metadata": "[{\"parameterName\":\"owner\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true},{\"parameterName\":\"min_size\",\"type\":\"number\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
-                                    }
-                                },
-                                "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"id\": \"\",\n      \"issuer\": \"\",\n      \"amount\": 0,\n      \"currency\": \"\",\n      \"issueDate\": \"\",\n      \"owner\": \"\"\n    }\n  }\n]"
+                                        "value": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"iid\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+                                        "fe_metadata": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"iid\": {\n            \"type\": \"string\"\n          },\n          \"issuer\": {\n            \"type\": \"string\"\n          },\n          \"amount\": {\n            \"type\": \"number\"\n          },\n          \"currency\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
                                     }
                                 }
                             }
@@ -1394,48 +348,96 @@
                     {
                         "id": "SetEvent",
                         "name": "SetEvent",
-                        "description": "",
+                        "description": "This activity sets an event on a fabric block",
                         "activity": {
                             "ref": "#setevent",
                             "input": {
-                                "name": "IOUAlert",
-                                "payload": {
-                                    "mapping": {
-                                        "alert": "test"
-                                    }
-                                }
+                                "name": "alert"
                             },
                             "schemas": {
                                 "input": {
-                                    "payload": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"alert\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"alert\":\"\"\n}"
-                                    }
+                                    "payload": "schema://AlertEvent"
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"alert\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"alert\":\"\"\n}"
+                                        "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"level\": {\n            \"type\": \"number\"\n        }\n    }\n}",
+                                        "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"level\": {\n            \"type\": \"number\"\n        }\n    }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Cid",
-                        "name": "Cid",
-                        "description": "",
+                        "id": "InvokeChaincode",
+                        "name": "InvokeChaincode",
+                        "description": "This activity invokes a chaincode function on a fabric channel",
                         "activity": {
-                            "ref": "#cid",
+                            "ref": "#invokechaincode",
+                            "input": {
+                                "chaincodeName": "",
+                                "channelID": "",
+                                "transactionName": ""
+                            },
                             "schemas": {
-                                "output": {
-                                    "attrs": {
+                                "input": {
+                                    "parameters": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"abac.init\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"abac.init\": \"\",\n    \"email\": \"\"\n}"
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"param1\":{\"type\":\"string\"},\"param2\":{\"type\":\"string\"}}}",
+                                        "fe_metadata": "{\n    \"param1\": \"\",\n    \"param2\": \"\"\n}"
                                     }
+                                },
+                                "output": {
+                                    "result": "schema://AlertEvent"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "EndorsementPolicy",
+                        "name": "EndorsementPolicy",
+                        "description": "This activity manages state-based endorsement policy for fabric",
+                        "activity": {
+                            "ref": "#endorsement",
+                            "input": {
+                                "key": "",
+                                "operation": "ADD",
+                                "role": "MEMBER",
+                                "organizations": "Org1",
+                                "policy": "",
+                                "isPrivate": false,
+                                "collection": ""
+                            }
+                        }
+                    },
+                    {
+                        "id": "Query",
+                        "name": "Query",
+                        "description": "This activity fetches data by rich query on fabric Couch DB",
+                        "activity": {
+                            "ref": "#query",
+                            "input": {
+                                "query": "{\n    \"selector\": {\n        \"issuer\": \"foo\",\n        \"owner\": \"$owner\"\n    }\n}",
+                                "usePagination": false,
+                                "pageSize": 0,
+                                "start": "",
+                                "privateCollection": "",
+                                "queryParams": {
+                                    "mapping": {
+                                        "owner": "=$flow.parameters.owner"
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "queryParams": {
+                                        "type": "json",
+                                        "value": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"}},\"required\":[]}",
+                                        "fe_metadata": "[{\"parameterName\":\"owner\",\"type\":\"string\"}]"
+                                    }
+                                },
+                                "output": {
+                                    "result": "schema://IOU"
                                 }
                             }
                         }
@@ -1443,14 +445,21 @@
                     {
                         "id": "Return",
                         "name": "Return",
-                        "description": "",
+                        "description": "Simple Return Activity",
                         "activity": {
                             "ref": "#actreturn",
                             "settings": {
                                 "mappings": {
-                                    "returns": "=$activity[Get].result",
-                                    "status": "=$activity[Put].code",
-                                    "message": "=$activity[Put].message"
+                                    "status": "=$activity[PutAll].code",
+                                    "message": "=$activity[PutAll].message",
+                                    "returns": {
+                                        "mapping": {
+                                            "@foreach($activity[PutAll].result, returns)": {
+                                                "key": "=$loop.key",
+                                                "value": "=$loop.value"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1463,7 +472,15 @@
                             "type": "object",
                             "schema": {
                                 "type": "json",
-                                "value": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                                "value": "{\"iid\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "transient",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"account\":{\"type\":\"string\"},\"balance\":{\"type\":\"number\"}}"
                             }
                         },
                         {
@@ -1486,23 +503,61 @@
                         },
                         {
                             "name": "returns",
-                            "type": "object",
+                            "type": "array",
                             "schema": {
                                 "type": "json",
-                                "value": "{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}"
+                                "value": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"iid\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}"
                             }
                         }
                     ],
                     "fe_metadata": {
-                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
-                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"issueDate\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}},\"required\":[]}"
+                        "input": "{\"type\":\"object\",\"title\":\"FabricTransaction\",\"properties\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"iid\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}},\"transient\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"account\":{\"type\":\"string\"},\"balance\":{\"type\":\"number\"}}},\"txID\":{\"type\":\"string\",\"required\":false},\"txTime\":{\"type\":\"string\",\"required\":false}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"status\":{\"type\":\"number\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false},\"returns\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"iid\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
                     }
                 }
             }
         }
     ],
-    "properties": [],
+    "properties": [
+        {
+            "name": "Collections.Org1Collection",
+            "type": "string",
+            "value": "Org1Collection"
+        },
+        {
+            "name": "CompositeKeys.IOUKeys",
+            "type": "string",
+            "value": "IOUKey=issuer,iid;OwnerKey=owner,iid"
+        },
+        {
+            "name": "CompositeKeys.IssuerKey",
+            "type": "string",
+            "value": "IssuerKey=issuer,iid"
+        }
+    ],
+    "schemas": {
+        "IOU": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"iid\": {\n            \"type\": \"string\"\n        },\n        \"issuer\": {\n            \"type\": \"string\"\n        },\n        \"amount\": {\n            \"type\": \"number\"\n        },\n        \"currency\": {\n            \"type\": \"string\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"iid\": {\n            \"type\": \"string\"\n        },\n        \"issuer\": {\n            \"type\": \"string\"\n        },\n        \"amount\": {\n            \"type\": \"number\"\n        },\n        \"currency\": {\n            \"type\": \"string\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+        },
+        "IOUMap": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"iid\": {\n                        \"type\": \"string\"\n                    },\n                    \"issuer\": {\n                        \"type\": \"string\"\n                    },\n                    \"amount\": {\n                        \"type\": \"number\"\n                    },\n                    \"currency\": {\n                        \"type\": \"string\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"iid\": {\n                        \"type\": \"string\"\n                    },\n                    \"issuer\": {\n                        \"type\": \"string\"\n                    },\n                    \"amount\": {\n                        \"type\": \"number\"\n                    },\n                    \"currency\": {\n                        \"type\": \"string\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
+        },
+        "ClientCert": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"role\": {\n            \"type\": \"string\"\n        },\n        \"org\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"role\": {\n            \"type\": \"string\"\n        },\n        \"org\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+        },
+        "AlertEvent": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"level\": {\n            \"type\": \"number\"\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"level\": {\n            \"type\": \"number\"\n        }\n    }\n}"
+        }
+    },
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifV0=",
-    "fe_metadata": "UEsDBAoAAAAIAAmML1CrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAAJjC9Qq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAAGXVFGrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAABl1RRq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

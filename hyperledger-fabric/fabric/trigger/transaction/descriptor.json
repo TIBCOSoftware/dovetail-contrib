@@ -1,6 +1,6 @@
 {
     "name": "fabric-transaction",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:trigger",
     "title": "Fabric Transaction",
     "author": "TIBCO Software Inc.",
@@ -17,72 +17,43 @@
     "settings": [],
     "handler": {
         "settings": [{
-            "name": "name",
-            "type": "string",
-            "required": true,
-            "display": {
-                "name": "Transaction name",
-                "description": "Name of the transaction for Hyperledger Fabric contract",
-                "appPropertySupport": true
-            },
-            "wizard": {
-                "name": "Transaction name",
+                "name": "name",
                 "type": "string",
-                "step": "Step 1"
+                "required": true,
+                "display": {
+                    "name": "Transaction name",
+                    "description": "Name of the transaction for Hyperledger Fabric contract",
+                    "appPropertySupport": true
+                },
+                "wizard": {
+                    "name": "Transaction name",
+                    "type": "string",
+                    "step": "Step 1"
+                }
+            },
+            {
+                "name": "validation",
+                "type": "boolean",
+                "required": false,
+                "display": {
+                    "name": "Output validation",
+                    "description": "Selection for output validation, default false",
+                    "appPropertySupport": true
+                },
+                "value": false
             }
-        },
-        {
-            "name": "commonData",
-            "type": "connection",
-            "display": {
-                "name": "Common data definition",
-                "description": "Select common data collection",
-                "type": "connection",
-                "visible": true
-            },
-            "wizard": {
-                "type": "dropdown",
-                "selection": "single",
-                "step": "Step 1"
-            },
-            "allowed":[]
-        },
-        {
-            "name": "validation",
-            "type": "boolean",
-            "required": false,
-            "display": {
-                "name": "Output validation",
-                "description": "Selection for output validation, default false",
-                "appPropertySupport": true
-            },
-            "value": false
-        }]
+        ]
     },
-    "outputs": [
-        {
-            "name": "parametersDataType",
-            "type": "string",
-            "display":{
-                "name": "Parameter data type",
-                "description": "Select input parameter schema",
-                "visible": false
-            },
-            "wizard": {
-                "type": "dropdown",
-                "selection": "single",
-                "step": "Step 1"
-            },
-            "allowed": []
-        },
-        {
+    "outputs": [{
             "name": "parameters",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Parameter names and schema",
                 "description": "e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
                 "type": "texteditor",
-                "syntax": "json"
+                "syntax": "json",
+                "mappable": true,
+                "visible": true
             },
             "wizard": {
                 "name": "Parameter names and schema",
@@ -92,28 +63,15 @@
             }
         },
         {
-            "name": "transientDataType",
-            "type": "string",
-            "display":{
-                "name": "Transient data type",
-                "description": "Select transient data schema",
-                "visible": false
-            },
-            "wizard": {
-                "type": "dropdown",
-                "selection": "single",
-                "step": "Step 2"
-            },
-            "allowed": []
-        },
-        {
             "name": "transient",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Transient attributes and schema",
                 "description": "e.g.,\r\n{\r\n  \"trans1\": \"string\",\r\n  \"trans2\": {\"item1\": 0}\r\n}",
                 "type": "texteditor",
-                "syntax": "json"
+                "syntax": "json",
+                "mappable": true,
+                "visible": true
             },
             "wizard": {
                 "name": "Transient attributes and schema",
@@ -139,8 +97,7 @@
             }
         }
     ],
-    "reply": [
-        {
+    "reply": [{
             "name": "status",
             "type": "number"
         },
@@ -149,29 +106,15 @@
             "type": "string"
         },
         {
-            "name": "returnsDataType",
-            "type": "string",
-            "display":{
-                "name": "Result data type",
-                "description": "Select result data schema",
-                "visible": false
-            },
-            "wizard": {
-                "type": "dropdown",
-                "selection": "single",
-                "step": "Step 3"
-            },
-            "allowed": []
-        },
-        {
             "name": "returns",
-            "type": "complex_object",
+            "type": "object",
             "display": {
                 "name": "Returned attributes and schema",
                 "description": "e.g.,\r\n{\r\n  \"attr1\": \"string\",\r\n  \"attr2\": {\"elem1\": 0}\r\n}",
                 "type": "texteditor",
                 "syntax": "json",
-                "mappable": true
+                "mappable": true,
+                "visible": true
             },
             "wizard": {
                 "name": "Returned attributes and schema",

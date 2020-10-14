@@ -91,7 +91,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query {\n    queryTimeRange(domain: \"tibco.oocto.dovetail.test\", owner: \"oocto@tibco.com\", startTime: \"2019-08-01\", endTime: \"2020-08-01\") {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
+						"query": "query {\n    queryTimeRange(domain: \"tibco.oocto.dovetail.test\", owner: \"oocto@tibco.com\", startTime: \"2019-08-01\", endTime: \"2021-08-01\") {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
 						"variables": ""
 					}
 				},
@@ -117,7 +117,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n    deleteTransaction(txID: \"603ac2b138dfee985f54080713d78dd61169c05e9f9aebea026eee186c3b3a1f\") {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
+						"query": "mutation {\n    deleteTransaction(txID: \"c8b88450ccfc231e588df8772fe56f8512b504b3a79c86dbafa734a491ff62b5\") {\n        key\n        value {\n            txID\n            txTime\n            recID\n            domain\n            owner\n            data\n            hashType\n            hashValue\n        }\n    }\n}",
 						"variables": ""
 					}
 				},
@@ -135,5 +135,6 @@
 			},
 			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

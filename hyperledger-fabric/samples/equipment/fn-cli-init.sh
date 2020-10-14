@@ -6,11 +6,9 @@
 . ./utils.sh
 CCNAME=${1:-"equipment_cc"}
 CC_PATH=${GOPATH}/src/github.com/chaincode
-CDS_FILE=${CC_PATH}/${CCNAME}_1.0.cds
+CDS_FILE=${CC_PATH}/${CCNAME}/${CCNAME}_1.0.cds
 
-if [ -f "${CDS_FILE}" ]; then
-  echo "use pre-packaged CDS: ${CDS_FILE}"
-else
+if [ ! -f "${CDS_FILE}" ]; then
   echo "package chaincode ${CCNAME}:1.0"
   peer chaincode package -n ${CCNAME} -v 1.0 -p github.com/chaincode/${CCNAME} ${CDS_FILE}
 fi
