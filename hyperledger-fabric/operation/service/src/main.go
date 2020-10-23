@@ -16,7 +16,7 @@ import (
 
 	"github.com/golang/glog"
 
-	"github.com/yxuco/fabric-operation/service/fabric"
+	"github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/operation/service/fabric"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	context "golang.org/x/net/context"

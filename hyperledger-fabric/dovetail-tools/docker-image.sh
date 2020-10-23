@@ -29,7 +29,7 @@ services:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - WORK=/root/work
-      - DOVETAIL_REPO=github.com/yxuco
+      - DOVETAIL_REPO=github.com/TIBCOSoftware
       - FLOGO_REPO=github.com/yxuco
       - FLOGO_REPO_VER=v1.1.1
       - FLOGO_VER=v1.1.0
@@ -99,7 +99,7 @@ function printHelp() {
 }
 
 NAME="dovetail-tools"
-VERSION="v1.1.0"
+VERSION="v1.1.1"
 
 CMD=${1}
 shift

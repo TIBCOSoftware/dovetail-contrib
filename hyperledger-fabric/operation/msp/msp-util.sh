@@ -409,7 +409,7 @@ spec:
 
 function printK8sPod {
 #  local image="hyperledger/fabric-tools"
-  local image="yxuco/dovetail-tools:v1.1.0"
+  local image="yxuco/dovetail-tools:v1.1.1"
   echo "
 apiVersion: v1
 kind: Pod
