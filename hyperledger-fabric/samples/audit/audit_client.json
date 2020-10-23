@@ -10,10 +10,10 @@
     ],
     "name": "audit_client",
     "description": " ",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:app",
     "appModel": "1.1.1",
-    "feVersion": "2.8.0",
+    "feVersion": "2.10.0",
     "triggers": [
         {
             "ref": "#graphql",
@@ -63,7 +63,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"owner\":{\"type\":\"string\"},\"startTime\":{\"type\":\"string\"},\"endTime\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_queryTimeRange"
                 },
                 {
                     "description": "",
@@ -98,7 +99,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getRecord"
                 },
                 {
                     "description": "",
@@ -133,7 +135,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"recID\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getRecordsByID"
                 },
                 {
                     "description": "",
@@ -168,7 +171,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getRecordsByTxID"
                 },
                 {
                     "description": "",
@@ -203,7 +207,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"txTime\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Query_getRecordsByTxTime"
                 },
                 {
                     "description": "",
@@ -238,7 +243,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"required\":[],\"properties\":{\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"}}}}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_createAudit"
                 },
                 {
                     "description": "",
@@ -273,7 +279,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_deleteRecord"
                 },
                 {
                     "description": "",
@@ -308,7 +315,8 @@
                                 "fe_metadata": "{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"}},\"required\":[]}"
                             }
                         }
-                    }
+                    },
+                    "name": "Mutation_deleteTransaction"
                 }
             ]
         }
@@ -329,12 +337,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -348,19 +356,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[queryTimeRange] \", $flow.arguments.startTime, \", \", $flow.arguments.endTime)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "3071df40-374d-11ea-8b4c-a56bccb1268c",
+                                    "id": "eae1e780-13d4-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -498,16 +507,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579061525300,
+                                    "lastUpdatedTime": 1603309128864,
                                     "user": "flogo",
                                     "connectorName": "audit_client",
-                                    "connectorDescription": "connection for audit-client on Fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579061525300,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "connection for audit-client on Fabric sample first-network"
                                 },
                                 "transactionName": "queryTimeRange",
                                 "requestType": "query",
@@ -515,6 +527,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": "=$flow.arguments"
                             },
                             "schemas": {
@@ -526,24 +539,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://AuditKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -613,12 +623,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -632,19 +642,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getRecord] \", $flow.arguments.key)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "3071df40-374d-11ea-8b4c-a56bccb1268c",
+                                    "id": "eae1e780-13d4-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -782,16 +793,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579061525300,
+                                    "lastUpdatedTime": 1603309128864,
                                     "user": "flogo",
                                     "connectorName": "audit_client",
-                                    "connectorDescription": "connection for audit-client on Fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579061525300,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "connection for audit-client on Fabric sample first-network"
                                 },
                                 "transactionName": "getRecord",
                                 "requestType": "query",
@@ -799,6 +813,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
                                         "key": "=$flow.arguments.key"
@@ -814,24 +829,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"AuditRecord\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"txID\": {\n      \"type\": \"string\"\n    },\n    \"txTime\": {\n      \"type\": \"string\"\n    },\n    \"recID\": {\n      \"type\": \"string\"\n    },\n    \"domain\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"string\"\n    },\n    \"hashType\": {\n      \"type\": \"string\"\n    },\n    \"hashValue\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"AuditRecord\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"txID\": {\n      \"type\": \"string\"\n    },\n    \"txTime\": {\n      \"type\": \"string\"\n    },\n    \"recID\": {\n      \"type\": \"string\"\n    },\n    \"domain\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"string\"\n    },\n    \"hashType\": {\n      \"type\": \"string\"\n    },\n    \"hashValue\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://Audit"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -896,12 +908,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -915,19 +927,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getRecordsByID] \", $flow.arguments.recID)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "3071df40-374d-11ea-8b4c-a56bccb1268c",
+                                    "id": "eae1e780-13d4-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1065,16 +1078,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579061525300,
+                                    "lastUpdatedTime": 1603309128864,
                                     "user": "flogo",
                                     "connectorName": "audit_client",
-                                    "connectorDescription": "connection for audit-client on Fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579061525300,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "connection for audit-client on Fabric sample first-network"
                                 },
                                 "transactionName": "getRecordsByID",
                                 "requestType": "query",
@@ -1082,6 +1098,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
                                         "recID": "=$flow.arguments.recID"
@@ -1097,24 +1114,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://AuditKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1184,12 +1198,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -1203,19 +1217,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getRecordsByTxID] \", $flow.arguments.txID)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "3071df40-374d-11ea-8b4c-a56bccb1268c",
+                                    "id": "eae1e780-13d4-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1353,16 +1368,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579061525300,
+                                    "lastUpdatedTime": 1603309128864,
                                     "user": "flogo",
                                     "connectorName": "audit_client",
-                                    "connectorDescription": "connection for audit-client on Fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579061525300,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "connection for audit-client on Fabric sample first-network"
                                 },
                                 "transactionName": "getRecordsByTxID",
                                 "requestType": "query",
@@ -1370,6 +1388,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
                                         "txID": "=$flow.arguments.txID"
@@ -1385,24 +1404,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://AuditKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1472,12 +1488,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -1491,19 +1507,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getRecordsByTxTime] \", $flow.arguments.txTime)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "3071df40-374d-11ea-8b4c-a56bccb1268c",
+                                    "id": "eae1e780-13d4-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1641,16 +1658,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579061525300,
+                                    "lastUpdatedTime": 1603309128864,
                                     "user": "flogo",
                                     "connectorName": "audit_client",
-                                    "connectorDescription": "connection for audit-client on Fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579061525300,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "connection for audit-client on Fabric sample first-network"
                                 },
                                 "transactionName": "getRecordsByTxTime",
                                 "requestType": "query",
@@ -1658,6 +1678,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
                                         "txTime": "=$flow.arguments.txTime"
@@ -1673,24 +1694,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://AuditKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1760,12 +1778,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -1779,19 +1797,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[createAudit] \", $flow.arguments.records[0].recID)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "3071df40-374d-11ea-8b4c-a56bccb1268c",
+                                    "id": "eae1e780-13d4-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1929,16 +1948,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579061525300,
+                                    "lastUpdatedTime": 1603309128864,
                                     "user": "flogo",
                                     "connectorName": "audit_client",
-                                    "connectorDescription": "connection for audit-client on Fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579061525300,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "connection for audit-client on Fabric sample first-network"
                                 },
                                 "transactionName": "createAudit",
                                 "requestType": "invoke",
@@ -1946,35 +1968,29 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": "=$flow.arguments"
                             },
                             "schemas": {
                                 "input": {
-                                    "parameters": {
-                                        "type": "json",
-                                        "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"records\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"records\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "parameters": "schema://AuditRecords"
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://AuditKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2044,12 +2060,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -2063,19 +2079,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[deleteRecord] \", $flow.arguments.key)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "3071df40-374d-11ea-8b4c-a56bccb1268c",
+                                    "id": "eae1e780-13d4-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2213,16 +2230,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579061525300,
+                                    "lastUpdatedTime": 1603309128864,
                                     "user": "flogo",
                                     "connectorName": "audit_client",
-                                    "connectorDescription": "connection for audit-client on Fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579061525300,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "connection for audit-client on Fabric sample first-network"
                                 },
                                 "transactionName": "deleteRecord",
                                 "requestType": "invoke",
@@ -2230,6 +2250,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
                                         "key": "=$flow.arguments.key"
@@ -2245,24 +2266,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"AuditRecord\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"txID\": {\n      \"type\": \"string\"\n    },\n    \"txTime\": {\n      \"type\": \"string\"\n    },\n    \"recID\": {\n      \"type\": \"string\"\n    },\n    \"domain\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"string\"\n    },\n    \"hashType\": {\n      \"type\": \"string\"\n    },\n    \"hashValue\": {\n      \"type\": \"string\"\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"AuditRecord\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"txID\": {\n      \"type\": \"string\"\n    },\n    \"txTime\": {\n      \"type\": \"string\"\n    },\n    \"recID\": {\n      \"type\": \"string\"\n    },\n    \"domain\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"string\"\n    },\n    \"hashType\": {\n      \"type\": \"string\"\n    },\n    \"hashValue\": {\n      \"type\": \"string\"\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://Audit"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2327,12 +2345,12 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -2346,19 +2364,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[deleteTransaction] \", $flow.arguments.txID)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "3071df40-374d-11ea-8b4c-a56bccb1268c",
+                                    "id": "eae1e780-13d4-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2496,16 +2515,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579061525300,
+                                    "lastUpdatedTime": 1603309128864,
                                     "user": "flogo",
                                     "connectorName": "audit_client",
-                                    "connectorDescription": "connection for audit-client on Fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579061525300,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "connection for audit-client on Fabric sample first-network"
                                 },
                                 "transactionName": "deleteTransaction",
                                 "requestType": "invoke",
@@ -2513,6 +2535,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
                                         "txID": "=$flow.arguments.txID"
@@ -2528,24 +2551,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
-                                        "fe_metadata": "{\n  \"$id\": \"AuditList\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
-                                    }
+                                    "result": "schema://AuditKV"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2618,7 +2638,24 @@
             "value": "audit_cc"
         }
     ],
+    "schemas": {
+        "AuditKV": {
+            "type": "json",
+            "value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"key\": {\n        \"type\": \"string\"\n      },\n      \"value\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txID\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+        },
+        "Audit": {
+            "type": "json",
+            "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"txID\": {\n      \"type\": \"string\"\n    },\n    \"txTime\": {\n      \"type\": \"string\"\n    },\n    \"recID\": {\n      \"type\": \"string\"\n    },\n    \"domain\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"string\"\n    },\n    \"hashType\": {\n      \"type\": \"string\"\n    },\n    \"hashValue\": {\n      \"type\": \"string\"\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"txID\": {\n      \"type\": \"string\"\n    },\n    \"txTime\": {\n      \"type\": \"string\"\n    },\n    \"recID\": {\n      \"type\": \"string\"\n    },\n    \"domain\": {\n      \"type\": \"string\"\n    },\n    \"owner\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"string\"\n    },\n    \"hashType\": {\n      \"type\": \"string\"\n    },\n    \"hashValue\": {\n      \"type\": \"string\"\n    }\n  }\n}"
+        },
+        "AuditRecords": {
+            "type": "json",
+            "value": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"records\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+            "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"records\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"recID\": {\n            \"type\": \"string\"\n          },\n          \"domain\": {\n            \"type\": \"string\"\n          },\n          \"owner\": {\n            \"type\": \"string\"\n          },\n          \"data\": {\n            \"type\": \"string\"\n          },\n          \"hashType\": {\n            \"type\": \"string\"\n          },\n          \"hashValue\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+        }
+    },
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvYWN0aXZpdHkvbG9nIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvYWN0aXZpdHkvbG9nIn0seyJyZWYiOiJnaXRodWIuY29tL1RJQkNPU29mdHdhcmUvZG92ZXRhaWwtY29udHJpYi9oeXBlcmxlZGdlci1mYWJyaWMvZmFiY2xpZW50IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L2ZhYmNsaWVudCJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAKchL1CrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACACnIS9Qq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAE6fVVGrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACABOn1VRq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

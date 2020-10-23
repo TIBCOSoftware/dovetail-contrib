@@ -1,6 +1,6 @@
 # marble
 
-This example uses [TIBCO Flogo® Enterprise](https://www.tibco.com/products/tibco-flogo) to implement the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode [marbles02](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02). This sample demonstrates basic features of the Hyperledger Fabric, including creeation and update of states and composite-keys, and different types of queries for state and history with pagination. It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code. The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise 2.8.0](https://docs.tibco.com/products/tibco-flogo-enterprise-2-8-0).
+This example uses [TIBCO Flogo® Enterprise](https://www.tibco.com/products/tibco-flogo) to implement the [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) sample chaincode [marbles02](https://github.com/hyperledger/fabric-samples/tree/release-1.4/chaincode/marbles02/go). This sample demonstrates basic features of the Hyperledger Fabric, including creeation and update of states and composite-keys, and different types of queries for state and history with pagination. It is implemented using [Flogo®](https://www.flogo.io/) models by visual programming with zero-code. The Flogo® models can be created, imported, edited, and/or exported by using [TIBCO Flogo® Enterprise 2.10.0](https://docs.tibco.com/products/tibco-flogo-enterprise-2-10-0).
 
 ## Prerequisite
 
@@ -12,14 +12,14 @@ Skip to the next section if you do not plan to modify the included sample model.
 
 - Start TIBCO Flogo® Enterprise.
 - Open <http://localhost:8090> in Chrome web browser.
-- Create new Flogo App of name `marble_app` and choose `Import app` to import the model [`marble_app.json`](marble_app.json)
+- Create new Flogo App of name `marble` and choose `Import app` to import the model [`marble.json`](marble.json)
 - You can then add or update contract transactions using the graphical modeler of the TIBCO Flogo® Enterprise.
-- After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_app.json`](marble_app.json) to this `marble` sample folder.
+- After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble.json`](marble.json) to this `marble` sample folder.
 
 ## Build and deploy chaincode to Hyperledger Fabric
 
-- In this `marble` sample folder, execute `make build` to generate the chaincode source code from the flogo model [`marble_app.json`](marble_app.json).
-- Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder. Note that you may need to set env `FAB_PATH` or edit the [`Makefile`](Makefile) and match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
+- In this `marble` sample folder, execute `make build` to generate the chaincode source code from the flogo model [`marble.json`](marble.json).
+- Execute `make deploy` to build and deploy the chaincode to the `fabric-samples` chaincode folder. Note that you may need to set env `FAB_PATH` or edit the [`Makefile`](Makefile) and match the installation folder of `fabric-samples` if it is not downloaded to the default location under `${WORK_PATH}`.
 
 The detailed commands of the above steps are as follows:
 
@@ -29,13 +29,15 @@ make build
 make deploy
 ```
 
+The `build` script uses a `dovetail-tools` docker container to build the chaincode model into a CDS package that can be installed on any fabric network. Refer [README](../../dovetail-tools/README.md) for more details about the docker container and the build script.
+
 ## Install and test chaincode using fabric sample first-network
 
 Start Hyperledger Fabric first-network with CouchDB:
 
 ```bash
-cd /path/to/fabric-samples/first-network
-./byfn.sh up -n -s couchdb
+cd /path/to/dovetail-contrib/hyperledger-fabric/samples/marble
+make start
 ```
 
 Use `cli` docker container to install and instantiate the `marble_cc` chaincode.
@@ -45,7 +47,7 @@ cd /path/to/dovetail-contrib/hyperledger-fabric/samples/marble
 make cli-init
 ```
 
-The step checks the `marble_cc_1.0.cds` file under the `CC_DEPLOY` folder, which should be copied by the previous step `make deploy`.
+This step installs the chaincode package, `marble_cc_1.0.cds`, from `${CC_DEPLOY}/marble_cc` folder, which should be copied by the previous step `make deploy`. The same `CDS` file can be used to install chaincode on any other fabric networks.
 
 Optionally, test the chaincode from `cli` docker container, i.e.,
 
@@ -54,15 +56,15 @@ cd /path/to/dovetail-contrib/hyperledger-fabric/samples/marble
 make cli-test
 ```
 
-You may skip this test, and follow the steps in the next section to build client apps, and then use the client app to execute the tests. If you run the `cli` tests, however, it should print out 17 successful tests with status code `200` if the `marble_app` chaincode is installed and instantiated successfully on the Fabric network.
+You may skip this test, and follow the steps in the next section to build client apps, and then use the client app to execute the tests. If you run the `cli` tests, however, it should print out 17 successful tests with status code `200` if the `marble_cc` chaincode is installed and instantiated successfully on the Fabric network.
 
 Note that developers can also use Fabric dev-mode to test chaincode (refer [dev](./dev.md) for more details). For issues regarding how to work with the Fabric network, please refer the [Hyperledger Fabric docs](https://hyperledger-fabric.readthedocs.io/en/latest/build_network.html).
 
 ## Edit marble REST service (optional)
 
-The sample Flogo model, [`marble_client_app.json`](marble_client_app.json) is a REST service that invokes the `marble` chaincode. Skip to the next section if you do not plan to modify the sample model.
+The sample Flogo model, [`marble_client.json`](marble_client.json) is a REST service that invokes the `marble` chaincode. Skip to the next section if you do not plan to modify the sample model.
 
-The client app requires the metadata of the `marble-app` chaincode. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
+The client app requires the metadata of the `marble` chaincode. You can generate the contract metadata [`metadata.json`](contract-metadata/metadata.json) by
 
 ```bash
 cd /path/to/dovetail-contrib/hyperledger-fabric/samples/marble
@@ -73,10 +75,10 @@ Following are steps to edit or view the REST service models:
 
 - Start TIBCO Flogo® Enterprise.
 - Open http://localhost:8090 in Chrome web browser.
-- Create new Flogo App of name `marble_client_app` and choose `Import app` to import the model [`marble_client_app.json`](marble_client_app.json)
+- Create new Flogo App of name `marble_client` and choose `Import app` to import the model [`marble_client.json`](marble_client.json)
 - You can then add or update the service implementation using the graphical modeler of the TIBCO Flogo® Enterprise.
 - Open `Connections` tab, find and edit the `marble client` connector. Set the `Smart contract metadata file` to the [`metadata.json`](contract-metadata/metadata.json) generated in the previous step. Set the `Network configuration file` and `entity matcher file` to the corresponding files in [`testdata`](../../testdata).
-- After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_client_app.json`](marble_client_app.json) to this `marble` sample folder.
+- After you are done editing, export the Flogo App, and copy the downloaded model file, i.e., [`marble_client.json`](marble_client.json) to the `marble` sample folder.
 
 Note: after you import the REST model, check the configuration of the REST trigger. The port should be mapped to `=$property["PORT"]`. Correcct the mapping if it is not imported correctly.
 
@@ -90,7 +92,7 @@ make build-client
 make run
 ```
 
-Note that the flow model `marble_fe.json` is similar to the `marble_client_app.json` used above, except that it uses the Flogo Enterprise `REST` trigger, which is not open-source, and thus requires license for TIBCO Flogo Enterprise. You can build and run this model similarly, i.e.,
+Note that the flow model `marble_fe.json` is similar to the `marble_client.json` used above, except that it uses the Flogo Enterprise `REST` trigger, which is not open-source, and thus requires license for TIBCO Flogo Enterprise. You can build and run this model similarly, i.e.,
 
 ```bash
 cd /path/to/dovetail-contrib/hyperledger-fabric/samples/marble
@@ -153,16 +155,16 @@ The previous step `make package` generated a `GraphQL` schema file [`metadata.gq
 After you are done testing, you can stop and cleanup the Fabric sample `first-network` as follows:
 
 ```bash
-cd /path/to/fabric-samples/first-network
-./byfn.sh down
-docker rm $(docker ps -a | grep dev-peer | awk '{print $1}')
-docker rmi $(docker images | grep dev-peer | awk '{print $3}')
+cd /path/to/dovetail-contrib/hyperledger-fabric/samples/marble
+make shutdown
 ```
 
 ## Deploy to IBM Cloud
 
-To deploy the `marblle` chaincode to IBM Cloud, it is required to package the chaincode in `.cds` format. The script `make build` has created `marble_cc_1.0.cds`, which you can deploy to IBM Blockchain Platform.
-
-Refer to [fabric-tools](../../fabric-tools) for details about installing `cds` package on the IBM Blockchain Platform.
+The CDS package, `marble_cc_1.0.cds`, created by the build script above can be used to deploy to IBM Blockchain Platform. Refer to [fabric-tools](../../fabric-tools) for details about installing chaincode on the IBM Blockchain Platform.
 
 The REST or GraphQL service apps can access the same `marble` chaincode deployed in [IBM Cloud](https://cloud.ibm.com) using the [IBM Blockchain Platform](https://cloud.ibm.com/catalog/services/blockchain-platform-20). The only required update is the network configuration file. [config_ibp.yaml](../../testdata/config_ibp.yaml) is a sample network configuration that can be used by the REST or GraphQL service app.
+
+## Deploy to other cloud
+
+You can also deploy and test chaincode or applications in a Kubernetes cluster by other cloud service providers, e.g., Amazon AWS, Microsoft Azure, or Google GCP. The scripts in the [operation](../../operation) folder can be used to create Kubernetes clusters and manage Hyperledger Fabric networks in each of the 3 major cloud service providers. Even though AWS and Azure provide their own managed service for Hyperledger Fabric, they do not support the latest version of the fabric release, e.g., release v1.4.9, and thus you will need to manage your own clusters in any cloud provider other than IBM.

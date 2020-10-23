@@ -1,7 +1,6 @@
-
 {
     "name": "fabric-setevent",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:activity",
     "title": "Set Event",
     "author": "TIBCO Software Inc.",
@@ -13,8 +12,7 @@
     },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/setevent",
     "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/setevent",
-    "inputs": [
-        {
+    "inputs": [{
             "name": "name",
             "type": "string",
             "required": true
@@ -27,12 +25,12 @@
                 "description": "Schema definition of the event payload, e.g.,\r\n{\r\n  \"param1\": \"string\",\r\n  \"param2\": {\"field1\": 0}\r\n}",
                 "type": "texteditor",
                 "syntax": "json",
-                "mappable": true
+                "mappable": true,
+                "visible": true
             }
         }
     ],
-    "outputs": [
-        {
+    "outputs": [{
             "name": "code",
             "type": "integer"
         },

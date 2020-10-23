@@ -10,11 +10,11 @@
         "github.com/project-flogo/contrib/function/string"
     ],
     "name": "equipment_client",
-    "description": " ",
-    "version": "1.1.0",
+    "description": "REST client for equipment",
+    "version": "2.0.0",
     "type": "flogo:app",
     "appModel": "1.1.1",
-    "feVersion": "2.8.0",
+    "feVersion": "2.10.0",
     "triggers": [
         {
             "ref": "#rest",
@@ -49,7 +49,8 @@
                     },
                     "reply": {
                         "code": 200
-                    }
+                    },
+                    "name": "submitPO"
                 },
                 {
                     "description": "",
@@ -72,7 +73,8 @@
                     },
                     "reply": {
                         "code": 200
-                    }
+                    },
+                    "name": "receiveAsset"
                 },
                 {
                     "description": "",
@@ -95,7 +97,8 @@
                     },
                     "reply": {
                         "code": 200
-                    }
+                    },
+                    "name": "installAsset"
                 },
                 {
                     "description": "",
@@ -118,7 +121,8 @@
                     },
                     "reply": {
                         "code": 200
-                    }
+                    },
+                    "name": "receiveInvoice"
                 },
                 {
                     "description": "",
@@ -141,7 +145,8 @@
                     },
                     "reply": {
                         "code": 200
-                    }
+                    },
+                    "name": "updateAsset"
                 },
                 {
                     "description": "",
@@ -164,7 +169,8 @@
                     },
                     "reply": {
                         "code": 200
-                    }
+                    },
+                    "name": "queryAsset"
                 }
             ]
         },
@@ -179,7 +185,7 @@
                     "description": "",
                     "settings": {
                         "connectionName": {
-                            "id": "ccef9f60-37ac-11ea-8b4c-a56bccb1268c",
+                            "id": "1d818fb0-13e9-11eb-bf14-df5b7fa30e78",
                             "type": "flogo:connector",
                             "version": "1.0.0",
                             "name": "fabclient-connector",
@@ -317,16 +323,19 @@
                                 }
                             ],
                             "feature": {},
+                            "loopType": "none",
+                            "loopSettings": [],
+                            "retrySettings": [],
                             "propertyMap": {},
                             "keyfield": "name",
+                            "schemaMap": {},
+                            "iteratorAccumulate": false,
+                            "accessOutputInInput": false,
                             "isValid": true,
-                            "lastUpdatedTime": 1579102590038,
+                            "lastUpdatedTime": 1603317812082,
                             "user": "flogo",
                             "connectorName": "equipment client",
-                            "connectorDescription": "equipment poc client for fabric sample first-network",
-                            "isImported": true,
-                            "createdTime": 1579102590038,
-                            "subscriptionId": "flogo_sbsc"
+                            "connectorDescription": "equipment poc client for fabric sample first-network"
                         },
                         "eventType": "Block",
                         "eventFilter": "",
@@ -352,7 +361,8 @@
                                 "fe_metadata": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"block\": {\n      \"type\": \"integer\"\n    },\n    \"source\": {\n      \"type\": \"string\"\n    },\n    \"transactions\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"type\": {\n            \"type\": \"string\"\n          },\n          \"txId\": {\n            \"type\": \"string\"\n          },\n          \"txTime\": {\n            \"type\": \"string\"\n          },\n          \"channel\": {\n            \"type\": \"string\"\n          },\n          \"creator\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"wspid\": {\n                \"type\": \"string\"\n              },\n              \"subject\": {\n                \"type\": \"string\"\n              },\n              \"issuer\": {\n                \"type\": \"string\"\n              },\n              \"cert\": {\n                \"type\": \"string\"\n              }\n            }\n          },\n          \"actions\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"chaincode\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"type\": {\n                      \"type\": \"string\"\n                    },\n                    \"name\": {\n                      \"type\": \"string\"\n                    },\n                    \"version\": {\n                      \"type\": \"string\"\n                    }\n                  }\n                },\n                \"input\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"function\": {\n                      \"type\": \"string\"\n                    },\n                    \"args\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"transient\": {\n                      \"type\": \"string\"\n                    }\n                  }\n                },\n                \"result\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"rwset\": {\n                      \"type\": \"integer\"\n                    },\n                    \"response\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"status\": {\n                          \"type\": \"integer\"\n                        },\n                        \"message\": {\n                          \"type\": \"string\"\n                        },\n                        \"payload\": {\n                          \"type\": \"string\"\n                        }\n                      }\n                    },\n                    \"event\": {\n                      \"type\": \"object\",\n                      \"properties\": {\n                        \"name\": {\n                          \"type\": \"string\"\n                        },\n                        \"payload\": {\n                          \"type\": \"string\"\n                        }\n                      }\n                    }\n                  }\n                },\n                \"endorsers\": {\n                  \"type\": \"integer\"\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "eventListener"
                 }
             ]
         }
@@ -373,24 +383,23 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log1 to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log1 to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
                 "tasks": [
@@ -402,7 +411,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[submitPO] \", $flow.submitPO.assetUniqueId)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -414,7 +424,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "ccef9f60-37ac-11ea-8b4c-a56bccb1268c",
+                                    "id": "1d818fb0-13e9-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -552,16 +562,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579102590038,
+                                    "lastUpdatedTime": 1603317812082,
                                     "user": "flogo",
                                     "connectorName": "equipment client",
-                                    "connectorDescription": "equipment poc client for fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579102590038,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "equipment poc client for fabric sample first-network"
                                 },
                                 "transactionName": "submitPO",
                                 "requestType": "invoke",
@@ -591,14 +604,15 @@
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -639,7 +653,8 @@
                                 "ref": "#log",
                                 "input": {
                                     "message": "=string.concat(\"Error in \", $error.activity, \": \", $error.message)",
-                                    "addDetails": false
+                                    "addDetails": false,
+                                    "usePrint": false
                                 }
                             }
                         },
@@ -725,24 +740,23 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log1 to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log1 to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
                 "tasks": [
@@ -754,19 +768,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[receiveAsset] \", $flow.receiveAsset.assetUniqueId)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "ccef9f60-37ac-11ea-8b4c-a56bccb1268c",
+                                    "id": "1d818fb0-13e9-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -904,16 +919,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579102590038,
+                                    "lastUpdatedTime": 1603317812082,
                                     "user": "flogo",
                                     "connectorName": "equipment client",
-                                    "connectorDescription": "equipment poc client for fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579102590038,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "equipment poc client for fabric sample first-network"
                                 },
                                 "transactionName": "receiveAsset",
                                 "requestType": "invoke",
@@ -921,6 +939,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": "=$flow.receiveAsset"
                             },
                             "schemas": {
@@ -942,14 +961,15 @@
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -990,7 +1010,8 @@
                                 "ref": "#log",
                                 "input": {
                                     "message": "=string.concat(\"Error in \", $error.activity, \": \", $error.message)",
-                                    "addDetails": false
+                                    "addDetails": false,
+                                    "usePrint": false
                                 }
                             }
                         },
@@ -1076,24 +1097,23 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
                 "tasks": [
@@ -1105,19 +1125,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[installAsset] \", $flow.installAsset.assetUniqueId)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "ccef9f60-37ac-11ea-8b4c-a56bccb1268c",
+                                    "id": "1d818fb0-13e9-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1255,16 +1276,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579102590038,
+                                    "lastUpdatedTime": 1603317812082,
                                     "user": "flogo",
                                     "connectorName": "equipment client",
-                                    "connectorDescription": "equipment poc client for fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579102590038,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "equipment poc client for fabric sample first-network"
                                 },
                                 "transactionName": "installAsset",
                                 "requestType": "invoke",
@@ -1293,14 +1317,15 @@
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1341,7 +1366,8 @@
                                 "ref": "#log",
                                 "input": {
                                     "message": "=string.concat(\"Error in \", $error.activity, \": \", $error.message)",
-                                    "addDetails": false
+                                    "addDetails": false,
+                                    "usePrint": false
                                 }
                             }
                         },
@@ -1427,24 +1453,23 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
                 "tasks": [
@@ -1456,19 +1481,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[receiveInvoice] \", $flow.receiveInvoice.assetUniqueId)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "ccef9f60-37ac-11ea-8b4c-a56bccb1268c",
+                                    "id": "1d818fb0-13e9-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1606,16 +1632,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579102590038,
+                                    "lastUpdatedTime": 1603317812082,
                                     "user": "flogo",
                                     "connectorName": "equipment client",
-                                    "connectorDescription": "equipment poc client for fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579102590038,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "equipment poc client for fabric sample first-network"
                                 },
                                 "transactionName": "receiveInvoice",
                                 "requestType": "invoke",
@@ -1644,14 +1673,15 @@
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1692,7 +1722,8 @@
                                 "ref": "#log",
                                 "input": {
                                     "message": "=string.concat(\"Error in \", $error.activity, \": \", $error.message)",
-                                    "addDetails": false
+                                    "addDetails": false,
+                                    "usePrint": false
                                 }
                             }
                         },
@@ -1778,24 +1809,23 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "expression",
-                        "label": "newtask",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "newtask",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
                 "tasks": [
@@ -1807,19 +1837,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[updateAsset] \", $flow.updateAsset.assetUniqueId)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "",
+                        "description": "Send Fabric request",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "ccef9f60-37ac-11ea-8b4c-a56bccb1268c",
+                                    "id": "1d818fb0-13e9-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1957,16 +1988,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579102590038,
+                                    "lastUpdatedTime": 1603317812082,
                                     "user": "flogo",
                                     "connectorName": "equipment client",
-                                    "connectorDescription": "equipment poc client for fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579102590038,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "equipment poc client for fabric sample first-network"
                                 },
                                 "transactionName": "updateAsset",
                                 "requestType": "invoke",
@@ -1995,14 +2029,15 @@
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2043,7 +2078,8 @@
                                 "ref": "#log",
                                 "input": {
                                     "message": "=string.concat(\"Error in \", $error.activity, \": \", $error.message)",
-                                    "addDetails": false
+                                    "addDetails": false,
+                                    "usePrint": false
                                 }
                             }
                         },
@@ -2129,24 +2165,23 @@
                     {
                         "id": 2,
                         "from": "FabricRequest",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log1 to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log1 to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
                 "tasks": [
@@ -2158,7 +2193,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[queryAsset] \", $flow.assetUniqueId)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2170,7 +2206,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "ccef9f60-37ac-11ea-8b4c-a56bccb1268c",
+                                    "id": "1d818fb0-13e9-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2308,16 +2344,19 @@
                                         }
                                     ],
                                     "feature": {},
+                                    "loopType": "none",
+                                    "loopSettings": [],
+                                    "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
+                                    "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579102590038,
+                                    "lastUpdatedTime": 1603317812082,
                                     "user": "flogo",
                                     "connectorName": "equipment client",
-                                    "connectorDescription": "equipment poc client for fabric sample first-network",
-                                    "isImported": true,
-                                    "createdTime": 1579102590038,
-                                    "subscriptionId": "flogo_sbsc"
+                                    "connectorDescription": "equipment poc client for fabric sample first-network"
                                 },
                                 "transactionName": "queryAsset",
                                 "requestType": "query",
@@ -2325,6 +2364,7 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"CCNAME\"]",
                                 "timeoutMillis": 0,
+                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
                                         "assetUniqueId": "=$flow.assetUniqueId"
@@ -2350,14 +2390,15 @@
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2437,7 +2478,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Received block event from \", $flow.data.source)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2488,5 +2530,5 @@
     ],
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvdHJpZ2dlci9yZXN0IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvdHJpZ2dlci9yZXN0In0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi9hY3Rpdml0eS9sb2ciLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9sb2cifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9kb3ZldGFpbC1jb250cmliL2h5cGVybGVkZ2VyLWZhYnJpYy9mYWJjbGllbnQiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vZmFiY2xpZW50In0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi9hY3Rpdml0eS9lcnJvciIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2Vycm9yIn0seyJyZWYiOiJnaXQudGliY28uY29tL2dpdC9wcm9kdWN0L2lwYWFzL3dpLWNvbnRyaWIuZ2l0L2NvbnRyaWJ1dGlvbnMvR2VuZXJhbCIsInMzbG9jYXRpb24iOiJUaWJjby9HZW5lcmFsIn1d",
-    "fe_metadata": "UEsDBAoAAAAIAPN+L1CrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACADzfi9Qq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAACyVVGrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAAAslVRq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

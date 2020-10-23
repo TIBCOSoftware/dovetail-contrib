@@ -40,7 +40,7 @@ func main() {
 	}
 }
 
-// ListDependencies lists all installed dependencies
+// GenerateLegacyMetdata creates legacy metadata file for trigger and activities
 func GenerateLegacyMetdata(dir string) error {
 	err := filepath.Walk(dir, func(filePath string, info os.FileInfo, _ error) error {
 
@@ -168,7 +168,7 @@ func init() {
 }
 `
 
-//RenderTemplate renders the specified template
+//RenderMetdataTemplate renders the specified template
 func RenderMetdataTemplate(w io.Writer, text string, data interface{}) {
 	t := template.New("top")
 	t.Funcs(template.FuncMap{"trim": strings.TrimSpace})

@@ -42,7 +42,7 @@ function buildCDS {
   fi
 
   echo "execute build commmand ./build-cds.sh ./work/${modelName}/${modelFile} ${modelName} ${VERSION}"
-  docker exec -it dovetail-tools bash -c "./build-cds.sh ./work/${modelName}/${modelFile} ${modelName} ${VERSION}"
+  docker exec -it dovetail-tools bash -c "./build-cds.sh ${modelFile} ${modelName} ${VERSION}"
 }
 
 function buildClient {
@@ -62,7 +62,7 @@ function buildClient {
   fi
 
   echo "execute build commmand ./build-client.sh ./work/${modelName}/${modelFile} ${modelName} ${TOS} ${TARCH}"
-  docker exec -it dovetail-tools bash -c "./build-client.sh ./work/${modelName}/${modelFile} ${modelName} ${TOS} ${TARCH}"
+  docker exec -it dovetail-tools bash -c "./build-client.sh ${modelFile} ${modelName} ${TOS} ${TARCH}"
 }
 
 function startBuilder {

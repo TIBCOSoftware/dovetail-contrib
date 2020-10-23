@@ -2,9 +2,9 @@
 
 ## Build and deploy chaincode to Hyperledger Fabric sample folder
 
-- Export the Flogo App, and copy the downloaded model file, i.e., [`marble_app.json`](marble_app.json) to the `marble` folder.  You can skip this step if you did not modify the flogo model in this folder.
+- Export the Flogo App, and copy the downloaded model file, i.e., [`marble_app.json`](marble_app.json) to the `marble` folder. You can skip this step if you did not modify the flogo model in this folder.
 - In the `marble` folder, execute `make create` to generate source code for the chaincode.
-- Execute `make deploy` to deploy the chaincode to the `fabric-samples` chaincode folder.  Note: you may need to set `FAB_PATH` or edit the [`Makefile`](Makefile) to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
+- Execute `make deploy` to deploy the chaincode to the `fabric-samples` chaincode folder. Note: you may need to set `FAB_PATH` or edit the [`Makefile`](Makefile) to match the installation folder of `fabric-samples` if it is not downloaded to the default location under `$GOPATH`.
 
 The detailed commands of the above steps are as follows:
 
@@ -30,10 +30,10 @@ In another terminal, start the chaincode:
 docker exec -it chaincode bash
 cd marble_cc
 # display Flogo debug logs for debugging
-FLOGO_LOG_LEVEL=DEBUG CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=marble_cc:0 CORE_CHAINCODE_LOGGING_LEVEL=DEBUG ./marble_cc
+FLOGO_LOG_LEVEL=DEBUG CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=marble_cc:0 CORE_CHAINCODE_LOGGING_LEVEL=DEBUG ./marble_cc_linux_amd64
 ```
 
-Note that the above command assumes that `marble_cc` is built and then mounted in the chaincode container.  To rebuild it in the chaincode container, you must use Go Modules with packages in the vendor folder, which must be done outside the `$GOPATH`, i.e.,
+Note that the above command assumes that `marble_cc_linux_amd64` is built and then mounted in the chaincode container. To rebuild it in the chaincode container, you must use Go Modules with packages in the vendor folder, which must be done outside the `$GOPATH`, i.e.,
 
 ```bash
 docker exec -it chaincode bash
@@ -41,7 +41,7 @@ cp -R marble_cc /tmp
 cd /tmp/marble_cc
 # clean all cached packages only if necessary
 # go clean -cache -modcache -i -r
-GO111MODULE=on GOCACHE=cache go build -mod vendor -o marble_cc
+GO111MODULE=on GOCACHE=cache go build -mod vendor -o marble_cc_linux_amd64
 ```
 
 In a third terminal, install chaincode and send test requests:

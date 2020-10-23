@@ -15,10 +15,10 @@
     ],
     "name": "audit",
     "description": " ",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:app",
     "appModel": "1.1.1",
-    "feVersion": "2.8.0",
+    "feVersion": "2.10.0",
     "triggers": [
         {
             "ref": "#transaction",
@@ -31,7 +31,6 @@
                     "description": "store audit log records on chain",
                     "settings": {
                         "name": "createAudit",
-                        "commonData": "",
                         "validation": false
                     },
                     "action": {
@@ -58,31 +57,22 @@
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                            }
+                            "returns": "schema://AuditLedgerMap"
                         },
                         "output": {
-                            "parameters": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                "fe_metadata": "{\n  \"records\": [\n    {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  ]\n}"
-                            }
+                            "parameters": "schema://AuditRecords"
                         }
-                    }
+                    },
+                    "name": "createAudit"
                 },
                 {
                     "description": "retrieve an audit record by its state key",
                     "settings": {
                         "name": "getRecord",
-                        "commonData": "",
                         "validation": false
                     },
                     "action": {
@@ -104,16 +94,11 @@
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}",
-                                "fe_metadata": "{\n  \"txID\": \"\",\n  \"txTime\": \"\",\n  \"recID\": \"\",\n  \"domain\": \"\",\n  \"owner\": \"\",\n  \"data\": \"\",\n  \"hashType\": \"\",\n  \"hashValue\": \"\"\n}"
-                            }
+                            "returns": "schema://AuditLedger"
                         },
                         "output": {
                             "parameters": {
@@ -122,13 +107,13 @@
                                 "fe_metadata": "{\n    \"key\": \"\"\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "getRecord"
                 },
                 {
                     "description": "retrieve records by recID",
                     "settings": {
                         "name": "getRecordsByID",
-                        "commonData": "",
                         "validation": false
                     },
                     "action": {
@@ -157,16 +142,11 @@
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                            }
+                            "returns": "schema://AuditLedgerMap"
                         },
                         "output": {
                             "parameters": {
@@ -175,13 +155,13 @@
                                 "fe_metadata": "{\n    \"recID\": \"\"\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "getRecordsByID"
                 },
                 {
                     "description": "retrieve audit records by the txID of the record creation",
                     "settings": {
                         "name": "getRecordsByTxID",
-                        "commonData": "",
                         "validation": false
                     },
                     "action": {
@@ -210,16 +190,11 @@
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                            }
+                            "returns": "schema://AuditLedgerMap"
                         },
                         "output": {
                             "parameters": {
@@ -228,13 +203,13 @@
                                 "fe_metadata": "{\n    \"txID\": \"\"\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "getRecordsByTxID"
                 },
                 {
                     "description": "retrieve audit records created at the specified time",
                     "settings": {
                         "name": "getRecordsByTxTime",
-                        "commonData": "",
                         "validation": false
                     },
                     "action": {
@@ -263,16 +238,11 @@
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                            }
+                            "returns": "schema://AuditLedgerMap"
                         },
                         "output": {
                             "parameters": {
@@ -281,13 +251,13 @@
                                 "fe_metadata": "{\n    \"txTime\": \"\"\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "getRecordsByTxTime"
                 },
                 {
                     "description": "delete current state of an audit record of specified state key",
                     "settings": {
                         "name": "deleteRecord",
-                        "commonData": "",
                         "validation": false
                     },
                     "action": {
@@ -309,16 +279,11 @@
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}",
-                                "fe_metadata": "{\n  \"txID\": \"\",\n  \"txTime\": \"\",\n  \"recID\": \"\",\n  \"domain\": \"\",\n  \"owner\": \"\",\n  \"data\": \"\",\n  \"hashType\": \"\",\n  \"hashValue\": \"\"\n}"
-                            }
+                            "returns": "schema://AuditLedger"
                         },
                         "output": {
                             "parameters": {
@@ -327,13 +292,13 @@
                                 "fe_metadata": "{\n    \"key\": \"\"\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "deleteRecord"
                 },
                 {
                     "description": "delete all audit states created by a specified transaction id",
                     "settings": {
                         "name": "deleteTransaction",
-                        "commonData": "",
                         "validation": false
                     },
                     "action": {
@@ -362,16 +327,11 @@
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                            }
+                            "returns": "schema://AuditLedgerMap"
                         },
                         "output": {
                             "parameters": {
@@ -380,13 +340,13 @@
                                 "fe_metadata": "{\n    \"txID\": \"\"\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "deleteTransaction"
                 },
                 {
                     "description": "retrieve audit records of specified domain and owner in a time range",
                     "settings": {
                         "name": "queryTimeRange",
-                        "commonData": "",
                         "validation": false
                     },
                     "action": {
@@ -411,16 +371,11 @@
                         }
                     },
                     "reply": {
-                        "message": "",
-                        "returnsDataType": ""
+                        "message": ""
                     },
                     "schemas": {
                         "reply": {
-                            "returns": {
-                                "type": "json",
-                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                            }
+                            "returns": "schema://AuditLedgerMap"
                         },
                         "output": {
                             "parameters": {
@@ -429,7 +384,8 @@
                                 "fe_metadata": "{\n    \"domain\": \"\",\n    \"owner\": \"\",\n    \"startTime\": \"\",\n    \"endTime\": \"\"\n}"
                             }
                         }
-                    }
+                    },
+                    "name": "queryTimeRange"
                 }
             ]
         }
@@ -450,12 +406,12 @@
                     {
                         "id": 2,
                         "from": "PutAll",
-                        "to": "Log1",
+                        "to": "LogPutAll",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogPutAll",
                         "to": "Return",
                         "type": "default"
                     }
@@ -469,139 +425,20 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[createAudit] \", $flow.parameters.records[0].recID)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "PutAll",
                         "name": "PutAll",
-                        "description": "",
+                        "description": "This activity stores multiple records in fabric ledger",
                         "activity": {
                             "ref": "#putall",
                             "input": {
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord",
-                                "keyType": "compositeKey",
-                                "compositeKeys": "{\n  \"txID\": [\n    \"txID\"\n  ],\n  \"txTime\": [\n    \"txTime\"\n  ],\n  \"recID\": [\n    \"recID\"\n  ]\n}",
+                                "privateCollection": "",
+                                "compositeKeys": "=$property[\"CompositeKeys.AuditIndex\"]",
                                 "data": {
                                     "mapping": {
                                         "@foreach($flow.parameters.records,index)": {
@@ -622,31 +459,28 @@
                             },
                             "schemas": {
                                 "input": {
-                                    "data": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "data": "schema://AuditLedgerMap"
                                 },
                                 "output": {
                                     "result": {
                                         "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
+                                        "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"txID\": {\n                        \"type\": \"string\"\n                    },\n                    \"txTime\": {\n                        \"type\": \"string\"\n                    },\n                    \"recID\": {\n                        \"type\": \"string\"\n                    },\n                    \"domain\": {\n                        \"type\": \"string\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    },\n                    \"data\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashType\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashValue\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+                                        "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"txID\": {\n                        \"type\": \"string\"\n                    },\n                    \"txTime\": {\n                        \"type\": \"string\"\n                    },\n                    \"recID\": {\n                        \"type\": \"string\"\n                    },\n                    \"domain\": {\n                        \"type\": \"string\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    },\n                    \"data\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashType\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashValue\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
                                     }
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogPutAll",
+                        "name": "LogPutAll",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"PUT: \", $activity[PutAll].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -732,12 +566,12 @@
                     {
                         "id": 2,
                         "from": "Get",
-                        "to": "Log1",
+                        "to": "LogGet",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogGet",
                         "to": "Return",
                         "type": "default"
                     }
@@ -751,159 +585,38 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getRecord] \", $flow.parameters.key)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "Get",
                         "name": "Get",
-                        "description": "",
+                        "description": "This activity fetches data by key from fabric ledger",
                         "activity": {
                             "ref": "#get",
                             "input": {
                                 "key": "=$flow.parameters.key",
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord"
+                                "privateCollection": ""
                             },
                             "schemas": {
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"txID\": \"\",\n  \"txTime\": \"\",\n  \"recID\": \"\",\n  \"domain\": \"\",\n  \"owner\": \"\",\n  \"data\": \"\",\n  \"hashType\": \"\",\n  \"hashValue\": \"\"\n}"
-                                    }
+                                    "result": "schema://AuditLedger"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogGet",
+                        "name": "LogGet",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"GET: \", $activity[Get].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -982,12 +695,12 @@
                     {
                         "id": 2,
                         "from": "GetByCompositeKey",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -1001,141 +714,23 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getRecordsByID] \", $flow.parameters.recID)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "GetByCompositeKey",
                         "name": "GetByCompositeKey",
-                        "description": "",
+                        "description": "This activity fetches data by composite-key from fabric ledger",
                         "activity": {
                             "ref": "#getbycompositekey",
                             "input": {
-                                "keyName": "recID",
+                                "keyName": "recID=recID",
                                 "usePagination": false,
                                 "pageSize": 0,
                                 "start": "",
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord",
+                                "privateCollection": "",
                                 "attributes": {
                                     "mapping": {
                                         "recID": "=$flow.parameters.recID"
@@ -1151,24 +746,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "result": "schema://AuditLedgerMap"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Get by recID: \", $activity[GetByCompositeKey].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1254,12 +846,12 @@
                     {
                         "id": 2,
                         "from": "GetByCompositeKey",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -1273,141 +865,23 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getRecordsByTxID] \", $flow.parameters.txID)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "GetByCompositeKey",
                         "name": "GetByCompositeKey",
-                        "description": "",
+                        "description": "This activity fetches data by composite-key from fabric ledger",
                         "activity": {
                             "ref": "#getbycompositekey",
                             "input": {
-                                "keyName": "txID",
+                                "keyName": "txID=txID",
                                 "usePagination": false,
                                 "pageSize": 0,
                                 "start": "",
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord",
+                                "privateCollection": "",
                                 "attributes": {
                                     "mapping": {
                                         "txID": "=$flow.parameters.txID"
@@ -1423,24 +897,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "result": "schema://AuditLedgerMap"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Get by txID: \", $activity[GetByCompositeKey].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1526,12 +997,12 @@
                     {
                         "id": 2,
                         "from": "GetByCompositeKey",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -1545,141 +1016,23 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[getRecordsByTxTime] \", $flow.parameters.txTime)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "GetByCompositeKey",
                         "name": "GetByCompositeKey",
-                        "description": "",
+                        "description": "This activity fetches data by composite-key from fabric ledger",
                         "activity": {
                             "ref": "#getbycompositekey",
                             "input": {
-                                "keyName": "txTime",
+                                "keyName": "txTime=txTime",
                                 "usePagination": false,
                                 "pageSize": 0,
                                 "start": "",
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord",
+                                "privateCollection": "",
                                 "attributes": {
                                     "mapping": {
                                         "txTime": "=$flow.parameters.txTime"
@@ -1695,24 +1048,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "result": "schema://AuditLedgerMap"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Get by txTime: \", $activity[GetByCompositeKey].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1798,12 +1148,12 @@
                     {
                         "id": 2,
                         "from": "Delete",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -1817,162 +1167,40 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[deleteRecord] \", $flow.parameters.key)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "Delete",
                         "name": "Delete",
-                        "description": "",
+                        "description": "This activity deletes data from fabric world state",
                         "activity": {
                             "ref": "#delete",
                             "input": {
                                 "key": "=$flow.parameters.key",
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord",
+                                "privateCollection": "",
                                 "keysOnly": false,
-                                "keyType": "compositeKey",
-                                "compositeKeys": "{\n  \"txID\": [\n    \"txID\"\n  ],\n  \"txTime\": [\n    \"txTime\"\n  ],\n  \"recID\": [\n    \"recID\"\n  ]\n}"
+                                "compositeKeys": "=$property[\"CompositeKeys.AuditIndex\"]"
                             },
                             "schemas": {
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"txID\": \"\",\n  \"txTime\": \"\",\n  \"recID\": \"\",\n  \"domain\": \"\",\n  \"owner\": \"\",\n  \"data\": \"\",\n  \"hashType\": \"\",\n  \"hashValue\": \"\"\n}"
-                                    }
+                                    "result": "schema://AuditLedger"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"DELETE: \", $activity[Delete].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2051,12 +1279,12 @@
                     {
                         "id": 2,
                         "from": "GetByCompositeKey",
-                        "to": "Log1",
+                        "to": "LogTx",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogTx",
                         "to": "StartaSubFlow",
                         "type": "default"
                     },
@@ -2076,141 +1304,23 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[deleteTransaction] \", $flow.parameters.txID)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "GetByCompositeKey",
                         "name": "GetByCompositeKey",
-                        "description": "",
+                        "description": "This activity fetches data by composite-key from fabric ledger",
                         "activity": {
                             "ref": "#getbycompositekey",
                             "input": {
-                                "keyName": "txID",
+                                "keyName": "txID=txID",
                                 "usePagination": false,
                                 "pageSize": 0,
                                 "start": "",
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord",
+                                "privateCollection": "",
                                 "attributes": {
                                     "mapping": {
                                         "txID": "=$flow.parameters.txID"
@@ -2226,24 +1336,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "result": "schema://AuditLedgerMap"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogTx",
+                        "name": "LogTx",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Get by txID: \", $activity[GetByCompositeKey].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2276,7 +1383,7 @@
                                     "output": {
                                         "type": "json",
                                         "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n    \"status\": 0,\n    \"message\": \"\"\n}"
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"}}}"
                                     }
                                 }
                             }
@@ -2364,12 +1471,12 @@
                     {
                         "id": 2,
                         "from": "Delete",
-                        "to": "Log1",
+                        "to": "LogRecord",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogRecord",
                         "to": "Return",
                         "type": "default"
                     }
@@ -2383,162 +1490,40 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[logDelete] \", $flow.key)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "Delete",
                         "name": "Delete",
-                        "description": "",
+                        "description": "This activity deletes data from fabric world state",
                         "activity": {
                             "ref": "#delete",
                             "input": {
                                 "key": "=$flow.key",
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord",
+                                "privateCollection": "",
                                 "keysOnly": false,
-                                "keyType": "compositeKey",
-                                "compositeKeys": "{\n  \"txID\": [\n    \"txID\"\n  ],\n  \"txTime\": [\n    \"txTime\"\n  ],\n  \"recID\": [\n    \"recID\"\n  ]\n}"
+                                "compositeKeys": "=$property[\"CompositeKeys.AuditIndex\"]"
                             },
                             "schemas": {
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}",
-                                        "fe_metadata": "{\n  \"txID\": \"\",\n  \"txTime\": \"\",\n  \"recID\": \"\",\n  \"domain\": \"\",\n  \"owner\": \"\",\n  \"data\": \"\",\n  \"hashType\": \"\",\n  \"hashValue\": \"\"\n}"
-                                    }
+                                    "result": "schema://AuditLedger"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogRecord",
+                        "name": "LogRecord",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"DELETE: \", $activity[Delete].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2576,7 +1561,7 @@
                     ],
                     "fe_metadata": {
                         "input": "{\n    \"key\": \"\"\n}",
-                        "output": "{\n    \"status\": 0,\n    \"message\": \"\"\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"status\":{\"type\":\"number\"},\"message\":{\"type\":\"string\"}}}"
                     }
                 }
             }
@@ -2596,12 +1581,12 @@
                     {
                         "id": 2,
                         "from": "Query",
-                        "to": "Log1",
+                        "to": "LogResult",
                         "type": "default"
                     },
                     {
                         "id": 3,
-                        "from": "Log1",
+                        "from": "LogResult",
                         "to": "Return",
                         "type": "default"
                     }
@@ -2615,14 +1600,15 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[queryTimeRange] \", $flow.parameters.startTime, \", \", $flow.parameters.endTime)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "Query",
                         "name": "Query",
-                        "description": "",
+                        "description": "This activity fetches data by rich query on fabric Couch DB",
                         "activity": {
                             "ref": "#query",
                             "input": {
@@ -2630,126 +1616,7 @@
                                 "usePagination": false,
                                 "pageSize": 0,
                                 "start": "",
-                                "commonData": {
-                                    "id": "0f1e60c0-374d-11ea-8b4c-a56bccb1268c",
-                                    "type": "flogo:connector",
-                                    "version": "1.0.0",
-                                    "name": "fabric-datadef",
-                                    "hashTags": [],
-                                    "inputMappings": {},
-                                    "outputMappings": {},
-                                    "iteratorMappings": {},
-                                    "title": "Fabric Data Definition",
-                                    "description": "Fabric Data Definition",
-                                    "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/connector/datadef",
-                                    "settings": [
-                                        {
-                                            "name": "name",
-                                            "description": "Unique name of the data definition",
-                                            "type": "string",
-                                            "required": true,
-                                            "display": {
-                                                "name": "Name",
-                                                "visible": true
-                                            },
-                                            "value": "audit_data"
-                                        },
-                                        {
-                                            "name": "schemaList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Schema Definitions",
-                                                "description": "Define shared data schema",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"definition\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditLog\",\"definition\":\"{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRecord\",\"definition\":\"{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditRequest\",\"definition\":\"{\\\"records\\\":[{\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}]}\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"audit\",\"name\":\"AuditResult\",\"definition\":\"[{\\\"key\\\":\\\"\\\",\\\"value\\\":{\\\"txID\\\":\\\"\\\",\\\"txTime\\\":\\\"\\\",\\\"recID\\\":\\\"\\\",\\\"domain\\\":\\\"\\\",\\\"owner\\\":\\\"\\\",\\\"data\\\":\\\"\\\",\\\"hashType\\\":\\\"\\\",\\\"hashValue\\\":\\\"\\\"}}]\"}]"
-                                        },
-                                        {
-                                            "name": "dataList",
-                                            "type": "array",
-                                            "display": {
-                                                "type": "table",
-                                                "name": "Shared Data",
-                                                "description": "Define shared data value",
-                                                "schema": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"package\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"value\":{\"type\":\"object\"}}}}",
-                                                "readonly": false,
-                                                "valid": false,
-                                                "visible": true
-                                            },
-                                            "value": "[{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txID\",\"value\":\"[\\\"txID\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"txTime\",\"value\":\"[\\\"txTime\\\"]\"},{\"parameterName\":\"\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true,\"package\":\"compositeKey\",\"name\":\"recID\",\"value\":\"[\\\"recID\\\"]\"}]"
-                                        },
-                                        {
-                                            "name": "schema",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All schema definitions",
-                                                "description": "Schema defined in schemaList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"audit\": {\n    \"AuditLog\": {\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRecord\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    },\n    \"AuditRequest\": {\n      \"records\": [\n        {\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      ]\n    },\n    \"AuditResult\": [\n      {\n        \"key\": \"\",\n        \"value\": {\n          \"txID\": \"\",\n          \"txTime\": \"\",\n          \"recID\": \"\",\n          \"domain\": \"\",\n          \"owner\": \"\",\n          \"data\": \"\",\n          \"hashType\": \"\",\n          \"hashValue\": \"\"\n        }\n      }\n    ]\n  }\n}"
-                                            }
-                                        },
-                                        {
-                                            "name": "data",
-                                            "type": "complex_object",
-                                            "display": {
-                                                "name": "All data definitions",
-                                                "description": "Data values defined in dataList",
-                                                "type": "texteditor",
-                                                "syntax": "json",
-                                                "readonly": true,
-                                                "valid": true,
-                                                "visible": true
-                                            },
-                                            "value": {
-                                                "metadata": "",
-                                                "value": "{\n  \"compositeKey\": {\n    \"txID\": [\n      \"txID\"\n    ],\n    \"txTime\": [\n      \"txTime\"\n    ],\n    \"recID\": [\n      \"recID\"\n    ]\n  }\n}"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": [],
-                                    "inputs": [],
-                                    "handler": {
-                                        "settings": []
-                                    },
-                                    "reply": [],
-                                    "s3Prefix": "flogo",
-                                    "key": "flogo/fabric/connector/datadef/connector.json",
-                                    "display": {
-                                        "category": "fabric",
-                                        "description": "Fabric Data Definition",
-                                        "visible": true,
-                                        "smallIcon": "ic-fabric@2x.png",
-                                        "largeIcon": "ic-fabric@3x.png"
-                                    },
-                                    "actions": [
-                                        {
-                                            "name": "Save"
-                                        }
-                                    ],
-                                    "feature": {},
-                                    "propertyMap": {},
-                                    "keyfield": "name",
-                                    "isValid": true,
-                                    "lastUpdatedTime": 1579061469388,
-                                    "user": "flogo",
-                                    "connectorName": "audit_data",
-                                    "connectorDescription": " ",
-                                    "isImported": true,
-                                    "createdTime": 1579061469388,
-                                    "subscriptionId": "flogo_sbsc"
-                                },
-                                "dataType": "audit.AuditRecord",
+                                "privateCollection": "",
                                 "queryParams": "=$flow.parameters"
                             },
                             "schemas": {
@@ -2761,24 +1628,21 @@
                                     }
                                 },
                                 "output": {
-                                    "result": {
-                                        "type": "json",
-                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"recID\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"},\"hashType\":{\"type\":\"string\"},\"hashValue\":{\"type\":\"string\"}}}}}}",
-                                        "fe_metadata": "[\n  {\n    \"key\": \"\",\n    \"value\": {\n      \"txID\": \"\",\n      \"txTime\": \"\",\n      \"recID\": \"\",\n      \"domain\": \"\",\n      \"owner\": \"\",\n      \"data\": \"\",\n      \"hashType\": \"\",\n      \"hashValue\": \"\"\n    }\n  }\n]"
-                                    }
+                                    "result": "schema://AuditLedgerMap"
                                 }
                             }
                         }
                     },
                     {
-                        "id": "Log1",
-                        "name": "Log1",
+                        "id": "LogResult",
+                        "name": "LogResult",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Query: \", $activity[Query].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2850,8 +1714,31 @@
             }
         }
     ],
-    "properties": [],
+    "properties": [
+        {
+            "name": "CompositeKeys.AuditIndex",
+            "type": "string",
+            "value": "txID=txID;txTime=txTime;recID=recID"
+        }
+    ],
+    "schemas": {
+        "AuditLedgerMap": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"txID\": {\n                        \"type\": \"string\"\n                    },\n                    \"txTime\": {\n                        \"type\": \"string\"\n                    },\n                    \"recID\": {\n                        \"type\": \"string\"\n                    },\n                    \"domain\": {\n                        \"type\": \"string\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    },\n                    \"data\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashType\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashValue\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"array\",\n    \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\"\n            },\n            \"value\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"txID\": {\n                        \"type\": \"string\"\n                    },\n                    \"txTime\": {\n                        \"type\": \"string\"\n                    },\n                    \"recID\": {\n                        \"type\": \"string\"\n                    },\n                    \"domain\": {\n                        \"type\": \"string\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    },\n                    \"data\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashType\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashValue\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
+        },
+        "AuditRecords": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"records\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"recID\": {\n                        \"type\": \"string\"\n                    },\n                    \"domain\": {\n                        \"type\": \"string\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    },\n                    \"data\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashType\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashValue\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"records\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"recID\": {\n                        \"type\": \"string\"\n                    },\n                    \"domain\": {\n                        \"type\": \"string\"\n                    },\n                    \"owner\": {\n                        \"type\": \"string\"\n                    },\n                    \"data\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashType\": {\n                        \"type\": \"string\"\n                    },\n                    \"hashValue\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
+        },
+        "AuditLedger": {
+            "type": "json",
+            "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"txID\": {\n            \"type\": \"string\"\n        },\n        \"txTime\": {\n            \"type\": \"string\"\n        },\n        \"recID\": {\n            \"type\": \"string\"\n        },\n        \"domain\": {\n            \"type\": \"string\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        },\n        \"data\": {\n            \"type\": \"string\"\n        },\n        \"hashType\": {\n            \"type\": \"string\"\n        },\n        \"hashValue\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+            "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"txID\": {\n            \"type\": \"string\"\n        },\n        \"txTime\": {\n            \"type\": \"string\"\n        },\n        \"recID\": {\n            \"type\": \"string\"\n        },\n        \"domain\": {\n            \"type\": \"string\"\n        },\n        \"owner\": {\n            \"type\": \"string\"\n        },\n        \"data\": {\n            \"type\": \"string\"\n        },\n        \"hashType\": {\n            \"type\": \"string\"\n        },\n        \"hashValue\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+        }
+    },
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2RvdmV0YWlsLWNvbnRyaWIvaHlwZXJsZWRnZXItZmFicmljL2ZhYnJpYyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9mYWJyaWMifSx7InJlZiI6ImdpdGh1Yi5jb20vcHJvamVjdC1mbG9nby9jb250cmliL2FjdGl2aXR5L2xvZyIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2xvZyJ9XQ==",
-    "fe_metadata": "UEsDBAoAAAAIAK8hL1CrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACACvIS9Qq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAHWcVVGrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAB1nFVRq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

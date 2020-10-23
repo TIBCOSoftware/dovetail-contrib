@@ -4,198 +4,15 @@
 # This file is subject to the license terms contained
 # in the license file that is distributed with this file.
 
-# execute this script on bastion host to setup and build chaincode and client apps from Flogo flows
+# execute this script on bastion host to config and start/stop apps
 # usage: dovetail.sh <cmd> [options]
-# e.g., dovetail.sh build-cds -s ./marble -j marble.json -c marble_cc
-# or,   dovetail.sh build-app -j ./marble_client.json -c marble -o linux
+# e.g., ./dovetail.sh config-app -m samples/marble_client/marble_client.json
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; echo "$(pwd)")"
-FLOGO_VER=v0.9.4
 VERSION="1.0"
 BUILD_OS="linux"
 BUILD_ARCH="amd64"
 DT_HOME=${SCRIPT_DIR}/../..
-
-# install Flogo enterprise in $HOME
-# installFE <FE-installer-zip-file>
-function installFE {
-  if [ -f "${1}" ]; then
-    echo "install Flogo enterprise from file ${1}"
-    # ignore large studio docker image from the zip
-    unzip ${1} -x "**/docker/*" -d ${HOME}
-    local fehome=$(find ${HOME}/flogo -name ?.? -print)
-    rm ${1}
-    echo "initialize go module for ${fehome}"
-    ${DT_HOME}/fe-generator/init-gomod.sh ${fehome}
-  else
-    echo "cannot find FE installer file ${1}"
-    return 1
-  fi
-}
-
-# build CDS file on bastion host
-# buildCDS <source-folder> <model-json> <cc-name> [<version>]
-function buildCDS {
-  if [ -z "${DT_HOME}" ]; then
-    echo "DT_HOME is not defined"
-    return 1
-  fi
-  if [ -z "${FE_HOME}" ]; then
-    echo "FE_HOME is not defined, so model cannot use Flogo Enterprise components"
-  fi
-
-  local work_dir=${PWD}
-  local chaincode=$(dirname "${SCRIPT_DIR}")/chaincode
-  cd ${chaincode}
-  local sFolder=${1}
-  local ccName=${3}
-  local version=${4:-"1.0"}
-
-  # verify source folder
-  if [ ! -d "${sFolder}" ]; then
-    sFolder=${work_dir}/${sFolder}
-    if [ ! -d "${sFolder}" ]; then
-      echo "cannot find source folder ${sFolder}"
-      return 1
-    fi
-  fi
-
-  # cleanup old data
-  if [ -d "${chaincode}/${ccName}" ]; then
-    echo "cleanup old file in ${chaincode}/${ccName}"
-    rm -Rf ${chaincode}/${ccName}
-  fi
-
-  flogo create --cv ${FLOGO_VER} -f ${sFolder}/${2} ${ccName}
-  rm ${ccName}/src/main.go
-  cp ${DT_HOME}/shim/chaincode_shim.go ${ccName}/src/main.go
-  cp -Rf ${sFolder}/* ${ccName}/src
-  cp ${DT_HOME}/flogo-patch/codegen.sh ${ccName}
-  cd ${ccName}
-  ./codegen.sh ${FE_HOME}
-  if [ -f src/gomodedit.sh ]; then
-    chmod +x src/gomodedit.sh
-    cd src
-    ./gomodedit.sh
-  fi
-
-  cd ${chaincode}/${ccName}
-  flogo build -e
-  cd src
-  # override flogo version for core and flow
-  go mod edit -replace=github.com/project-flogo/core@v0.10.1=github.com/project-flogo/core@$(FLOGO_VER)
-  go mod edit -replace=github.com/project-flogo/flow@v0.10.0=github.com/project-flogo/flow@$(FLOGO_VER)
-  # avoid bug in activity/subflow/v0.9.0
-  go get -u -d github.com/project-flogo/flow/activity/subflow@master
-  go mod vendor
-  # patch of flogo core and flow for handling chaincode
-  cp -Rf ${DT_HOME}/flogo-patch/flow vendor/github.com/project-flogo
-  cp -Rf ${DT_HOME}/flogo-patch/core vendor/github.com/project-flogo
-  # work around issue of legacy bridge -- legacy bridge no longer needed
-  # find vendor/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/ -name '*_metadata.go' -exec rm {} \;
-  echo "build ${chaincode}/${ccName}/${ccName} ..."
-  env GOOS=linux GOARCH=amd64 go build -mod vendor -o ../${ccName}
-
-  if [ ! -f "../${ccName}" ]; then
-    echo "Failed to build ${ccName}"
-    return 1
-  fi
-
-  # build cds -- Note: on bastion host, this can be replaced by localPackCDS
-  packCDS ${ccName} ${version}
-  
-  local cds="${DATA_ROOT}/cli/${ccName}_${version}.cds"
-  if [ -f "${cds}" ]; then
-    echo "created cds: ${cds}"
-  else
-    echo "Failed to create CDS for chaincode in folder ${chaincode}/${ccName}"
-    return 1
-  fi
-}
-
-# create cds package using peer container, e.g. 
-# packCDS <ccName> <version>
-function packCDS {
-  cd $(dirname "${SCRIPT_DIR}")/network
-  ./network.sh package-chaincode -n peer-0 -f ${1}/src -s ${1} -v ${2}
-}
-
-# create cds package on bastion host locally, e.g. 
-# localPackCDS <ccName> <version>
-function localPackCDS {
-  mkdir -p ${GOPATH}/src/github.com/chaincode
-  rm -Rf ${GOPATH}/src/github.com/chaincode/${1}
-  cp -R $(dirname "${SCRIPT_DIR}")/chaincode/${1}/src ${GOPATH}/src/github.com/chaincode/${1}
-  # chaincode package command requires $FABRIC_CFG_PATH containing core.yaml and peer's msp cert/keys
-  local cfgPath=${DATA_ROOT}/peers/peer-0/crypto
-  sudo cp $(dirname "${SCRIPT_DIR}")/network/core.yaml ${cfgPath}
-  FABRIC_CFG_PATH=${cfgPath} ${HOME}/fabric-samples/bin/peer chaincode package -n ${1} -v ${2} -l golang -p github.com/chaincode/${1} ${1}_${2}.cds
-  sudo mv ${1}_${2}.cds ${DATA_ROOT}/cli
-}
-
-# build executable on bastion host
-# buildApp <model-json> <app-name> [<goos> [<goarch>]]
-function buildApp {
-  if [ -z "${DT_HOME}" ]; then
-    echo "DT_HOME is not defined"
-    return 1
-  fi
-  if [ -z "${FE_HOME}" ]; then
-    echo "FE_HOME is not defined, model should not use Flogo Enterprise components"
-  fi
-
-  local work_dir=${PWD}
-  cd /tmp
-  local model=${1}
-  local appName=${2}
-  local bOS=${3}
-  if [ -z "${bOS}" ]; then
-    bOS="linux"
-  fi
-  local bArch=${4:-"amd64"}
-
-  # verify model file
-  if [ ! -f "${model}" ]; then
-    model=${work_dir}/${model}
-    if [ ! -f "${model}" ]; then
-      echo "cannot find model file ${model}"
-      return 1
-    fi
-  fi
-
-  # cleanup old data
-  if [ -d "/tmp/${appName}" ]; then
-    echo "cleanup old file in /tmp/${appName}"
-    rm -Rf /tmp/${appName}
-  fi
-
-  flogo create --cv ${FLOGO_VER} -f ${model} ${appName}
-  cp ${DT_HOME}/flogo-patch/codegen.sh ${appName}
-  cd ${appName}
-  ./codegen.sh ${FE_HOME}
-  if [ -f src/gomodedit.sh ]; then
-    chmod +x src/gomodedit.sh
-    cd src
-    ./gomodedit.sh
-  fi
-
-  cd /tmp/${appName}
-  flogo build -e
-  cd src
-  go get -u -d github.com/project-flogo/flow/activity/subflow@master
-  go mod vendor
-  # work around issue of legacy bridge -- legacy bridge no longer needed
-  # find vendor/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/ -name '*_metadata.go' -exec rm {} \;
-  env GOOS=${bOS} GOARCH=${bArch} go build -mod vendor -o ${SCRIPT_DIR}/${appName}_${bOS}_${bArch}
-
-  local app="${SCRIPT_DIR}/${appName}_${bOS}_${bArch}"
-  if [ -f "${app}" ]; then
-    echo "created app: ${app}"
-  else
-    echo "Failed to create app for model ${model}"
-    return 1
-  fi
-}
 
 # edit flogo model json to use gateway network config
 # write result model json in DATA_ROOT/tool
@@ -533,13 +350,11 @@ function printHelp() {
   echo "Usage: "
   echo "  dovetail.sh <cmd> [options]"
   echo "    <cmd> - one of the following commands"
-  echo "      - 'install-fe' - install Flogo Enterprise from zip; arguments: -s <FE-installer-zip>"
   echo "      - 'config-app' - config client app with specified network and entity matcher yaml; args: -m [-c -n -u]"
   echo "      - 'start-app' - build and start kubernetes service for specified app model that is previously configured using config-app; args: -m"
   echo "      - 'stop-app' - shutdown kubernetes service for specified app model; args: -m [-d]"
   echo "    -p <property file> - the .env file in config folder that defines network properties, e.g., netop1 (default)"
   echo "    -t <env type> - deployment environment type: one of 'docker', 'k8s' (default), 'aws', 'az', or 'gcp'"
-  echo "    -s <source> - Flogo enterprise install zip file"
   echo "    -m <json> - flogo model file in json format, e.g., marble.json"
   echo "    -c <channel-id> - channel for client app to invoke chaincode"
   echo "    -n <port-number> - service listen port, e.g. '7091' (default)"
@@ -552,7 +367,7 @@ ORG_ENV="netop1"
 
 CMD=${1}
 shift
-while getopts "h?p:t:s:m:c:n:u:d" opt; do
+while getopts "h?p:t:m:c:n:u:d" opt; do
   case "$opt" in
   h | \?)
     printHelp
@@ -563,9 +378,6 @@ while getopts "h?p:t:s:m:c:n:u:d" opt; do
     ;;
   t)
     ENV_TYPE=$OPTARG
-    ;;
-  s)
-    SOURCE=$OPTARG
     ;;
   m)
     MODEL=$OPTARG
@@ -592,9 +404,6 @@ elif [ "${ENV_TYPE}" == "k8s" ]; then
   if [ -z "${DT_HOME}" ]; then
     echo "DT_HOME is not defined"
   fi
-  if [ -z "${FE_HOME}" ]; then
-    echo "FE_HOME is not defined"
-  fi
 else
   DT_HOME=${HOME}/dovetail-contrib/hyperledger-fabric
   if [ -d "${HOME}/flogo" ]; then
@@ -613,9 +422,6 @@ if [ -z "${PORT}" ]; then
 fi
 
 case "${CMD}" in
-install-fe)
-  installFE ${SOURCE}
-  ;;
 config-app)
   echo "config client app for model ${MODEL} with ${CHANNEL_ID} ${PORT} ${USER_ID}"
   if [ -z "${MODEL}" ] || [ ! -f "${MODEL}" ]; then

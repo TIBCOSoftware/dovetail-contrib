@@ -1,7 +1,6 @@
-
 {
     "name": "fabric-cid",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "type": "flogo:activity",
     "title": "Cid",
     "author": "TIBCO Software Inc.",
@@ -13,10 +12,8 @@
     },
     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/cid",
     "homepage": "http://github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabric/activity/cid",
-    "inputs": [
-    ],
-    "outputs": [
-        {
+    "inputs": [],
+    "outputs": [{
             "name": "code",
             "type": "integer"
         },
@@ -43,7 +40,9 @@
                 "name": "Define CID attributes",
                 "description": "Schema definition of the attributes, e.g.,\r\n{\r\n  \"attr1\": \"\",\r\n  \"attr2\": \"\"\r\n}",
                 "type": "texteditor",
-                "syntax": "json"
+                "syntax": "json",
+                "mappable": true,
+                "visible": true
             }
         }
     ]

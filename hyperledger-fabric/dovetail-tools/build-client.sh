@@ -13,42 +13,39 @@ NAME=${2}
 TOS=${3}
 TARCH=${4}
 echo "build-client.sh ${MODEL} ${NAME} ${TOS} ${TARCH}"
+MODEL_DIR=${WORK}/${NAME}
 env
 
 function create {
-  local modelFile=${MODEL##*/}
-  local modelDir=${MODEL%/*}
-
   if [ -d "/tmp/${NAME}" ]; then
     echo "cleanup old workspace /tmp/${NAME}"
     rm -rf /tmp/${NAME}
   fi
   mkdir -p /tmp/${NAME}
-  cp ${MODEL} /tmp/${NAME}
+  cp ${MODEL_DIR}/${MODEL} /tmp/${NAME}
   cd /tmp/${NAME}
-  flogo create --cv ${FLOGO_VER} -f ${modelFile} ${NAME}
+  flogo create --cv ${FLOGO_VER} -f ${MODEL} ${NAME}
 
-  if [ -d "${FE_HOME}" ]; then
-    cp ${PATCH_PATH}/codegen.sh /tmp/${NAME}/${NAME}
-    cd /tmp/${NAME}/${NAME}
-    ./codegen.sh ${FE_HOME}
-    cd src
-    chmod +x gomodedit.sh
-    ./gomodedit.sh
-  fi
+  cp ${HOME}/codegen.sh /tmp/${NAME}/${NAME}
+  cd /tmp/${NAME}/${NAME}
+  ./codegen.sh
+  cd src
+  chmod +x gomodedit.sh
+  ./gomodedit.sh
 }
 
 function build {
   cd /tmp/${NAME}/${NAME}/src
-  go mod edit -replace=github.com/project-flogo/core@v0.10.1=github.com/project-flogo/core@${FLOGO_VER}
-  go mod edit -replace=github.com/project-flogo/flow@v0.10.0=github.com/project-flogo/flow@${FLOGO_VER}
-  go mod edit -replace=github.com/project-flogo/flow/activity/subflow@v0.9.0=github.com/project-flogo/flow/activity/subflow@master
+  go mod edit -replace=github.com/project-flogo/core=${FLOGO_REPO}/core@${FLOGO_REPO_VER}
+  go mod edit -replace=github.com/project-flogo/flow=${FLOGO_REPO}/flow@${FLOGO_REPO_VER}
+  # must use this older version of go-kit
+  go mod edit -replace=github.com/go-kit/kit=github.com/go-kit/kit@v0.8.0
   cd ..
   flogo build -e --verbose
   cd src
   go mod vendor
-  GOOS=${TOS} GOARCH=${TARCH} go build -mod vendor -o ${WORK}/${NAME}_${TOS}_${TARCH}
-  echo "client executable: ${WORK}/${NAME}_${TOS}_${TARCH}"
+  GOOS=${TOS} GOARCH=${TARCH} go build -mod vendor -o ${MODEL_DIR}/${NAME}_${TOS}_${TARCH}
+  echo "client executable: ${MODEL_DIR}/${NAME}_${TOS}_${TARCH}"
 }
 
 create

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 
 	"github.com/pkg/errors"
 
@@ -75,24 +76,20 @@ func GetActivityOutputSchema(ctx activity.Context, name string) (string, error) 
 func GetChaincodeStub(ctx activity.Context) (shim.ChaincodeStubInterface, error) {
 	// get chaincode stub
 	if taskInst, ok := ctx.(*instance.TaskInst); ok {
-		for {
-			// log.Debugf("flow scope: %+v", taskInst.ActivityHost().Scope())
-			// loop to search the flow calling hierarchy for chaincode stub
-			if stub, exists := taskInst.ActivityHost().Scope().GetValue(FabricStub); exists && stub != nil {
-				ccshim, found := stub.(shim.ChaincodeStubInterface)
-				if !found {
-					log.Errorf("stub type %T is not a ChaincodeStubInterface\n", stub)
-					return nil, errors.Errorf("stub type %T is not a ChaincodeStubInterface", stub)
-				}
-				return ccshim, nil
+		flowInst := taskInst.ActivityHost().(*instance.Instance)
+		scope := flowInst.GetMasterScope()
+		log.Debugf("flow scope: %+v", scope)
+
+		if stub, exists := scope.GetValue(FabricStub); exists && stub != nil {
+			ccshim, found := stub.(shim.ChaincodeStubInterface)
+			if !found {
+				log.Errorf("stub type %T is not a ChaincodeStubInterface\n", stub)
+				return nil, errors.Errorf("stub type %T is not a ChaincodeStubInterface", stub)
 			}
-			// search parent flow
-			if taskInst = taskInst.Host(); taskInst == nil {
-				// at root flow
-				log.Error("no stub found in root flow")
-				return nil, errors.New("no stub found in root flow")
-			}
+			return ccshim, nil
 		}
+		log.Error("no stub found in flow scope")
+		return nil, errors.New("no stub found in flow scope")
 	}
 	log.Errorf("ctx is not a TaskInst: %+v", ctx)
 	return nil, errors.Errorf("ctx is not a TaskInst: %+v", ctx)
@@ -283,7 +280,7 @@ func ConstructQueryResponse(resultsIterator shim.StateQueryIteratorInterface, co
 }
 
 // ExtractCompositeKeys collects all valid composite-keys matching composite-key definitions using fields of a value object
-func ExtractCompositeKeys(stub shim.ChaincodeStubInterface, compositeKeyDefs map[string][]string, keyValue string, value interface{}) []string {
+func ExtractCompositeKeys(stub shim.ChaincodeStubInterface, compositeKeyDefs string, keyValue string, value interface{}) []string {
 	// verify that value is a map
 	obj, ok := value.(map[string]interface{})
 	if !ok {
@@ -292,9 +289,14 @@ func ExtractCompositeKeys(stub shim.ChaincodeStubInterface, compositeKeyDefs map
 	}
 
 	// check composite keys
-	if compositeKeyDefs != nil {
+	if len(compositeKeyDefs) > 0 {
+		keyMap, err := ParseCompositeKeyDefs(compositeKeyDefs)
+		if err != nil {
+			log.Errorf("failed to parse composite key definition: %+v", err)
+			return nil
+		}
 		var compositeKeys []string
-		for keyName, attributes := range compositeKeyDefs {
+		for keyName, attributes := range keyMap {
 			if ck := makeCompositeKey(stub, keyName, attributes, keyValue, obj); ck != "" {
 				compositeKeys = append(compositeKeys, ck)
 			}
@@ -303,6 +305,21 @@ func ExtractCompositeKeys(stub shim.ChaincodeStubInterface, compositeKeyDefs map
 	}
 	log.Debugf("No composite key is defined")
 	return nil
+}
+
+// ParseCompositeKeyDefs parses composite-key definition of format 'key1=field1,field2;key2=field3,field4'
+func ParseCompositeKeyDefs(def string) (map[string][]string, error) {
+	m := make(map[string][]string)
+	keys := strings.Split(def, ";")
+	for _, key := range keys {
+		tokens := strings.Split(key, "=")
+		if len(tokens) < 2 || len(tokens[0]) <= 0 || len(tokens[1]) <= 0 {
+			return nil, errors.Errorf("invalid composite-key definition %s", def)
+		}
+		fields := strings.Split(tokens[1], ",")
+		m[tokens[0]] = fields
+	}
+	return m, nil
 }
 
 // constructs composite key if all specified attributes exist in the value object

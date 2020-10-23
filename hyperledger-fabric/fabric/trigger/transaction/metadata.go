@@ -70,7 +70,7 @@ func (r *Reply) FromMap(values map[string]interface{}) error {
 		return err
 	}
 	if r.Message, err = coerce.ToString(values["message"]); err != nil {
-		return err
+		r.Message = ""
 	}
 	if r.Returns, err = coerce.ToAny(values["returns"]); err != nil {
 		return err

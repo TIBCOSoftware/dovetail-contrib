@@ -84,7 +84,7 @@ func (o *Output) FromMap(values map[string]interface{}) error {
 		return err
 	}
 	if o.Message, err = coerce.ToString(values["message"]); err != nil {
-		return err
+		o.Message = ""
 	}
 	if o.Bookmark, err = coerce.ToString(values["bookmark"]); err != nil {
 		return err

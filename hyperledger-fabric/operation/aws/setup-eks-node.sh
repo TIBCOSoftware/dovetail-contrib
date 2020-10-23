@@ -47,8 +47,8 @@ sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
 sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
 rm -f $PROTOC_ZIP
 
-echo "install Golang 1.12.14"
-GO_ZIP=go1.12.14.linux-amd64.tar.gz
+echo "install Golang 1.14.10"
+GO_ZIP=go1.14.10.linux-amd64.tar.gz
 curl -O https://storage.googleapis.com/golang/$GO_ZIP
 sudo tar -xf $GO_ZIP -C /usr/local
 mkdir -p ~/go/{bin,pkg,src}
@@ -88,4 +88,6 @@ sed -i -e "s|^AWS_FSID=.*|AWS_FSID=${AWS_FSID}|" ./dovetail-contrib/hyperledger-
 go get -u github.com/project-flogo/cli/...
 
 # install fabric binary for chaincode packaging
-curl -sSL http://bit.ly/2ysbOFE | bash -s -- 1.4.4 1.4.4 0.4.18
+curl -sSL http://bit.ly/2ysbOFE | bash -s -- 1.4.9 1.4.9
+cd fabric-samples
+git checkout tags/v1.4.8

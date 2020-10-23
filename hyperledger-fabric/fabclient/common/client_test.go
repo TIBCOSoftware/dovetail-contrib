@@ -7,16 +7,20 @@ package common
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
+// This test requires to start byfn fabric network using "byfn.sh up -a -s couchdb"
+//   and set the fabPath below to the absolute path of "fabric-samples"
 const (
 	connectorName = "test"
-	configFile    = "${GOPATH}/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/testdata/config_test.yaml"
-	matcherFile   = "${GOPATH}/src/github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/testdata/local_entity_matchers.yaml"
+	fabPath       = "/Users/yxu/work/dovetail/fabric-samples"
+	configFile    = "${HOME}/work/dovetail/dovetail-contrib/hyperledger-fabric/testdata/config_test.yaml"
+	matcherFile   = "${HOME}/work/dovetail/dovetail-contrib/hyperledger-fabric/testdata/local_entity_matchers.yaml"
 	channelID     = "mychannel"
 	org           = "org1"
 	user          = "User1"
@@ -24,6 +28,7 @@ const (
 )
 
 func TestClient(t *testing.T) {
+	os.Setenv("FAB_PATH", fabPath)
 	networkConfig, err := ReadFile(configFile)
 	require.NoError(t, err, "failed to read config file %s", configFile)
 

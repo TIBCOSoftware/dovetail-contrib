@@ -5,3 +5,5 @@ fabricExtension.zip
 fabclientExtension.zip
 functions.zip
 dovetail-tools/work/*
+/**/go.sum
+

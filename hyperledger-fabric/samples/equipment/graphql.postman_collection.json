@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "a256ee96-4038-45ff-8487-2c511c488ddc",
-		"name": "equipment-graphql",
+		"name": "graphql",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -18,12 +18,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9797/graphql",
+					"raw": "http://localhost:9898/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "9797",
+					"port": "9898",
 					"path": [
 						"graphql"
 					]
@@ -44,12 +44,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9797/graphql",
+					"raw": "http://localhost:9898/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "9797",
+					"port": "9898",
 					"path": [
 						"graphql"
 					]
@@ -70,12 +70,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9797/graphql",
+					"raw": "http://localhost:9898/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "9797",
+					"port": "9898",
 					"path": [
 						"graphql"
 					]
@@ -96,12 +96,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9797/graphql",
+					"raw": "http://localhost:9898/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "9797",
+					"port": "9898",
 					"path": [
 						"graphql"
 					]
@@ -122,12 +122,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9797/graphql",
+					"raw": "http://localhost:9898/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "9797",
+					"port": "9898",
 					"path": [
 						"graphql"
 					]
@@ -148,12 +148,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9797/graphql",
+					"raw": "http://localhost:9898/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "9797",
+					"port": "9898",
 					"path": [
 						"graphql"
 					]
@@ -161,5 +161,6 @@
 			},
 			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

@@ -409,7 +409,7 @@ spec:
 
 function printK8sPod {
 #  local image="hyperledger/fabric-tools"
-  local image="yxuco/dovetail-tools:v1.0.0"
+  local image="yxuco/dovetail-tools:v1.1.0"
   echo "
 apiVersion: v1
 kind: Pod
@@ -567,8 +567,9 @@ function buildFlogoChaincode {
     ${sucp} -rf ${_src}/META-INF ${DATA_ROOT}/tool/${name}
   fi
 
-  local cmd="build-cds.sh ./${name}/${_model} ${name} ${VERSION}"
+  local cmd="build-cds.sh ${_model} ${name} ${VERSION}"
   kubectl exec -it tool -n ${ORG} -- bash -c "/root/${cmd}"
+  ${sumv} ${DATA_ROOT}/tool/${name}/${name}_${VERSION}.cds ${DATA_ROOT}/tool
   echo "chaincode package is built in folder ${DATA_ROOT}/tool"
 }
 
@@ -585,11 +586,12 @@ function buildFlogoApp {
 
   if [ ! -f "${DATA_ROOT}/tool/${_model}" ]; then
     echo "copy ${MODEL} to ${DATA_ROOT}/tool"
-    ${sucp} ${MODEL} ${DATA_ROOT}/tool
+    ${sucp} ${MODEL} ${DATA_ROOT}/tool/${name}
   fi
 
-  cmd="build-client.sh ./${_model} ${name} linux amd64"
+  cmd="build-client.sh ${_model} ${name} linux amd64"
   kubectl exec -it tool -n ${ORG} -- bash -c "/root/${cmd}"
+  ${sumv} ${DATA_ROOT}/tool/${name}/${name}_linux_amd64 ${DATA_ROOT}/tool
   echo "app executable is built in folder ${DATA_ROOT}/tool"
 }
 

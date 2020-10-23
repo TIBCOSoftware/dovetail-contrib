@@ -1,7 +1,7 @@
 {
-    "marble_app_0": "Marble",
-    "marble_app_2": "MarbleList",
-    "marble_app_3": "MarbleQueryResult",
+    "marble_0": "Marble",
+    "marble_2": "MarbleList",
+    "marble_3": "MarbleQueryResult",
     "ValueType": "Marble",
     "MarblesType": "MarbleKeyValue",
     "MarbleListType": "MarbleKeyValue",

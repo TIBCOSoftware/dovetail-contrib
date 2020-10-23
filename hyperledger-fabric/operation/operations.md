@@ -4,7 +4,7 @@ After a bootstrap Fabric network is started, you can use the following scripts t
 
 ## Create new channel
 
-When the smoke test is executed, the bootstrap network automatically creates a test channel, e.g., `mychannel` (as configured in the network spec, [netop1.env](./config/netop1.env)).  You can create new channels by using the following script:
+When the smoke test is executed, the bootstrap network automatically creates a test channel, e.g., `mychannel` (as configured in the network spec, [netop1.env](./config/netop1.env)). You can create new channels by using the following script:
 
 ```bash
 # create channel config tx
@@ -48,11 +48,11 @@ cd ../network
 ./network.sh instantiate-chaincode -p netop1 -n peer-0 -c mychannel -s mycc -v 1.0 -m '{"Args":["init","a","100","b","200"]}'
 ```
 
-This installs the chaincode in folder `./chaincode/chaincode_example02/go` on the peer node `peer-0` as `mycc:1.0`, and instantiates it on the channel `mychannel`.  The optional argument `-a` means to replace the original source code if it already exists in the `CLI` working folder.  If the chaincode is alreay packaged in `cds` format, you can skip the step for `package-chaincode`, but copy the `cds` package to the `CLI` working folder, and then execute the command `install-chaincode`.
+This installs the chaincode in folder `./chaincode/chaincode_example02/go` on the peer node `peer-0` as `mycc:1.0`, and instantiates it on the channel `mychannel`. The optional argument `-a` means to replace the original source code if it already exists in the `CLI` working folder. If the chaincode is alreay packaged in `cds` format, you can skip the step for `package-chaincode`, but copy the `cds` package to the `CLI` working folder, and then execute the command `install-chaincode`.
 
 Note that if an older version of the chaincode has already been installed on a peer, you'll have to specify a new version number.
 
-More chaincode related operations include `upgrade-chaincode`, `query-chaincode`, and `invoke-chaincode`.  They are described in [network.sh](./network/README.md).
+More chaincode related operations include `upgrade-chaincode`, `query-chaincode`, and `invoke-chaincode`. They are described in [network.sh](./network/README.md).
 
 ## Add new peer nodes of the same bootstrap org
 
@@ -74,7 +74,7 @@ This assumes that the bootstrap network is already running 2 peer nodes, i.e., `
 
 ## Add new orderer nodes of the same bootstrap org
 
-When RAFT consensus is used, you can add more orderer nodes to the network. However, as of Fabric release 1.4.4, it allows you to add only one new consenter at a time. The following script will update the system channel, and add one more orderer node of the same bootstrap org to the network.
+When RAFT consensus is used, you can add more orderer nodes to the network. However, as of Fabric release 1.4, it allows you to add only one new consenter at a time. The following script will update the system channel, and add one more orderer node of the same bootstrap org to the network.
 
 ```bash
 # 1. generate crypto for new orderer nodes (assuming 3 orderers already running, i.e., orderer-0, 1, and 2)
@@ -113,7 +113,7 @@ cd ./network
 
 ## Add new peer org to the same Kubernetes cluster
 
-It involves multiple steps to add a new organization to a running network.  However, all steps are scripted to simplify the process.
+It involves multiple steps to add a new organization to a running network. However, all steps are scripted to simplify the process.
 
 First, bootstrap and test the network for `netop1` as described in [README.md](./README.md).
 
@@ -132,7 +132,7 @@ cd ../network
 ./network.sh start -p peerorg1
 ```
 
-Now, we have Fabric nodes running for both organizations, and we want to set up peers of `peerorg1` to join the network of `netop1`.  Following are the steps:
+Now, we have Fabric nodes running for both organizations, and we want to set up peers of `peerorg1` to join the network of `netop1`. Following are the steps:
 
 ```bash
 # create new org config by the peerorg1's admin
@@ -161,7 +161,7 @@ cd ../network
 
 The above sequence of commands joined the 4 peer nodes from 2 organizations, `netop1` and `peerorg1` in the same Fabric network, and executed a query on `peer-0` of the new organization `peerorg1`, which should return the same result as queries on peer nodes of the original organization `netop1`.
 
-However, the endorsement policy of the sample chaincode has not changed to enable the new organization `peerorg1` as an endorser, and thus, peers of `peerorg1` cannot invoke transactions to update the blockchain state yet.  To enable `peerorg1` as an endorser for the sample chaincode, we have to install and upgrade the chaincode to a new version `2.0` with a new endorsement policy as follows:
+However, the endorsement policy of the sample chaincode has not changed to enable the new organization `peerorg1` as an endorser, and thus, peers of `peerorg1` cannot invoke transactions to update the blockchain state yet. To enable `peerorg1` as an endorser for the sample chaincode, we have to install and upgrade the chaincode to a new version `2.0` with a new endorsement policy as follows:
 
 ```bash
 cd ./network

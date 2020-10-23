@@ -76,7 +76,7 @@ func (t *Trigger) Initialize(ctx trigger.InitContext) error {
 			ChaincodeID:    s.ChaincodeID,
 			EventFilter:    s.EventFilter,
 		}
-		logger.Debugf("initialize event listener spec: %+v", spec)
+		// logger.Debugf("initialize event listener spec: %+v", spec)
 		listener, err := NewListener(&spec, flowEventHandler(handler))
 		if err != nil {
 			return errors.Wrapf(err, "failed to crete event listener")

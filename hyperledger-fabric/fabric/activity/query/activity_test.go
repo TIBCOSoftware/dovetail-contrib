@@ -44,7 +44,7 @@ func TestEval(t *testing.T) {
 	assert.Nil(t, err)
 
 	tc := test.NewActivityContext(act.Metadata())
-	tc.SetInputObject(&Input{Query: "testQuery", IsPrivate: false})
+	tc.SetInputObject(&Input{Query: "$query", QueryParams: map[string]interface{}{"query": "{}"}})
 
 	act.Eval(tc)
 
