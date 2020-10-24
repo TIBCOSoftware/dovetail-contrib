@@ -10,248 +10,252 @@
         "github.com/project-flogo/contrib/function/array"
     ],
     "name": "marble_client",
-    "description": " ",
-    "version": "1.1.0",
+    "description": "REST client to invoke marble cc",
+    "version": "2.0.0",
     "type": "flogo:app",
     "appModel": "1.1.1",
-    "feVersion": "2.8.0",
-    "triggers": [
-        {
-            "ref": "#rest",
-            "name": "flogo-rest",
-            "description": "Create a marble",
-            "settings": {
-                "port": "=$property[\"PORT\"]",
-                "enableTLS": false,
-                "certFile": "",
-                "keyFile": ""
+    "feVersion": "2.10.0",
+    "triggers": [{
+        "ref": "#rest",
+        "name": "flogo-rest",
+        "description": "Create a marble",
+        "settings": {
+            "port": "=$property[\"PORT\"]",
+            "enableTLS": false,
+            "certFile": "",
+            "keyFile": ""
+        },
+        "id": "ReceiveHTTPMessage",
+        "handlers": [{
+                "description": "Create a marble",
+                "settings": {
+                    "method": "PUT",
+                    "path": "/marble/create"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
+                    "settings": {
+                        "flowURI": "res://flow:Create_Marble"
+                    },
+                    "input": {
+                        "content": "=$.content"
+                    },
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
+                    }
+                },
+                "reply": {
+                    "code": 200
+                },
+                "name": "Create_Marble"
             },
-            "id": "ReceiveHTTPMessage",
-            "handlers": [
-                {
-                    "description": "Create a marble",
+            {
+                "description": "fetch marble by name",
+                "settings": {
+                    "method": "GET",
+                    "path": "/marble/key/:name"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
                     "settings": {
-                        "method": "PUT",
-                        "path": "/marble/create"
+                        "flowURI": "res://flow:Get_Marble"
                     },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Create_Marble"
-                        },
-                        "input": {
-                            "content": "=$.content"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
+                    "input": {
+                        "name": "=$.pathParams.name"
                     },
-                    "reply": {
-                        "code": 200
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
                     }
                 },
-                {
-                    "description": "fetch marble by name",
+                "reply": {
+                    "code": 200
+                },
+                "name": "Get_Marble"
+            },
+            {
+                "description": "query marbles of an owner",
+                "settings": {
+                    "method": "GET",
+                    "path": "/marble/owner/:owner"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
                     "settings": {
-                        "method": "GET",
-                        "path": "/marble/key/:name"
+                        "flowURI": "res://flow:Query_By_Owner"
                     },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Get_Marble"
-                        },
-                        "input": {
-                            "name": "=$.pathParams.name"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
+                    "input": {
+                        "owner": "=$.pathParams.owner"
                     },
-                    "reply": {
-                        "code": 200
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
                     }
                 },
-                {
-                    "description": "query marbles of an owner",
+                "reply": {
+                    "code": 200
+                },
+                "name": "Query_By_Owner"
+            },
+            {
+                "description": "transfer marble to a new owner",
+                "settings": {
+                    "method": "PUT",
+                    "path": "/marble/transfer"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
                     "settings": {
-                        "method": "GET",
-                        "path": "/marble/owner/:owner"
+                        "flowURI": "res://flow:Transfer_Marble"
                     },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Query_By_Owner"
-                        },
-                        "input": {
-                            "owner": "=$.pathParams.owner"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
+                    "input": {
+                        "content": "=$.content"
                     },
-                    "reply": {
-                        "code": 200
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
                     }
                 },
-                {
-                    "description": "transfer marble to a new owner",
+                "reply": {
+                    "code": 200
+                },
+                "name": "Transfer_Marble"
+            },
+            {
+                "description": "query marbles of key range, [startKey, endKey)",
+                "settings": {
+                    "method": "GET",
+                    "path": "/marble/range"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
                     "settings": {
-                        "method": "PUT",
-                        "path": "/marble/transfer"
+                        "flowURI": "res://flow:Query_By_Range"
                     },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Transfer_Marble"
-                        },
-                        "input": {
-                            "content": "=$.content"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
+                    "input": {
+                        "startKey": "=$.queryParams.startKey",
+                        "endKey": "=$.queryParams.endKey"
                     },
-                    "reply": {
-                        "code": 200
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
                     }
                 },
-                {
-                    "description": "query marbles of key range, [startKey, endKey)",
+                "reply": {
+                    "code": 200
+                },
+                "name": "Query_By_Range"
+            },
+            {
+                "description": "transfer all marbles of a color",
+                "settings": {
+                    "method": "PUT",
+                    "path": "/marble/transfercolor"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
                     "settings": {
-                        "method": "GET",
-                        "path": "/marble/range"
+                        "flowURI": "res://flow:Transfer_By_Color"
                     },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Query_By_Range"
-                        },
-                        "input": {
-                            "startKey": "=$.queryParams.startKey",
-                            "endKey": "=$.queryParams.endKey"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
+                    "input": {
+                        "content": "=$.content"
                     },
-                    "reply": {
-                        "code": 200
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
                     }
                 },
-                {
-                    "description": "transfer all marbles of a color",
+                "reply": {
+                    "code": 200
+                },
+                "name": "Transfer_By_Color"
+            },
+            {
+                "description": "delete a marble by key",
+                "settings": {
+                    "method": "DELETE",
+                    "path": "/marble/delete/:name"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
                     "settings": {
-                        "method": "PUT",
-                        "path": "/marble/transfercolor"
+                        "flowURI": "res://flow:Delete_Marble"
                     },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Transfer_By_Color"
-                        },
-                        "input": {
-                            "content": "=$.content"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
+                    "input": {
+                        "name": "=$.pathParams.name"
                     },
-                    "reply": {
-                        "code": 200
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
                     }
                 },
-                {
-                    "description": "delete a marble by key",
+                "reply": {
+                    "code": 200
+                },
+                "name": "Delete_Marble"
+            },
+            {
+                "description": "Get history of a marble",
+                "settings": {
+                    "method": "GET",
+                    "path": "/marble/history/:name"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
                     "settings": {
-                        "method": "DELETE",
-                        "path": "/marble/delete/:name"
+                        "flowURI": "res://flow:Marble_History"
                     },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Delete_Marble"
-                        },
-                        "input": {
-                            "name": "=$.pathParams.name"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
+                    "input": {
+                        "name": "=$.pathParams.name"
                     },
-                    "reply": {
-                        "code": 200
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
                     }
                 },
-                {
-                    "description": "Get history of a marble",
+                "reply": {
+                    "code": 200
+                },
+                "name": "Marble_History"
+            },
+            {
+                "description": "query marbles by range with pagination",
+                "settings": {
+                    "method": "GET",
+                    "path": "/marble/rangepage"
+                },
+                "action": {
+                    "ref": "github.com/project-flogo/flow",
                     "settings": {
-                        "method": "GET",
-                        "path": "/marble/history/:name"
+                        "flowURI": "res://flow:Query_Range_Page"
                     },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Marble_History"
-                        },
-                        "input": {
-                            "name": "=$.pathParams.name"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
+                    "input": {
+                        "startKey": "=$.queryParams.startKey",
+                        "endKey": "=$.queryParams.endKey",
+                        "pageSize": "=$.queryParams.pageSize",
+                        "bookmark": "=$.queryParams.bookmark"
                     },
-                    "reply": {
-                        "code": 200
+                    "output": {
+                        "code": "=$.returns.code",
+                        "data": "=$.returns.data"
                     }
                 },
-                {
-                    "description": "query marbles by range with pagination",
-                    "settings": {
-                        "method": "GET",
-                        "path": "/marble/rangepage"
-                    },
-                    "action": {
-                        "ref": "github.com/project-flogo/flow",
-                        "settings": {
-                            "flowURI": "res://flow:Query_Range_Page"
-                        },
-                        "input": {
-                            "startKey": "=$.queryParams.startKey",
-                            "endKey": "=$.queryParams.endKey",
-                            "pageSize": "=$.queryParams.pageSize",
-                            "bookmark": "=$.queryParams.bookmark"
-                        },
-                        "output": {
-                            "code": "=$.returns.code",
-                            "data": "=$.returns.data"
-                        }
-                    },
-                    "reply": {
-                        "code": 200
-                    }
-                }
-            ]
-        }
-    ],
-    "resources": [
-        {
+                "reply": {
+                    "code": 200
+                },
+                "name": "Query_Range_Page"
+            }
+        ]
+    }],
+    "resources": [{
             "id": "flow:Create_Marble",
             "data": {
                 "name": "Create Marble",
                 "description": "Create a marble",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -266,28 +270,27 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage",
-                        "name": "LogMessage",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[Create Marble] {\", $flow.content.name, \", \", $flow.content.color, \", \", $flow.content.owner, \"}\")",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -299,7 +302,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -310,8 +313,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -426,25 +428,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -491,7 +493,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -526,29 +529,25 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
-                            "name": "content",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
-                            }
+                    "input": [{
+                        "name": "content",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}"
                         }
-                    ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
-                            }
+                    }],
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
                         }
-                    ],
+                    }],
                     "fe_metadata": {
                         "input": "{\n    \"content\": {\n        \"name\": \"\",\n        \"color\": \"\",\n        \"size\": 0,\n        \"owner\": \"\"\n    }\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": {\n            \"name\": \"\",\n            \"color\": \"\",\n            \"size\": 0,\n            \"owner\": \"\"\n        }\n    }\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
                     }
                 }
             }
@@ -558,10 +557,9 @@
             "data": {
                 "name": "Get Marble",
                 "description": "fetch marble by name",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage3",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -576,28 +574,27 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage3",
-                        "name": "LogMessage3",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Get Marble of name \", $flow.name)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -609,7 +606,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -620,8 +617,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -736,25 +732,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -798,7 +794,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -812,8 +809,8 @@
                                 "mappings": {
                                     "returns": {
                                         "mapping": {
-                                            "data": "=$activity[FabricRequest].result",
-                                            "code": "=$activity[FabricRequest].code"
+                                            "code": "=$activity[FabricRequest].code",
+                                            "data": "=$activity[FabricRequest].result"
                                         }
                                     }
                                 }
@@ -833,25 +830,21 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
-                            "name": "name",
-                            "type": "string"
+                    "input": [{
+                        "name": "name",
+                        "type": "string"
+                    }],
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
                         }
-                    ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
-                            }
-                        }
-                    ],
+                    }],
                     "fe_metadata": {
-                        "input": "{\n    \"name\": \"\"\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": {\n            \"name\": \"\",\n            \"color\": \"\",\n            \"size\": 0,\n            \"owner\": \"\"\n        }\n    }\n}"
+                        "input": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}",
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
                     }
                 }
             }
@@ -861,10 +854,9 @@
             "data": {
                 "name": "Query By Owner",
                 "description": "query marbles of an owner",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage6",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -879,28 +871,27 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage6",
-                        "name": "LogMessage6",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[Query By Owner] \", $flow.owner)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -912,7 +903,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -923,8 +914,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -1039,25 +1029,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -1101,7 +1091,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1141,25 +1132,21 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
-                            "name": "owner",
-                            "type": "string"
+                    "input": [{
+                        "name": "owner",
+                        "type": "string"
+                    }],
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
                         }
-                    ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
-                            }
-                        }
-                    ],
+                    }],
                     "fe_metadata": {
                         "input": "{\n    \"owner\": \"\"\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": [\n            {\n                \"key\": \"\",\n                \"value\": {\n                    \"name\": \"\",\n                    \"color\": \"\",\n                    \"size\": 0,\n                    \"owner\": \"\"\n                }\n            }\n        ]\n    }\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}}}"
                     }
                 }
             }
@@ -1169,10 +1156,9 @@
             "data": {
                 "name": "Transfer Marble",
                 "description": "transfer marble to a new owner",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage9",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -1187,28 +1173,27 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage9",
-                        "name": "LogMessage9",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[Transfer Marble] \", $flow.content.name, \" new-owner: \", $flow.content.newOwner)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1220,7 +1205,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1231,8 +1216,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -1347,25 +1331,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -1410,7 +1394,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1445,29 +1430,25 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
-                            "name": "content",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"name\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
-                            }
+                    "input": [{
+                        "name": "content",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"name\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
                         }
-                    ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
-                            }
+                    }],
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
                         }
-                    ],
+                    }],
                     "fe_metadata": {
                         "input": "{\n    \"content\": {\n        \"name\": \"\",\n        \"newOwner\": \"\"\n    }\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": {\n            \"name\": \"\",\n            \"color\": \"\",\n            \"size\": 0,\n            \"owner\": \"\"\n        }\n    }\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
                     }
                 }
             }
@@ -1477,10 +1458,9 @@
             "data": {
                 "name": "Query By Range",
                 "description": "query marbles of key range, [startKey, endKey)",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage12",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -1495,40 +1475,39 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage12",
-                        "name": "LogMessage12",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[Query By Range] [\", $flow.startKey, \", \", $flow.endKey, \")\")",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
                     {
                         "id": "FabricRequest",
                         "name": "FabricRequest",
-                        "description": "Send Fabric request",
+                        "description": "",
                         "activity": {
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1539,8 +1518,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -1655,25 +1633,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -1684,7 +1662,6 @@
                                 "userName": "=$property[\"APPUSER\"]",
                                 "chaincodeID": "=$property[\"MARBLE_CC\"]",
                                 "timeoutMillis": 0,
-                                "endpoints": "",
                                 "parameters": {
                                     "mapping": {
                                         "startKey": "=$flow.startKey",
@@ -1718,7 +1695,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1758,8 +1736,7 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
+                    "input": [{
                             "name": "startKey",
                             "type": "string"
                         },
@@ -1768,19 +1745,17 @@
                             "type": "string"
                         }
                     ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
-                            }
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
                         }
-                    ],
+                    }],
                     "fe_metadata": {
                         "input": "{\n    \"startKey\": \"\",\n    \"endKey\": \"\"\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": [\n            {\n                \"key\": \"\",\n                \"value\": {\n                    \"name\": \"\",\n                    \"color\": \"\",\n                    \"size\": 0,\n                    \"owner\": \"\"\n                }\n            }\n        ]\n    }\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}}}"
                     }
                 }
             }
@@ -1790,10 +1765,9 @@
             "data": {
                 "name": "Transfer By Color",
                 "description": "transfer all marbles of a color",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage15",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -1808,28 +1782,27 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage15",
-                        "name": "LogMessage15",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[Transfer By Color] \", $flow.content.color, \" new-owner: \", $flow.content.newOwner)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -1841,7 +1814,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -1852,8 +1825,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -1968,25 +1940,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -2031,7 +2003,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2071,29 +2044,25 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
-                            "name": "content",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"color\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
-                            }
+                    "input": [{
+                        "name": "content",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"color\":{\"type\":\"string\"},\"newOwner\":{\"type\":\"string\"}}"
                         }
-                    ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
-                            }
+                    }],
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
                         }
-                    ],
+                    }],
                     "fe_metadata": {
                         "input": "{\n    \"content\": {\n        \"color\": \"\",\n        \"newOwner\": \"\"\n    }\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": [\n            {\n                \"key\": \"\",\n                \"value\": {\n                    \"name\": \"\",\n                    \"color\": \"\",\n                    \"size\": 0,\n                    \"owner\": \"\"\n                }\n            }\n        ]\n    }\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}}}"
                     }
                 }
             }
@@ -2103,10 +2072,9 @@
             "data": {
                 "name": "Delete Marble",
                 "description": "delete a marble by key",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage18",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -2121,28 +2089,27 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage18",
-                        "name": "LogMessage18",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Delete: \", $flow.name)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2154,7 +2121,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2165,8 +2132,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -2281,25 +2247,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -2343,7 +2309,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2378,25 +2345,21 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
-                            "name": "name",
-                            "type": "string"
+                    "input": [{
+                        "name": "name",
+                        "type": "string"
+                    }],
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
                         }
-                    ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}"
-                            }
-                        }
-                    ],
+                    }],
                     "fe_metadata": {
                         "input": "{\n    \"name\": \"\"\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": {\n            \"name\": \"\",\n            \"color\": \"\",\n            \"size\": 0,\n            \"owner\": \"\"\n        }\n    }\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
                     }
                 }
             }
@@ -2406,10 +2369,9 @@
             "data": {
                 "name": "Marble History",
                 "description": "Get history of a marble",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage21",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -2424,28 +2386,27 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage21",
-                        "name": "LogMessage21",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Get history of \", $flow.name)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2457,7 +2418,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2468,8 +2429,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -2584,25 +2544,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -2646,7 +2606,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric response: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2688,25 +2649,21 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
-                            "name": "name",
-                            "type": "string"
+                    "input": [{
+                        "name": "name",
+                        "type": "string"
+                    }],
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
                         }
-                    ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}"
-                            }
-                        }
-                    ],
+                    }],
                     "fe_metadata": {
                         "input": "{\n    \"name\": \"\"\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": [\n            {\n                \"txID\": \"string\",\n                \"txTime\": \"\",\n                \"isDeleted\": false,\n                \"value\": {\n                    \"name\": \"\",\n                    \"color\": \"\",\n                    \"size\": 0,\n                    \"owner\": \"\"\n                }\n            }\n        ]\n    }\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"txID\":{\"type\":\"string\"},\"txTime\":{\"type\":\"string\"},\"isDeleted\":{\"type\":\"boolean\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}}}"
                     }
                 }
             }
@@ -2716,10 +2673,9 @@
             "data": {
                 "name": "Query Range Page",
                 "description": "query marbles by range with pagination",
-                "links": [
-                    {
+                "links": [{
                         "id": 1,
-                        "from": "LogMessage24",
+                        "from": "LogRequest",
                         "to": "FabricRequest",
                         "type": "default"
                     },
@@ -2734,28 +2690,27 @@
                         "from": "Log",
                         "to": "Return",
                         "type": "expression",
-                        "label": "Log to Return",
+                        "label": "Successful",
                         "value": "$activity[FabricRequest].code == 200"
                     },
                     {
                         "id": 4,
                         "from": "Log",
                         "to": "ThrowError",
-                        "type": "expression",
-                        "label": "Log to ThrowError",
-                        "value": "$activity[FabricRequest].code != 200"
+                        "type": "exprOtherwise",
+                        "label": "Failed"
                     }
                 ],
-                "tasks": [
-                    {
-                        "id": "LogMessage24",
-                        "name": "LogMessage24",
+                "tasks": [{
+                        "id": "LogRequest",
+                        "name": "LogRequest",
                         "description": "",
                         "activity": {
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"[Query Range Page] [\", $flow.startKey, \", \", $flow.endKey, \")\")",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -2767,7 +2722,7 @@
                             "ref": "#fabrequest",
                             "input": {
                                 "connectionName": {
-                                    "id": "cdd7ec70-37c0-11ea-8b4c-a56bccb1268c",
+                                    "id": "dabd80d0-1253-11eb-bf14-df5b7fa30e78",
                                     "type": "flogo:connector",
                                     "version": "1.0.0",
                                     "name": "fabclient-connector",
@@ -2778,8 +2733,7 @@
                                     "title": "Fabric Connector",
                                     "description": "Fabric Connection",
                                     "ref": "github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/fabclient/connector/fabconnector",
-                                    "settings": [
-                                        {
+                                    "settings": [{
                                             "name": "name",
                                             "description": "Unique name of the Fabric network connection",
                                             "type": "string",
@@ -2894,25 +2848,25 @@
                                         "smallIcon": "ic-fabconnector@2x.png",
                                         "largeIcon": "ic-fabconnector@3x.png"
                                     },
-                                    "actions": [
-                                        {
-                                            "name": "Save Connector",
-                                            "display": {
-                                                "readonly": false,
-                                                "valid": true,
-                                                "visible": true
-                                            }
+                                    "actions": [{
+                                        "name": "Save Connector",
+                                        "display": {
+                                            "readonly": false,
+                                            "valid": true,
+                                            "visible": true
                                         }
-                                    ],
+                                    }],
                                     "feature": {},
                                     "loopType": "none",
                                     "loopSettings": [],
                                     "retrySettings": [],
                                     "propertyMap": {},
                                     "keyfield": "name",
+                                    "schemaMap": {},
                                     "iteratorAccumulate": false,
+                                    "accessOutputInInput": false,
                                     "isValid": true,
-                                    "lastUpdatedTime": 1579111346652,
+                                    "lastUpdatedTime": 1603144187373,
                                     "user": "flogo",
                                     "connectorName": "marble client",
                                     "connectorDescription": "marble client using fabric sample first network"
@@ -2959,7 +2913,8 @@
                             "ref": "#log",
                             "input": {
                                 "message": "=string.concat(\"Fabric reponse: \", $activity[FabricRequest].message)",
-                                "addDetails": false
+                                "addDetails": false,
+                                "usePrint": false
                             }
                         }
                     },
@@ -3003,8 +2958,7 @@
                     }
                 ],
                 "metadata": {
-                    "input": [
-                        {
+                    "input": [{
                             "name": "startKey",
                             "type": "string"
                         },
@@ -3021,42 +2975,39 @@
                             "type": "string"
                         }
                     ],
-                    "output": [
-                        {
-                            "name": "returns",
-                            "type": "object",
-                            "schema": {
-                                "type": "json",
-                                "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}}"
-                            }
+                    "output": [{
+                        "name": "returns",
+                        "type": "object",
+                        "schema": {
+                            "type": "json",
+                            "value": "{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}}"
                         }
-                    ],
+                    }],
                     "fe_metadata": {
                         "input": "{\n    \"startKey\": \"\",\n    \"endKey\": \"\",\n    \"pageSize\": 0,\n    \"bookmark\": \"\"\n}",
-                        "output": "{\n    \"returns\": {\n        \"code\": 0,\n        \"data\": {\n            \"count\": 0,\n            \"bookmark\": \"\",\n            \"marbles\": [\n                {\n                    \"key\": \"\",\n                    \"value\": {\n                        \"name\": \"\",\n                        \"color\": \"\",\n                        \"size\": 0,\n                        \"owner\": \"\"\n                    }\n                }\n            ]\n        }\n    }\n}"
+                        "output": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"returns\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"number\"},\"data\":{\"type\":\"object\",\"properties\":{\"count\":{\"type\":\"number\"},\"bookmark\":{\"type\":\"string\"},\"marbles\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"string\"},\"value\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"color\":{\"type\":\"string\"},\"size\":{\"type\":\"number\"},\"owner\":{\"type\":\"string\"}}}}}}}}}}}}"
                     }
                 }
             }
         }
     ],
-    "properties": [
-        {
+    "properties": [{
             "name": "MARBLE_CC",
             "type": "string",
             "value": "marble_cc"
         },
         {
-            "name": "PORT",
-            "type": "float64",
-            "value": 8989
-        },
-        {
             "name": "APPUSER",
             "type": "string",
             "value": "User1"
+        },
+        {
+            "name": "PORT",
+            "type": "float64",
+            "value": 8989
         }
     ],
     "connections": {},
     "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS9wcm9qZWN0LWZsb2dvL2NvbnRyaWIvdHJpZ2dlci9yZXN0IiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L0RlZmF1bHQvdHJpZ2dlci9yZXN0In0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi9hY3Rpdml0eS9sb2ciLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vRGVmYXVsdC9hY3Rpdml0eS9sb2cifSx7InJlZiI6ImdpdGh1Yi5jb20vVElCQ09Tb2Z0d2FyZS9kb3ZldGFpbC1jb250cmliL2h5cGVybGVkZ2VyLWZhYnJpYy9mYWJjbGllbnQiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vZmFiY2xpZW50In0seyJyZWYiOiJnaXRodWIuY29tL3Byb2plY3QtZmxvZ28vY29udHJpYi9hY3Rpdml0eS9lcnJvciIsInMzbG9jYXRpb24iOiJ7VVNFUklEfS9EZWZhdWx0L2FjdGl2aXR5L2Vycm9yIn1d",
-    "fe_metadata": "UEsDBAoAAAAIAPyQL1CrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAD8kC9Qq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+    "fe_metadata": "UEsDBAoAAAAIAAG0U1GrqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAABtFNRq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
 }

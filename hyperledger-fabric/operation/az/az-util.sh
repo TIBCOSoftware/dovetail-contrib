@@ -157,7 +157,7 @@ while getopts "h?n:r:f:l:" opt; do
 done
 
 if [ -z "${ENV_NAME}" ]; then
-  ENV_NAME="fab"
+  ENV_NAME="hlf"
 fi
 
 if [ -z "${AZ_REGION}" ]; then
