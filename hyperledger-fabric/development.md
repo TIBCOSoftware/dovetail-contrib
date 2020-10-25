@@ -17,7 +17,6 @@ For example, you can install these packages to a demo directory by using the fol
 
 ```bash
 cd $HOME/work/DovetailDemo
-git clone git@github.com:hyperledger/fabric-samples.git
 curl -sSL http://bit.ly/2ysbOFE | bash -s -- 1.4.9 1.4.9
 cd fabric-samples
 git checkout tags/v1.4.8
@@ -43,7 +42,7 @@ go get -u github.com/project-flogo/cli/...
 cd $HOME/work/DovetailDemo/dovetail-contrib/hyperledger-fabric/fabric-tools
 go install
 
-# assuming Flogo Enterprise is installed at $HOME/work/DovetailDemo/flogo/2.8
+# assuming Flogo Enterprise is installed at $HOME/work/DovetailDemo/flogo/2.10
 export FE_HOME=$HOME/work/DovetailDemo/flogo/2.10
 ```
 
