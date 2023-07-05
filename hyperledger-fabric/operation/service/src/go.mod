@@ -3,13 +3,13 @@ module github.com/TIBCOSoftware/dovetail-contrib/hyperledger-fabric/operation/se
 go 1.14
 
 require (
-	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
-	github.com/golang/protobuf v1.3.3
-	github.com/grpc-ecosystem/grpc-gateway v1.13.0
+	github.com/golang/glog v1.0.0
+	github.com/golang/protobuf v1.5.2
+	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hyperledger/fabric-sdk-go v1.0.0-beta1
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.5.1
-	golang.org/x/net v0.0.0-20200219183655-46282727080f
-	google.golang.org/genproto v0.0.0-20200218151345-dad8c97a84f5
-	google.golang.org/grpc v1.27.1
+	github.com/stretchr/testify v1.8.1
+	golang.org/x/net v0.5.0
+	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f
+	google.golang.org/grpc v1.53.0
 )
