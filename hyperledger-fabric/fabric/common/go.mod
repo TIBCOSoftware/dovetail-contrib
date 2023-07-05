@@ -23,8 +23,8 @@ require (
 	github.com/project-flogo/core v1.1.0
 	github.com/project-flogo/flow v1.1.0
 	github.com/spf13/viper v1.7.1 // indirect
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.8.1
 	github.com/sykesm/zap-logfmt v0.0.4 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0
-	google.golang.org/grpc v1.33.0 // indirect
+	google.golang.org/grpc v1.53.0 // indirect
 )
